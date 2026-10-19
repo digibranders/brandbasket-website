@@ -2,7 +2,6 @@
 import { type ReactElement, useEffect, useState } from "react";
 import { BASKET_COPY } from "@/content/basket";
 import { firstPayment, formatInr, monthlyTotal } from "@/lib/pricing";
-import { basketNames } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
@@ -41,11 +40,13 @@ export function PhoneTotalBar(): ReactElement {
       inert={hidden}
       className={`fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 flex items-center justify-between gap-3 rounded-full border border-line bg-surface py-[7px] pl-[18px] pr-[7px] shadow-[var(--shadow-bar)] transition-[transform,opacity] duration-[450ms] ease-[var(--ease)] min-[1000px]:hidden ${hidden ? "pointer-events-none translate-y-[150%] opacity-0" : ""}`}
     >
-      <div className="grid min-w-0 leading-[1.25]">
-        <b className="num whitespace-nowrap font-display text-lg font-medium tracking-[-0.02em]">{formatInr(firstPayment(monthlyTotal(pick)).total)} {BASKET_COPY.perMonth}</b>
-        <span className="truncate text-xs text-ink-2">{basketNames(pick)}, {BASKET_COPY.withGst}</span>
+      <div className="grid min-w-0 flex-auto overflow-hidden leading-[1.25]">
+        <b className="num whitespace-nowrap font-display text-lg font-medium tracking-[-0.02em]">{formatInr(firstPayment(monthlyTotal(pick)).total)}</b>
+        <span className="truncate text-xs text-ink-2">{BASKET_COPY.phoneBarCaption}</span>
       </div>
-      <BasketCta size="sm" />
+      <div className="flex-none">
+        <BasketCta size="sm" />
+      </div>
     </div>
   );
 }

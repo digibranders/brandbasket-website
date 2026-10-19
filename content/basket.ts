@@ -42,5 +42,5 @@ export const BASKET_COPY = {
   withGstBilled: "a month with GST, billed monthly",
   compare: "Compare all plans",
   totalLabel: "You pay each month, with GST",
-  withGst: "with GST",
+  phoneBarCaption: "a month, with GST",
 } as const;

@@ -60,12 +60,15 @@ export interface FirstPayment {
 export function firstPayment(monthly: number): FirstPayment {
   if (!Number.isFinite(monthly) || monthly < 0) throw new RangeError(`Monthly total must be a non-negative number, got ${monthly}`);
   const base = monthly * UPFRONT_MONTHS;
-  const gst = Math.round(base * GST_RATE);
-  return { months: UPFRONT_MONTHS, base, gst, total: base + gst };
+  // Integer paise maths: exact for whole-rupee bases, no float drift, and no rounding to the rupee (matches checkout).
+  const gstPaise = Math.round(base * Math.round(GST_RATE * 100));
+  return { months: UPFRONT_MONTHS, base, gst: gstPaise / 100, total: (base * 100 + gstPaise) / 100 };
 }
 
-const INR = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+const INR_WHOLE = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });
+const INR_PAISE = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
+/** Whole rupees print without decimals; any paise print as exactly two decimals. */
 export function formatInr(amount: number): string {
-  return INR.format(amount);
+  return (Number.isInteger(amount) ? INR_WHOLE : INR_PAISE).format(amount);
 }

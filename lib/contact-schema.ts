@@ -3,6 +3,10 @@ import { z } from "zod";
 import { CONTACT_ERRORS } from "@/content/contact";
 import type { PlanId } from "@/lib/pricing";
 
+// zod 4 otherwise probes `new Function` on load, which production CSP (no 'unsafe-eval') reports as a violation.
+// Set before any schema below is built; the form and the API route both import this module.
+z.config({ jitless: true });
+
 /** No control characters (CR, LF, NUL and friends): these fields reach the mail subject and the reply-to name. */
 const NO_CONTROL = /^\P{Cc}*$/u;
 

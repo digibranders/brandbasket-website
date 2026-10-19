@@ -5,7 +5,7 @@ import { HOME_ICONS } from "./icons";
 /** Four short facts under the hero (mock: ul.facts; its Material Symbols render filled). */
 export function FactsStrip(): ReactElement {
   return (
-    <div className="mx-auto w-full max-w-[1280px] px-[clamp(18px,4vw,56px)]">
+    <div className="in-wrap">
       <ul className="flex flex-wrap justify-between gap-x-7 gap-y-3.5 border-y border-line py-5">
         {FACTS.map((fact) => {
           const FactIcon = HOME_ICONS[fact.icon];

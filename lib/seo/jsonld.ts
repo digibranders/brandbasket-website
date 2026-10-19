@@ -79,7 +79,7 @@ export interface ServiceLd {
   readonly "@context": "https://schema.org";
   readonly "@type": "Service";
   readonly name: string;
-  readonly provider: { readonly "@type": "Organization"; readonly name: string; readonly url: string };
+  readonly provider: { readonly "@id": string };
   readonly areaServed: { readonly "@type": "Country"; readonly name: string };
   readonly hasOfferCatalog: {
     readonly "@type": "OfferCatalog";
@@ -104,7 +104,7 @@ export function planOffersJsonLd(): ServiceLd {
     "@context": "https://schema.org",
     "@type": "Service",
     name: "Website, Google and local search management for local businesses",
-    provider: { "@type": "Organization", name: businessDetails.tradeName, url: siteConfig.url },
+    provider: { "@id": ORGANIZATION_ID },
     areaServed: { "@type": "Country", name: "India" },
     hasOfferCatalog: {
       "@type": "OfferCatalog",

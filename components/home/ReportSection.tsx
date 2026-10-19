@@ -61,15 +61,15 @@ export function ReportSection(): ReactElement {
               </div>
               <span className="whitespace-nowrap rounded-full bg-rattan-wash px-2.5 py-1 font-mono text-[11.5px] text-rattan-ink">{REPORT.chip}</span>
             </div>
-            <div className="grid grid-cols-2 gap-2.5 min-[640px]:grid-cols-4">
+            <dl className="grid grid-cols-2 gap-2.5 min-[640px]:grid-cols-4">
               {REPORT.kpis.map((kpi) => (
                 <div key={kpi.label} className="grid min-w-0 gap-1 rounded-2xl bg-bg p-3.5">
-                  <small className="flex items-center gap-1.5 text-xs text-ink-2"><i aria-hidden="true" className={`size-2 rounded-[2px] ${TONE[kpi.tone]}`} />{kpi.label}</small>
-                  <b className="num font-display text-[26px] font-medium tracking-[-0.03em]">{kpi.value}</b>
-                  <span className="text-xs font-semibold text-sage">{kpi.delta}</span>
+                  <dt className="flex items-center gap-1.5 text-xs text-ink-2"><i aria-hidden="true" className={`size-2 rounded-[2px] ${TONE[kpi.tone]}`} />{kpi.label}</dt>
+                  <dd className="num font-display text-[26px] font-medium tracking-[-0.03em]">{kpi.value}</dd>
+                  <dd className="text-xs font-semibold text-sage">{kpi.delta}</dd>
                 </div>
               ))}
-            </div>
+            </dl>
             <ReportChart />
           </div>
         </Reveal>

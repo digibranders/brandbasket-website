@@ -32,6 +32,7 @@ describe("planOffersJsonLd", () => {
     expect(prices).toEqual([2999, 7000, 25000]);
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(false);
+    expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
   });
 });
 

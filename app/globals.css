@@ -6,7 +6,7 @@
   --bg: #f6f5f2; --surface: #ffffff; --sunken: #eeece7;
   --ink: #15161a; --ink-2: #4e5057; --line: #e3e0d9; --line-2: rgba(21, 22, 26, 0.08);
   --rattan: #c48a47; --rattan-text: #a46c2f; --rattan-ink: #8a5524; --rattan-wash: #f4e6d3;
-  --sage: #4f7a63; --whatsapp: #1f8f4e; --error: #b42318;
+  --sage: #4a745e; --whatsapp: #1f8f4e; --error: #b42318;
   --hero: radial-gradient(ellipse 55% 60% at 74% 58%, rgba(255, 255, 255, 0.95), transparent 70%), radial-gradient(ellipse 80% 60% at 74% 100%, rgba(196, 138, 71, 0.12), transparent 70%);
   --action: #15161a; --action-ink: #ffffff; --nav: rgba(255, 255, 255, 0.82);
   --shadow: 0 30px 60px -36px rgba(40, 28, 14, 0.28);
@@ -15,6 +15,7 @@
   --shadow-bar: 0 18px 40px -16px rgba(21, 22, 26, 0.35);
   --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-sheet: 0 30px 60px -20px rgba(0, 0, 0, 0.35);
+  --shadow-offer: 0 14px 30px -24px rgba(40, 28, 14, 0.35);
   --c-site: #a8743c; --c-care: #8a5a2b; --c-growth: #2f7f7a; --c-growth-2: #1f6b66; --c-search: #3d5a8a; --c-search-2: #2d4a7a;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);
   color-scheme: light;
@@ -40,6 +41,9 @@
   --font-sans: var(--font-red-hat-text);
   --font-mono: var(--font-red-hat-mono);
 }
+
+/* The site column and its gutter (mock: .in-wrap inside the 1280px frame). */
+@utility in-wrap { width: 100%; max-width: 1280px; margin-inline: auto; padding-inline: clamp(18px, 4vw, 56px); }
 
 html { background: var(--bg); }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif; -webkit-font-smoothing: antialiased; }

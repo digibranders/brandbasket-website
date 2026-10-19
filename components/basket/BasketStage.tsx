@@ -12,7 +12,13 @@ import type { BasketScene } from "./scene/types";
  * The poster is served unoptimized: it is already AVIF under the 40 KB budget, and re-encoding only grows it.
  * `priority` marks it as the LCP image (eager, high fetch priority; Next 16 deprecates the Image `priority` prop).
  */
-export function BasketStage({ priority = false }: { readonly priority?: boolean }): ReactElement {
+interface BasketStageProps {
+  readonly priority?: boolean;
+  /** Accessible name of the stage (mock: #stage aria-label). */
+  readonly label?: string;
+}
+
+export function BasketStage({ priority = false, label = "A woven basket holding the services in your plan" }: BasketStageProps): ReactElement {
   const host = useRef<HTMLDivElement>(null);
   const [live, setLive] = useState(false);
 
@@ -70,7 +76,7 @@ export function BasketStage({ priority = false }: { readonly priority?: boolean 
   }, []);
 
   return (
-    <div ref={host} role="img" aria-label="A woven basket holding the services in your plan" className="relative aspect-[1.12] max-h-[620px] w-full min-[1000px]:aspect-[1.02]">
+    <div ref={host} role="img" aria-label={label} className="relative aspect-[1.12] max-h-[620px] w-full min-[1000px]:aspect-[1.02]">
       <Image
         src="/basket/poster.avif"
         alt=""

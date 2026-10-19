@@ -19,6 +19,27 @@ describe("businessDetails", () => {
     expect(businessDetails.postalAddress.region).toBe("Maharashtra");
   });
 
+  it("has a CIN in the private limited company format", () => {
+    expect(businessDetails.cin).toMatch(/^U\d{5}[A-Z]{2}\d{4}PTC\d{6}$/);
+  });
+
+  it("names a Grievance Officer with a brandbasket.in mailbox", () => {
+    expect(businessDetails.grievanceOfficer.name.trim()).not.toBe("");
+    expect(businessDetails.grievanceOfficer.email.endsWith("@brandbasket.in")).toBe(true);
+  });
+
+  it("sends disputes to the courts at the registered office", () => {
+    expect(businessDetails.courts).toBe("Thane, Maharashtra");
+  });
+
+  it("lists each data processor with a purpose and a location", () => {
+    expect(businessDetails.processors.map((p) => p.name)).toEqual(["Vercel", "Brevo", "Razorpay", "Cloudflare"]);
+    for (const p of businessDetails.processors) {
+      expect(p.purpose.trim()).not.toBe("");
+      expect(p.location.trim()).not.toBe("");
+    }
+  });
+
   it("quotes the entry price from the pricing module", () => {
     expect(siteConfig.description).toContain("From ₹3,000 a month");
   });

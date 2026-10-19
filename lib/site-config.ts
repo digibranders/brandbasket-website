@@ -13,6 +13,18 @@ export interface PostalAddress {
   readonly country: string;
 }
 
+export interface Person {
+  readonly name: string;
+  readonly email: string;
+}
+
+/** A service provider that processes personal data on our behalf; the privacy policy lists each one. */
+export interface Processor {
+  readonly name: string;
+  readonly purpose: string;
+  readonly location: string;
+}
+
 export interface BusinessDetails {
   readonly legalName: string;
   readonly tradeName: string;
@@ -25,6 +37,11 @@ export interface BusinessDetails {
   readonly whatsappHref: string;
   readonly email: string;
   readonly foundingYear: number;
+  /** DPDP Act s.8(10) and IT Rules 2021 r.3(2): named in the privacy policy, terms and refund policy. */
+  readonly grievanceOfficer: Person;
+  /** Courts with exclusive jurisdiction in the terms. */
+  readonly courts: string;
+  readonly processors: readonly Processor[];
 }
 
 export const businessDetails: BusinessDetails = {
@@ -50,6 +67,15 @@ export const businessDetails: BusinessDetails = {
   whatsappHref: "https://wa.me/917897896607",
   email: "hello@brandbasket.in",
   foundingYear: 2021,
+  // Open input D9: the name is Digibranders' Grievance Officer on its other brand; confirm the person and the mailbox before launch.
+  grievanceOfficer: { name: "Siddique Ahmed", email: "grievance@brandbasket.in" },
+  courts: "Thane, Maharashtra",
+  processors: [
+    { name: "Vercel", purpose: "hosts this website and counts visits without cookies", location: "the United States, served from edge locations including India" },
+    { name: "Brevo", purpose: "sends our team the messages you send through this website", location: "the European Union" },
+    { name: "Razorpay", purpose: "takes payments from clients", location: "India" },
+    { name: "Cloudflare", purpose: "runs our domain name system", location: "locations around the world" },
+  ],
 };
 
 export interface SiteConfig {

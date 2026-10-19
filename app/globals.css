@@ -43,3 +43,8 @@ h1, h2, h3, h4 { text-wrap: balance; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* FAQ open/close: animates where supported, instant elsewhere */
+.faq-item { interpolate-size: allow-keywords; }
+.faq-item::details-content { block-size: 0; overflow: hidden; transition: block-size 400ms var(--ease), content-visibility 400ms allow-discrete; }
+.faq-item[open]::details-content { block-size: auto; }

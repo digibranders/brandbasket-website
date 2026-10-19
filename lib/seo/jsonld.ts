@@ -1,11 +1,7 @@
 // lib/seo/jsonld.ts
+import type { FaqItem } from "@/content/types";
 import { PLANS, type PlanId } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
-
-export interface FaqItem {
-  readonly q: string;
-  readonly a: string;
-}
 
 export function organizationJsonLd() {
   return {

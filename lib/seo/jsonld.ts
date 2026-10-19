@@ -143,3 +143,27 @@ export function breadcrumbJsonLd(crumbs: readonly { readonly name: string; reado
     })),
   };
 }
+
+export interface ContactPageLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "ContactPage";
+  readonly name: string;
+  readonly url: string;
+  readonly about: {
+    readonly "@type": "Organization";
+    readonly name: string;
+    readonly url: string;
+    readonly telephone: string;
+    readonly email: string;
+  };
+}
+
+export function contactPageJsonLd(): ContactPageLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "ContactPage",
+    name: `Contact ${businessDetails.tradeName}`,
+    url: `${siteConfig.url}/contact`,
+    about: { "@type": "Organization", name: businessDetails.tradeName, url: siteConfig.url, telephone: businessDetails.phone, email: businessDetails.email },
+  };
+}

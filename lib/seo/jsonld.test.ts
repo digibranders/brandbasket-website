@@ -1,6 +1,6 @@
 // lib/seo/jsonld.test.ts
 import { describe, expect, it } from "vitest";
-import { breadcrumbJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd } from "./jsonld";
+import { breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd } from "./jsonld";
 
 describe("organizationJsonLd", () => {
   it("names the legal entity and the brand", () => {
@@ -38,5 +38,14 @@ describe("breadcrumbJsonLd", () => {
     const crumbs = breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }]);
     expect(crumbs.itemListElement.map((c) => c.item)).toEqual(["https://brandbasket.in/", "https://brandbasket.in/pricing"]);
     expect(crumbs.itemListElement[1].position).toBe(2);
+  });
+});
+
+describe("contactPageJsonLd", () => {
+  it("points at /contact and carries the site-config phone and email", () => {
+    const page = contactPageJsonLd();
+    expect(page.url).toBe("https://brandbasket.in/contact");
+    expect(page.about.telephone).toBe("+91 789 789 6607");
+    expect(page.about.email).toBe("hello@brandbasket.in");
   });
 });

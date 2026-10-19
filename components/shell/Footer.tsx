@@ -1,20 +1,12 @@
 // components/shell/Footer.tsx
-import { cacheLife } from "next/cache";
 import Link from "next/link";
 import type { ReactElement } from "react";
 import { FOOTER_NAV, LEGAL_NAV } from "@/content/navigation";
 import { businessDetails } from "@/lib/site-config";
 import { Logo } from "./Logo";
 
-/** Cache Components forbids reading the clock while prerendering; a cached read is allowed and refreshes daily. */
-async function currentYear(): Promise<number> {
-  "use cache";
-  cacheLife("days");
-  return new Date().getFullYear();
-}
-
-export async function Footer(): Promise<ReactElement> {
-  const year = await currentYear();
+export function Footer(): ReactElement {
+  const year = new Date().getFullYear();
   return (
     <footer className="mx-auto grid max-w-[1280px] gap-8 border-t border-line px-[clamp(18px,4vw,56px)] pb-5 pt-14">
       <div className="grid gap-7 md:grid-cols-[1.4fr_1fr_1fr_1fr]">

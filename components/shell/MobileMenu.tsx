@@ -19,11 +19,11 @@ export function MobileMenu(): ReactElement {
 
   return (
     <>
-      <button type="button" aria-expanded={open} aria-controls={sheetId} aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((v) => !v)} className="grid size-10 place-items-center rounded-full border border-[var(--line-2)] bg-sunken lg:hidden">
+      <button type="button" aria-expanded={open} aria-controls={sheetId} aria-label={open ? "Close menu" : "Open menu"} onClick={() => setOpen((v) => !v)} className="grid size-10 place-items-center rounded-full border border-[var(--line-2)] bg-sunken min-[1000px]:hidden">
         {open ? <X aria-hidden="true" className="size-5" /> : <List aria-hidden="true" className="size-5" />}
       </button>
       {open && (
-        <div id={sheetId} className="absolute inset-x-3 top-[76px] z-20 grid gap-1 rounded-[26px] border border-line bg-surface p-2.5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] lg:hidden">
+        <div id={sheetId} className="absolute inset-x-3 top-[76px] z-20 grid gap-1 rounded-[26px] border border-line bg-surface p-2.5 shadow-[0_30px_60px_-20px_rgba(0,0,0,0.35)] min-[1000px]:hidden">
           {PRIMARY_NAV.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{link.label}</Link>
           ))}

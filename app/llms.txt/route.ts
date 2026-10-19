@@ -2,6 +2,8 @@
 import { formatInr, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
+export const dynamic = "force-static";
+
 export function GET(): Response {
   const plans = Object.values(PLANS).map((p) => `- ${p.name}: ${formatInr(p.monthly)} a month before 18% GST${p.requires ? ", added to Managed Website" : ""}`).join("\n");
   const body = `# ${siteConfig.name}

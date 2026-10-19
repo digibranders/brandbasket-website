@@ -1,6 +1,7 @@
 // app/pricing/page.tsx
 import type { ReactElement } from "react";
 import { CompareTable } from "@/components/pricing/CompareTable";
+import { GoodToKnow } from "@/components/pricing/GoodToKnow";
 import { PlanDetails } from "@/components/pricing/PlanDetails";
 import { PricingHero } from "@/components/pricing/PricingHero";
 
@@ -11,6 +12,7 @@ export default function PricingPage(): ReactElement {
       <PricingHero />
       <CompareTable />
       <PlanDetails />
+      <GoodToKnow />
     </>
   );
 }

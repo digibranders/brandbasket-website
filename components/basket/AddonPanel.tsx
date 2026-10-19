@@ -5,7 +5,7 @@ import Link from "next/link";
 import type { ReactElement } from "react";
 import { BASKET_COPY, HOME_ADDONS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { type AddonId, ADDONS, firstPayment, formatInr, monthlyTotal, PLANS } from "@/lib/pricing";
+import { type AddonId, ADDONS, firstPayment, formatInr, PLANS, signupTotal } from "@/lib/pricing";
 import { ADDON_COLOUR, basketNames } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
@@ -15,7 +15,7 @@ const ICON: Readonly<Record<AddonId, Icon>> = { growth: TrendUp, search: Magnify
 /** Homepage add-on panel (mock: #h-plans .addpanel, .ap-row, .calc). */
 export function AddonPanel(): ReactElement {
   const pick = useBasket();
-  const monthly = monthlyTotal(pick);
+  const monthly = signupTotal(pick);
   const pay = firstPayment(monthly);
 
   return (

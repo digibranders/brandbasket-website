@@ -1,4 +1,5 @@
 // app/llms.txt/route.ts
+import { SIGNUP_ADDON_TERMS } from "@/content/legal/fees";
 import { formatInr, GST_RATE, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
@@ -16,6 +17,8 @@ ${siteConfig.name} is a brand of ${businessDetails.legalName} (GSTIN ${businessD
 
 ## Plans
 ${plans}
+
+${SIGNUP_ADDON_TERMS}
 
 ## Pages
 - [Pricing](${siteConfig.url}/pricing)

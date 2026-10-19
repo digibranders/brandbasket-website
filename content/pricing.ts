@@ -2,7 +2,7 @@
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, monthlyTotal, PACKAGES, PLANS, type Package, type PlanId } from "@/lib/pricing";
+import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, monthlyTotal, PACKAGES, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL, type Package, type PlanId } from "@/lib/pricing";
 import { ADDON_CHANGE, CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -59,7 +59,7 @@ export interface Compare {
 
 export const COMPARE: Compare = {
   heading: "Which basket fits you?",
-  lede: "Four ways to combine the plans. Every price is monthly, before GST.",
+  lede: `Four ways to combine the plans. Every price is monthly, before GST. Add-ons chosen as you start are ${SIGNUP_ADDON_DISCOUNT_LABEL} off.`,
   tabsLabel: "Show one basket",
   rowHeader: "What is included",
   included: "Included",

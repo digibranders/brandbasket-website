@@ -4,5 +4,6 @@
  *
  * Changelog
  * 2026-10-19.1  First Brandbasket privacy, terms, refund, shipping and data notice.
+ * 2026-10-19.2  Terms section 5: add-ons chosen at sign-up are 5% off for as long as they run.
  */
-export const LEGAL_TEXT_VERSION = "2026-10-19.1";
+export const LEGAL_TEXT_VERSION = "2026-10-19.2";

@@ -563,7 +563,7 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           </div>
 
           <div class="addpanel">
-            <div class="ap-head"><h4>Add when you are ready</h4><span>Optional. Switch one on to see your monthly price.</span></div>
+            <div class="ap-head"><h4>Add when you are ready</h4><span>Optional. Add them as you start and they are 5% off for as long as they run.</span></div>
             <div class="ap-row">
               <span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span>
               <div class="ap-text"><b>Digital Growth</b><span>8 Google profile posts a month, and Instagram and Facebook ads run for you.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div>
@@ -652,7 +652,7 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           </div>
           <div class="phc-stage" data-stage-slot></div>
           <div class="phc-act">
-            <div class="adds"><p>Add to your basket</p>
+            <div class="adds"><p>Add to your basket. 5% off when you add them as you start.</p>
               <div class="add" data-row="growth" style="--c:var(--c-growth)"><i aria-hidden="true"></i><span><b>Digital Growth</b><span class="d">Google profile and Meta ads</span></span><span class="p num">+₹7,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Digital Growth" data-plan="growth"></button></div>
               <div class="add" data-row="search" style="--c:var(--c-search)"><i aria-hidden="true"></i><span><b>Local SEO + AEO</b><span class="d">Google search and AI answers</span></span><span class="p num">+₹25,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO and AEO" data-plan="search"></button></div>
             </div>
@@ -661,7 +661,7 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
         </section>
 
         <section class="sec in-wrap" style="padding-top:64px" aria-labelledby="h-compare">
-          <div class="sec-head"><h3 id="h-compare">Which basket fits you?</h3><p>Four ways to combine the plans. Every price is monthly, before GST.</p></div>
+          <div class="sec-head"><h3 id="h-compare">Which basket fits you?</h3><p>Four ways to combine the plans. Every price is monthly, before GST. Add-ons chosen as you start are 5% off.</p></div>
           <div class="bk-tabs" aria-label="Show one basket"><button type="button" data-show="0" aria-pressed="true"><b>Website</b><span>₹2,999 a month</span></button><button type="button" data-show="1" aria-pressed="false"><b>Website + Growth</b><span>₹9,999 a month</span></button><button type="button" data-show="2" aria-pressed="false"><b>Website + Search</b><span>₹27,999 a month</span></button><button type="button" data-show="3" aria-pressed="false"><b>All three</b><span>₹34,999 a month</span></button></div>
           <div class="cmp-wrap" data-show="0">
             <table class="cmp">
@@ -817,7 +817,9 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
   window.bbState = state;
   /* GST is charged to the paisa (as the platform checkout does), so show paise only when there are any */
   function inr(n) { return "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  function total() { return PRICE.site + (state.growth ? PRICE.growth : 0) + (state.search ? PRICE.search : 0); }
+  /* add-ons chosen at sign-up are 5% off for as long as they run (platform checkout does the same); the website plan never is */
+  function signup(n) { return Math.round(n * 95) / 100; }
+  function total() { return PRICE.site + (state.growth ? signup(PRICE.growth) : 0) + (state.search ? signup(PRICE.search) : 0); }
   function render() {
     var t = total(), first = t, firstGst = (first * 100 + Math.round(first * 18)) / 100;
     home.querySelectorAll("[data-total]").forEach(function (el) { el.textContent = inr(t); });

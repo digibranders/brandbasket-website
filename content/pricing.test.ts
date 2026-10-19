@@ -21,6 +21,9 @@ describe("pricing content", () => {
       expect(COMPARE.columns[i]?.price).toBe(formatInr(monthlyTotal(pkg.addons)));
     });
   });
+  it("tells the reader that add-ons chosen at sign-up are 5% off", () => {
+    expect(COMPARE.lede).toBe("Four ways to combine the plans. Every price is monthly, before GST. Add-ons chosen as you start are 5% off.");
+  });
   it("has one cell per package in every comparison row", () => {
     for (const group of COMPARE.groups) for (const row of group.rows) expect(row.cells).toHaveLength(PACKAGES.length);
   });

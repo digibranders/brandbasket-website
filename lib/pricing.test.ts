@@ -1,6 +1,18 @@
 // lib/pricing.test.ts
 import { describe, expect, it } from "vitest";
-import { ADDONS, basketPlans, firstPayment, formatInr, GST_RATE, monthlyTotal, PACKAGES, PLANS } from "./pricing";
+import {
+  ADDONS,
+  basketPlans,
+  firstPayment,
+  formatInr,
+  GST_RATE,
+  monthlyTotal,
+  PACKAGES,
+  PLANS,
+  SIGNUP_ADDON_DISCOUNT,
+  signupAddonPrice,
+  signupTotal,
+} from "./pricing";
 
 describe("plans", () => {
   it("prices the three plans from the plans document", () => {
@@ -26,6 +38,33 @@ describe("monthlyTotal", () => {
 
   it("matches the four published packages", () => {
     expect(PACKAGES.map((p) => monthlyTotal(p.addons))).toEqual([2999, 9999, 27999, 34999]);
+  });
+});
+
+describe("sign-up add-on discount", () => {
+  it("is 5% off add-ons chosen with the website", () => {
+    expect(SIGNUP_ADDON_DISCOUNT).toBe(0.05);
+    expect(signupAddonPrice("growth")).toBe(6650);
+    expect(signupAddonPrice("search")).toBe(23750);
+  });
+
+  it.each([
+    [{ growth: false, search: false }, 2999, 3538.82],
+    [{ growth: true, search: false }, 9649, 11385.82],
+    [{ growth: false, search: true }, 26749, 31563.82],
+    [{ growth: true, search: true }, 33399, 39410.82],
+  ])("totals %o at sign-up as %i, %d with GST", (picked, monthly, withGst) => {
+    expect(signupTotal(picked)).toBe(monthly);
+    expect(firstPayment(signupTotal(picked)).total).toBe(withGst);
+  });
+
+  it("never discounts the website plan", () => {
+    expect(signupTotal({ growth: false, search: false })).toBe(PLANS.website.monthly);
+    expect(signupTotal({ growth: true, search: false }) - signupAddonPrice("growth")).toBe(PLANS.website.monthly);
+  });
+
+  it("leaves list prices to monthlyTotal", () => {
+    expect(monthlyTotal({ growth: true, search: true })).toBe(34999);
   });
 });
 

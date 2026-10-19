@@ -1,6 +1,6 @@
 // content/basket.ts
 // Copy for the basket controls, word for word from the mock (docs/design/mock.html: .phc-act .adds, #h-plans .addpanel, .pbar).
-import type { AddonId } from "@/lib/pricing";
+import { type AddonId, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
 
 export interface AddonCopy {
   readonly name: string;
@@ -30,9 +30,9 @@ export const HOME_ADDONS: Readonly<Record<AddonId, AddonCopy>> = {
 };
 
 export const BASKET_COPY = {
-  rowsTitle: "Add to your basket",
+  rowsTitle: `Add to your basket. ${SIGNUP_ADDON_DISCOUNT_LABEL} off when you add them as you start.`,
   panelTitle: "Add when you are ready",
-  panelNote: "Optional. Switch one on to see your monthly price.",
+  panelNote: `Optional. Add them as you start and they are ${SIGNUP_ADDON_DISCOUNT_LABEL} off for as long as they run.`,
   explore: "What is included",
   add: "Add",
   added: "Added",

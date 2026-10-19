@@ -3,6 +3,7 @@ import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { ADDON_CHANGE, CANCELLATION_RULE, OWNERSHIP_ON_CANCEL } from "./cancellation";
+import { SIGNUP_ADDON_TERMS } from "./fees";
 import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, cin, gstNumber, email, courts } = businessDetails;
@@ -45,6 +46,7 @@ export const termsOfService: LegalDocument = {
       heading: "5. Fees and payment",
       paragraphs: [
         `Plans are billed monthly, in advance, at the prices above plus ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel.`,
+        SIGNUP_ADDON_TERMS,
         "If a payment stays unpaid, we may pause your services until it is paid. Your content is kept.",
         "When we refund a payment, and when we don't, is set out in our Refund and cancellation policy.",
       ],

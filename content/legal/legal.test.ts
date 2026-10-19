@@ -52,6 +52,10 @@ describe("legal documents", () => {
     expect(text).toContain(formatInr(AD_BUDGET_CAP));
     expect(text).toContain(businessDetails.courts);
   });
+  it("state the sign-up add-on discount in the fees section", () => {
+    const fees = JSON.stringify(termsOfService.sections.find((s) => s.heading === "5. Fees and payment"));
+    expect(fees).toContain("Add-ons chosen at sign-up are 5% off for as long as they run; add-ons added later are charged at the listed price.");
+  });
   it("use one cancellation rule in the terms and the refund policy", () => {
     const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));
     for (const heading of ["9. Cancellation and termination", "How to cancel", "When we don't refund"]) expect(section(heading)).toContain(CANCELLATION_RULE);

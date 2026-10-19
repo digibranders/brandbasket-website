@@ -22,6 +22,10 @@ export const PLANS: Readonly<Record<PlanId, Plan>> = {
 
 export const ADDONS: readonly AddonId[] = ["growth", "search"];
 export const GST_RATE = 0.18;
+/** Add-ons chosen together with the website at sign-up are this much off for as long as they run (owner decision, 2026-10-19). */
+export const SIGNUP_ADDON_DISCOUNT = 0.05;
+/** The discount as printed in copy, for example "5%". */
+export const SIGNUP_ADDON_DISCOUNT_LABEL = `${Math.round(SIGNUP_ADDON_DISCOUNT * 100)}%`;
 /** Billed monthly: the first payment covers one month (owner decision, 2026-10-19). */
 export const UPFRONT_MONTHS = 1;
 export const EXTRA_HOURLY_RATE = 500;
@@ -48,6 +52,17 @@ export function basketPlans(picked: AddonPick): Plan[] {
 
 export function monthlyTotal(picked: AddonPick): number {
   return basketPlans(picked).reduce((sum, plan) => sum + plan.monthly, 0);
+}
+
+/** Monthly price of an add-on chosen at sign-up. The website plan is never discounted, so it has no sign-up price. */
+export function signupAddonPrice(id: AddonId): number {
+  // Whole percent points keep the sum exact: 7000 * 95 / 100 has no float drift.
+  return Math.round(PLANS[id].monthly * Math.round((1 - SIGNUP_ADDON_DISCOUNT) * 100)) / 100;
+}
+
+/** Basket total at sign-up: the website at list price plus each picked add-on at its sign-up price. */
+export function signupTotal(picked: AddonPick): number {
+  return ADDONS.filter((id) => picked[id]).reduce((sum, id) => sum + signupAddonPrice(id), PLANS.website.monthly);
 }
 
 export interface FirstPayment {

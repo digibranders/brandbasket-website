@@ -52,15 +52,23 @@ describe("businessDetails", () => {
 describe("isProductionSite", () => {
   afterEach(() => vi.unstubAllEnvs());
 
-  it("is true only on the Vercel production deployment", () => {
+  it("is off by default, production included", () => {
+    vi.stubEnv("SITE_INDEXING", "");
     vi.stubEnv("VERCEL_ENV", "production");
-    expect(isProductionSite()).toBe(true);
+    expect(isProductionSite()).toBe(false);
+    vi.stubEnv("VERCEL_ENV", "");
+    expect(isProductionSite()).toBe(false);
+  });
+
+  it("stays off on previews even with the flag set", () => {
+    vi.stubEnv("SITE_INDEXING", "on");
     vi.stubEnv("VERCEL_ENV", "preview");
     expect(isProductionSite()).toBe(false);
   });
 
-  it("is false locally", () => {
-    vi.stubEnv("VERCEL_ENV", "");
-    expect(isProductionSite()).toBe(false);
+  it("is on only with the flag set on the production deployment", () => {
+    vi.stubEnv("SITE_INDEXING", "on");
+    vi.stubEnv("VERCEL_ENV", "production");
+    expect(isProductionSite()).toBe(true);
   });
 });

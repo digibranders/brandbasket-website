@@ -1,6 +1,6 @@
 // lib/seo/metadata.ts
 import type { Metadata } from "next";
-import { siteConfig } from "@/lib/site-config";
+import { isProductionSite, siteConfig } from "@/lib/site-config";
 
 interface PageMeta {
   readonly title: string;
@@ -18,6 +18,7 @@ export function pageMetadata({ title, description, path, noindex = false }: Page
     openGraph: { title, description, url, siteName: siteConfig.name, type: "website", locale: "en_IN" },
     twitter: { card: "summary_large_image", title, description },
     // Only set the key when needed: a present-but-undefined key overrides the layout robots in Next's metadata merge.
-    ...(noindex ? { robots: { index: false, follow: true } } : {}),
+    // Before launch the layout's "noindex, nofollow" applies everywhere, so a noindex page must not loosen it to follow.
+    ...(noindex ? { robots: { index: false, follow: isProductionSite() } } : {}),
   };
 }

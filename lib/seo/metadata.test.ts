@@ -1,5 +1,5 @@
 // lib/seo/metadata.test.ts
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 import { pageMetadata } from "./metadata";
 
 const base = { title: "t", description: "d", path: "/" };
@@ -9,8 +9,15 @@ describe("pageMetadata", () => {
     expect("robots" in pageMetadata(base)).toBe(false);
   });
 
-  it("marks noindex pages as not indexed but followed", () => {
+  it("marks noindex pages nofollow too while indexing is off", () => {
+    expect(pageMetadata({ ...base, noindex: true }).robots).toEqual({ index: false, follow: false });
+  });
+
+  it("marks noindex pages as not indexed but followed once indexing is on", () => {
+    vi.stubEnv("SITE_INDEXING", "on");
+    vi.stubEnv("VERCEL_ENV", "production");
     expect(pageMetadata({ ...base, noindex: true }).robots).toEqual({ index: false, follow: true });
+    vi.unstubAllEnvs();
   });
 
   it("builds the canonical and open graph url from the path", () => {

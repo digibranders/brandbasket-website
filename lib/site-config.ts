@@ -96,7 +96,4 @@ export const siteConfig: SiteConfig = {
   description: `Website, Google profile, ads and local search for local businesses in India, run for you every month. From ${formatInr(PLANS.website.monthly)} a month.`,
 };
 
-/** Only the Vercel production deployment may be indexed. robots.ts and the meta robots tag both use this. */
-export function isProductionSite(): boolean {
-  return process.env.VERCEL_ENV === "production";
-}
+export { isProductionSite } from "./indexing";

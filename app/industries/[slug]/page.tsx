@@ -10,7 +10,7 @@ import { Faq } from "@/components/ui/Faq";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { Shell } from "@/components/ui/Shell";
-import { INDUSTRIES, INDUSTRY_PAGE, type Industry as IndustryCopy } from "@/content/industries";
+import { INDUSTRIES, INDUSTRY_PAGE, type Industry as IndustryCopy, industryBySlug } from "@/content/industries";
 import { basketPlans, formatInr, monthlyTotal } from "@/lib/pricing";
 import { audienceServiceJsonLd, breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -28,9 +28,7 @@ export function generateStaticParams(): { slug: IndustryCopy["slug"] }[] {
 
 async function industryFor(params: IndustryPageProps["params"]): Promise<IndustryCopy> {
   const { slug } = await params;
-  const industry = INDUSTRIES.find((i) => i.slug === slug);
-  if (!industry) notFound();
-  return industry;
+  return industryBySlug(slug) ?? notFound();
 }
 
 export async function generateMetadata({ params }: IndustryPageProps): Promise<Metadata> {
@@ -53,7 +51,7 @@ export default async function IndustryPage({ params }: IndustryPageProps): Promi
       <Section labelledBy="h-problems" tight>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-10 min-[980px]:grid-cols-[0.8fr_1.2fr] min-[980px]:gap-16">
           <Reveal>
-            <SectionHead id="h-problems" title={INDUSTRY_PAGE.problemsHeading} />
+            <SectionHead id="h-problems" className="mb-0" title={INDUSTRY_PAGE.problemsHeading} />
           </Reveal>
           <Reveal className="min-w-0">
             <ul className="grid">
@@ -84,7 +82,7 @@ export default async function IndustryPage({ params }: IndustryPageProps): Promi
       <Section labelledBy="h-basket" tight>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-10 min-[980px]:grid-cols-[0.8fr_1.2fr] min-[980px]:gap-16">
           <Reveal>
-            <SectionHead id="h-basket" title={INDUSTRY_PAGE.basketHeading} />
+            <SectionHead id="h-basket" className="mb-0" title={INDUSTRY_PAGE.basketHeading} />
           </Reveal>
           <Reveal className="min-w-0 max-w-[560px]">
             <Shell>

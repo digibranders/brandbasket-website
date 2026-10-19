@@ -1,7 +1,7 @@
 // content/industries.test.ts
 import { describe, expect, it } from "vitest";
 import { INDUSTRIES_LINE } from "./home";
-import { INDUSTRIES, INDUSTRIES_HUB } from "./industries";
+import { INDUSTRIES, INDUSTRIES_HUB, industryBySlug } from "./industries";
 
 describe("industries", () => {
   it("has the eight launch industries with unique slugs", () => {
@@ -30,5 +30,9 @@ describe("industries", () => {
     expect(INDUSTRIES_HUB.title.length).toBeLessThanOrEqual(60);
     expect(INDUSTRIES_HUB.description.length).toBeGreaterThanOrEqual(120);
     expect(INDUSTRIES_HUB.description.length).toBeLessThanOrEqual(155);
+  });
+  it("finds an industry by slug and nothing for an unknown slug", () => {
+    expect(industryBySlug("clinics")?.name).toBe("Clinics");
+    expect(industryBySlug("unknown")).toBeUndefined();
   });
 });

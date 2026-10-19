@@ -324,3 +324,8 @@ export const INDUSTRIES: readonly Industry[] = [
     updated: UPDATED,
   },
 ];
+
+/** The industry for a route slug, or undefined when no page exists for it. */
+export function industryBySlug(slug: string): Industry | undefined {
+  return INDUSTRIES.find((industry) => industry.slug === slug);
+}

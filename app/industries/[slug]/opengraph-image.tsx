@@ -1,7 +1,8 @@
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
+import { notFound } from "next/navigation";
 import { ImageResponse } from "next/og";
-import { INDUSTRIES } from "@/content/industries";
+import { INDUSTRIES, industryBySlug } from "@/content/industries";
 import { formatInr, PLANS } from "@/lib/pricing";
 import { siteConfig } from "@/lib/site-config";
 
@@ -19,9 +20,12 @@ const [lockup, redHatDisplay, rupeeFallback] = await Promise.all([
   readFile(join(root, "public/brand/brandbasket-lockup-horizontal-light.svg"), "base64"),
   // A static 400 instance of the variable font (the parser in next/og cannot read variable fonts).
   readFile(join(root, "assets/fonts/RedHatDisplay-Regular.ttf")),
-  // Red Hat Display has no ₹ glyph. Geist is next/og's own default font and has one, so the sign renders offline.
-  readFile(join(root, "node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf")),
+  // Red Hat Display has no ₹ glyph. Geist (next/og's own default font) has one, so the sign renders offline.
+  readFile(join(root, "assets/fonts/Geist-Regular.ttf")),
 ]);
+
+// Only the eight industries have an image; any other slug is a 404 (route handlers take the same segment config).
+export const dynamicParams = false;
 
 export function generateStaticParams(): { slug: string }[] {
   return INDUSTRIES.map(({ slug }) => ({ slug }));
@@ -29,8 +33,7 @@ export function generateStaticParams(): { slug: string }[] {
 
 export default async function Image({ params }: { readonly params: Promise<{ readonly slug: string }> }): Promise<ImageResponse> {
   const { slug } = await params;
-  const industry = INDUSTRIES.find((i) => i.slug === slug);
-  if (!industry) throw new Error(`No industry for slug "${slug}"`);
+  const industry = industryBySlug(slug) ?? notFound();
 
   return new ImageResponse(
     (

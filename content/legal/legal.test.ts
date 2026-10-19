@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./cancellation";
+import { ADDON_CHANGE, CANCELLATION_RULE, OWNERSHIP_ON_CANCEL } from "./cancellation";
 import { dataNotice } from "./notice";
 import { privacyPolicy } from "./privacy";
 import { refundPolicy } from "./refund";
@@ -21,8 +21,8 @@ describe("legal documents", () => {
   });
   it("name the Grievance Officer with a brandbasket.in address", () => {
     const text = JSON.stringify(privacyPolicy);
-    expect(text).toContain(businessDetails.grievanceOfficer.name);
-    expect(text).toContain(businessDetails.grievanceOfficer.email);
+    const { name, designation, email } = businessDetails.grievanceOfficer;
+    expect(text).toContain(`${designation}, ${name}, at ${email}`);
     expect(businessDetails.grievanceOfficer.email.endsWith("@brandbasket.in")).toBe(true);
   });
   it("list every processor in the privacy policy", () => {
@@ -53,11 +53,16 @@ describe("legal documents", () => {
     expect(text).toContain(businessDetails.courts);
   });
   it("use one cancellation rule in the terms and the refund policy", () => {
-    for (const doc of [termsOfService, refundPolicy]) {
-      const text = JSON.stringify(doc);
-      expect(text).toContain(CANCELLATION_NOTICE);
-      expect(text).toContain(OWNERSHIP_ON_CANCEL);
+    const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));
+    for (const heading of ["9. Cancellation and termination", "How to cancel", "When we don't refund"]) expect(section(heading)).toContain(CANCELLATION_RULE);
+    for (const heading of ["9. Cancellation and termination", "How to cancel"]) {
+      expect(section(heading)).toContain(OWNERSHIP_ON_CANCEL);
+      expect(section(heading)).toContain(ADDON_CHANGE);
     }
+    expect(JSON.stringify(ALL)).not.toMatch(/continue until (the notice period|that month) ends/);
+  });
+  it("give one response time for complaints and requests", () => {
+    expect(JSON.stringify(ALL)).not.toMatch(/within one month/);
   });
   it("say that nothing physical is shipped", () => {
     expect(JSON.stringify(shippingPolicy)).toMatch(/nothing physical/i);

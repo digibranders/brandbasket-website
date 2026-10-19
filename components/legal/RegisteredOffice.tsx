@@ -1,6 +1,7 @@
 import type { ReactElement } from "react";
 import { OFFICE_LABELS } from "@/content/legal/labels";
 import { businessDetails } from "@/lib/site-config";
+import { LEGAL_IDS } from "./section-id";
 
 interface RegisteredOfficeProps {
   readonly className?: string;
@@ -17,8 +18,8 @@ export function RegisteredOffice({ className = "" }: RegisteredOfficeProps): Rea
   ];
 
   return (
-    <section aria-labelledby="registered-office" className={`rounded-[23px] border border-line bg-surface p-7 ${className}`}>
-      <h2 id="registered-office" className="font-display text-[22px] font-normal leading-tight tracking-[-0.02em]">{OFFICE_LABELS.title}</h2>
+    <section aria-labelledby={LEGAL_IDS.office} className={`rounded-[23px] border border-line bg-surface p-7${className ? ` ${className}` : ""}`}>
+      <h2 id={LEGAL_IDS.office} className="font-display text-[22px] font-normal leading-tight tracking-[-0.02em]">{OFFICE_LABELS.title}</h2>
       <address className="mt-4 grid gap-0.5 text-[16.5px] not-italic leading-relaxed text-ink-2">
         <span className="text-ink">{legalName}</span>
         {address.map((line) => <span key={line}>{line}</span>)}

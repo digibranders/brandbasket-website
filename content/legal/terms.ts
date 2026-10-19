@@ -2,7 +2,7 @@
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./cancellation";
+import { ADDON_CHANGE, CANCELLATION_RULE, OWNERSHIP_ON_CANCEL } from "./cancellation";
 import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, cin, gstNumber, email, courts } = businessDetails;
@@ -31,7 +31,7 @@ export const termsOfService: LegalDocument = {
     {
       heading: "3. Acceptance and changes",
       paragraphs: [
-        "By starting a plan, you accept these terms as they apply to it. The version in effect when your plan begins governs it. If we change these terms, we tell you before the change applies to your plan.",
+        "By starting a plan, you accept these terms as they apply to it. The version in effect when your plan begins governs it until we tell you of a change; a change applies from your next billing month.",
       ],
     },
     {
@@ -72,7 +72,8 @@ export const termsOfService: LegalDocument = {
     {
       heading: "9. Cancellation and termination",
       paragraphs: [
-        `You can cancel any month. Give ${CANCELLATION_NOTICE} to stop, by writing to ${email}. ${OWNERSHIP_ON_CANCEL}`,
+        `You can cancel any month by writing to ${email}. ${CANCELLATION_RULE} ${OWNERSHIP_ON_CANCEL}`,
+        `You can add or drop ${growth.name} and ${search.name} at any time. ${ADDON_CHANGE}`,
         "Either party may end an engagement by written notice for a material breach that is not put right within 30 days of the notice. On termination, payment is due for the services provided up to that date.",
       ],
     },

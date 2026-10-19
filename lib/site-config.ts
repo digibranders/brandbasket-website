@@ -13,8 +13,10 @@ export interface PostalAddress {
   readonly country: string;
 }
 
-export interface Person {
+export interface GrievanceOfficer {
   readonly name: string;
+  /** Printed with the name wherever the officer is named (Consumer Protection (E-Commerce) Rules 2020 r.4(5)). */
+  readonly designation: string;
   readonly email: string;
 }
 
@@ -37,8 +39,8 @@ export interface BusinessDetails {
   readonly whatsappHref: string;
   readonly email: string;
   readonly foundingYear: number;
-  /** DPDP Act s.8(10) and IT Rules 2021 r.3(2): named in the privacy policy, terms and refund policy. */
-  readonly grievanceOfficer: Person;
+  /** DPDP Act s.8(10) and E-Commerce Rules r.4(5): named in the privacy policy, refund policy and data notice. */
+  readonly grievanceOfficer: GrievanceOfficer;
   /** Courts with exclusive jurisdiction in the terms. */
   readonly courts: string;
   readonly processors: readonly Processor[];
@@ -68,10 +70,10 @@ export const businessDetails: BusinessDetails = {
   email: "hello@brandbasket.in",
   foundingYear: 2021,
   // Open input D9: the name is Digibranders' Grievance Officer on its other brand; confirm the person and the mailbox before launch.
-  grievanceOfficer: { name: "Siddique Ahmed", email: "grievance@brandbasket.in" },
+  grievanceOfficer: { name: "Siddique Ahmed", designation: "Grievance Officer", email: "grievance@brandbasket.in" },
   courts: "Thane, Maharashtra",
   processors: [
-    { name: "Vercel", purpose: "hosts this website and counts visits without cookies", location: "from the United States and edge servers in India" },
+    { name: "Vercel", purpose: "hosts this website, counts visits without cookies and measures page speed", location: "from the United States and edge servers in India" },
     { name: "Brevo", purpose: "sends our team the messages you send through this website", location: "from the European Union" },
     { name: "Razorpay", purpose: "takes payments from clients", location: "in India" },
     { name: "Cloudflare", purpose: "runs our domain name system", location: "across its worldwide network" },

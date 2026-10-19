@@ -5,7 +5,7 @@ import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, cin, grievanceOfficer, processors } = businessDetails;
 const office = businessDetails.address.join(" ");
-const writeToOfficer = `our Grievance Officer, ${grievanceOfficer.name}, at ${grievanceOfficer.email}`;
+const writeToOfficer = `our ${grievanceOfficer.designation}, ${grievanceOfficer.name}, at ${grievanceOfficer.email}`;
 
 export const privacyPolicy: LegalDocument = {
   title: "Privacy policy",
@@ -45,7 +45,7 @@ export const privacyPolicy: LegalDocument = {
       heading: "Cookies",
       requiredBy: ["DPDP Rules 2025 r.3(1)(a): what we collect must be stated accurately"],
       paragraphs: [
-        "This website sets no cookies. Vercel Web Analytics counts visits without cookies and without storing anything on your device.",
+        "This website sets no cookies. Vercel Web Analytics and Speed Insights count visits and measure page speed without cookies and without storing anything on your device.",
         `The ${tradeName} client dashboard, where clients sign in, needs a cookie to keep you signed in and explains it there.`,
       ],
     },
@@ -81,7 +81,7 @@ export const privacyPolicy: LegalDocument = {
       heading: "Children",
       requiredBy: ["DPDP Act s.9"],
       paragraphs: [
-        `${tradeName} works with businesses and with people aged 18 or over. We don't knowingly collect personal data from children. If you believe a child has given us some, write to our Grievance Officer and we'll delete it.`,
+        `${tradeName} works with businesses and with people aged 18 or over. We don't knowingly collect personal data from children. If you believe a child has given us some, write to ${writeToOfficer} and we'll delete it.`,
       ],
     },
     {
@@ -103,7 +103,7 @@ export const privacyPolicy: LegalDocument = {
       heading: "This policy in other languages",
       requiredBy: ["DPDP Act s.5(3)"],
       paragraphs: [
-        "You can ask us for this policy in any language listed in the Eighth Schedule to the Constitution of India: write to our Grievance Officer and we'll send it to you.",
+        `You can ask us for this policy in any language listed in the Eighth Schedule to the Constitution of India: write to ${writeToOfficer} and we'll send it to you.`,
       ],
     },
     {

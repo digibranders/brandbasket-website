@@ -24,7 +24,7 @@ export const dataNotice: LegalDocument = {
       heading: "Who to contact",
       requiredBy: ["DPDP Rules 2025 r.7(1)(e)", "DPDP Act s.8(9)"],
       paragraphs: [
-        `Write to our Grievance Officer, ${grievanceOfficer.name}, at ${grievanceOfficer.email}. We acknowledge your message within 48 hours and resolve it within 30 days.`,
+        `Write to our ${grievanceOfficer.designation}, ${grievanceOfficer.name}, at ${grievanceOfficer.email}. We acknowledge your message within 48 hours and resolve it within 30 days.`,
       ],
       link: { href: "/privacy", label: "Read our privacy policy" },
     },

@@ -30,6 +30,12 @@ export const OFFER = {
   run: { price: MANAGED_MONTHLY, unit: "/month", label: "to keep it running, + GST" },
 } as const;
 
+/** The default share image (app/opengraph-image.tsx): the hero subhead without "for free", then the offer line. */
+export const SHARE_IMAGE = {
+  headline: "Your Business Has a Name. Give It a Place on the Internet.",
+  line: `${OFFER.build.price} ${OFFER.build.label} + ${OFFER.run.price}${OFFER.run.unit} ${OFFER.run.label}`,
+} as const;
+
 /** Locked copy: change only with the owner's yes. */
 export const HERO = {
   headline: "Before They Visit You, They Visit",

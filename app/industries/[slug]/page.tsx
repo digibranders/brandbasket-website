@@ -33,7 +33,7 @@ async function industryFor(params: IndustryPageProps["params"]): Promise<Industr
 }
 
 export async function generateMetadata({ params }: IndustryPageProps): Promise<Metadata> {
-  return pageMetadata(industryRoute(await industryFor(params)));
+  return pageMetadata(industryRoute(await industryFor(params)), { ownShareImage: true });
 }
 
 /** One template for the eight industry pages (plan 02, Task 7.2). The closing section comes from the root layout. */

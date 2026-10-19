@@ -2,12 +2,16 @@
 import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
 import { AD_BUDGET_CAP, formatInr, PLANS } from "@/lib/pricing";
-import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, STEPS, WORK } from "./home";
+import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, SHARE_IMAGE, STEPS, WORK } from "./home";
 
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
     expect(`${HERO.headline} ${HERO.headlineAccent}`).toBe("Before They Visit You, They Visit Your Website.");
     expect(HERO.subhead).toBe("Your Business Has a Name. Give It a Place on the Internet for free.");
+  });
+  it("puts the subhead without \"for free\" and the offer line on the default share image", () => {
+    expect(SHARE_IMAGE.headline).toBe("Your Business Has a Name. Give It a Place on the Internet.");
+    expect(SHARE_IMAGE.line).toBe("₹0 to build your website + ₹2,999/month to keep it running, + GST");
   });
   it("builds the offer line from the managed website price", () => {
     expect(OFFER.build.price).toBe("₹0");

@@ -18,7 +18,7 @@ export interface Person {
   readonly email: string;
 }
 
-/** A service provider that processes personal data on our behalf; the privacy policy lists each one. */
+/** A service provider that processes personal data on our behalf. The privacy policy prints "<name> <purpose>, <location>." */
 export interface Processor {
   readonly name: string;
   readonly purpose: string;
@@ -71,10 +71,10 @@ export const businessDetails: BusinessDetails = {
   grievanceOfficer: { name: "Siddique Ahmed", email: "grievance@brandbasket.in" },
   courts: "Thane, Maharashtra",
   processors: [
-    { name: "Vercel", purpose: "hosts this website and counts visits without cookies", location: "the United States, served from edge locations including India" },
-    { name: "Brevo", purpose: "sends our team the messages you send through this website", location: "the European Union" },
-    { name: "Razorpay", purpose: "takes payments from clients", location: "India" },
-    { name: "Cloudflare", purpose: "runs our domain name system", location: "locations around the world" },
+    { name: "Vercel", purpose: "hosts this website and counts visits without cookies", location: "from the United States and edge servers in India" },
+    { name: "Brevo", purpose: "sends our team the messages you send through this website", location: "from the European Union" },
+    { name: "Razorpay", purpose: "takes payments from clients", location: "in India" },
+    { name: "Cloudflare", purpose: "runs our domain name system", location: "across its worldwide network" },
   ],
 };
 

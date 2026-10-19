@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import { serverEnv } from "@/lib/env";
-import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS } from "./form-fields";
+import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS, MAX_TOKEN_AGE_MS, MIN_FILL_MS } from "./form-fields";
 
 /**
  * Layered bot screening for the contact form (vendored from fynix-digital-v2).
@@ -19,15 +19,6 @@ import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS } from "./form-fields";
  * that needs it rather than the build. Every Vercel instance reads the same value, so a token issued by one
  * instance verifies on another.
  */
-
-/**
- * Minimum time between the form loading and submitting. Faster means a bot. Kept low
- * enough that browser autofill users aren't false-flagged; the signed token and
- * decoy fields are the primary defenses.
- */
-const MIN_FILL_MS = 1_500;
-/** Token lifetime. Older means stale or replayed; re-open the form to get a fresh one. */
-const MAX_TOKEN_AGE_MS = 2 * 60 * 60 * 1_000;
 
 export { FORM_TOKEN_FIELD, HONEYPOT_FIELDS };
 

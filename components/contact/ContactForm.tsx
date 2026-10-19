@@ -4,13 +4,14 @@ import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type ReactElement } from "react";
 import { z } from "zod";
+import { ArrowSubmitButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_TOPIC_LABELS, CONTACT_TOPIC_LEGEND } from "@/content/contact";
 import { basket } from "@/lib/basket-store";
 import { CONTACT_MAX, CONTACT_TOPICS, contactSchema, parsePlanParam, parseTopicParam } from "@/lib/contact-schema";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { ADDONS, basketPlans, type PlanId } from "@/lib/pricing";
-import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS } from "@/lib/security/form-fields";
+import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS, planTokenUse } from "@/lib/security/form-fields";
 
 type Field = "name" | "phone" | "business" | "city" | "email" | "message";
 type Errors = Partial<Record<Field, string>>;
@@ -32,6 +33,22 @@ function fieldError(name: Field, value: string): string {
   return result.success ? "" : (result.error.issues[0]?.message ?? CONTACT_ERRORS.form);
 }
 
+interface FormToken {
+  readonly value: string;
+  /** Client clock when the token arrived. The server stamped it earlier, so ages measured from here never overstate. */
+  readonly receivedAt: number;
+}
+
+async function requestToken(): Promise<FormToken | null> {
+  try {
+    const res = await fetch("/api/form-token", { cache: "no-store" });
+    const parsed = tokenResponse.safeParse(res.ok ? await res.json() : null);
+    return parsed.success ? { value: parsed.data.token, receivedAt: Date.now() } : null;
+  } catch {
+    return null;
+  }
+}
+
 /** `?plan=` wins (signupHref writes it); otherwise a basket picked earlier in this visit. Empty means a general enquiry. */
 function pagePlans(): PlanId[] {
   const fromUrl = parsePlanParam(new URLSearchParams(window.location.search).get("plan"));
@@ -43,7 +60,8 @@ function pagePlans(): PlanId[] {
 export function ContactForm(): ReactElement {
   const formRef = useRef<HTMLFormElement>(null);
   const doneRef = useRef<HTMLDivElement>(null);
-  const tokenRef = useRef<string | null>(null);
+  // The in-flight or settled token request, so a submit can await it, refresh it or wait out its minimum age.
+  const tokenRef = useRef<Promise<FormToken | null> | null>(null);
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
@@ -51,22 +69,33 @@ export function ContactForm(): ReactElement {
     const topic = parseTopicParam(new URLSearchParams(window.location.search).get("topic"));
     const radio = topic ? formRef.current?.querySelector<HTMLInputElement>(`input[name="topic"][value="${topic}"]`) : null;
     if (radio) radio.checked = true;
-
-    const controller = new AbortController();
-    fetch("/api/form-token", { cache: "no-store", signal: controller.signal })
-      .then((res) => (res.ok ? res.json() : null))
-      .then((data: unknown) => {
-        const parsed = tokenResponse.safeParse(data);
-        if (parsed.success) tokenRef.current = parsed.data.token;
-      })
-      // No token means the submit shows the WhatsApp message instead of posting.
-      .catch(() => undefined);
-    return () => controller.abort();
+    tokenRef.current = requestToken();
   }, []);
 
   useEffect(() => {
     if (status.kind === "done") doneRef.current?.focus();
   }, [status.kind]);
+
+  /** A token the server will accept as human, or null only when a fresh fetch fails. */
+  async function readyToken(): Promise<string | null> {
+    let token = await (tokenRef.current ??= requestToken());
+    let plan = planTokenUse(token?.receivedAt ?? null, Date.now());
+    if (plan.kind === "refresh") {
+      tokenRef.current = requestToken();
+      token = await tokenRef.current;
+      plan = planTokenUse(token?.receivedAt ?? null, Date.now());
+    }
+    if (!token || plan.kind === "refresh") return null;
+    if (plan.kind === "wait") {
+      const { ms } = plan;
+      await new Promise<void>((resolve) => setTimeout(resolve, ms));
+    }
+    return token.value;
+  }
+
+  function focusField(form: HTMLFormElement, name: Field): void {
+    form.querySelector<HTMLElement>(`[name="${name}"]`)?.focus();
+  }
 
   function check(name: Field, value: string): void {
     const message = fieldError(name, value);
@@ -83,6 +112,7 @@ export function ContactForm(): ReactElement {
 
   async function onSubmit(event: FormEvent<HTMLFormElement>): Promise<void> {
     event.preventDefault();
+    if (status.kind === "submitting") return;
     const form = event.currentTarget;
     const data = new FormData(form);
     const value = (name: string): string => String(data.get(name) ?? "").trim();
@@ -95,21 +125,22 @@ export function ContactForm(): ReactElement {
     setErrors(next);
     const firstInvalid = CHECKED.find((name) => next[name]);
     if (firstInvalid) {
-      form.querySelector<HTMLElement>(`[name="${firstInvalid}"]`)?.focus();
-      return;
-    }
-    if (!tokenRef.current) {
-      setStatus({ kind: "error", message: CONTACT_ERRORS.send });
+      focusField(form, firstInvalid);
       return;
     }
 
     setStatus({ kind: "submitting" });
+    const token = await readyToken();
+    if (!token) {
+      setStatus({ kind: "error", message: CONTACT_ERRORS.send });
+      return;
+    }
     const body = {
       topic: value("topic"),
       ...Object.fromEntries(FIELDS.map((name) => [name, value(name)])),
       plans: pagePlans(),
       noticeVersion: LEGAL_TEXT_VERSION,
-      [FORM_TOKEN_FIELD]: tokenRef.current,
+      [FORM_TOKEN_FIELD]: token,
       ...Object.fromEntries(HONEYPOT_FIELDS.map((name) => [name, value(name)])),
     };
     try {
@@ -123,6 +154,8 @@ export function ContactForm(): ReactElement {
       if (failure?.fields) {
         const fields = failure.fields;
         setErrors(Object.fromEntries(FIELDS.flatMap((name) => (fields[name]?.[0] ? [[name, fields[name][0]]] : []))));
+        const firstServerError = FIELDS.find((name) => fields[name]?.[0]);
+        if (firstServerError) focusField(form, firstServerError);
       }
       setStatus({ kind: "error", message: failure?.error ?? CONTACT_ERRORS.send });
     } catch {
@@ -132,7 +165,7 @@ export function ContactForm(): ReactElement {
 
   if (status.kind === "done") {
     return (
-      <div ref={doneRef} tabIndex={-1} className="grid justify-items-start gap-3.5 py-2 outline-none">
+      <div ref={doneRef} role="status" tabIndex={-1} className="grid justify-items-start gap-3.5 py-2 outline-none">
         <CheckCircle aria-hidden="true" weight="fill" className="size-10 text-sage" />
         <b className="font-display text-[26px] font-medium tracking-[-0.03em]">{CONTACT_FORM_COPY.doneTitle}</b>
         <p className="max-w-[44ch] text-ink-2">{CONTACT_FORM_COPY.doneBody}</p>
@@ -169,7 +202,7 @@ export function ContactForm(): ReactElement {
 
   const submitting = status.kind === "submitting";
   return (
-    <form ref={formRef} noValidate onSubmit={onSubmit} className="relative grid gap-[22px]">
+    <form ref={formRef} method="post" noValidate onSubmit={onSubmit} className="relative grid gap-[22px]">
       <fieldset className="m-0 min-w-0 border-0 p-0">
         <legend className="mb-3 p-0 font-display text-xl font-medium tracking-[-0.02em]">{CONTACT_TOPIC_LEGEND}</legend>
         <div className="flex flex-wrap gap-2">
@@ -204,12 +237,9 @@ export function ContactForm(): ReactElement {
         <p id="ct-notice" className="max-w-[38ch] text-[13px] text-ink-2">
           {CONTACT_FORM_COPY.notice} <Link href="/privacy" className="text-ink underline">{CONTACT_FORM_COPY.privacyLink}</Link>.
         </p>
-        <button type="submit" disabled={submitting} aria-describedby="ct-notice" className="group inline-flex cursor-pointer items-center gap-3 whitespace-nowrap rounded-full bg-action py-[7px] pl-[22px] pr-[7px] text-[15px] font-semibold text-action-ink transition-transform duration-500 ease-[var(--ease)] active:scale-[0.98] disabled:cursor-wait max-[560px]:w-full max-[560px]:justify-between">
+        <ArrowSubmitButton disabled={submitting} describedBy="ct-notice" className="max-[560px]:w-full max-[560px]:justify-between">
           {submitting ? CONTACT_FORM_COPY.submitting : CONTACT_FORM_COPY.submit}
-          <span aria-hidden="true" className="grid size-9 place-items-center rounded-full bg-rattan text-ink transition-transform duration-500 ease-[var(--ease)] group-hover:-translate-y-px group-hover:translate-x-0.5 group-hover:scale-[1.06]">
-            <svg viewBox="0 0 16 16" className="size-[15px]"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
-          </span>
-        </button>
+        </ArrowSubmitButton>
       </div>
     </form>
   );

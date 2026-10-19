@@ -10,6 +10,11 @@ import { clientKey, rateLimit } from "@/lib/security/rateLimit";
 
 export const runtime = "nodejs";
 
+/** A real lead is under 3 KB; anything near this is not a person typing. */
+const MAX_BODY_BYTES = 16_384;
+
+const invalid = (): Response => Response.json({ error: CONTACT_ERRORS.invalid }, { status: 400 });
+const tooLarge = (): Response => Response.json({ error: CONTACT_ERRORS.tooLarge }, { status: 413 });
 const sendFailed = (): Response => Response.json({ error: CONTACT_ERRORS.send }, { status: 502 });
 
 /** Logs why a send failed without any personal field: Brevo error bodies can echo the reply-to address. */
@@ -22,9 +27,15 @@ export async function POST(request: Request): Promise<Response> {
   const limit = rateLimit(`contact:${clientKey(request)}`, 5, 10 * 60_000);
   if (!limit.allowed) return Response.json({ error: CONTACT_ERRORS.tooMany }, { status: 429, headers: { "Retry-After": String(limit.retryAfter) } });
 
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES) return tooLarge();
+  let raw: string;
+  try { raw = await request.text(); } catch { return invalid(); }
+  // The declared length can be missing (chunked) or wrong, so measure what actually arrived.
+  if (new TextEncoder().encode(raw).byteLength > MAX_BODY_BYTES) return tooLarge();
+
   let body: unknown;
-  try { body = await request.json(); } catch { return Response.json({ error: "Invalid request" }, { status: 400 }); }
-  if (typeof body !== "object" || body === null || Array.isArray(body)) return Response.json({ error: "Invalid request" }, { status: 400 });
+  try { body = JSON.parse(raw); } catch { return invalid(); }
+  if (typeof body !== "object" || body === null || Array.isArray(body)) return invalid();
 
   // Without mail settings nothing can be delivered, so say so before screening (which needs FORM_SECRET too).
   let env: ServerEnv;

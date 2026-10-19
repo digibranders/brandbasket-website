@@ -37,6 +37,8 @@ export const CONTACT_ERRORS = {
   email: "Please check the email address",
   basket: "Every basket starts with the website",
   form: "Please check the form",
+  invalid: "Invalid request",
+  tooLarge: "Request too large",
   tooMany: "Too many requests. Try again shortly.",
   send: "We could not send this. Please WhatsApp us instead.",
 } as const;

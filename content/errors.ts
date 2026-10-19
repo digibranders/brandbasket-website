@@ -7,7 +7,7 @@ export const NOT_FOUND_COPY = {
 } as const;
 
 export const ERROR_COPY = {
-  metaTitle: "Something went wrong | Brandbasket",
+  metaTitle: "Something went wrong",
   title: "Sorry, something went wrong.",
   body: "Please try again. If it keeps happening, WhatsApp us and we will sort it out.",
   retry: "Try again",

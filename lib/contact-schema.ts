@@ -3,7 +3,13 @@ import { z } from "zod";
 import { CONTACT_ERRORS } from "@/content/contact";
 import type { PlanId } from "@/lib/pricing";
 
-const optionalText = (max: number) => z.union([z.string().trim().max(max), z.literal("")]).optional();
+/** No control characters (CR, LF, NUL and friends): these fields reach the mail subject and the reply-to name. */
+const NO_CONTROL = /^\P{Cc}*$/u;
+
+const optionalText = (max: number, oneLine = false) => {
+  const text = z.string().trim().max(max);
+  return z.union([oneLine ? text.regex(NO_CONTROL, CONTACT_ERRORS.form) : text, z.literal("")]).optional();
+};
 
 /** The four answers to "What can we help with?" on the contact form. Labels live in content/contact.ts. */
 export const CONTACT_TOPICS = ["website", "plans", "help", "other"] as const;
@@ -16,11 +22,11 @@ export const CONTACT_MAX = { name: 80, phone: 16, email: 120, business: 120, cit
 
 export const contactSchema = z.object({
   topic: z.enum(CONTACT_TOPICS),
-  name: z.string().trim().min(2, CONTACT_ERRORS.name).max(CONTACT_MAX.name),
+  name: z.string().trim().min(2, CONTACT_ERRORS.name).max(CONTACT_MAX.name).regex(NO_CONTROL, CONTACT_ERRORS.name),
   phone: z.string().trim().regex(/^\+?[0-9][0-9 ]{9,14}$/, CONTACT_ERRORS.phone),
   email: z.union([z.email(CONTACT_ERRORS.email).max(CONTACT_MAX.email), z.literal("")]).optional(),
-  business: z.string().trim().min(2, CONTACT_ERRORS.business).max(CONTACT_MAX.business),
-  city: optionalText(CONTACT_MAX.city),
+  business: z.string().trim().min(2, CONTACT_ERRORS.business).max(CONTACT_MAX.business).regex(NO_CONTROL, CONTACT_ERRORS.business),
+  city: optionalText(CONTACT_MAX.city, true),
   // Present when the visitor arrived from a basket (?plan=); an empty list is a general enquiry.
   plans: z.array(z.enum(PLAN_IDS)).refine((p) => p.length === 0 || p.includes("website"), CONTACT_ERRORS.basket),
   message: optionalText(CONTACT_MAX.message),

@@ -12,6 +12,12 @@ describe("contactSchema", () => {
   it("requires the notice version", () => expect(contactSchema.safeParse({ ...valid, noticeVersion: "" }).success).toBe(false));
   it("accepts a general question with no basket", () => expect(contactSchema.safeParse({ ...valid, topic: "other", plans: [] }).success).toBe(true));
   it("rejects an unknown topic", () => expect(contactSchema.safeParse({ ...valid, topic: "jobs" }).success).toBe(false));
+  it("rejects control characters that could break a mail header", () => {
+    expect(contactSchema.safeParse({ ...valid, name: "Asha\r\nBcc: x@y.in" }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...valid, business: "Rao\u0007 Dental" }).success).toBe(false);
+    expect(contactSchema.safeParse({ ...valid, city: "Thane\n" + "x" }).success).toBe(false);
+  });
+  it("still allows line breaks in the message", () => expect(contactSchema.safeParse({ ...valid, message: "Hi\nCall me" }).success).toBe(true));
   it("uses the mock's wording for a bad email", () => {
     const result = contactSchema.safeParse({ ...valid, email: "asha@" });
     expect(result.success ? "" : result.error.issues[0]?.message).toBe("Please check the email address");

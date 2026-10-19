@@ -34,6 +34,26 @@ afterEach(() => {
 });
 
 describe("POST /api/contact", () => {
+  it("refuses a body larger than 16 KB by its declared length", async () => {
+    const { POST } = await load(ENV);
+    const req = new Request("http://localhost/api/contact", { method: "POST", headers: { "content-type": "application/json", "content-length": "16385" }, body: "{}" });
+    expect((await POST(req)).status).toBe(413);
+  });
+
+  it("refuses a body larger than 16 KB when no length is declared", async () => {
+    const { POST } = await load(ENV);
+    const big = new TextEncoder().encode(JSON.stringify({ ...LEAD, message: "x".repeat(20_000) }));
+    const stream = new ReadableStream<Uint8Array>({ start(controller) { controller.enqueue(big); controller.close(); } });
+    const req = new Request("http://localhost/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: stream, duplex: "half" } as RequestInit);
+    expect(req.headers.get("content-length")).toBeNull();
+    expect((await POST(req)).status).toBe(413);
+  });
+
+  it("rejects a body that is not a JSON object", async () => {
+    const { POST } = await load(ENV);
+    expect((await POST(post([1, 2]))).status).toBe(400);
+  });
+
   it("returns the WhatsApp message, not a crash, when mail is not configured", async () => {
     const { POST } = await load({});
     const res = await POST(post({ ...LEAD, formToken: "x" }));

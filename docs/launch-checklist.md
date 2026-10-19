@@ -25,6 +25,10 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Error page lines ("Sorry, something went wrong." and the retry line) and 404 link labels | Open |
 | Industries hub copy: lede "Pick your trade to see what we build, what we run every month and the basket we suggest.", title "Websites for local businesses, built free \| Brandbasket" and its meta description | Open |
 | Industry page labels: "Compare all plans" link, OG image alt "Brandbasket logo and the page headline" | Open |
+| Default share image: "Your Business Has a Name. Give It a Place on the Internet." over the offer line | Open |
+| FAQ answers that do not open with a direct answer: Home and Pricing "Do you guarantee rankings?" open with "No one honestly can." Suggested: start with "No." | Open |
+| Unselected work showcase tab names are 45% ink (2.9:1 contrast, fails WCAG AA; matches the mock). 60% would pass | Open |
+| Pricing page has no in-page link to `/industries` (footer only); add one only with owner copy | Open |
 
 ## Legal statements the owner must confirm
 

@@ -4,6 +4,7 @@ import type { ReactElement } from "react";
 import { PhoneTotalBar } from "@/components/basket/PhoneTotalBar";
 import { FactsStrip } from "@/components/home/FactsStrip";
 import { HomeHero } from "@/components/home/HomeHero";
+import { IndustriesLine } from "@/components/home/IndustriesLine";
 import { formatInr, PLANS } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -22,6 +23,7 @@ export default function HomePage(): ReactElement {
     <>
       <HomeHero />
       <FactsStrip />
+      <IndustriesLine />
       <PhoneTotalBar />
     </>
   );

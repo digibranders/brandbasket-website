@@ -1,8 +1,19 @@
 // app/page.tsx
+import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { formatInr, PLANS } from "@/lib/pricing";
+import { pageMetadata } from "@/lib/seo/metadata";
+
+const HOME_TITLE = "Free business website, run for you monthly | Brandbasket";
+const HOME_DESCRIPTION = `Get a professional website built free for your local business. We host, secure and update it for ${formatInr(PLANS.website.monthly)} a month. Add Google and local search any time.`;
+
+// pageMetadata gives the canonical and social tags; the absolute title skips the "%s | Brandbasket" template.
+export const metadata: Metadata = {
+  ...pageMetadata({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" }),
+  title: { absolute: HOME_TITLE },
+};
 
 export default function HomePage(): ReactElement {
   return (

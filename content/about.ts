@@ -1,5 +1,5 @@
 // content/about.ts
-// Copy for /about. DRAFT: waiting for the owner's approval (plan 02, Task 7.3).
+// Copy for /about. Approved by the owner on 2026-10-19 (plan 02, Task 7.3).
 // Business facts come from lib/site-config.ts, the steps from content/home.ts and the promises from the pricing
 // Good to know (content/pricing.ts, content/legal/cancellation.ts). The page closes with the shared registered office
 // card, components/legal/RegisteredOffice.tsx, so it holds no copy here.

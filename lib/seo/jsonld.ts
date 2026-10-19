@@ -226,3 +226,25 @@ export function audienceServiceJsonLd({ name, description, path, audienceType }:
     audience: { "@type": "BusinessAudience", audienceType },
   };
 }
+
+export interface AboutPageLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "AboutPage";
+  readonly name: string;
+  readonly description: string;
+  readonly url: string;
+  readonly inLanguage: "en-IN";
+  readonly about: { readonly "@id": string };
+}
+
+export function aboutPageJsonLd({ name, description }: { readonly name: string; readonly description: string }): AboutPageLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "AboutPage",
+    name,
+    description,
+    url: `${siteConfig.url}/about`,
+    inLanguage: "en-IN",
+    about: { "@id": ORGANIZATION_ID },
+  };
+}

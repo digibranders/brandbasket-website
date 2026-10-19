@@ -18,7 +18,7 @@ export function RegisteredOffice({ className = "" }: RegisteredOfficeProps): Rea
   ];
 
   return (
-    <section aria-labelledby={LEGAL_IDS.office} className={`rounded-[23px] border border-line bg-surface p-7${className ? ` ${className}` : ""}`}>
+    <section aria-labelledby={LEGAL_IDS.office} className={`rounded-[23px] border border-line bg-surface p-7 ${className}`}>
       <h2 id={LEGAL_IDS.office} className="font-display text-[22px] font-normal leading-tight tracking-[-0.02em]">{OFFICE_LABELS.title}</h2>
       <address className="mt-4 grid gap-0.5 text-[16.5px] not-italic leading-relaxed text-ink-2">
         <span className="text-ink">{legalName}</span>

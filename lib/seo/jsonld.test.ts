@@ -1,6 +1,6 @@
 // lib/seo/jsonld.test.ts
 import { describe, expect, it } from "vitest";
-import { audienceServiceJsonLd, breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd, webSiteJsonLd } from "./jsonld";
+import { aboutPageJsonLd, audienceServiceJsonLd, breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd, webSiteJsonLd } from "./jsonld";
 
 describe("organizationJsonLd", () => {
   it("names the legal entity and the brand", () => {
@@ -72,5 +72,14 @@ describe("audienceServiceJsonLd", () => {
     expect(service.audience).toEqual({ "@type": "BusinessAudience", audienceType: "Clinics" });
     expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
     expect(service.areaServed.name).toBe("India");
+  });
+});
+
+describe("aboutPageJsonLd", () => {
+  it("points at /about and is about the organization", () => {
+    const page = aboutPageJsonLd({ name: "About Brandbasket", description: "Who we are." });
+    expect(page["@type"]).toBe("AboutPage");
+    expect(page.url).toBe("https://brandbasket.in/about");
+    expect(page.about["@id"]).toBe("https://brandbasket.in/#organization");
   });
 });

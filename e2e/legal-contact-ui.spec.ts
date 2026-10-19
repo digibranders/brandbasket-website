@@ -9,6 +9,12 @@ for (const path of legalPages) {
     if (mobile) await page.getByText("On this page", { exact: true }).filter({ visible: true }).click();
     const contents = page.getByRole("navigation", { name: "On this page" }).filter({ visible: true });
     await expect(contents).toBeVisible();
+    if (!mobile) {
+      const sidebar = await contents.locator("xpath=ancestor::aside").boundingBox();
+      const title = await page.locator("#h-legal").boundingBox();
+      if (!sidebar || !title) throw new Error("The contents sidebar or document title did not render");
+      expect(Math.abs(sidebar.y - title.y)).toBeLessThan(16);
+    }
     const link = contents.getByRole("link").nth(1);
     const href = await link.getAttribute("href");
     if (!href) throw new Error("A contents link is missing its anchor");
@@ -22,7 +28,11 @@ for (const path of legalPages) {
     } else {
       await expect(link).toHaveAttribute("aria-current", "location");
       await expect(link).toHaveCSS("font-weight", "600");
-      await expect(link).not.toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+      await expect(link).toHaveCSS("background-color", "rgba(0, 0, 0, 0)");
+      await expect(link).toHaveCSS("border-left-width", "0px");
+      const sticky = await contents.locator("xpath=ancestor::aside").boundingBox();
+      if (!sticky) throw new Error("The sticky contents sidebar did not render");
+      expect(sticky.y).toBeCloseTo(112, 0);
     }
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
     const office = page.locator("section[aria-labelledby=registered-office]");

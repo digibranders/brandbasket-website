@@ -23,19 +23,18 @@ export function LegalDocument({ document, path }: LegalDocumentProps): ReactElem
   return (
     <div lang={language === "en" ? undefined : language}>
       <Section labelledBy={LEGAL_IDS.title} tight>
-        <header className="grid gap-5 border-b border-line pb-10 pt-32 lg:ml-[304px] lg:max-w-[68ch] lg:pb-12">
-          <h1 id={LEGAL_IDS.title} className="font-display text-[clamp(40px,5.2vw,72px)] font-normal leading-none tracking-[-0.05em]">{title}</h1>
-          <p className="max-w-[65ch] text-lg leading-relaxed text-ink-2">{intro}</p>
-          <p className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] font-semibold text-ink-2">
-            <span>{LEGAL_LABELS.updated} {updated}</span>
-            {version === undefined ? null : <span className="num">{LEGAL_LABELS.version} {version}</span>}
-          </p>
-        </header>
-
-        <div className="grid items-start gap-8 pt-8 lg:grid-cols-[256px_minmax(0,68ch)] lg:gap-12 lg:pt-12">
+        <div className="grid items-start gap-8 pt-32 lg:grid-cols-[256px_minmax(0,68ch)] lg:gap-x-12 lg:gap-y-12">
+          <header className="grid min-w-0 gap-5 border-b border-line pb-10 lg:col-start-2 lg:row-start-1 lg:pb-12">
+            <h1 id={LEGAL_IDS.title} className="font-display text-[clamp(40px,5.2vw,72px)] font-normal leading-none tracking-[-0.05em]">{title}</h1>
+            <p className="max-w-[65ch] text-lg leading-relaxed text-ink-2">{intro}</p>
+            <p className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] font-semibold text-ink-2">
+              <span>{LEGAL_LABELS.updated} {updated}</span>
+              {version === undefined ? null : <span className="num">{LEGAL_LABELS.version} {version}</span>}
+            </p>
+          </header>
           <LegalContents items={toc.map(({ section, id }) => ({ id, heading: section.heading }))} />
 
-          <div className="grid min-w-0 gap-12">
+          <div className="grid min-w-0 gap-12 lg:col-start-2 lg:row-start-2">
             {toc.map(({ section, id }) => (
               <section key={id} id={id} tabIndex={-1} className="scroll-mt-28 border-b border-line pb-10 focus:outline-none">
                 <h2 className="font-display text-[clamp(24px,2.4vw,30px)] font-normal leading-tight tracking-[-0.03em]">{section.heading}</h2>

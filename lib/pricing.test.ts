@@ -4,7 +4,7 @@ import { ADDONS, basketPlans, firstPayment, formatInr, GST_RATE, monthlyTotal, P
 
 describe("plans", () => {
   it("prices the three plans from the plans document", () => {
-    expect(PLANS.website.monthly).toBe(3000);
+    expect(PLANS.website.monthly).toBe(2999);
     expect(PLANS.growth.monthly).toBe(7000);
     expect(PLANS.search.monthly).toBe(25000);
   });
@@ -16,24 +16,24 @@ describe("plans", () => {
 
 describe("monthlyTotal", () => {
   it.each([
-    [{ growth: false, search: false }, 3000],
-    [{ growth: true, search: false }, 10000],
-    [{ growth: false, search: true }, 28000],
-    [{ growth: true, search: true }, 35000],
+    [{ growth: false, search: false }, 2999],
+    [{ growth: true, search: false }, 9999],
+    [{ growth: false, search: true }, 27999],
+    [{ growth: true, search: true }, 34999],
   ])("totals %o as %i", (picked, expected) => {
     expect(monthlyTotal(picked)).toBe(expected);
   });
 
   it("matches the four published packages", () => {
-    expect(PACKAGES.map((p) => monthlyTotal(p.addons))).toEqual([3000, 10000, 28000, 35000]);
+    expect(PACKAGES.map((p) => monthlyTotal(p.addons))).toEqual([2999, 9999, 27999, 34999]);
   });
 });
 
 describe("firstPayment", () => {
   it("charges one month plus 18% GST", () => {
     expect(GST_RATE).toBe(0.18);
-    expect(firstPayment(3000)).toEqual({ months: 1, base: 3000, gst: 540, total: 3540 });
-    expect(firstPayment(35000)).toEqual({ months: 1, base: 35000, gst: 6300, total: 41300 });
+    expect(firstPayment(2999)).toEqual({ months: 1, base: 2999, gst: 540, total: 3539 });
+    expect(firstPayment(34999)).toEqual({ months: 1, base: 34999, gst: 6300, total: 41299 });
   });
 });
 

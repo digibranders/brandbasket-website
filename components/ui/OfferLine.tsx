@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { formatInr, PLANS } from "@/lib/pricing";
 
-/** The approved offer: ₹0 to build + ₹3,000/month to keep it running, + GST. Copy is locked. */
+/** The approved offer: ₹0 to build + ₹2,999/month to keep it running, + GST. Copy is locked. */
 export function OfferLine(): ReactElement {
   const monthly = formatInr(PLANS.website.monthly);
   return (

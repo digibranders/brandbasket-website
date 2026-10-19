@@ -16,7 +16,7 @@ describe("planOffersJsonLd", () => {
   it("publishes each plan's monthly price from the pricing module", () => {
     const service = planOffersJsonLd();
     const prices = service.hasOfferCatalog.itemListElement.map((offer) => offer.priceSpecification.price);
-    expect(prices).toEqual([3000, 7000, 25000]);
+    expect(prices).toEqual([2999, 7000, 25000]);
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(false);
   });

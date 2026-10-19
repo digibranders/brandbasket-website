@@ -15,7 +15,7 @@ export interface Plan {
 }
 
 export const PLANS: Readonly<Record<PlanId, Plan>> = {
-  website: { id: "website", name: "Managed Website", short: "Website", monthly: 3000 },
+  website: { id: "website", name: "Managed Website", short: "Website", monthly: 2999 },
   growth: { id: "growth", name: "Digital Growth", short: "Growth", monthly: 7000, requires: "website" },
   search: { id: "search", name: "Local SEO + AEO", short: "Search", monthly: 25000, requires: "website" },
 };

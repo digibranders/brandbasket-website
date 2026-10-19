@@ -1,9 +1,10 @@
 // content/industries.ts
-// Copy for /industries and the eight /industries/[slug] pages. DRAFT: waiting for the owner's approval (plan 02, Task 7.1).
+// Copy for /industries and the eight /industries/[slug] pages. INDUSTRIES approved by the owner on 2026-10-19 (plan 02, Task 7.1).
 // Every claim comes from the plan details in content/pricing.ts and the free build in content/home.ts. Every price is
 // built from lib/pricing.ts. Organic social posting is not claimed anywhere: Digital Growth covers it only if the owner
 // says so (open input D4).
 import { AD_BUDGET_CAP, type AddonPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
+import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
 import type { FaqItem } from "./types";
 
 export interface Industry {
@@ -58,6 +59,23 @@ const FAQ_NO_SHOP: FaqItem = {
   q: "Can people buy or order online through the website?",
   a: "No. E-commerce and online ordering are not part of the plans. Your site shows what you offer and lets people call or send an enquiry.",
 };
+
+/** The /industries hub. New copy for the owner's review (Task 7.2); the h1 is the plan's. Title and description: lib/seo/routes.ts. */
+export const INDUSTRIES_HUB = {
+  h1: "Websites for every local business",
+  lede: "Pick your trade to see what we build, what we run every month and the basket we suggest.",
+} as const;
+
+/** Section headings and link labels on every industry page. Headings are the plan's; the FAQ heading and contact label reuse approved copy. */
+export const INDUSTRY_PAGE = {
+  problemsHeading: "What changes with a website",
+  getHeading: "What you get",
+  basketHeading: "The basket we suggest",
+  priceNote: PLANS_SECTION.run.priceNote,
+  compareLabel: "Compare all plans",
+  faqHeading: HOME_FAQ_HEADING,
+  contactLabel: "Contact us",
+} as const;
 
 export const INDUSTRIES: readonly Industry[] = [
   {
@@ -304,3 +322,8 @@ export const INDUSTRIES: readonly Industry[] = [
     updated: UPDATED,
   },
 ];
+
+/** The industry for a route slug, or undefined when no page exists for it. */
+export function industryBySlug(slug: string): Industry | undefined {
+  return INDUSTRIES.find((industry) => industry.slug === slug);
+}

@@ -17,7 +17,6 @@ export function Footer(): ReactElement {
           <ul className="grid gap-2 text-[14.5px]">
             <li><a href={`mailto:${businessDetails.email}`}>{businessDetails.email}</a></li>
             <li><a href={`tel:${businessDetails.phoneHref}`}>{businessDetails.phone}</a></li>
-            <li>{businessDetails.hours}</li>
           </ul>
         </div>
       </div>

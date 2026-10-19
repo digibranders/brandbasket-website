@@ -53,7 +53,7 @@ export const FACTS: readonly Fact[] = [
 ];
 
 export interface Industry {
-  /** Future route segment: /industries/[slug]. No href is stored until those pages exist. */
+  /** Route segment: each item links to /industries/[slug]. */
   readonly slug: string;
   readonly label: string;
   readonly icon: HomeIconKey;

@@ -1,8 +1,8 @@
-import { ArrowRight, Check } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
+import { Check } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { AddonPanel } from "@/components/basket/AddonPanel";
 import { Reveal } from "@/components/motion/Reveal";
+import { ArrowLink } from "@/components/ui/ArrowLink";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { type PlanSide, PLANS_SECTION } from "@/content/home";
@@ -30,10 +30,7 @@ function EquationSide({ side, free = false, twoColumns = false }: PlanSideProps)
           </li>
         ))}
       </ul>
-      <Link href={PLANS_SECTION.exploreHref} className="group inline-flex items-center gap-1.5 justify-self-start py-1 text-[15px] font-semibold text-ink">
-        <span className="underline decoration-rattan decoration-2 underline-offset-[6px]">{side.explore}</span>
-        <ArrowRight aria-hidden="true" className="size-[18px] text-rattan-text transition-transform duration-300 ease-[var(--ease)] group-hover:translate-x-[3px]" />
-      </Link>
+      <ArrowLink href={PLANS_SECTION.exploreHref}>{side.explore}</ArrowLink>
     </div>
   );
 }

@@ -2,6 +2,7 @@ import type { ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
+import { StepsList } from "@/components/ui/StepsList";
 import { REPORT, type ReportTone, STEPS } from "@/content/home";
 
 const TONE: Readonly<Record<ReportTone, string>> = {
@@ -43,14 +44,7 @@ export function ReportSection(): ReactElement {
       <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 min-[1000px]:grid-cols-[0.8fr_1.2fr] min-[1000px]:gap-16">
         <Reveal>
           <SectionHead id="h-report" className="mb-7" title={<>{REPORT.heading} <em className="pivot pr-1">{REPORT.headingAccent}</em></>} />
-          <ol className="grid">
-            {STEPS.map((step) => (
-              <li key={step.when} className="grid grid-cols-[120px_1fr] items-baseline gap-3.5 border-t border-line py-4 last:border-b">
-                <span className="font-mono text-[13px] text-rattan-ink">{step.when}</span>
-                <span className="font-display text-xl tracking-[-0.02em]">{step.what}</span>
-              </li>
-            ))}
-          </ol>
+          <StepsList steps={STEPS} />
         </Reveal>
         <Reveal className="min-w-0">
           <div role="group" aria-label={REPORT.ariaLabel} className="grid min-w-0 gap-[18px] rounded-[26px] border border-line bg-surface p-6 shadow-[var(--shadow)]">

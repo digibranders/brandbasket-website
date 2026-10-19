@@ -4,12 +4,6 @@ import { ABOUT } from "./about";
 import { STEPS } from "./home";
 
 describe("about content", () => {
-  it("fits the SEO limits", () => {
-    expect(ABOUT.title).toBe("About Brandbasket, a brand of Digibranders");
-    expect(ABOUT.title.length).toBeLessThanOrEqual(60);
-    expect(ABOUT.description.length).toBeGreaterThanOrEqual(120);
-    expect(ABOUT.description.length).toBeLessThanOrEqual(155);
-  });
   it("reuses the homepage steps", () => {
     expect(ABOUT.how.steps).toBe(STEPS);
   });

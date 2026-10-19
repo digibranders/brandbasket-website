@@ -20,6 +20,10 @@ describe("pageMetadata", () => {
     vi.unstubAllEnvs();
   });
 
+  it("sets the registry title as an absolute title", () => {
+    expect(pageMetadata(base).title).toEqual({ absolute: "t" });
+  });
+
   it("builds the canonical and open graph url from the path", () => {
     const meta = pageMetadata({ ...base, path: "/pricing" });
     expect(meta.alternates?.canonical).toBe("/pricing");

@@ -69,7 +69,7 @@ export const businessDetails: BusinessDetails = {
   phone: "+91 789 789 6607",
   phoneHref: "+917897896607",
   whatsappHref: "https://wa.me/917897896607",
-  email: "hello@brandbasket.in",
+  email: "support@brandbasket.in",
   // Open input D11: confirm the hours with the phone and WhatsApp number.
   hours: "Mon to Sat, 10 am to 7 pm IST",
   foundingYear: 2021,

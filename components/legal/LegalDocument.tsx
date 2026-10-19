@@ -5,6 +5,7 @@ import { Section } from "@/components/ui/Section";
 import { LEGAL_LABELS } from "@/content/legal/labels";
 import type { LegalDocument as LegalDocumentContent } from "@/content/legal/types";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
+import { LegalContents } from "./LegalContents";
 import { RegisteredOffice } from "./RegisteredOffice";
 import { LEGAL_IDS, sectionId } from "./section-id";
 
@@ -22,34 +23,23 @@ export function LegalDocument({ document, path }: LegalDocumentProps): ReactElem
   return (
     <div lang={language === "en" ? undefined : language}>
       <Section labelledBy={LEGAL_IDS.title} tight>
-        <header className="grid max-w-[68ch] gap-5 pb-12 pt-32 lg:pb-16">
+        <header className="grid gap-5 border-b border-line pb-10 pt-32 lg:ml-[304px] lg:max-w-[68ch] lg:pb-12">
           <h1 id={LEGAL_IDS.title} className="font-display text-[clamp(40px,5.2vw,72px)] font-normal leading-none tracking-[-0.05em]">{title}</h1>
-          <p className="text-lg text-ink-2">{intro}</p>
+          <p className="max-w-[65ch] text-lg leading-relaxed text-ink-2">{intro}</p>
           <p className="flex flex-wrap gap-x-4 gap-y-1 text-[13px] font-semibold text-ink-2">
             <span>{LEGAL_LABELS.updated} {updated}</span>
             {version === undefined ? null : <span className="num">{LEGAL_LABELS.version} {version}</span>}
           </p>
         </header>
 
-        <div className="grid gap-12 lg:grid-cols-[220px_minmax(0,68ch)] lg:gap-16">
-          <nav aria-labelledby={LEGAL_IDS.contents} className="hidden lg:block">
-            <div className="sticky top-28 grid max-h-[calc(100dvh-8rem)] gap-3 overflow-y-auto">
-              <h2 id={LEGAL_IDS.contents} className="text-[13px] font-semibold text-ink-2">{LEGAL_LABELS.contents}</h2>
-              <ol className="grid gap-2 text-[14.5px] leading-snug">
-                {toc.map(({ section, id }) => (
-                  <li key={id}>
-                    <a href={`#${id}`} className="text-ink-2 transition-colors duration-200 hover:text-ink">{section.heading}</a>
-                  </li>
-                ))}
-              </ol>
-            </div>
-          </nav>
+        <div className="grid items-start gap-8 pt-8 lg:grid-cols-[256px_minmax(0,68ch)] lg:gap-12 lg:pt-12">
+          <LegalContents items={toc.map(({ section, id }) => ({ id, heading: section.heading }))} />
 
           <div className="grid min-w-0 gap-12">
             {toc.map(({ section, id }) => (
-              <section key={id} id={id} className="scroll-mt-28">
+              <section key={id} id={id} tabIndex={-1} className="scroll-mt-28 border-b border-line pb-10 focus:outline-none">
                 <h2 className="font-display text-[clamp(24px,2.4vw,30px)] font-normal leading-tight tracking-[-0.03em]">{section.heading}</h2>
-                <div className="mt-4 grid gap-4 text-[16.5px] leading-[1.65] text-ink-2">
+                <div className="mt-4 grid gap-4 text-[16.5px] leading-[1.8] text-ink-2">
                   {section.paragraphs.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
                 </div>
                 {section.link === undefined ? null : (

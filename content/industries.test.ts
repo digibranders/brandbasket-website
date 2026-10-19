@@ -26,6 +26,9 @@ describe("industries", () => {
     for (const { q } of i.faq) expect(q.endsWith("?")).toBe(true);
     expect(JSON.stringify(i)).not.toMatch(/[\u2013\u2014]/);
   });
+  it("links all eight industry pages from the homepage industries line", () => {
+    expect(INDUSTRIES_LINE.industries.map((i) => i.slug).sort()).toEqual(INDUSTRIES.map((i) => i.slug).sort());
+  });
   it("finds an industry by slug and nothing for an unknown slug", () => {
     expect(industryBySlug("clinics")?.name).toBe("Clinics");
     expect(industryBySlug("unknown")).toBeUndefined();

@@ -17,9 +17,16 @@ describe("securityHeaders", () => {
     expect(byKey(true)["Content-Security-Policy"]).toContain("unsafe-eval");
   });
 
-  it("allows Vercel analytics and nothing else third party", () => {
+  it("serves Vercel analytics same origin in production and allows no third party", () => {
     const csp = byKey(false)["Content-Security-Policy"];
-    expect(csp).toContain("connect-src 'self' https://vitals.vercel-insights.com");
+    // On Vercel, @vercel/analytics and @vercel/speed-insights load from and post to /_vercel/* on this origin.
+    expect(csp).toContain("script-src 'self' 'unsafe-inline';");
+    expect(csp).toContain("connect-src 'self';");
+    expect(csp).not.toContain("https://");
     expect(csp).toContain("frame-ancestors 'none'");
+  });
+
+  it("allows the analytics debug scripts in development only", () => {
+    expect(byKey(true)["Content-Security-Policy"]).toContain("https://va.vercel-scripts.com");
   });
 });

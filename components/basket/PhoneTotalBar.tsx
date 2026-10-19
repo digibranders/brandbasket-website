@@ -45,7 +45,7 @@ export function PhoneTotalBar(): ReactElement {
         <span className="truncate text-xs text-ink-2">{BASKET_COPY.phoneBarCaption}</span>
       </div>
       <div className="flex-none">
-        <BasketCta size="sm" />
+        <BasketCta location="phone_bar" size="sm" />
       </div>
     </div>
   );

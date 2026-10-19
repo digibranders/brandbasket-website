@@ -19,7 +19,7 @@ export function ErrorView({ retry, underNav }: ErrorViewProps): ReactElement {
         <button type="button" onClick={() => retry()} className="cursor-pointer rounded-full bg-action px-[22px] py-3 text-[15px] font-semibold text-action-ink transition-transform duration-500 ease-[var(--ease)] active:scale-[0.98]">
           {ERROR_COPY.retry}
         </button>
-        <WhatsAppButton />
+        <WhatsAppButton location="error" />
       </div>
     </section>
   );

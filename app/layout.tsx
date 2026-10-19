@@ -1,7 +1,10 @@
 // app/layout.tsx
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import type { ReactElement, ReactNode } from "react";
 import { JsonLd } from "@/components/JsonLd";
+import { ConversionTracking } from "@/components/analytics/ConversionTracking";
 import { Closing } from "@/components/shell/Closing";
 import { ClosingGate } from "@/components/shell/ClosingGate";
 import { Footer } from "@/components/shell/Footer";
@@ -32,6 +35,9 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
         </main>
         <Footer />
         <JsonLd data={organizationJsonLd()} />
+        <ConversionTracking />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

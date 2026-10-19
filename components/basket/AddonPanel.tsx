@@ -71,7 +71,7 @@ export function AddonPanel(): ReactElement {
         </div>
         <div className="flex flex-wrap items-center gap-3">
           <Link href="/pricing#compare" className="px-0.5 py-1.5 text-[15px] font-semibold text-ink underline decoration-rattan decoration-2 underline-offset-[5px]">{BASKET_COPY.compare}</Link>
-          <BasketCta />
+          <BasketCta location="plans" />
         </div>
       </div>
     </div>

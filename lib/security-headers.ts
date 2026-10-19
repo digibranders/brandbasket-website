@@ -5,16 +5,18 @@ export interface Header {
 
 /**
  * One place for every response header. 'unsafe-inline' for scripts stays because Next.js injects inline bootstrap
- * scripts and JSON-LD; move to nonces only if a third-party script is ever added.
+ * scripts and JSON-LD; move to nonces only if a third-party script is ever added. Vercel Web Analytics and Speed
+ * Insights load from and post to /_vercel/* on this origin in production; only their development debug scripts come
+ * from va.vercel-scripts.com.
  */
 export function securityHeaders({ dev }: { readonly dev: boolean }): Header[] {
   const csp = [
     "default-src 'self'",
-    `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval'" : ""} https://va.vercel-scripts.com`,
+    `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     "img-src 'self' data: blob:",
     "font-src 'self'",
-    "connect-src 'self' https://vitals.vercel-insights.com",
+    "connect-src 'self'",
     "frame-ancestors 'none'",
     "form-action 'self'",
     "base-uri 'self'",

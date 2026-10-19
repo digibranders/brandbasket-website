@@ -6,11 +6,12 @@ import { ArrowButton } from "../ui/ArrowButton";
 import { useBasket } from "./useBasket";
 
 interface BasketCtaProps {
+  readonly location: string;
   readonly size?: "md" | "sm";
   readonly tone?: "action" | "inverse";
 }
 
 /** The main button inside basket-aware islands: the picked plans travel with the click. */
-export function BasketCta({ size = "md", tone = "action" }: BasketCtaProps): ReactElement {
-  return <ArrowButton href={signupHref(useBasket())} size={size} tone={tone}>{PRIMARY_CTA.label}</ArrowButton>;
+export function BasketCta({ location, size = "md", tone = "action" }: BasketCtaProps): ReactElement {
+  return <ArrowButton href={signupHref(useBasket())} location={location} size={size} tone={tone}>{PRIMARY_CTA.label}</ArrowButton>;
 }

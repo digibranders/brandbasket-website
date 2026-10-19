@@ -3,6 +3,7 @@ import type { Icon } from "@phosphor-icons/react";
 import { ArrowRight, EnvelopeSimple, Phone, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { CONTACT_PAGE } from "@/content/contact";
+import { trackAttrs } from "@/lib/analytics";
 import { businessDetails } from "@/lib/site-config";
 
 interface Channel {
@@ -31,7 +32,7 @@ export function ContactChannels(): ReactElement {
           <li key={label} className="[&:last-child>a]:border-b">
             <a
               href={href}
-              {...(whatsapp ? { target: "_blank", rel: "noopener" } : {})}
+              {...(whatsapp ? { target: "_blank", rel: "noopener", ...trackAttrs("whatsapp_click", "contact") } : {})}
               className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3.5 border-t border-line py-4"
             >
               <span aria-hidden="true" className={`grid size-[42px] place-items-center rounded-[13px] bg-sunken ${whatsapp ? "text-[var(--whatsapp)]" : "text-ink"}`}>

@@ -1,6 +1,7 @@
 // components/ui/WhatsAppButton.tsx
 import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
+import { trackAttrs } from "@/lib/analytics";
 import { businessDetails } from "@/lib/site-config";
 
 type Tone = "default" | "inverse";
@@ -12,13 +13,15 @@ const TONES: Readonly<Record<Tone, string>> = {
 };
 
 interface WhatsAppButtonProps {
+  /** Where the button sits, reported with its whatsapp_click event. */
+  readonly location: string;
   readonly label?: string;
   readonly tone?: Tone;
 }
 
-export function WhatsAppButton({ label = "Chat on WhatsApp", tone = "default" }: WhatsAppButtonProps): ReactElement {
+export function WhatsAppButton({ location, label = "Chat on WhatsApp", tone = "default" }: WhatsAppButtonProps): ReactElement {
   return (
-    <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" className={`inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border py-3 pl-3.5 pr-5 text-[15px] font-semibold ${TONES[tone]}`}>
+    <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" {...trackAttrs("whatsapp_click", location)} className={`inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border py-3 pl-3.5 pr-5 text-[15px] font-semibold ${TONES[tone]}`}>
       <WhatsappLogo aria-hidden="true" weight="fill" className="size-5 text-[var(--whatsapp)]" />
       {label}
     </a>

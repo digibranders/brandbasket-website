@@ -1,11 +1,13 @@
 "use client";
 // components/contact/ContactForm.tsx
 import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { track } from "@vercel/analytics";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type ReactElement } from "react";
 import { z } from "zod";
 import { ArrowSubmitButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { submitEvent } from "@/lib/analytics";
 import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_TOPIC_LABELS, CONTACT_TOPIC_LEGEND } from "@/content/contact";
 import { basket } from "@/lib/basket-store";
 import { CONTACT_MAX, CONTACT_TOPICS, contactSchema, parsePlanParam, parseTopicParam } from "@/lib/contact-schema";
@@ -135,10 +137,11 @@ export function ContactForm(): ReactElement {
       setStatus({ kind: "error", message: CONTACT_ERRORS.send });
       return;
     }
+    const plans = pagePlans();
     const body = {
       topic: value("topic"),
       ...Object.fromEntries(FIELDS.map((name) => [name, value(name)])),
-      plans: pagePlans(),
+      plans,
       noticeVersion: LEGAL_TEXT_VERSION,
       [FORM_TOKEN_FIELD]: token,
       ...Object.fromEntries(HONEYPOT_FIELDS.map((name) => [name, value(name)])),
@@ -147,6 +150,8 @@ export function ContactForm(): ReactElement {
       const res = await fetch("/api/contact", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
       const result = contactResponse.safeParse(await res.json().catch(() => null));
       if (res.ok && result.success && "ok" in result.data) {
+        const sent = submitEvent(plans);
+        track(sent.name, sent.properties);
         setStatus({ kind: "done" });
         return;
       }
@@ -169,7 +174,7 @@ export function ContactForm(): ReactElement {
         <CheckCircle aria-hidden="true" weight="fill" className="size-10 text-sage" />
         <b className="font-display text-[26px] font-medium tracking-[-0.03em]">{CONTACT_FORM_COPY.doneTitle}</b>
         <p className="max-w-[44ch] text-ink-2">{CONTACT_FORM_COPY.doneBody}</p>
-        <WhatsAppButton />
+        <WhatsAppButton location="contact_done" />
       </div>
     );
   }

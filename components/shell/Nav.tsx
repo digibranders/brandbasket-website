@@ -4,6 +4,7 @@ import Link from "next/link";
 import type { ReactElement } from "react";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { PRIMARY_CTA, PRIMARY_NAV } from "@/content/navigation";
+import { trackAttrs } from "@/lib/analytics";
 import { businessDetails } from "@/lib/site-config";
 import { MobileMenu } from "./MobileMenu";
 import { Logo } from "./Logo";
@@ -22,10 +23,10 @@ export function Nav(): ReactElement {
             ))}
           </ul>
           <div className="ml-auto flex items-center gap-1.5 min-[1000px]:ml-0">
-            <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" aria-label="Chat on WhatsApp" className="grid size-10 place-items-center rounded-full border border-[var(--line-2)] bg-sunken text-[var(--whatsapp)]">
+            <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" aria-label="Chat on WhatsApp" {...trackAttrs("whatsapp_click", "nav")} className="grid size-10 place-items-center rounded-full border border-[var(--line-2)] bg-sunken text-[var(--whatsapp)]">
               <WhatsappLogo aria-hidden="true" weight="fill" className="size-5" />
             </a>
-            <span className="hidden sm:inline-flex"><ArrowButton href={PRIMARY_CTA.href} size="sm">{PRIMARY_CTA.label}</ArrowButton></span>
+            <span className="hidden sm:inline-flex"><ArrowButton href={PRIMARY_CTA.href} location="nav" size="sm">{PRIMARY_CTA.label}</ArrowButton></span>
             <MobileMenu />
           </div>
         </nav>

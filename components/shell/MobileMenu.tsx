@@ -5,6 +5,7 @@ import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type ReactElement, useEffect, useId, useRef, useState } from "react";
 import { PRIMARY_CTA, PRIMARY_NAV } from "@/content/navigation";
+import { trackAttrs } from "@/lib/analytics";
 
 export function MobileMenu(): ReactElement {
   const [open, setOpen] = useState(false);
@@ -31,7 +32,7 @@ export function MobileMenu(): ReactElement {
           {PRIMARY_NAV.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{link.label}</Link>
           ))}
-          <Link href={PRIMARY_CTA.href} onClick={() => setOpen(false)} className="m-1.5 rounded-full bg-action px-5 py-3 text-center font-semibold text-action-ink">{PRIMARY_CTA.label}</Link>
+          <Link href={PRIMARY_CTA.href} onClick={() => setOpen(false)} {...trackAttrs("cta_click", "menu")} className="m-1.5 rounded-full bg-action px-5 py-3 text-center font-semibold text-action-ink">{PRIMARY_CTA.label}</Link>
         </div>
       )}
     </>

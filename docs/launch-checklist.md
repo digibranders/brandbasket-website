@@ -23,8 +23,8 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Terms: "Add-ons chosen at sign-up are 5% off for as long as they run; add-ons added later are charged at the listed price." | Open |
 | Contact page meta description | Open |
 | Error page lines ("Sorry, something went wrong." and the retry line) and 404 link labels | Open |
-| Industries copy (Task 7.1) | Not started: pages deferred |
-| About copy (Task 7.3) | Not started: page deferred |
+| Industries hub copy: lede "Pick your trade to see what we build, what we run every month and the basket we suggest.", title "Websites for local businesses, built free \| Brandbasket" and its meta description | Open |
+| Industry page labels: "Compare all plans" link, OG image alt "Brandbasket logo and the page headline" | Open |
 
 ## Legal statements the owner must confirm
 
@@ -50,9 +50,8 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 ## Pages and links held back
 
-- About (`/about`), the Industries hub (`/industries`) and the eight industry pages are not built yet.
-- Held out until they exist: the footer "About us" link (in the mock) and the plan's footer "Industries" link. The homepage industries line shows the eight industries without links.
 - Nav "Industries" points to the homepage section `/#industries`.
+- The pricing page copy has no natural place for an `/industries` link (plan 10.3); it reaches the hub through the footer only. Add an in-page link only with owner-approved copy.
 
 ## Deferred engineering
 
@@ -60,6 +59,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 - Phase 10: route registry, sitemap entries for every page, OG images, llms.txt route list, internal linking and AEO pass.
 - First-load JavaScript on `/` is about 192 KB gzipped against the 120 KB budget. Investigate before launch.
 - Phase 11 launch steps (Brevo sender, Vercel production env, domain, Search Console, Razorpay website approval).
+- Turning indexing on is a launch step: set SITE_INDEXING=on in Vercel production only after the owner approves, then submit the sitemap in Search Console.
 
 ## Owner approvals received
 
@@ -69,3 +69,5 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | GST shown to the paisa to match checkout | 2026-10-19 |
 | 5% off add-ons chosen at sign-up; no Premium discount | 2026-10-19 |
 | Legal review happens on the preview, not before building | 2026-10-19 |
+| Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`) | 2026-10-19 |
+| About copy (`content/about.ts`) | 2026-10-19 |

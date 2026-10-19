@@ -5,6 +5,7 @@ import {
   basketPlans,
   firstPayment,
   formatInr,
+  GST_LABEL,
   GST_RATE,
   monthlyTotal,
   PACKAGES,
@@ -71,6 +72,10 @@ describe("sign-up add-on discount", () => {
 describe("firstPayment", () => {
   it("charges one month plus 18% GST", () => {
     expect(GST_RATE).toBe(0.18);
+  });
+
+  it("prints the GST rate as 18% in copy", () => {
+    expect(GST_LABEL).toBe("18%");
   });
 
   it.each([

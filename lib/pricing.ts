@@ -22,6 +22,8 @@ export const PLANS: Readonly<Record<PlanId, Plan>> = {
 
 export const ADDONS: readonly AddonId[] = ["growth", "search"];
 export const GST_RATE = 0.18;
+/** GST as printed in copy, for example "18%". */
+export const GST_LABEL = `${Math.round(GST_RATE * 100)}%`;
 /** Add-ons chosen together with the website at sign-up are this much off for as long as they run (owner decision, 2026-10-19). */
 export const SIGNUP_ADDON_DISCOUNT = 0.05;
 /** The discount as printed in copy, for example "5%". */

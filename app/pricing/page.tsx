@@ -8,12 +8,12 @@ import { GoodToKnow } from "@/components/pricing/GoodToKnow";
 import { PlanDetails } from "@/components/pricing/PlanDetails";
 import { PricingFaq } from "@/components/pricing/PricingFaq";
 import { PricingHero } from "@/components/pricing/PricingHero";
-import { formatInr, GST_RATE, PLANS } from "@/lib/pricing";
+import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
 import { breadcrumbJsonLd, planOffersJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 const PRICING_TITLE = `Pricing: free website, plans from ${formatInr(PLANS.website.monthly)} a month`;
-const PRICING_DESCRIPTION = `Your website is built free. Managed Website ${formatInr(PLANS.website.monthly)} a month, Digital Growth +${formatInr(PLANS.growth.monthly)}, Local SEO and AEO +${formatInr(PLANS.search.monthly)}. Prices before ${Math.round(GST_RATE * 100)}% GST, billed monthly.`;
+const PRICING_DESCRIPTION = `Your website is built free. Managed Website ${formatInr(PLANS.website.monthly)} a month, Digital Growth +${formatInr(PLANS.growth.monthly)}, Local SEO and AEO +${formatInr(PLANS.search.monthly)}. Prices before ${GST_LABEL} GST, billed monthly.`;
 
 // pageMetadata gives the canonical and social tags; the absolute title skips the "%s | Brandbasket" template.
 export const metadata: Metadata = {

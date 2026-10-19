@@ -2,13 +2,12 @@
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, monthlyTotal, PACKAGES, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL, type Package, type PlanId } from "@/lib/pricing";
+import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PACKAGES, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL, type Package, type PlanId } from "@/lib/pricing";
 import { ADDON_CHANGE, CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
 
-const GST_PERCENT = `${Math.round(GST_RATE * 100)}%`;
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 const AD_CAP = formatInr(AD_BUDGET_CAP);
 const HOURLY = formatInr(EXTRA_HOURLY_RATE);
@@ -262,7 +261,7 @@ export const GOOD_TO_KNOW: readonly GoodToKnowItem[] = [
   {
     icon: "CalendarCheck",
     title: "Billed monthly, plus GST",
-    body: `Pay one month at a time, plus ${GST_PERCENT} GST. Your invoice shows both.`,
+    body: `Pay one month at a time, plus ${GST_LABEL} GST. Your invoice shows both.`,
   },
   {
     icon: "SignOut",

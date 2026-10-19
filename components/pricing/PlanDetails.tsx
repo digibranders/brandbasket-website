@@ -50,11 +50,11 @@ export function PlanDetails(): ReactElement {
                   <span className="text-sm text-ink-2">{plan.summary}</span>
                 </span>
                 <span className="inline-flex items-center gap-1 text-[13px] font-semibold text-rattan-ink">
-                  <span className="max-[640px]:sr-only">{PLAN_DETAILS_INTRO.toggle}</span>
+                  <span className="max-[640.98px]:sr-only">{PLAN_DETAILS_INTRO.toggle}</span>
                   <CaretDown aria-hidden="true" className="size-5 transition-transform duration-[400ms] ease-[var(--ease)] group-open/plan:rotate-180" />
                 </span>
               </summary>
-              <div className="grid gap-6 pb-7 pl-[58px] max-[640px]:pl-0 min-[900px]:grid-cols-[1fr_1fr_0.9fr]">
+              <div className="grid gap-6 pb-7 pl-[58px] max-[640.98px]:pl-0 min-[900px]:grid-cols-[1fr_1fr_0.9fr]">
                 {plan.columns.map((column) => <Column key={column.heading} column={column} />)}
               </div>
             </details>

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { ADDON_CHANGE, CANCELLATION_RULE, OWNERSHIP_ON_CANCEL } from "./cancellation";
+import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { dataNotice } from "./notice";
 import { privacyPolicy } from "./privacy";
 import { refundPolicy } from "./refund";
@@ -56,14 +56,21 @@ describe("legal documents", () => {
     const fees = JSON.stringify(termsOfService.sections.find((s) => s.heading === "5. Fees and payment"));
     expect(fees).toContain("Add-ons chosen at sign-up are 5% off for as long as they run; add-ons added later are charged at the listed price.");
   });
-  it("use one cancellation rule in the terms and the refund policy", () => {
+  it("use one cancellation, payment and ownership policy in the terms and the refund policy", () => {
     const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));
     for (const heading of ["9. Cancellation and termination", "How to cancel", "When we don't refund"]) expect(section(heading)).toContain(CANCELLATION_RULE);
     for (const heading of ["9. Cancellation and termination", "How to cancel"]) {
-      expect(section(heading)).toContain(OWNERSHIP_ON_CANCEL);
+      expect(section(heading)).toContain("Your domain stays yours.");
+      expect(section(heading)).toContain(HOSTED_SERVICE);
       expect(section(heading)).toContain(ADDON_CHANGE);
     }
-    expect(JSON.stringify(ALL)).not.toMatch(/continue until (the notice period|that month) ends/);
+    expect(section("6. Ownership")).toContain(HOSTED_SERVICE);
+    for (const heading of ["5. Fees and payment", "If a payment fails"]) expect(section(heading)).toContain(PAYMENT_FAILURE);
+    for (const heading of ["5. Fees and payment", "How billing works"]) expect(section(heading)).toContain(RENEWAL_REMINDER);
+  });
+  it("drop the placeholder notice period and the claim that the website and content stay the customer's", () => {
+    const text = JSON.stringify(ALL);
+    expect(text).not.toMatch(/days' notice|website, domain and content stay yours|nothing is taken back|may pause your services/);
   });
   it("give one response time for complaints and requests", () => {
     expect(JSON.stringify(ALL)).not.toMatch(/within one month/);

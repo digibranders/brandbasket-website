@@ -2,7 +2,8 @@
 // Copy for the homepage, word for word from the approved mock (docs/design/mock.html, #view-home).
 // Prices and rates are built from lib/pricing.ts. The add-on panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
-import { AD_BUDGET_CAP, formatInr, GST_RATE, PLANS } from "@/lib/pricing";
+import { formatInr, PLANS } from "@/lib/pricing";
+import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 /** Phosphor icon component names (replace the mock's Material Symbols). */
@@ -20,7 +21,6 @@ export type HomeIconKey =
   | "Toolbox"
   | "Buildings";
 
-const GST_PERCENT = `${Math.round(GST_RATE * 100)}%`;
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 
 /** The "₹0 + monthly" offer line. Shared by the homepage hero and the pricing hero. */
@@ -230,21 +230,44 @@ export const STEPS: readonly Step[] = [
 
 export const HOME_FAQ_HEADING = "Questions, answered.";
 
+/** The owner's approved FAQ (replaces the mock's four questions). The cancel, payment and ownership answers come from content/legal/cancellation.ts. */
 export const HOME_FAQ: readonly FaqItem[] = [
   {
     q: "Is the website really free?",
-    a: `Yes, there is no build fee. The ${MANAGED_MONTHLY} monthly plan keeps it hosted, secure and up to date.`,
+    a: `Yes. There is no design or build fee: you pay nothing for us to build your website. You pay the monthly plan, ${MANAGED_MONTHLY} a month + GST, which keeps it hosted, secure and up to date.`,
   },
   {
-    q: "What do I pay at the start?",
-    a: `Just your first month, plus ${GST_PERCENT} GST. After that you pay monthly.`,
+    q: "What do I pay for every month?",
+    a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 small edits a month and a monthly health report. The build itself is free.",
   },
   {
-    q: "Is ad spend included?",
-    a: `No. You pay Meta directly for ads. We manage budgets up to ${formatInr(AD_BUDGET_CAP)} a month.`,
+    q: "Is there anything to pay up front?",
+    a: `Only your first month. Your first payment is ${MANAGED_MONTHLY} + GST, plus any add-ons you choose, and it covers your first month. There is no separate build fee.`,
   },
   {
-    q: "Do you guarantee rankings?",
-    a: "No one honestly can. We show you the work and the numbers every month.",
+    q: "How long does it take to build my website?",
+    a: "Once you have sent your details and made your first payment, your website goes live within 7 working days. It can take a little longer if we are waiting on feedback or content from you, or on your domain being connected.",
+  },
+  {
+    q: "How many pages do I get?",
+    a: "Up to 5 pages. More pages or bigger features can be added for an extra fee, and we always confirm the price before doing anything.",
+  },
+  {
+    q: "Do I pay for hosting separately?",
+    a: "No. Hosting is included in the monthly plan.",
+  },
+  {
+    q: "Who owns the domain and the content?",
+    a: `You register and pay for your own domain, so it is always in your name. No domain yet? We will set your website up on a temporary domain for free until you have one. ${HOSTED_SERVICE}`,
+  },
+  {
+    q: "Can I make changes later?",
+    a: "Yes. Send any change from your dashboard. We always tell you the cost before we start anything that costs extra.",
+  },
+  { q: "Can I cancel?", a: CANCEL_ANSWER },
+  { q: "What happens if a payment fails?", a: PAYMENT_FAILURE },
+  {
+    q: "What technology is my website built on?",
+    a: "Next.js: a modern, fast and scalable foundation.",
   },
 ];

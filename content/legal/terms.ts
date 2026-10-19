@@ -2,7 +2,7 @@
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { ADDON_CHANGE, CANCELLATION_RULE, OWNERSHIP_ON_CANCEL } from "./cancellation";
+import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { SIGNUP_ADDON_TERMS } from "./fees";
 import type { LegalDocument } from "./types";
 
@@ -45,9 +45,9 @@ export const termsOfService: LegalDocument = {
     {
       heading: "5. Fees and payment",
       paragraphs: [
-        `Plans are billed monthly, in advance, at the prices above plus ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel.`,
+        `Plans are billed monthly, in advance, at the prices above plus ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel. ${RENEWAL_REMINDER}`,
         SIGNUP_ADDON_TERMS,
-        "If a payment stays unpaid, we may pause your services until it is paid. Your content is kept.",
+        PAYMENT_FAILURE,
         "When we refund a payment, and when we don't, is set out in our Refund and cancellation policy.",
       ],
     },
@@ -56,7 +56,7 @@ export const termsOfService: LegalDocument = {
       paragraphs: [
         "Your domain name is yours. It is registered in your name, and you can point it wherever you like at any time.",
         "Your business name, logo and any text, photos or other material you give us stay yours. You give us permission to use them on your website and in your services while your plan is active.",
-        `When your plan ends, nothing is taken back. ${OWNERSHIP_ON_CANCEL}`,
+        `${HOSTED_SERVICE} When your plan ends, the hosted service ends with it; your domain and the material you gave us stay yours.`,
       ],
     },
     {
@@ -74,7 +74,7 @@ export const termsOfService: LegalDocument = {
     {
       heading: "9. Cancellation and termination",
       paragraphs: [
-        `You can cancel any month by writing to ${email}. ${CANCELLATION_RULE} ${OWNERSHIP_ON_CANCEL}`,
+        `You can cancel anytime by writing to ${email}. ${CANCELLATION_RULE} Your domain stays yours. ${HOSTED_SERVICE}`,
         `You can add or drop ${growth.name} and ${search.name} at any time. ${ADDON_CHANGE}`,
         "Either party may end an engagement by written notice for a material breach that is not put right within 30 days of the notice. On termination, payment is due for the services provided up to that date.",
       ],

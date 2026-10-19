@@ -8,7 +8,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 | # | Input | Status | Where it lives |
 |---|---|---|---|
-| D3 | Cancellation and refund terms for monthly billing | Placeholder: 30 days' notice; cancellation takes effect at the end of the billing month in which the notice ends; add-on changes start from the next monthly bill; website, domain and content stay yours | `content/legal/cancellation.ts` (used by terms, refund, pricing "Good to know" and FAQ) |
+| D3 | Cancellation and refund terms for monthly billing | Answered from the published Fynix policy; owner to confirm in review. Cancel anytime with no notice period; the website stays online until the end of the month already paid for; no refund of a part-used month; a reminder before every renewal; a failed payment takes the website offline at once with no grace period, content kept and the site restored when the payment goes through; add-on changes start from the next monthly bill; the domain is the customer's, the design and content are a hosted service while subscribed | `content/legal/cancellation.ts` (used by terms, refund, the Home and Pricing FAQs, pricing "Good to know" and About) |
 | D4 | Does Digital Growth include organic social posting? | Placeholder: "8 Google profile posts a month", photo updates, reels and video editing at ₹500 an hour | `content/basket.ts`, `content/pricing.ts` |
 | D5 | Real proof: client sites for the showcase, Google rating, quotes | Placeholder: Curry Cook, GKR Hospitality and PayWeek sample sites and screenshots; heading "Real websites, live today." | `content/home.ts` `WORK`, `public/work/` |
 | D9 | Grievance Officer name and email | Placeholder: Siddique Ahmed (named for Digibranders in FirstFold), grievance@brandbasket.in, "Grievance Officer". Confirm the person and that the mailbox receives mail | `lib/site-config.ts` `grievanceOfficer` |
@@ -20,13 +20,15 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Item | Status |
 |---|---|
 | Legal set: privacy, terms, refund, shipping, data notice | Open: review on the preview, ideally with a lawyer. Version label `LEGAL_TEXT_VERSION` must be bumped to the real publish date |
+| About "Lock you in": "Cancel anytime, with no notice period. Your domain stays yours." (replaces the 30 days' notice placeholder) | Open |
+| Legal text version 2026-10-19.3: the new cancellation, failed payment, renewal reminder and ownership sentences in terms sections 5, 6 and 9 and the refund policy | Open |
 | Terms: "Add-ons chosen at sign-up are 5% off for as long as they run; add-ons added later are charged at the listed price." | Open |
 | Contact page meta description | Open |
 | Error page lines ("Sorry, something went wrong." and the retry line) and 404 link labels | Open |
 | Industries hub copy: lede "Pick your trade to see what we build, what we run every month and the basket we suggest.", title "Websites for local businesses, built free \| Brandbasket" and its meta description | Open |
 | Industry page labels: "Compare all plans" link, OG image alt "Brandbasket logo and the page headline" | Open |
 | Default share image: "Your Business Has a Name. Give It a Place on the Internet." over the offer line | Open |
-| FAQ answers that do not open with a direct answer: Home and Pricing "Do you guarantee rankings?" open with "No one honestly can." Suggested: start with "No." | Open |
+| FAQ answers that do not open with a direct answer: Pricing "Do you guarantee rankings or leads?" opens with "No one honestly can." Suggested: start with "No." | Open |
 | Unselected work showcase tab names are 45% ink (2.9:1 contrast, fails WCAG AA; matches the mock). 60% would pass | Open |
 | Pricing page has no in-page link to `/industries` (footer only); add one only with owner copy | Open |
 
@@ -37,7 +39,12 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 - DNS on Cloudflare (Cloudflare is listed as a processor).
 - DPDP Rules 2025 r.8(3) log retention of one year is cited; the site keeps no logs beyond Vercel's window. Add a log drain or drop the citation after legal advice.
 - Retention: leads 12 months, client records 8 years, support email 3 years. Customer data deleted within 30 days of a plan ending.
-- Grievances acknowledged within 48 hours and resolved within 30 days. Services may pause on an unpaid invoice.
+- Grievances acknowledged within 48 hours and resolved within 30 days.
+- Cancel anytime, no notice period; the website stays online until the end of the month already paid for, and a part-used month is not refunded.
+- A reminder before every renewal (terms section 5 and the refund policy). Confirm who sends it: Brandbasket, Razorpay or both.
+- A failed payment takes the website offline as soon as it is due and unpaid, with no grace period; content is kept and the website comes back when the payment goes through.
+- Ownership: the domain is the customer's; the design and the content Brandbasket writes are a hosted service while subscribed. The customer's own name, logo and material stay theirs (terms section 6).
+- Terms section 9 keeps the FirstFold clause ending an engagement for a material breach not put right within 30 days of written notice. It is separate from cancellation; confirm it stays.
 - Liability capped at 12 months of fees; confidentiality for 3 years.
 - Shipping: site live within about a week of receiving content; monthly report by email.
 - Where client account and billing data live before the platform launches; the platform must show its own cookie notice.
@@ -50,7 +57,8 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 - Scope: up to 5 pages, 2 small edits a month of up to 30 minutes, Local SEO "5 pages improved every month", "AI visibility tracking where measurable", "A/B tests where budget allows".
 - The example report (marked "Example report"): Pune dental clinic, KPIs and chart are sample data.
 - "Do you guarantee rankings? No one honestly can." and the ad budget cap of ₹10,000 a month.
-- Home FAQ "Just your first month, plus 18% GST" is written for one month up front.
+- Home FAQ "Send any change from your dashboard" assumes the platform dashboard is live at launch.
+- Home FAQ "your website goes live within 7 working days" sits next to the facts strip's "Live in about a week". Both kept as written; confirm they agree.
 
 ## Pages and links held back
 
@@ -75,3 +83,4 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Legal review happens on the preview, not before building | 2026-10-19 |
 | Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`) | 2026-10-19 |
 | About copy (`content/about.ts`) | 2026-10-19 |
+| Homepage FAQ: the 11 questions and answers (`content/home.ts` `HOME_FAQ`) | 2026-10-19 |

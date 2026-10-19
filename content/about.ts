@@ -1,11 +1,10 @@
 // content/about.ts
 // Copy for /about. Approved by the owner on 2026-10-19 (plan 02, Task 7.3).
 // Business facts come from lib/site-config.ts, the steps from content/home.ts and the promises from the pricing
-// Good to know (content/pricing.ts, content/legal/cancellation.ts). The page closes with the shared registered office
+// Good to know (content/pricing.ts). The page closes with the shared registered office
 // card, components/legal/RegisteredOffice.tsx, so it holds no copy here.
 import { businessDetails } from "@/lib/site-config";
 import { STEPS, type Step } from "./home";
-import { CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./legal/cancellation";
 
 export interface AboutPromise {
   readonly title: string;
@@ -37,7 +36,7 @@ export const ABOUT: About = {
   wontDo: {
     heading: "What we will not do",
     items: [
-      { title: "Lock you in", body: `Cancel any month with ${CANCELLATION_NOTICE}. ${OWNERSHIP_ON_CANCEL}` },
+      { title: "Lock you in", body: "Cancel anytime, with no notice period. Your domain stays yours." },
       { title: "Promise rankings or leads", body: "No one honestly can. You see the work and the numbers in a report every month." },
       { title: "Bill you for ad spend", body: "You pay Meta directly, so your ad spend stays in your name. Domain fees and paid tools are billed to you directly too." },
     ],

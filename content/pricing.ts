@@ -3,7 +3,7 @@
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PACKAGES, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL, type Package, type PlanId } from "@/lib/pricing";
-import { ADDON_CHANGE, CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./legal/cancellation";
+import { ADDON_CHANGE, CANCEL_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
@@ -265,8 +265,8 @@ export const GOOD_TO_KNOW: readonly GoodToKnowItem[] = [
   },
   {
     icon: "SignOut",
-    title: "Cancel any month",
-    body: `Give ${CANCELLATION_NOTICE} to stop. ${OWNERSHIP_ON_CANCEL}`,
+    title: "Cancel anytime",
+    body: "No notice period. Your website stays online until the end of the month you have paid for, and your domain stays yours.",
   },
   {
     icon: "Clock",
@@ -289,7 +289,7 @@ export const PRICING_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Can I cancel?",
-    a: `Yes, with ${CANCELLATION_NOTICE}. ${OWNERSHIP_ON_CANCEL}`,
+    a: CANCEL_ANSWER,
   },
   {
     q: "Can I add or drop Growth and Search later?",

@@ -2,7 +2,7 @@
 import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
 import { AD_BUDGET_CAP, formatInr, PLANS } from "@/lib/pricing";
-import { CLOSING, FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, STEPS, WORK } from "./home";
+import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, STEPS, WORK } from "./home";
 
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
@@ -47,6 +47,6 @@ describe("home content", () => {
     for (const key of keys) expect(Phosphor).toHaveProperty(key);
   });
   it("has no em or en dashes", () => {
-    expect(JSON.stringify({ HERO, FACTS, INDUSTRIES_LINE, WORK, REPORT, STEPS, HOME_FAQ, CLOSING })).not.toMatch(/[\u2013\u2014]/);
+    expect(JSON.stringify({ HERO, FACTS, INDUSTRIES_LINE, WORK, REPORT, STEPS, HOME_FAQ })).not.toMatch(/[\u2013\u2014]/);
   });
 });

@@ -240,9 +240,3 @@ export const HOME_FAQ: readonly FaqItem[] = [
     a: "No one honestly can. We show you the work and the numbers every month.",
   },
 ];
-
-/** Closing band. Button labels come from PRIMARY_CTA and the WhatsApp button. */
-export const CLOSING = {
-  heading: "Let us fill your basket.",
-  body: "A free 15-minute call, a clear plan and a price. No obligation.",
-} as const;

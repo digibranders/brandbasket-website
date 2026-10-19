@@ -1,0 +1,42 @@
+// lib/seo/jsonld.test.ts
+import { describe, expect, it } from "vitest";
+import { breadcrumbJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd } from "./jsonld";
+
+describe("organizationJsonLd", () => {
+  it("names the legal entity and the brand", () => {
+    const org = organizationJsonLd();
+    expect(org["@type"]).toBe("Organization");
+    expect(org.legalName).toBe("Digibranders Private Limited");
+    expect(org.name).toBe("Brandbasket");
+    expect(org.taxID).toBe("27AAICD9268J1Z0");
+  });
+});
+
+describe("planOffersJsonLd", () => {
+  it("publishes each plan's monthly price from the pricing module", () => {
+    const service = planOffersJsonLd();
+    const prices = service.hasOfferCatalog.itemListElement.map((offer) => offer.priceSpecification.price);
+    expect(prices).toEqual([3000, 7000, 25000]);
+    expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
+    expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(false);
+  });
+});
+
+describe("faqJsonLd", () => {
+  it("turns questions into FAQPage entities", () => {
+    const faq = faqJsonLd([{ q: "Is ad spend included?", a: "No. You pay Meta directly." }]);
+    expect(faq.mainEntity[0]).toEqual({
+      "@type": "Question",
+      name: "Is ad spend included?",
+      acceptedAnswer: { "@type": "Answer", text: "No. You pay Meta directly." },
+    });
+  });
+});
+
+describe("breadcrumbJsonLd", () => {
+  it("builds absolute URLs in order", () => {
+    const crumbs = breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }]);
+    expect(crumbs.itemListElement.map((c) => c.item)).toEqual(["https://brandbasket.in/", "https://brandbasket.in/pricing"]);
+    expect(crumbs.itemListElement[1].position).toBe(2);
+  });
+});

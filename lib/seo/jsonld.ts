@@ -194,3 +194,35 @@ export function contactPageJsonLd(): ContactPageLd {
     about: { "@type": "Organization", name: businessDetails.tradeName, url: siteConfig.url, telephone: businessDetails.phone, email: businessDetails.email },
   };
 }
+
+export interface AudienceServiceLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "Service";
+  readonly name: string;
+  readonly description: string;
+  readonly url: string;
+  readonly provider: { readonly "@id": string };
+  readonly areaServed: { readonly "@type": "Country"; readonly name: string };
+  readonly audience: { readonly "@type": "BusinessAudience"; readonly audienceType: string };
+}
+
+interface AudienceServiceInput {
+  readonly name: string;
+  readonly description: string;
+  readonly path: string;
+  readonly audienceType: string;
+}
+
+/** The service as offered to one trade (industry pages). */
+export function audienceServiceJsonLd({ name, description, path, audienceType }: AudienceServiceInput): AudienceServiceLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name,
+    description,
+    url: `${siteConfig.url}${path}`,
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: { "@type": "Country", name: "India" },
+    audience: { "@type": "BusinessAudience", audienceType },
+  };
+}

@@ -1,7 +1,7 @@
 // content/industries.test.ts
 import { describe, expect, it } from "vitest";
 import { INDUSTRIES_LINE } from "./home";
-import { INDUSTRIES } from "./industries";
+import { INDUSTRIES, INDUSTRIES_HUB } from "./industries";
 
 describe("industries", () => {
   it("has the eight launch industries with unique slugs", () => {
@@ -25,5 +25,10 @@ describe("industries", () => {
     expect(i.faq.length).toBeLessThanOrEqual(4);
     for (const { q } of i.faq) expect(q.endsWith("?")).toBe(true);
     expect(JSON.stringify(i)).not.toMatch(/[\u2013\u2014]/);
+  });
+  it("keeps the hub metadata inside the SEO limits", () => {
+    expect(INDUSTRIES_HUB.title.length).toBeLessThanOrEqual(60);
+    expect(INDUSTRIES_HUB.description.length).toBeGreaterThanOrEqual(120);
+    expect(INDUSTRIES_HUB.description.length).toBeLessThanOrEqual(155);
   });
 });

@@ -1,6 +1,6 @@
 // lib/seo/jsonld.test.ts
 import { describe, expect, it } from "vitest";
-import { breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd, webSiteJsonLd } from "./jsonld";
+import { audienceServiceJsonLd, breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd, webSiteJsonLd } from "./jsonld";
 
 describe("organizationJsonLd", () => {
   it("names the legal entity and the brand", () => {
@@ -61,5 +61,16 @@ describe("contactPageJsonLd", () => {
     expect(page.url).toBe("https://brandbasket.in/contact");
     expect(page.about.telephone).toBe("+91 789 789 6607");
     expect(page.about.email).toBe("hello@brandbasket.in");
+  });
+});
+
+describe("audienceServiceJsonLd", () => {
+  it("names the audience and points the provider at the organization", () => {
+    const service = audienceServiceJsonLd({ name: "A website for clinics", description: "Built free.", path: "/industries/clinics", audienceType: "Clinics" });
+    expect(service["@type"]).toBe("Service");
+    expect(service.url).toBe("https://brandbasket.in/industries/clinics");
+    expect(service.audience).toEqual({ "@type": "BusinessAudience", audienceType: "Clinics" });
+    expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
+    expect(service.areaServed.name).toBe("India");
   });
 });

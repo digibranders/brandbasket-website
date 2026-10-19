@@ -6,18 +6,20 @@ import { businessDetails } from "@/lib/site-config";
 // Keep failures focused when testing a widget that has not been implemented yet.
 test.use({ actionTimeout: 5_000 });
 
-test("hero and navbar offer pricing in place of WhatsApp shortcuts", async ({ page }) => {
+test("hero keeps its pricing CTA and navbar has one Pricing link", async ({ page }) => {
   await page.goto("/");
   const hero = page.locator("#hero");
   await expect(hero.getByRole("link", { name: PRIMARY_CTA.label })).toBeVisible();
   await expect(hero.getByRole("link", { name: "View pricing" })).toHaveAttribute("href", "/pricing");
   await expect(hero.locator('a[href*="wa.me"]')).toHaveCount(0);
   const nav = page.getByRole("navigation", { name: "Site", exact: true });
-  if ((page.viewportSize()?.width ?? 0) < 640) await page.getByRole("button", { name: "Open menu" }).click();
+  if ((page.viewportSize()?.width ?? 0) < 1000) await page.getByRole("button", { name: "Open menu" }).click();
   await expect(nav.getByRole("link", { name: PRIMARY_CTA.label }).filter({ visible: true })).toBeVisible();
-  await expect(nav.getByRole("link", { name: "View pricing" })).toHaveAttribute("href", "/pricing");
+  await expect(nav.getByRole("link", { name: "View pricing", includeHidden: true })).toHaveCount(0);
+  await expect(nav.getByRole("link", { name: "Pricing", exact: true })).toHaveCount(1);
+  await expect(nav.getByRole("link", { name: "Pricing", exact: true })).toHaveAttribute("href", "/pricing");
   await expect(nav.locator('a[href*="wa.me"]')).toHaveCount(0);
-  await nav.getByRole("link", { name: "View pricing" }).click();
+  await nav.getByRole("link", { name: "Pricing", exact: true }).click();
   await expect(page).toHaveURL(/\/pricing$/);
 });
 
@@ -55,8 +57,8 @@ test("chat resets on navigation and fits the viewport", async ({ page }) => {
   expect(box.x).toBeGreaterThanOrEqual(0);
   expect(box.x + box.width).toBeLessThanOrEqual(viewport.width);
   expect(box.y).toBeGreaterThanOrEqual(0);
-  if ((page.viewportSize()?.width ?? 0) < 640) await page.getByRole("button", { name: "Open menu" }).click();
-  await page.getByRole("navigation", { name: "Site", exact: true }).getByRole("link", { name: "View pricing" }).click();
+  if ((page.viewportSize()?.width ?? 0) < 1000) await page.getByRole("button", { name: "Open menu" }).click();
+  await page.getByRole("navigation", { name: "Site", exact: true }).getByRole("link", { name: "Pricing", exact: true }).click();
   await expect(page).toHaveURL(/\/pricing$/);
   await expect(page.getByRole("button", { name: "Open WhatsApp chat" })).toHaveAttribute("aria-expanded", "false");
 });

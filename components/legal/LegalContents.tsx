@@ -55,7 +55,7 @@ export function LegalContents({ items }: LegalContentsProps): ReactElement {
   }, [activeId]);
 
   const links = (mobile: boolean): ReactElement => (
-    <ol ref={mobile ? undefined : desktopRef} className="relative grid gap-1 overflow-y-auto overscroll-contain p-1 lg:max-h-[calc(100dvh-15rem)]">
+    <ol ref={mobile ? undefined : desktopRef} className="relative grid gap-1 overflow-y-auto overscroll-contain p-1 lg:max-h-[calc(100dvh-12rem)]">
       {items.map(({ id, heading }) => (
         <li key={id}>
           <a
@@ -69,7 +69,7 @@ export function LegalContents({ items }: LegalContentsProps): ReactElement {
               }
               setActiveId(id);
             }}
-            className="block rounded-[10px] border-l-2 border-transparent px-3 py-3 text-sm leading-relaxed text-ink-2 transition-colors hover:bg-sunken hover:text-ink aria-[current=location]:border-rattan aria-[current=location]:bg-rattan-wash aria-[current=location]:font-semibold aria-[current=location]:text-ink lg:py-2"
+            className="block px-3 py-3 text-sm leading-relaxed text-ink-2 underline-offset-4 transition-colors hover:text-ink hover:underline aria-[current=location]:font-semibold aria-[current=location]:text-ink lg:px-0 lg:py-2"
           >
             {heading}
           </a>
@@ -79,9 +79,9 @@ export function LegalContents({ items }: LegalContentsProps): ReactElement {
   );
 
   return (
-    <aside className="min-w-0 lg:sticky lg:top-28">
-      <div className="hidden rounded-[18px] border border-line bg-surface p-4 lg:block">
-        <h2 className="px-4 pb-3 pt-1 text-[13px] font-semibold text-ink">{LEGAL_LABELS.contents}</h2>
+    <aside className="min-w-0 lg:sticky lg:top-28 lg:col-start-1 lg:row-start-1 lg:row-span-2">
+      <div className="hidden lg:block lg:pr-6">
+        <h2 className="px-1 pb-4 pt-1 text-[13px] font-semibold text-ink-2">{LEGAL_LABELS.contents}</h2>
         <nav aria-label={LEGAL_LABELS.contents}>{links(false)}</nav>
       </div>
       <details ref={disclosureRef} className="group rounded-[18px] border border-line bg-surface lg:hidden">

@@ -1,5 +1,6 @@
 // app/pricing/page.tsx
 import type { ReactElement } from "react";
+import { PhoneTotalBar } from "@/components/basket/PhoneTotalBar";
 import { CompareTable } from "@/components/pricing/CompareTable";
 import { GoodToKnow } from "@/components/pricing/GoodToKnow";
 import { PlanDetails } from "@/components/pricing/PlanDetails";
@@ -15,6 +16,7 @@ export default function PricingPage(): ReactElement {
       <PlanDetails />
       <GoodToKnow />
       <PricingFaq />
+      <PhoneTotalBar />
     </>
   );
 }

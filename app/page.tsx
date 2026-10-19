@@ -1,6 +1,7 @@
 // app/page.tsx
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
+import { BasketStage } from "@/components/basket/BasketStage";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { PRIMARY_CTA } from "@/content/navigation";
@@ -23,6 +24,7 @@ export default function HomePage(): ReactElement {
       <p className="text-lg text-ink-2">Your Business Has a Name. Give It a Place on the Internet for free.</p>
       <p className="text-ink-2">From <b className="num font-display text-ink">{formatInr(PLANS.website.monthly)}</b> a month + GST, website built free.</p>
       <div className="flex flex-wrap gap-2.5"><ArrowButton href={PRIMARY_CTA.href}>{PRIMARY_CTA.label}</ArrowButton><WhatsAppButton /></div>
+      <div className="w-full max-w-[620px]"><BasketStage priority /></div>
     </section>
   );
 }

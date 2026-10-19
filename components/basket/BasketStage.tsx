@@ -1,0 +1,84 @@
+// components/basket/BasketStage.tsx
+"use client";
+import Image from "next/image";
+import { type ReactElement, useEffect, useRef, useState } from "react";
+import { basket } from "@/lib/basket-store";
+import { readDeviceHints, shouldRender3D } from "@/lib/device-hints";
+import type { BasketScene } from "./scene/types";
+
+/**
+ * Poster first (it is the LCP image). After the page is idle and the stage is near the viewport, loads the OGL
+ * scene with a dynamic import, fades the poster out and keeps the tiles in sync with the basket store.
+ */
+export function BasketStage({ priority = false }: { readonly priority?: boolean }): ReactElement {
+  const host = useRef<HTMLDivElement>(null);
+  const [live, setLive] = useState(false);
+
+  useEffect(() => {
+    const el = host.current;
+    if (!el) return;
+    const hints = readDeviceHints();
+    if (!shouldRender3D(hints)) return;
+    let scene: BasketScene | undefined;
+    let unsubscribe: (() => void) | undefined;
+    let started = false;
+    let cancelled = false;
+    let visible = false;
+
+    const start = async (): Promise<void> => {
+      const [mod, image] = await Promise.all([import("./scene/scene"), loadImage("/basket/site-tile.jpg")]);
+      const labelFamily = await mod.loadFaceFonts();
+      if (cancelled) return;
+      scene = mod.createBasketScene(el, image, { reducedMotion: hints.reducedMotion, initialPick: basket.get(), labelFamily });
+      scene.setVisible(visible);
+      unsubscribe = basket.subscribe(() => scene?.setPick(basket.get()));
+      setLive(true);
+    };
+    const begin = (): void => {
+      // A failed load or WebGL setup leaves the poster in place, which is the designed fallback.
+      start().catch((error: unknown) => console.warn("Basket stage stayed on its poster.", error));
+    };
+
+    const io = new IntersectionObserver(([entry]) => {
+      visible = Boolean(entry?.isIntersecting);
+      if (visible && !started) {
+        started = true;
+        // Safari has no requestIdleCallback.
+        if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(begin);
+        else setTimeout(begin, 200);
+      }
+      scene?.setVisible(visible);
+    }, { rootMargin: "200px" });
+    io.observe(el);
+
+    return () => {
+      cancelled = true;
+      io.disconnect();
+      unsubscribe?.();
+      scene?.destroy();
+    };
+  }, []);
+
+  return (
+    <div ref={host} role="img" aria-label="A woven basket holding the services in your plan" className="relative aspect-[1.12] max-h-[620px] w-full min-[1000px]:aspect-[1.02]">
+      <Image
+        src="/basket/poster.avif"
+        alt=""
+        fill
+        priority={priority}
+        sizes="(min-width: 1000px) 45vw, 100vw"
+        className={`pointer-events-none object-contain transition-opacity duration-700 ease-(--ease) ${live ? "opacity-0" : "opacity-100"}`}
+      />
+    </div>
+  );
+}
+
+/** Resolves null when the screenshot fails, so the site tile still draws its browser frame, as in the mock. */
+function loadImage(src: string): Promise<HTMLImageElement | null> {
+  return new Promise((resolve) => {
+    const img = new window.Image();
+    img.onload = () => resolve(img);
+    img.onerror = () => resolve(null);
+    img.src = src;
+  });
+}

@@ -7,7 +7,7 @@ Marketing site for Brandbasket (brandbasket.in), a brand of Digibranders Private
 Stack: Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS v4, Vitest, OGL for the 3D basket. npm, Node 20 or newer. Dev server: `npm run dev` on port 3130.
 
 ## Rules
-- Work on `development`. `main` is production and only changes through a PR. Vercel builds `main`.
+- Work on `development` and push there freely: it does not deploy. `main` is production: it changes only through a PR from `development` to `main`, and merging that PR deploys production on Vercel. Never push to `main` directly, and open the release PR only when the owner asks for a release.
 - Prices live in `lib/pricing.ts` only. Business facts live in `lib/site-config.ts` only. Copy lives in `content/`.
 - Pages are Server Components. Client islands only for the basket, plan switches, showcase, menu and theme.
 - No em or en dashes anywhere (`lib/copy-check.test.ts` fails the build).

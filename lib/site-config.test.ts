@@ -14,6 +14,15 @@ describe("businessDetails", () => {
     expect(businessDetails.address.join(" ")).toContain("Maharashtra");
   });
 
+  it("has a structured postal address for the registered office", () => {
+    expect(businessDetails.postalAddress.postalCode).toBe("400607");
+    expect(businessDetails.postalAddress.region).toBe("Maharashtra");
+  });
+
+  it("quotes the entry price from the pricing module", () => {
+    expect(siteConfig.description).toContain("From ₹3,000 a month");
+  });
+
   it("serves the site from brandbasket.in", () => {
     expect(siteConfig.url).toBe("https://brandbasket.in");
   });

@@ -5,7 +5,7 @@ import { describe, expect, it } from "vitest";
 
 const ROOTS = ["app", "components", "content", "lib"];
 const EXTENSIONS = [".ts", ".tsx", ".css", ".md"];
-const BANNED = /[–—]/;
+const BANNED = /[\u2013\u2014]/;
 
 function files(dir: string): string[] {
   return readdirSync(dir).flatMap((name) => {
@@ -20,7 +20,6 @@ describe("copy rules", () => {
     // Roots that do not exist yet (components/, content/ before they are created) are skipped.
     const offenders = ROOTS.filter((root) => existsSync(root))
       .flatMap((root) => files(root))
-      .filter((path) => !path.endsWith("copy-check.test.ts"))
       .flatMap((path) =>
         readFileSync(path, "utf8")
           .split("\n")

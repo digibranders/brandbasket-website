@@ -17,6 +17,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(siteConfig.url),
   title: { default: "Brandbasket | Website and Google marketing for local businesses", template: "%s | Brandbasket" },
   description: siteConfig.description,
+  manifest: "/site.webmanifest",
   robots: isProductionSite() ? undefined : { index: false, follow: false },
 };
 

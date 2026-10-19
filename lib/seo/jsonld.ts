@@ -3,7 +3,28 @@ import type { FaqItem } from "@/content/types";
 import { PLANS, type PlanId } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
-export function organizationJsonLd() {
+export interface OrganizationLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "Organization";
+  readonly name: string;
+  readonly legalName: string;
+  readonly url: string;
+  readonly email: string;
+  readonly telephone: string;
+  readonly taxID: string;
+  readonly foundingDate: string;
+  readonly address: {
+    readonly "@type": "PostalAddress";
+    readonly streetAddress: string;
+    readonly addressLocality: string;
+    readonly addressRegion: string;
+    readonly postalCode: string;
+    readonly addressCountry: string;
+  };
+}
+
+export function organizationJsonLd(): OrganizationLd {
+  const { postalAddress } = businessDetails;
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
@@ -16,18 +37,42 @@ export function organizationJsonLd() {
     foundingDate: String(businessDetails.foundingYear),
     address: {
       "@type": "PostalAddress",
-      streetAddress: businessDetails.address.slice(0, 2).join(" "),
-      addressLocality: "Thane",
-      addressRegion: "Maharashtra",
-      postalCode: "400607",
-      addressCountry: "IN",
+      streetAddress: postalAddress.street,
+      addressLocality: postalAddress.locality,
+      addressRegion: postalAddress.region,
+      postalCode: postalAddress.postalCode,
+      addressCountry: postalAddress.country,
     },
-  } as const;
+  };
 }
 
 const PLAN_ORDER: readonly PlanId[] = ["website", "growth", "search"];
 
-export function planOffersJsonLd() {
+export interface ServiceLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "Service";
+  readonly name: string;
+  readonly provider: { readonly "@type": "Organization"; readonly name: string; readonly url: string };
+  readonly areaServed: { readonly "@type": "Country"; readonly name: string };
+  readonly hasOfferCatalog: {
+    readonly "@type": "OfferCatalog";
+    readonly name: string;
+    readonly itemListElement: readonly {
+      readonly "@type": "Offer";
+      readonly name: string;
+      readonly url: string;
+      readonly priceSpecification: {
+        readonly "@type": "UnitPriceSpecification";
+        readonly price: number;
+        readonly priceCurrency: "INR";
+        readonly unitText: "MONTH";
+        readonly valueAddedTaxIncluded: boolean;
+      };
+    }[];
+  };
+}
+
+export function planOffersJsonLd(): ServiceLd {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -53,7 +98,17 @@ export function planOffersJsonLd() {
   };
 }
 
-export function faqJsonLd(items: readonly FaqItem[]) {
+export interface FaqPageLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "FAQPage";
+  readonly mainEntity: readonly {
+    readonly "@type": "Question";
+    readonly name: string;
+    readonly acceptedAnswer: { readonly "@type": "Answer"; readonly text: string };
+  }[];
+}
+
+export function faqJsonLd(items: readonly FaqItem[]): FaqPageLd {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -65,7 +120,18 @@ export function faqJsonLd(items: readonly FaqItem[]) {
   };
 }
 
-export function breadcrumbJsonLd(crumbs: readonly { readonly name: string; readonly path: string }[]) {
+export interface BreadcrumbLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "BreadcrumbList";
+  readonly itemListElement: readonly {
+    readonly "@type": "ListItem";
+    readonly position: number;
+    readonly name: string;
+    readonly item: string;
+  }[];
+}
+
+export function breadcrumbJsonLd(crumbs: readonly { readonly name: string; readonly path: string }[]): BreadcrumbLd {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",

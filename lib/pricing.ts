@@ -58,7 +58,7 @@ export interface FirstPayment {
 }
 
 export function firstPayment(monthly: number): FirstPayment {
-  if (!Number.isFinite(monthly) || monthly < 0) throw new RangeError(`Monthly total must be a positive number, got ${monthly}`);
+  if (!Number.isFinite(monthly) || monthly < 0) throw new RangeError(`Monthly total must be a non-negative number, got ${monthly}`);
   const base = monthly * UPFRONT_MONTHS;
   const gst = Math.round(base * GST_RATE);
   return { months: UPFRONT_MONTHS, base, gst, total: base + gst };

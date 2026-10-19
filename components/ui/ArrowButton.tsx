@@ -15,9 +15,9 @@ export function ArrowButton({ href, children, size = "md", tone = "action" }: Ar
   const colours = tone === "action" ? "bg-action text-action-ink" : "bg-action-ink text-action";
   const dot = size === "sm" ? "size-[30px]" : "size-9";
   return (
-    <Link href={href} className={`group inline-flex items-center whitespace-nowrap rounded-full font-semibold transition-transform duration-500 active:scale-[0.98] ${pad} ${colours}`}>
+    <Link href={href} className={`group inline-flex items-center whitespace-nowrap rounded-full font-semibold transition-transform duration-500 ease-[var(--ease)] active:scale-[0.98] ${pad} ${colours}`}>
       {children}
-      <span aria-hidden="true" className={`grid place-items-center rounded-full bg-rattan text-[#15161a] transition-transform duration-500 group-hover:-translate-y-px group-hover:translate-x-0.5 group-hover:scale-[1.06] ${dot}`}>
+      <span aria-hidden="true" className={`grid place-items-center rounded-full bg-rattan text-ink transition-transform duration-500 ease-[var(--ease)] group-hover:-translate-y-px group-hover:translate-x-0.5 group-hover:scale-[1.06] ${dot}`}>
         <svg viewBox="0 0 16 16" className="size-[15px]"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" /></svg>
       </span>
     </Link>

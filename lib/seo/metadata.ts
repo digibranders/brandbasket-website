@@ -17,6 +17,7 @@ export function pageMetadata({ title, description, path, noindex = false }: Page
     alternates: { canonical: path },
     openGraph: { title, description, url, siteName: siteConfig.name, type: "website", locale: "en_IN" },
     twitter: { card: "summary_large_image", title, description },
-    robots: noindex ? { index: false, follow: true } : undefined,
+    // Only set the key when needed: a present-but-undefined key overrides the layout robots in Next's metadata merge.
+    ...(noindex ? { robots: { index: false, follow: true } } : {}),
   };
 }

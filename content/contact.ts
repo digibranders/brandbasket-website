@@ -6,7 +6,6 @@ export const CONTACT_PAGE = {
   title: "Contact us.",
   lede: "Ask about a free website, a plan, or the site you already have. We reply within one working day.",
   whatsappNote: "the fastest way to reach us",
-  hoursLabel: "Hours",
   officeLabel: "Registered office",
 } as const;
 
@@ -43,6 +42,9 @@ export const CONTACT_ERRORS = {
 } as const;
 
 export const CONTACT_FORM_COPY = {
+  title: "Send us a message",
+  guidance: "Fields marked optional can be left blank.",
+  detailsLegend: "Your details",
   notice: "We use these details only to reply to you. See our",
   privacyLink: "privacy policy",
   submit: "Send message",

@@ -23,7 +23,7 @@ const CHANNELS: readonly Channel[] = [
 const { legalName, postalAddress } = businessDetails;
 const OFFICE = `${legalName}, ${postalAddress.street}, ${postalAddress.locality}, ${postalAddress.region} ${postalAddress.postalCode}`;
 
-/** Direct channels, hours and registered office (mock: .ct-ways, .ct-meta). */
+/** Direct channels and registered office (mock: .ct-ways, .ct-meta). */
 export function ContactChannels(): ReactElement {
   return (
     <>
@@ -48,8 +48,7 @@ export function ContactChannels(): ReactElement {
         ))}
       </ul>
       <dl className="mt-7 grid gap-4 text-[14.5px]">
-        <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.hoursLabel}</dt><dd className="mt-[3px] max-w-[46ch]">{businessDetails.hours}</dd></div>
-        <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.officeLabel}</dt><dd className="mt-[3px] max-w-[46ch]">{OFFICE}</dd></div>
+        <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.officeLabel}</dt><dd className="mt-2 max-w-[46ch] text-ink-2 leading-relaxed">{OFFICE}</dd></div>
       </dl>
     </>
   );

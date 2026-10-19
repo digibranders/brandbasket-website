@@ -4,7 +4,6 @@ import type { ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
 import { ContactChannels } from "@/components/contact/ContactChannels";
 import { ContactForm } from "@/components/contact/ContactForm";
-import { Shell } from "@/components/ui/Shell";
 import { CONTACT_PAGE } from "@/content/contact";
 import { breadcrumbJsonLd, contactPageJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -32,9 +31,9 @@ export default function ContactPage(): ReactElement {
         <ContactChannels />
       </div>
       <div id="start" className="min-w-0 scroll-mt-28 [grid-area:form]">
-        <Shell>
+        <div className="rounded-[24px] border border-line bg-surface p-[24px] shadow-[var(--shadow)] sm:p-[36px]">
           <ContactForm />
-        </Shell>
+        </div>
       </div>
       <JsonLd data={contactPageJsonLd()} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])} />

@@ -191,7 +191,7 @@ export function ContactForm(): ReactElement {
       "aria-describedby": `${id}-err`,
       onBlur: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => onBlur(event, name),
       onInput: (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => onInput(event, name),
-      className: `w-full rounded-[14px] border border-line bg-bg px-3.5 py-3 text-base text-ink transition-[border-color,box-shadow,background-color] duration-[250ms] ease-[var(--ease)] focus:border-ink focus:bg-surface focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--rattan)_35%,transparent)] focus:outline-none aria-invalid:border-error ${rest.multiline ? "min-h-[116px] resize-y" : ""}`,
+      className: `w-full rounded-[10px] border border-[color-mix(in_srgb,var(--ink-2)_70%,var(--surface))] bg-bg px-3.5 py-3 text-base text-ink transition-[border-color,box-shadow,background-color] duration-[250ms] ease-[var(--ease)] focus:border-ink focus:bg-surface focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--rattan)_35%,transparent)] focus:outline-none aria-invalid:border-error ${rest.multiline ? "min-h-[132px] resize-y" : ""}`,
     };
     return (
       <div className={`grid min-w-0 content-start gap-1.5 ${rest.full ? "col-span-full" : ""}`}>
@@ -207,14 +207,18 @@ export function ContactForm(): ReactElement {
 
   const submitting = status.kind === "submitting";
   return (
-    <form ref={formRef} method="post" noValidate onSubmit={onSubmit} className="relative grid gap-[22px]">
+    <form ref={formRef} method="post" noValidate onSubmit={onSubmit} aria-labelledby="ct-form-title" aria-busy={submitting} className="relative grid gap-7">
+      <header className="grid gap-2 border-b border-line pb-6">
+        <h2 id="ct-form-title" className="font-display text-[28px] font-medium leading-tight tracking-[-0.03em]">{CONTACT_FORM_COPY.title}</h2>
+        <p className="text-sm leading-relaxed text-ink-2">{CONTACT_FORM_COPY.guidance}</p>
+      </header>
       <fieldset className="m-0 min-w-0 border-0 p-0">
-        <legend className="mb-3 p-0 font-display text-xl font-medium tracking-[-0.02em]">{CONTACT_TOPIC_LEGEND}</legend>
-        <div className="flex flex-wrap gap-2">
+        <legend className="mb-3 p-0 text-sm font-semibold">{CONTACT_TOPIC_LEGEND}</legend>
+        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
           {CONTACT_TOPICS.map((topic) => (
             <label key={topic} className="relative">
-              <input type="radio" name="topic" value={topic} defaultChecked={topic === "website"} className="peer absolute inset-0 m-0 cursor-pointer opacity-0" />
-              <span className="inline-flex items-center gap-[9px] rounded-full border border-line bg-bg py-[9px] pl-[11px] pr-[15px] text-[14.5px] font-medium transition-[border-color,background-color] duration-[250ms] ease-[var(--ease)] before:size-3.5 before:flex-none before:rounded-full before:border-[1.5px] before:border-[color-mix(in_srgb,var(--ink-2)_60%,transparent)] before:bg-surface before:shadow-[inset_0_0_0_3px_var(--surface)] before:transition-[background-color,border-color] before:duration-[250ms] before:content-[''] peer-[:hover:not(:checked)]:border-ink-2 peer-checked:border-ink peer-checked:bg-surface peer-checked:before:border-ink peer-checked:before:bg-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-rattan">
+              <input type="radio" name="topic" value={topic} defaultChecked={topic === "website"} className="peer absolute inset-0 m-0 size-full cursor-pointer opacity-0" />
+              <span className="flex min-h-12 h-full items-center gap-2.5 rounded-[12px] border border-line bg-surface px-3.5 py-3 text-sm font-medium transition-colors before:size-4 before:flex-none before:rounded-full before:border before:border-ink-2 before:bg-surface before:shadow-[inset_0_0_0_3px_var(--surface)] before:content-[''] peer-hover:border-ink-2 peer-checked:border-rattan-ink peer-checked:bg-rattan-wash peer-checked:before:border-rattan-ink peer-checked:before:bg-rattan-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-rattan">
                 {CONTACT_TOPIC_LABELS[topic]}
               </span>
             </label>
@@ -222,27 +226,30 @@ export function ContactForm(): ReactElement {
         </div>
       </fieldset>
 
-      <div className="grid grid-cols-2 gap-x-3.5 gap-y-4 max-[560px]:grid-cols-1">
-        {field("name", { autoComplete: "name" })}
-        {field("phone", { autoComplete: "tel", type: "tel", inputMode: "tel" })}
-        {field("business", { autoComplete: "organization" })}
-        {field("city", { autoComplete: "address-level2", optional: true })}
-        {field("email", { autoComplete: "email", type: "email", optional: true, full: true })}
-        {field("message", { autoComplete: "off", optional: true, full: true, multiline: true })}
-      </div>
+      <fieldset className="m-0 min-w-0 border-0 p-0">
+        <legend className="mb-4 p-0 text-sm font-semibold">{CONTACT_FORM_COPY.detailsLegend}</legend>
+        <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
+          {field("name", { autoComplete: "name" })}
+          {field("phone", { autoComplete: "tel", type: "tel", inputMode: "tel" })}
+          {field("business", { autoComplete: "organization" })}
+          {field("city", { autoComplete: "address-level2", optional: true })}
+          {field("email", { autoComplete: "email", type: "email", optional: true, full: true })}
+          {field("message", { autoComplete: "off", optional: true, full: true, multiline: true })}
+        </div>
+      </fieldset>
 
       {/* Decoys for bots: off screen, out of the tab order and hidden from assistive tech. */}
       <div aria-hidden="true" className="absolute -left-[9999px] top-0 size-px overflow-hidden">
         {HONEYPOT_FIELDS.map((name) => <input key={name} type="text" name={name} tabIndex={-1} autoComplete="off" defaultValue="" />)}
       </div>
 
-      {status.kind === "error" ? <p role="alert" className="text-[13px] text-error">{status.message}</p> : null}
+      {status.kind === "error" ? <p role="alert" className="rounded-[10px] border border-error/25 bg-error/5 p-4 text-sm text-error">{status.message}</p> : null}
 
-      <div className="flex flex-wrap items-center justify-between gap-x-5 gap-y-3.5">
+      <div className="grid gap-4 border-t border-line pt-5">
         <p id="ct-notice" className="max-w-[38ch] text-[13px] text-ink-2">
           {CONTACT_FORM_COPY.notice} <Link href="/privacy" className="text-ink underline">{CONTACT_FORM_COPY.privacyLink}</Link>.
         </p>
-        <ArrowSubmitButton disabled={submitting} describedBy="ct-notice" className="max-[560px]:w-full max-[560px]:justify-between">
+        <ArrowSubmitButton disabled={submitting} describedBy="ct-notice" className="w-full justify-between">
           {submitting ? CONTACT_FORM_COPY.submitting : CONTACT_FORM_COPY.submit}
         </ArrowSubmitButton>
       </div>

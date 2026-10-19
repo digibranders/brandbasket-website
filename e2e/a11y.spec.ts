@@ -2,7 +2,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
-const PAGES = ["/", "/pricing", "/about", "/contact", "/industries/clinics", "/privacy"];
+const PAGES = ["/", "/pricing", "/about", "/contact", "/industries/clinics", "/privacy", "/terms", "/refund", "/shipping", "/notice"];
 
 /** Frames with no finite animation running before axe runs: entrance transitions start after hydration, not at load. */
 const CALM_FRAMES = 30;

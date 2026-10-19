@@ -2,7 +2,10 @@
 import { context2d } from "./canvas";
 
 const ICON_FAMILY = "Material Symbols Rounded";
-/** Six-glyph subset of Material Symbols Rounded 400 (Apache 2.0), self-hosted because the CSP allows only 'self' fonts. */
+/**
+ * Six-glyph subset of Material Symbols Rounded 400, self-hosted because the CSP allows only 'self' fonts.
+ * Apache License 2.0: public/basket/material-symbols-rounded.LICENSE.txt
+ */
 const ICON_FONT_URL = "/basket/material-symbols-rounded.woff2";
 const FONT_WAIT_MS = 2500;
 

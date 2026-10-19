@@ -9,6 +9,8 @@ import type { BasketScene } from "./scene/types";
 /**
  * Poster first (it is the LCP image). After the page is idle and the stage is near the viewport, loads the OGL
  * scene with a dynamic import, fades the poster out and keeps the tiles in sync with the basket store.
+ * The poster is served unoptimized: it is already AVIF under the 40 KB budget, and re-encoding only grows it.
+ * `priority` marks it as the LCP image (eager, high fetch priority; Next 16 deprecates the Image `priority` prop).
  */
 export function BasketStage({ priority = false }: { readonly priority?: boolean }): ReactElement {
   const host = useRef<HTMLDivElement>(null);
@@ -24,6 +26,7 @@ export function BasketStage({ priority = false }: { readonly priority?: boolean 
     let started = false;
     let cancelled = false;
     let visible = false;
+    let idle: { readonly cancel: () => void } | undefined;
 
     const start = async (): Promise<void> => {
       const [mod, image] = await Promise.all([import("./scene/scene"), loadImage("/basket/site-tile.jpg")]);
@@ -44,8 +47,13 @@ export function BasketStage({ priority = false }: { readonly priority?: boolean 
       if (visible && !started) {
         started = true;
         // Safari has no requestIdleCallback.
-        if (typeof window.requestIdleCallback === "function") window.requestIdleCallback(begin);
-        else setTimeout(begin, 200);
+        if (typeof window.requestIdleCallback === "function") {
+          const id = window.requestIdleCallback(begin, { timeout: 2000 });
+          idle = { cancel: () => window.cancelIdleCallback(id) };
+        } else {
+          const id = window.setTimeout(begin, 200);
+          idle = { cancel: () => window.clearTimeout(id) };
+        }
       }
       scene?.setVisible(visible);
     }, { rootMargin: "200px" });
@@ -53,9 +61,11 @@ export function BasketStage({ priority = false }: { readonly priority?: boolean 
 
     return () => {
       cancelled = true;
+      idle?.cancel();
       io.disconnect();
       unsubscribe?.();
       scene?.destroy();
+      setLive(false);
     };
   }, []);
 
@@ -65,8 +75,10 @@ export function BasketStage({ priority = false }: { readonly priority?: boolean 
         src="/basket/poster.avif"
         alt=""
         fill
-        priority={priority}
-        sizes="(min-width: 1000px) 45vw, 100vw"
+        unoptimized
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        sizes="(min-width: 660px) 620px, 100vw"
         className={`pointer-events-none object-contain transition-opacity duration-700 ease-(--ease) ${live ? "opacity-0" : "opacity-100"}`}
       />
     </div>

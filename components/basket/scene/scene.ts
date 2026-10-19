@@ -32,8 +32,19 @@ const IDLE_MS = 4000;
  * with the right glyphs.
  */
 export function createBasketScene(host: HTMLElement, image: HTMLImageElement | null, options: BasketSceneOptions): BasketScene {
-  const reduce = options.reducedMotion;
   const renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, 2), alpha: true, antialias: true, premultipliedAlpha: false });
+  try {
+    return mountScene(renderer, host, image, options);
+  } catch (error) {
+    // Free the context a half-built scene would otherwise hold; browsers cap live WebGL contexts.
+    renderer.gl.getExtension("WEBGL_lose_context")?.loseContext();
+    renderer.gl.canvas.remove();
+    throw error;
+  }
+}
+
+function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageElement | null, options: BasketSceneOptions): BasketScene {
+  const reduce = options.reducedMotion;
   const gl = renderer.gl;
   gl.clearColor(0, 0, 0, 0);
   const canvas = gl.canvas;
@@ -186,12 +197,19 @@ export function createBasketScene(host: HTMLElement, image: HTMLImageElement | n
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
     renderer.setSize(w, h);
+    // setSize writes pixel sizes inline; keep the canvas fluid so the stage can shrink again (the mock used !important).
+    canvas.style.width = canvas.style.height = "100%";
     camera.perspective({ aspect: w / h });
     if (!running) {
       step(0);
       renderer.render({ scene, camera });
     }
   }
+
+  // Everything that can throw (first render included) runs before listeners, observers and timers exist.
+  let pick: AddonPick = options.initialPick;
+  for (const id of ADDONS) if (pick[id]) GROUPS[id].forEach(add);
+  resize();
 
   const onMove = (e: PointerEvent): void => {
     const r = host.getBoundingClientRect();
@@ -222,15 +240,13 @@ export function createBasketScene(host: HTMLElement, image: HTMLImageElement | n
   host.addEventListener("pointermove", onMove);
   host.addEventListener("pointerdown", onDown);
   host.addEventListener("pointerup", onUp);
+  host.addEventListener("pointercancel", onUp);
   host.addEventListener("pointerleave", onLeave);
 
   const resizer = new ResizeObserver(resize);
   resizer.observe(host);
 
   BASE_TILES.forEach((k, i) => later(() => add(k), reduce ? 0 : BASE_DROP_DELAY_MS + i * BASE_DROP_GAP_MS));
-  let pick: AddonPick = options.initialPick;
-  for (const id of ADDONS) if (pick[id]) GROUPS[id].forEach(add);
-  resize();
 
   return {
     setPick(next) {
@@ -256,6 +272,7 @@ export function createBasketScene(host: HTMLElement, image: HTMLImageElement | n
       host.removeEventListener("pointermove", onMove);
       host.removeEventListener("pointerdown", onDown);
       host.removeEventListener("pointerup", onUp);
+      host.removeEventListener("pointercancel", onUp);
       host.removeEventListener("pointerleave", onLeave);
       gl.getExtension("WEBGL_lose_context")?.loseContext();
       canvas.remove();

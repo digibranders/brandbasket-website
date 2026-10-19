@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { PhoneTotalBar } from "@/components/basket/PhoneTotalBar";
 import { FactsStrip } from "@/components/home/FactsStrip";
+import { HomeFaq } from "@/components/home/HomeFaq";
 import { HomeHero } from "@/components/home/HomeHero";
 import { IndustriesLine } from "@/components/home/IndustriesLine";
 import { PlansSection } from "@/components/home/PlansSection";
@@ -28,6 +29,7 @@ export default function HomePage(): ReactElement {
       <IndustriesLine />
       <PlansSection />
       <ReportSection />
+      <HomeFaq />
       <PhoneTotalBar />
     </>
   );

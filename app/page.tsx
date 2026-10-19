@@ -6,6 +6,7 @@ import { FactsStrip } from "@/components/home/FactsStrip";
 import { HomeHero } from "@/components/home/HomeHero";
 import { IndustriesLine } from "@/components/home/IndustriesLine";
 import { PlansSection } from "@/components/home/PlansSection";
+import { ReportSection } from "@/components/home/ReportSection";
 import { formatInr, PLANS } from "@/lib/pricing";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -26,6 +27,7 @@ export default function HomePage(): ReactElement {
       <FactsStrip />
       <IndustriesLine />
       <PlansSection />
+      <ReportSection />
       <PhoneTotalBar />
     </>
   );

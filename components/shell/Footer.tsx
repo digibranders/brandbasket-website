@@ -6,7 +6,6 @@ import { businessDetails } from "@/lib/site-config";
 import { Logo } from "./Logo";
 
 export function Footer(): ReactElement {
-  const year = new Date().getFullYear();
   return (
     <footer className="mx-auto grid max-w-[1280px] gap-8 border-t border-line px-[clamp(18px,4vw,56px)] pb-5 pt-14">
       <div className="grid gap-7 min-[900px]:grid-cols-[1.4fr_1fr_1fr_1fr]">
@@ -21,11 +20,6 @@ export function Footer(): ReactElement {
             <li>{businessDetails.hours}</li>
           </ul>
         </div>
-      </div>
-      <div className="flex flex-wrap items-center justify-between gap-4 border-t border-line pt-4">
-        <p className="max-w-[92ch] text-[12.5px] leading-relaxed text-ink-2">
-          <b className="font-semibold text-ink">Brandbasket is a brand of {businessDetails.legalName}.</b> CIN {businessDetails.cin} · GSTIN {businessDetails.gstNumber} · Registered office: {businessDetails.address.join(" ")}. Payments by Razorpay. © {year} {businessDetails.legalName}.
-        </p>
       </div>
     </footer>
   );

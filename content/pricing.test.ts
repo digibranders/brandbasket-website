@@ -1,7 +1,7 @@
 // content/pricing.test.ts
 import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
-import { ADDON_CHANGE, CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL } from "./legal/cancellation";
+import { ADDON_CHANGE, CANCEL_ANSWER } from "./legal/cancellation";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, monthlyTotal, PACKAGES, PLANS } from "@/lib/pricing";
 import { COMPARE, GOOD_TO_KNOW, PLAN_DETAILS, PRICING_FAQ, PRICING_HERO } from "./pricing";
 
@@ -38,8 +38,13 @@ describe("pricing content", () => {
     expect(text).toContain(formatInr(EXTRA_HOURLY_RATE));
   });
   it("states cancellation and add-on changes exactly as the legal constants do", () => {
-    const text = JSON.stringify([GOOD_TO_KNOW, PRICING_FAQ]);
-    for (const rule of [CANCELLATION_NOTICE, OWNERSHIP_ON_CANCEL, ADDON_CHANGE]) expect(text).toContain(rule);
+    expect(PRICING_FAQ.find((f) => f.q === "Can I cancel?")?.a).toBe(CANCEL_ANSWER);
+    expect(GOOD_TO_KNOW.find((g) => g.icon === "SignOut")).toEqual({
+      icon: "SignOut",
+      title: "Cancel anytime",
+      body: "No notice period. Your website stays online until the end of the month you have paid for, and your domain stays yours.",
+    });
+    expect(JSON.stringify(PRICING_FAQ)).toContain(ADDON_CHANGE);
   });
   it("uses Phosphor icons that exist", () => {
     for (const key of [...PLAN_DETAILS.map((d) => d.icon), ...GOOD_TO_KNOW.map((g) => g.icon)]) expect(Phosphor).toHaveProperty(key);

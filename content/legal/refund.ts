@@ -2,7 +2,7 @@
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { GST_RATE } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { ADDON_CHANGE, CANCELLATION_NOTICE, CANCELLATION_RULE, OWNERSHIP_ON_CANCEL } from "./cancellation";
+import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, email, grievanceOfficer } = businessDetails;
@@ -18,7 +18,7 @@ export const refundPolicy: LegalDocument = {
       heading: "How billing works",
       requiredBy: ["Razorpay merchant terms", "Consumer Protection (E-Commerce) Rules 2020 r.7(1)"],
       paragraphs: [
-        "Building your website is free. Your plan is billed monthly, in advance, one month at a time, and renews each month until you cancel. Add-ons are billed the same way, with your plan.",
+        `Building your website is free. Your plan is billed monthly, in advance, one month at a time, and renews each month until you cancel. Add-ons are billed the same way, with your plan. ${RENEWAL_REMINDER}`,
         "If you pay by autopay, your bank or UPI app tells you before each renewal charge, as Reserve Bank of India rules require.",
       ],
     },
@@ -26,7 +26,7 @@ export const refundPolicy: LegalDocument = {
       heading: "How to cancel",
       requiredBy: ["Razorpay merchant terms", "Consumer Protection (E-Commerce) Rules 2020 r.7(1)"],
       paragraphs: [
-        `You can cancel any month: write to ${email} and give ${CANCELLATION_NOTICE}. ${CANCELLATION_RULE} ${OWNERSHIP_ON_CANCEL}`,
+        `You can cancel anytime: write to ${email}. ${CANCELLATION_RULE} Your domain stays yours. ${HOSTED_SERVICE}`,
         `You can add or drop an add-on the same way. ${ADDON_CHANGE}`,
       ],
     },
@@ -57,7 +57,7 @@ export const refundPolicy: LegalDocument = {
       heading: "If a payment fails",
       requiredBy: ["Consumer Protection (E-Commerce) Rules 2020 r.7(1)"],
       paragraphs: [
-        "If an autopay charge fails, your bank or Razorpay may try it again. While a payment stays unpaid we may pause your services. Your content is kept, and the services restart once the payment goes through.",
+        `If an autopay charge fails, your bank or Razorpay may try it again. ${PAYMENT_FAILURE}`,
       ],
     },
     {

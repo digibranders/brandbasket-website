@@ -13,7 +13,7 @@ Every price below comes from the pricing module, so it changes if a price change
 5. **Page names.** Each page uses the label from the homepage industries line, so the retail page is called "Shops" and the clinics page "Clinics" (the page text mentions dentists too).
 6. **Search phrases.** Titles and H1s target phrases such as "website for clinics" and "website for real estate agents". These were chosen by judgement, not keyword data.
 7. **Thane West.** The About description and "Who we are" use "Thane West, Maharashtra", from the registered address.
-8. **Cancellation wording (open input D3).** About's "Lock you in" uses the current placeholder: 30 days' notice, and your website, domain and content stay yours.
+8. **Cancellation wording (open input D3).** About's "Lock you in" now follows the published policy: cancel anytime with no notice period, and only the domain stays yours. Owner to review.
 9. **The 5% sign-up discount** is mentioned in every "How much does it cost?" answer.
 10. **Clinics.** The copy makes no claims about treatments or results, given the limits on how doctors may advertise in India. Worth a check if you have clinic clients with their own rules.
 
@@ -313,7 +313,7 @@ We build your website for free, then run it every month: hosting, security, edit
 
 **What we will not do**
 
-- **Lock you in.** Cancel any month with 30 days' notice. Your website, domain and content stay yours.
+- **Lock you in.** Cancel anytime, with no notice period. Your domain stays yours.
 - **Promise rankings or leads.** No one honestly can. You see the work and the numbers in a report every month.
 - **Bill you for ad spend.** You pay Meta directly, so your ad spend stays in your name. Domain fees and paid tools are billed to you directly too.
 

@@ -37,6 +37,7 @@ export function PhoneTotalBar(): ReactElement {
 
   return (
     <div
+      data-phone-total-bar
       inert={hidden}
       className={`fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 flex items-center justify-between gap-3 rounded-full border border-line bg-surface py-[7px] pl-[18px] pr-[7px] shadow-[var(--shadow-bar)] transition-[transform,opacity] duration-[450ms] ease-[var(--ease)] min-[1000px]:hidden ${hidden ? "pointer-events-none translate-y-[150%] opacity-0" : ""}`}
     >

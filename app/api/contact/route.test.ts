@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const ENV = { BREVO_API_KEY: "xkeysib-test", FORM_SECRET: "s".repeat(32), CONTACT_INBOX: "hello@brandbasket.in", MAIL_SENDER: "hello@brandbasket.in" };
-const LEAD = { topic: "website", name: "Asha Rao", phone: "+91 98200 12345", email: "", business: "Rao Dental Care", city: "", plans: ["website"], message: "", noticeVersion: "2026-10-19.1" };
+const LEAD = { topic: "website", name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", plans: ["website"], message: "", noticeVersion: "2026-10-19.1" };
 const T0 = new Date("2026-10-19T10:00:00Z");
 
 const post = (body: unknown): Request =>
@@ -83,7 +83,7 @@ describe("POST /api/contact", () => {
     vi.setSystemTime(T0.getTime() + 5_000);
     const res = await POST(post({ ...LEAD, formToken, phone: "123" }));
     expect(res.status).toBe(422);
-    expect((await res.json()).fields.phone).toEqual(["Please enter a phone number we can call"]);
+    expect((await res.json()).fields.phone).toEqual(["Please check the phone number"]);
   });
 
   it("mails a valid lead to the inbox", async () => {
@@ -93,10 +93,32 @@ describe("POST /api/contact", () => {
     vi.setSystemTime(T0.getTime() + 5_000);
     const res = await POST(post({ ...LEAD, formToken }));
     expect(await res.json()).toEqual({ ok: true });
-    expect(fetchMock).toHaveBeenCalledOnce();
+    expect(fetchMock).toHaveBeenCalledTimes(2);
     const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
     expect(sent.to).toEqual([{ email: "hello@brandbasket.in", name: "Brandbasket" }]);
+    expect(sent.replyTo).toEqual({ email: "asha@example.in", name: "Asha Rao" });
     expect(sent.subject).toBe("New enquiry, A free website: Rao Dental Care (Managed Website)");
+    const confirmation = JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body));
+    expect(confirmation.to).toEqual([{ email: "asha@example.in", name: "Asha Rao" }]);
+    expect(confirmation.subject).toBe("We have your message. Brandbasket");
+  });
+
+  it("still says the message arrived when only the confirmation fails", async () => {
+    fetchMock.mockResolvedValueOnce(new Response("{}", { status: 201 })).mockResolvedValueOnce(new Response("bad", { status: 400 }));
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const { POST, token } = await load(ENV);
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    expect(await (await POST(post({ ...LEAD, formToken }))).json()).toEqual({ ok: true });
+  });
+
+  it("refuses a lead with no email", async () => {
+    const { POST, token } = await load(ENV);
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    const res = await POST(post({ ...LEAD, formToken, email: "" }));
+    expect(res.status).toBe(422);
+    expect((await res.json()).fields.email).toEqual(["Please check the email address"]);
   });
 
   it("returns 502 when Brevo refuses the send", async () => {

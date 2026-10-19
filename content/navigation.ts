@@ -10,8 +10,6 @@ export interface NavLink {
 export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
-  { label: "Industries", href: "/#industries" },
-  { label: "FAQ", href: "/#faq" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -33,3 +31,5 @@ export const LEGAL_NAV: readonly NavLink[] = [
 ];
 
 export const PRIMARY_CTA: NavLink = { label: "Get my free website", href: signupHref(EMPTY_BASKET) };
+
+export const PRICING_CTA: NavLink = { label: "View pricing", href: "/pricing" };

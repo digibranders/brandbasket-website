@@ -9,6 +9,7 @@ import { HomeHero } from "@/components/home/HomeHero";
 import { IndustriesLine } from "@/components/home/IndustriesLine";
 import { PlansSection } from "@/components/home/PlansSection";
 import { ReportSection } from "@/components/home/ReportSection";
+import { WorkShowcase } from "@/components/home/WorkShowcase";
 import { formatInr, PLANS } from "@/lib/pricing";
 import { planOffersJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -30,6 +31,7 @@ export default function HomePage(): ReactElement {
       <FactsStrip />
       <IndustriesLine />
       <PlansSection />
+      <WorkShowcase />
       <ReportSection />
       <HomeFaq />
       <PhoneTotalBar />

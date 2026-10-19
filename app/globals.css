@@ -13,6 +13,7 @@
   --shadow-nav: 0 10px 30px -18px rgba(0, 0, 0, 0.25);
   --shadow-nav-scrolled: 0 18px 40px -24px rgba(21, 22, 26, 0.35);
   --shadow-bar: 0 18px 40px -16px rgba(21, 22, 26, 0.35);
+  --shadow-knob: 0 1px 3px rgba(0, 0, 0, 0.25);
   --shadow-sheet: 0 30px 60px -20px rgba(0, 0, 0, 0.35);
   --c-site: #a8743c; --c-care: #8a5a2b; --c-growth: #2f7f7a; --c-growth-2: #1f6b66; --c-search: #3d5a8a; --c-search-2: #2d4a7a;
   --ease: cubic-bezier(0.32, 0.72, 0, 1);

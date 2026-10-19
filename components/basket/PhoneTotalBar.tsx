@@ -1,7 +1,8 @@
 "use client";
 import { type ReactElement, useEffect, useState } from "react";
 import { BASKET_COPY } from "@/content/basket";
-import { basketPlans, firstPayment, formatInr, monthlyTotal } from "@/lib/pricing";
+import { firstPayment, formatInr, monthlyTotal } from "@/lib/pricing";
+import { basketNames } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
@@ -13,6 +14,7 @@ export function PhoneTotalBar(): ReactElement {
   const pick = useBasket();
   const [hidden, setHidden] = useState(true);
 
+  // The observers bind once at mount, so mount the bar on the page that renders the totals and #closing.
   useEffect(() => {
     const seen = new Set<Element>();
     let closePassed = false;
@@ -21,18 +23,19 @@ export function PhoneTotalBar(): ReactElement {
       entries.forEach((e) => { if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
       update();
     });
-    document.querySelectorAll("[data-basket-total]").forEach((el) => totals.observe(el));
+    const totalEls = document.querySelectorAll("[data-basket-total]");
+    totalEls.forEach((el) => totals.observe(el));
     const closing = new IntersectionObserver(([e]) => {
       closePassed = Boolean(e && (e.isIntersecting || e.boundingClientRect.top < 0));
       update();
     });
     const closingEl = document.getElementById("closing");
     if (closingEl) closing.observe(closingEl);
-    update();
+    // Otherwise the first observer callback sets the state; updating now would flash the bar before it runs.
+    if (totalEls.length === 0 && !closingEl) update();
     return () => { totals.disconnect(); closing.disconnect(); };
   }, []);
 
-  const names = basketPlans(pick).map((plan) => plan.short).join(" + ");
   return (
     <div
       inert={hidden}
@@ -40,7 +43,7 @@ export function PhoneTotalBar(): ReactElement {
     >
       <div className="grid min-w-0 leading-[1.25]">
         <b className="num whitespace-nowrap font-display text-lg font-medium tracking-[-0.02em]">{formatInr(firstPayment(monthlyTotal(pick)).total)} {BASKET_COPY.perMonth}</b>
-        <span className="truncate text-xs text-ink-2">{names}, {BASKET_COPY.withGst}</span>
+        <span className="truncate text-xs text-ink-2">{basketNames(pick)}, {BASKET_COPY.withGst}</span>
       </div>
       <BasketCta size="sm" />
     </div>

@@ -1,0 +1,4 @@
+/* components/motion/reveal.css */
+[data-reveal="pending"] { opacity: 0; transform: translate3d(0, 28px, 0); filter: blur(6px); }
+[data-reveal="done"] { opacity: 1; transform: none; filter: none; transition: opacity 900ms var(--ease), transform 900ms var(--ease), filter 900ms var(--ease); transition-delay: var(--reveal-delay, 0ms); }
+@media (prefers-reduced-motion: reduce) { [data-reveal] { opacity: 1 !important; transform: none !important; filter: none !important; } }

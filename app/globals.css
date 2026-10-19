@@ -1,5 +1,6 @@
 /* app/globals.css */
 @import "tailwindcss";
+@import "../components/motion/reveal.css";
 
 :root {
   --bg: #f6f5f2; --surface: #ffffff; --sunken: #eeece7;

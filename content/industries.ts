@@ -60,10 +60,8 @@ const FAQ_NO_SHOP: FaqItem = {
   a: "No. E-commerce and online ordering are not part of the plans. Your site shows what you offer and lets people call or send an enquiry.",
 };
 
-/** The /industries hub. New copy for the owner's review (Task 7.2); the h1 is the plan's. */
+/** The /industries hub. New copy for the owner's review (Task 7.2); the h1 is the plan's. Title and description: lib/seo/routes.ts. */
 export const INDUSTRIES_HUB = {
-  title: "Websites for local businesses, built free | Brandbasket",
-  description: "Free websites for clinics, salons, restaurants, gyms, coaching classes, shops, home services and real estate agents, run for you every month.",
   h1: "Websites for every local business",
   lede: "Pick your trade to see what we build, what we run every month and the basket we suggest.",
 } as const;

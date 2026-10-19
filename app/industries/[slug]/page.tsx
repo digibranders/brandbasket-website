@@ -14,6 +14,7 @@ import { INDUSTRIES, INDUSTRY_PAGE, type Industry as IndustryCopy, industryBySlu
 import { basketPlans, formatInr, monthlyTotal } from "@/lib/pricing";
 import { audienceServiceJsonLd, breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { industryRoute } from "@/lib/seo/routes";
 
 interface IndustryPageProps {
   readonly params: Promise<{ readonly slug: string }>;
@@ -32,12 +33,7 @@ async function industryFor(params: IndustryPageProps["params"]): Promise<Industr
 }
 
 export async function generateMetadata({ params }: IndustryPageProps): Promise<Metadata> {
-  const industry = await industryFor(params);
-  // Industry titles already end " | Brandbasket", so the absolute title skips the layout template.
-  return {
-    ...pageMetadata({ title: industry.title, description: industry.description, path: `/industries/${industry.slug}` }),
-    title: { absolute: industry.title },
-  };
+  return pageMetadata(industryRoute(await industryFor(params)));
 }
 
 /** One template for the eight industry pages (plan 02, Task 7.2). The closing section comes from the root layout. */

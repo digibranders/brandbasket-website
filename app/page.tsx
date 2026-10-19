@@ -9,18 +9,11 @@ import { IndustriesLine } from "@/components/home/IndustriesLine";
 import { PlansSection } from "@/components/home/PlansSection";
 import { ReportSection } from "@/components/home/ReportSection";
 import { WorkShowcase } from "@/components/home/WorkShowcase";
-import { formatInr, PLANS } from "@/lib/pricing";
 import { planOffersJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { ROUTES } from "@/lib/seo/routes";
 
-const HOME_TITLE = "Free business website, run for you monthly | Brandbasket";
-const HOME_DESCRIPTION = `Get a professional website built free for your local business. We host, secure and update it for ${formatInr(PLANS.website.monthly)} a month. Add Google and local search any time.`;
-
-// pageMetadata gives the canonical and social tags; the absolute title skips the "%s | Brandbasket" template.
-export const metadata: Metadata = {
-  ...pageMetadata({ title: HOME_TITLE, description: HOME_DESCRIPTION, path: "/" }),
-  title: { absolute: HOME_TITLE },
-};
+export const metadata: Metadata = pageMetadata(ROUTES.home);
 
 /** Sections in mock order (docs/design/mock.html, #view-home). The closing section comes from the root layout. */
 export default function HomePage(): ReactElement {

@@ -12,9 +12,8 @@ export interface AboutPromise {
   readonly body: string;
 }
 
+/** The page title and description live in lib/seo/routes.ts with every other page's. */
 export interface About {
-  readonly title: string;
-  readonly description: string;
   readonly h1: string;
   readonly lede: string;
   readonly who: { readonly heading: string; readonly paragraphs: readonly string[] };
@@ -25,8 +24,6 @@ export interface About {
 const { legalName, tradeName, foundingYear, postalAddress } = businessDetails;
 
 export const ABOUT: About = {
-  title: `About ${tradeName}, a brand of Digibranders`,
-  description: `${tradeName} is a brand of ${legalName}, ${postalAddress.locality}. We build local business websites for free, then run them for you every month.`,
   h1: "Websites and local marketing, run for you",
   lede: "For clinics, salons, shops and other local businesses in India that want to be found online without doing the technical work.",
   who: {

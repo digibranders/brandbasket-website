@@ -8,11 +8,9 @@ import { PageHero } from "@/components/ui/PageHero";
 import { INDUSTRIES, INDUSTRIES_HUB } from "@/content/industries";
 import { breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { ROUTES } from "@/lib/seo/routes";
 
-export const metadata: Metadata = {
-  ...pageMetadata({ title: INDUSTRIES_HUB.title, description: INDUSTRIES_HUB.description, path: "/industries" }),
-  title: { absolute: INDUSTRIES_HUB.title },
-};
+export const metadata: Metadata = pageMetadata(ROUTES.industries);
 
 /** The industries hub: the site's only card grid. Each card is one link and holds nothing else (plan 02, Task 7.2). */
 export default function IndustriesPage(): ReactElement {

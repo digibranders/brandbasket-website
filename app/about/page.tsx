@@ -10,12 +10,9 @@ import { StepsList } from "@/components/ui/StepsList";
 import { ABOUT } from "@/content/about";
 import { aboutPageJsonLd, breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { ROUTES } from "@/lib/seo/routes";
 
-// The title already names Brandbasket, so it is absolute rather than "%s | Brandbasket" (as on Pricing and Contact).
-export const metadata: Metadata = {
-  ...pageMetadata({ title: ABOUT.title, description: ABOUT.description, path: "/about" }),
-  title: { absolute: ABOUT.title },
-};
+export const metadata: Metadata = pageMetadata(ROUTES.about);
 
 /** About Brandbasket (plan 02, Task 7.3): who we are, how we work, what we will not do, then the registered office. */
 export default function AboutPage(): ReactElement {
@@ -65,7 +62,7 @@ export default function AboutPage(): ReactElement {
         </Reveal>
       </div>
 
-      <JsonLd data={aboutPageJsonLd({ name: ABOUT.title, description: ABOUT.description })} />
+      <JsonLd data={aboutPageJsonLd({ name: ROUTES.about.title, description: ROUTES.about.description })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "About", path: "/about" }])} />
     </>
   );

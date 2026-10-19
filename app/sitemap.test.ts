@@ -10,4 +10,7 @@ describe("sitemap", () => {
     for (const { slug } of INDUSTRIES) expect(urls).toContain(`https://brandbasket.in/industries/${slug}`);
     expect(new Set(urls).size).toBe(urls.length);
   });
+  it("leaves the noindex data notice out", () => {
+    expect(sitemap().map((entry) => entry.url)).not.toContain("https://brandbasket.in/notice");
+  });
 });

@@ -3,7 +3,7 @@ import { z } from "zod";
 import { CONTACT_ERRORS } from "@/content/contact";
 import { contactSchema } from "@/lib/contact-schema";
 import { BrevoSendError, sendTransactionalEmail } from "@/lib/email/brevo";
-import { buildLeadEmail } from "@/lib/email/contact-templates";
+import { buildConfirmationEmail, buildLeadEmail } from "@/lib/email/contact-templates";
 import { serverEnv, type ServerEnv } from "@/lib/env";
 import { screenSubmission } from "@/lib/security/honeypot";
 import { clientKey, rateLimit } from "@/lib/security/rateLimit";
@@ -52,7 +52,7 @@ export async function POST(request: Request): Promise<Response> {
     await sendTransactionalEmail({
       to: [{ email: env.CONTACT_INBOX, name: "Brandbasket" }],
       sender: { email: env.MAIL_SENDER, name: "Brandbasket website" },
-      replyTo: parsed.data.email ? { email: parsed.data.email, name: parsed.data.name } : undefined,
+      replyTo: { email: parsed.data.email, name: parsed.data.name },
       subject: mail.subject,
       htmlContent: mail.html,
       textContent: mail.text,
@@ -60,6 +60,21 @@ export async function POST(request: Request): Promise<Response> {
   } catch (error) {
     logFailure("mail send", error);
     return sendFailed();
+  }
+
+  // The lead is with us now, so a failed confirmation is logged rather than shown to the visitor as a failure.
+  const confirmation = buildConfirmationEmail(parsed.data);
+  try {
+    await sendTransactionalEmail({
+      to: [{ email: parsed.data.email, name: parsed.data.name }],
+      sender: { email: env.MAIL_SENDER, name: "Brandbasket" },
+      replyTo: { email: env.CONTACT_INBOX, name: "Brandbasket" },
+      subject: confirmation.subject,
+      htmlContent: confirmation.html,
+      textContent: confirmation.text,
+    });
+  } catch (error) {
+    logFailure("confirmation send", error);
   }
   return Response.json({ ok: true });
 }

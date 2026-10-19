@@ -27,8 +27,8 @@ export const CONTACT_MAX = { name: 80, phone: 16, email: 120, business: 120, cit
 export const contactSchema = z.object({
   topic: z.enum(CONTACT_TOPICS),
   name: z.string().trim().min(2, CONTACT_ERRORS.name).max(CONTACT_MAX.name).regex(NO_CONTROL, CONTACT_ERRORS.name),
-  phone: z.string().trim().regex(/^\+?[0-9][0-9 ]{9,14}$/, CONTACT_ERRORS.phone),
-  email: z.union([z.email(CONTACT_ERRORS.email).max(CONTACT_MAX.email), z.literal("")]).optional(),
+  phone: z.union([z.string().trim().regex(/^\+?[0-9][0-9 ]{9,14}$/, CONTACT_ERRORS.phone), z.literal("")]).optional(),
+  email: z.email(CONTACT_ERRORS.email).max(CONTACT_MAX.email),
   business: z.string().trim().min(2, CONTACT_ERRORS.business).max(CONTACT_MAX.business).regex(NO_CONTROL, CONTACT_ERRORS.business),
   city: optionalText(CONTACT_MAX.city, true),
   // Present when the visitor arrived from a basket (?plan=); an empty list is a general enquiry.

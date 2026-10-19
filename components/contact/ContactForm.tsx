@@ -230,10 +230,10 @@ export function ContactForm(): ReactElement {
         <legend className="mb-4 p-0 text-sm font-semibold">{CONTACT_FORM_COPY.detailsLegend}</legend>
         <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
           {field("name", { autoComplete: "name" })}
-          {field("phone", { autoComplete: "tel", type: "tel", inputMode: "tel" })}
+          {field("phone", { autoComplete: "tel", type: "tel", inputMode: "tel", optional: true })}
           {field("business", { autoComplete: "organization" })}
           {field("city", { autoComplete: "address-level2", optional: true })}
-          {field("email", { autoComplete: "email", type: "email", optional: true, full: true })}
+          {field("email", { autoComplete: "email", type: "email", full: true })}
           {field("message", { autoComplete: "off", optional: true, full: true, multiline: true })}
         </div>
       </fieldset>

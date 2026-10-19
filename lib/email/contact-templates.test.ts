@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import type { ContactInput } from "@/lib/contact-schema";
-import { buildLeadEmail, escapeHtml } from "./contact-templates";
+import { buildConfirmationEmail, buildLeadEmail, escapeHtml } from "./contact-templates";
 
 const lead: ContactInput = {
   topic: "website",
@@ -43,6 +43,25 @@ describe("buildLeadEmail", () => {
   });
 
   it("marks empty optional fields instead of printing nothing", () => {
-    expect(buildLeadEmail({ ...lead, email: "", city: "", message: undefined }).text).toContain("Email: not given");
+    expect(buildLeadEmail({ ...lead, phone: "", city: "", message: undefined }).text).toContain("Phone: not given");
+  });
+});
+
+describe("buildConfirmationEmail", () => {
+  it("greets by first name and names the topic and plans from fixed lists", () => {
+    const mail = buildConfirmationEmail(lead);
+    expect(mail.subject).toBe("We have your message. Brandbasket");
+    expect(mail.text).toContain("Hi Asha,");
+    expect(mail.text).toContain("within one working day");
+    expect(mail.html).toContain("https://brandbasket.in/email/brandbasket-logo.png");
+  });
+
+  it("repeats nothing else the visitor typed", () => {
+    const mail = buildConfirmationEmail({ ...lead, name: "spam.example now", business: "Cheap pills", message: "click here" });
+    expect(mail.text).toContain("Hello,");
+    for (const typed of ["spam.example", "Cheap pills", "click here"]) {
+      expect(mail.text).not.toContain(typed);
+      expect(mail.html).not.toContain(typed);
+    }
   });
 });

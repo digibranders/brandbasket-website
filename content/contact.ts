@@ -30,7 +30,7 @@ export const CONTACT_LABELS = {
 
 export const CONTACT_ERRORS = {
   name: "Please enter your name",
-  phone: "Please enter a phone number we can call",
+  phone: "Please check the phone number",
   business: "Please enter your business name",
   email: "Please check the email address",
   basket: "Every basket starts with the website",

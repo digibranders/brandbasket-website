@@ -3,9 +3,13 @@ import type { FaqItem } from "@/content/types";
 import { PLANS, type PlanId } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
+/** One node id for the organization, so other entities can point at it instead of repeating it. */
+export const ORGANIZATION_ID = `${siteConfig.url}/#organization`;
+
 export interface OrganizationLd {
   readonly "@context": "https://schema.org";
   readonly "@type": "Organization";
+  readonly "@id": string;
   readonly name: string;
   readonly legalName: string;
   readonly url: string;
@@ -28,6 +32,7 @@ export function organizationJsonLd(): OrganizationLd {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
+    "@id": ORGANIZATION_ID,
     name: businessDetails.tradeName,
     legalName: businessDetails.legalName,
     url: siteConfig.url,
@@ -43,6 +48,28 @@ export function organizationJsonLd(): OrganizationLd {
       postalCode: postalAddress.postalCode,
       addressCountry: postalAddress.country,
     },
+  };
+}
+
+export interface WebSiteLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "WebSite";
+  readonly "@id": string;
+  readonly name: string;
+  readonly url: string;
+  readonly inLanguage: "en-IN";
+  readonly publisher: { readonly "@id": string };
+}
+
+export function webSiteJsonLd(): WebSiteLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "@id": `${siteConfig.url}/#website`,
+    name: businessDetails.tradeName,
+    url: siteConfig.url,
+    inLanguage: "en-IN",
+    publisher: { "@id": ORGANIZATION_ID },
   };
 }
 

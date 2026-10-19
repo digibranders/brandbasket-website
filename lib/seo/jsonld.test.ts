@@ -1,6 +1,6 @@
 // lib/seo/jsonld.test.ts
 import { describe, expect, it } from "vitest";
-import { breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd } from "./jsonld";
+import { breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd, webSiteJsonLd } from "./jsonld";
 
 describe("organizationJsonLd", () => {
   it("names the legal entity and the brand", () => {
@@ -9,6 +9,19 @@ describe("organizationJsonLd", () => {
     expect(org.legalName).toBe("Digibranders Private Limited");
     expect(org.name).toBe("Brandbasket");
     expect(org.taxID).toBe("27AAICD9268J1Z0");
+  });
+
+  it("carries the @id the WebSite publisher points at", () => {
+    expect(organizationJsonLd()["@id"]).toBe("https://brandbasket.in/#organization");
+  });
+});
+
+describe("webSiteJsonLd", () => {
+  it("describes the site and names the organization as publisher", () => {
+    const site = webSiteJsonLd();
+    expect(site["@type"]).toBe("WebSite");
+    expect(site.url).toBe("https://brandbasket.in");
+    expect(site.publisher["@id"]).toBe("https://brandbasket.in/#organization");
   });
 });
 

@@ -1,6 +1,7 @@
 // app/page.tsx
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
+import { JsonLd } from "@/components/JsonLd";
 import { PhoneTotalBar } from "@/components/basket/PhoneTotalBar";
 import { FactsStrip } from "@/components/home/FactsStrip";
 import { HomeFaq } from "@/components/home/HomeFaq";
@@ -9,6 +10,7 @@ import { IndustriesLine } from "@/components/home/IndustriesLine";
 import { PlansSection } from "@/components/home/PlansSection";
 import { ReportSection } from "@/components/home/ReportSection";
 import { formatInr, PLANS } from "@/lib/pricing";
+import { planOffersJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 const HOME_TITLE = "Free business website, run for you monthly | Brandbasket";
@@ -31,6 +33,8 @@ export default function HomePage(): ReactElement {
       <ReportSection />
       <HomeFaq />
       <PhoneTotalBar />
+      <JsonLd data={webSiteJsonLd()} />
+      <JsonLd data={planOffersJsonLd()} />
     </>
   );
 }

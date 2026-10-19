@@ -2,7 +2,7 @@ import type { ReactElement } from "react";
 import { BasketCta } from "@/components/basket/BasketCta";
 import { BasketStage } from "@/components/basket/BasketStage";
 import { OfferLine } from "@/components/ui/OfferLine";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { PricingButton } from "@/components/ui/PricingButton";
 import { HERO } from "@/content/home";
 
 /**
@@ -21,7 +21,7 @@ export function HomeHero(): ReactElement {
           <OfferLine />
           <div className="flex flex-wrap items-center gap-2.5">
             <BasketCta location="hero" />
-            <WhatsAppButton location="hero" label={HERO.whatsappLabel} />
+            <PricingButton />
           </div>
         </div>
         <div className="relative mt-2 grid min-w-0 justify-items-center gap-1">

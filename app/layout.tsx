@@ -8,6 +8,7 @@ import { ConversionTracking } from "@/components/analytics/ConversionTracking";
 import { Closing } from "@/components/shell/Closing";
 import { ClosingGate } from "@/components/shell/ClosingGate";
 import { Footer } from "@/components/shell/Footer";
+import { WhatsAppChat } from "@/components/shell/WhatsAppChat";
 import { Nav } from "@/components/shell/Nav";
 import { fontVariables } from "@/lib/fonts";
 import { organizationJsonLd } from "@/lib/seo/jsonld";
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
           <ClosingGate><Closing /></ClosingGate>
         </main>
         <Footer />
+        <WhatsAppChat />
         <JsonLd data={organizationJsonLd()} />
         <ConversionTracking />
         <Analytics />

@@ -42,7 +42,6 @@ export const HERO = {
   headlineAccent: "Your Website.",
   subhead: "Your Business Has a Name. Give It a Place on the Internet for free.",
   offer: OFFER,
-  whatsappLabel: "Chat on WhatsApp",
   stageLabel: "A woven 3D basket holding the services in your plan",
 } as const;
 

@@ -15,10 +15,11 @@ export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
+// Mock footer order. "About us" and "Industries" return when /about and /industries exist (owner, Phase 7).
 export const FOOTER_NAV: readonly NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Pricing", href: "/pricing" },
-  { label: "About us", href: "/about" },
+  { label: "Our work", href: "/#work" },
   { label: "Contact us", href: "/contact" },
 ];
 

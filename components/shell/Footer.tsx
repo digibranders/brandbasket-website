@@ -9,7 +9,7 @@ export function Footer(): ReactElement {
   const year = new Date().getFullYear();
   return (
     <footer className="mx-auto grid max-w-[1280px] gap-8 border-t border-line px-[clamp(18px,4vw,56px)] pb-5 pt-14">
-      <div className="grid gap-7 md:grid-cols-[1.4fr_1fr_1fr_1fr]">
+      <div className="grid gap-7 min-[900px]:grid-cols-[1.4fr_1fr_1fr_1fr]">
         <div className="grid max-w-[38ch] gap-3.5 text-[14.5px] text-ink-2"><Logo /><p>Websites, Google, ads and local search for local businesses, run for you every month.</p></div>
         <FooterList title="Brandbasket" links={FOOTER_NAV} />
         <FooterList title="Legal" links={LEGAL_NAV} />
@@ -18,6 +18,7 @@ export function Footer(): ReactElement {
           <ul className="grid gap-2 text-[14.5px]">
             <li><a href={`mailto:${businessDetails.email}`}>{businessDetails.email}</a></li>
             <li><a href={`tel:${businessDetails.phoneHref}`}>{businessDetails.phone}</a></li>
+            <li>{businessDetails.hours}</li>
           </ul>
         </div>
       </div>

@@ -47,7 +47,7 @@ export function ContactChannels(): ReactElement {
         ))}
       </ul>
       <dl className="mt-7 grid gap-4 text-[14.5px]">
-        <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.hoursLabel}</dt><dd className="mt-[3px] max-w-[46ch]">{CONTACT_PAGE.hours}</dd></div>
+        <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.hoursLabel}</dt><dd className="mt-[3px] max-w-[46ch]">{businessDetails.hours}</dd></div>
         <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.officeLabel}</dt><dd className="mt-[3px] max-w-[46ch]">{OFFICE}</dd></div>
       </dl>
     </>

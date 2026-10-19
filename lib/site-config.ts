@@ -38,6 +38,8 @@ export interface BusinessDetails {
   readonly phoneHref: string;
   readonly whatsappHref: string;
   readonly email: string;
+  /** Office hours, shown in the footer and on /contact. */
+  readonly hours: string;
   readonly foundingYear: number;
   /** DPDP Act s.8(10) and E-Commerce Rules r.4(5): named in the privacy policy, refund policy and data notice. */
   readonly grievanceOfficer: GrievanceOfficer;
@@ -68,6 +70,8 @@ export const businessDetails: BusinessDetails = {
   phoneHref: "+917897896607",
   whatsappHref: "https://wa.me/917897896607",
   email: "hello@brandbasket.in",
+  // Open input D11: confirm the hours with the phone and WhatsApp number.
+  hours: "Mon to Sat, 10 am to 7 pm IST",
   foundingYear: 2021,
   // Open input D9: the name is Digibranders' Grievance Officer on its other brand; confirm the person and the mailbox before launch.
   grievanceOfficer: { name: "Siddique Ahmed", designation: "Grievance Officer", email: "grievance@brandbasket.in" },

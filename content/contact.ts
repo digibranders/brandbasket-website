@@ -7,7 +7,6 @@ export const CONTACT_PAGE = {
   lede: "Ask about a free website, a plan, or the site you already have. We reply within one working day.",
   whatsappNote: "the fastest way to reach us",
   hoursLabel: "Hours",
-  hours: "Mon to Sat, 10 am to 7 pm IST",
   officeLabel: "Registered office",
 } as const;
 

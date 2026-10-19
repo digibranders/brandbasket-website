@@ -1,3 +1,6 @@
+import { EMPTY_BASKET } from "@/lib/basket-store";
+import { signupHref } from "@/lib/signup";
+
 // content/navigation.ts
 export interface NavLink {
   readonly label: string;
@@ -26,4 +29,4 @@ export const LEGAL_NAV: readonly NavLink[] = [
   { label: "Shipping and delivery", href: "/shipping" },
 ];
 
-export const PRIMARY_CTA: NavLink = { label: "Get my free website", href: "/contact#book" };
+export const PRIMARY_CTA: NavLink = { label: "Get my free website", href: signupHref(EMPTY_BASKET) };

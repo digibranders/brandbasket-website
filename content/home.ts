@@ -130,12 +130,14 @@ export interface WorkCase {
 
 /**
  * Image paths are served from /work. The files come from docs/design/img (full-<id>-desk.jpg and full-<id>-mob.jpg)
- * and must be copied to public/work by the showcase component task.
+ * and are copied to public/work.
  */
 export const WORK = {
   heading: "Real websites, live today.",
   tabsLabel: "Websites we built",
   dragChip: "Drag to scroll",
+  /** Appended to each screen's alt text to label its scrollable viewport. */
+  scrollableSuffix: ", scrollable",
   cases: [
     {
       id: "curry",
@@ -171,7 +173,7 @@ export const WORK = {
       phoneAlt: "The PayWeek home page on a phone",
     },
   ],
-} as const satisfies { readonly heading: string; readonly tabsLabel: string; readonly dragChip: string; readonly cases: readonly WorkCase[] };
+} as const satisfies { readonly heading: string; readonly tabsLabel: string; readonly dragChip: string; readonly scrollableSuffix: string; readonly cases: readonly WorkCase[] };
 
 export type ReportTone = "site" | "growth" | "growth2" | "search";
 

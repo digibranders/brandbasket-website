@@ -37,11 +37,13 @@ export function WorkShowcase(): ReactElement {
   const stageRef = useRef<HTMLDivElement>(null);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const engine = useRef<Engine | null>(null);
+  // Mirrors `active` so a re-run effect (remount, Fast Refresh) starts from the selected case.
+  const activeRef = useRef(0);
 
   useEffect(() => {
     const root = rootRef.current;
     const stage = stageRef.current;
-    const first = WORK.cases[0];
+    const first = WORK.cases[activeRef.current] ?? WORK.cases[0];
     if (!root || !stage) return;
 
     const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -130,7 +132,17 @@ export function WorkShowcase(): ReactElement {
       el.addEventListener("wheel", (e) => {
         if (!current() || e.ctrlKey) return;
         const dy = e.deltaY * (e.deltaMode === 1 ? 16 : e.deltaMode === 2 ? el.clientHeight : 1);
-        if ((dy < 0 && target <= 0) || (dy > 0 && target >= 1)) return;
+        // Horizontal swipes (browser back and forward) pass through untouched.
+        if (dy === 0) return;
+        if ((dy < 0 && target <= 0) || (dy > 0 && target >= 1)) {
+          // At an end: settle the screen there so the page takes over at once.
+          if (pos !== target) {
+            pos = target;
+            apply();
+            syncPhase();
+          }
+          return;
+        }
         e.preventDefault();
         drag.v = 0;
         target = clamp(target + dy / max(el));
@@ -185,8 +197,12 @@ export function WorkShowcase(): ReactElement {
         hold(4000);
       }, { signal: ac.signal, passive: true });
     }
-    stage.addEventListener("mouseenter", () => { hovering = true; }, on);
-    stage.addEventListener("mouseleave", () => {
+    // Only a mouse pauses on hover; a touch tap would otherwise leave the showcase paused.
+    stage.addEventListener("pointerenter", (e) => {
+      if (e.pointerType === "mouse") hovering = true;
+    }, on);
+    stage.addEventListener("pointerleave", (e) => {
+      if (e.pointerType !== "mouse") return;
       hovering = false;
       hold(600);
       wake();
@@ -217,14 +233,16 @@ export function WorkShowcase(): ReactElement {
   const select = (index: number): void => {
     const next = WORK.cases[index];
     if (!next) return;
+    activeRef.current = index;
     setActive(index);
     engine.current?.select(next.id, next.scrollSeconds);
   };
   const onTabKey = (e: KeyboardEvent<HTMLButtonElement>, index: number): void => {
+    const last = WORK.cases.length - 1;
     const step = e.key === "ArrowDown" || e.key === "ArrowRight" ? 1 : e.key === "ArrowUp" || e.key === "ArrowLeft" ? -1 : 0;
-    if (!step) return;
+    const next = e.key === "Home" ? 0 : e.key === "End" ? last : step ? (index + step + WORK.cases.length) % WORK.cases.length : -1;
+    if (next < 0) return;
     e.preventDefault();
-    const next = (index + step + WORK.cases.length) % WORK.cases.length;
     tabRefs.current[next]?.focus();
     select(next);
   };
@@ -280,7 +298,7 @@ export function WorkShowcase(): ReactElement {
               </div>
               <div data-screen="desk" className="relative aspect-[16/10.4] overflow-hidden bg-sunken">
                 {WORK.cases.map((c, i) => (
-                  <div key={c.id} data-site={c.id} role="group" aria-label={`${c.desktopAlt}, scrollable`} tabIndex={i === active ? 0 : -1} className={`${LAYER} ${i === active ? LAYER_ON : LAYER_OFF}`}>
+                  <div key={c.id} data-site={c.id} role="group" aria-label={`${c.desktopAlt}${WORK.scrollableSuffix}`} tabIndex={i === active ? 0 : -1} className={`${LAYER} ${i === active ? LAYER_ON : LAYER_OFF}`}>
                     <Image src={c.desktop.src} width={c.desktop.width} height={c.desktop.height} alt={c.desktopAlt} sizes={DESK_SIZES} draggable={false} className={SHOT} />
                   </div>
                 ))}
@@ -293,7 +311,7 @@ export function WorkShowcase(): ReactElement {
             <div className="absolute bottom-0 right-0 z-[2] w-1/4 min-w-[110px] rounded-[34px] bg-ink p-[7px] shadow-[0_30px_60px_-24px_rgba(0,0,0,0.55),inset_0_0_0_1.5px_color-mix(in_srgb,var(--ink),white_10%)] after:pointer-events-none after:absolute after:left-1/2 after:top-3.5 after:z-[3] after:h-3.5 after:w-[30%] after:-translate-x-1/2 after:rounded-full after:bg-ink after:content-['']">
               <div data-screen="mob" className="relative aspect-[9/19.5] overflow-hidden rounded-[27px] bg-sunken">
                 {WORK.cases.map((c, i) => (
-                  <div key={c.id} data-site={c.id} role="group" aria-label={`${c.phoneAlt}, scrollable`} tabIndex={i === active ? 0 : -1} className={`${LAYER} ${i === active ? LAYER_ON : LAYER_OFF}`}>
+                  <div key={c.id} data-site={c.id} role="group" aria-label={`${c.phoneAlt}${WORK.scrollableSuffix}`} tabIndex={i === active ? 0 : -1} className={`${LAYER} ${i === active ? LAYER_ON : LAYER_OFF}`}>
                     <Image src={c.phone.src} width={c.phone.width} height={c.phone.height} alt={c.phoneAlt} sizes={PHONE_SIZES} draggable={false} className={SHOT} />
                   </div>
                 ))}

@@ -46,7 +46,7 @@ export interface CompareGroup {
 export interface CompareColumn {
   readonly id: Package["id"];
   readonly name: string;
-  /** Monthly total before GST, for example "₹10,400". */
+  /** Monthly total before GST, for example "₹10,398.40". */
   readonly price: string;
   readonly priceSuffix: string;
 }
@@ -157,7 +157,7 @@ export interface PlanDetail {
   readonly id: PlanId;
   readonly name: string;
   readonly icon: PricingIconKey;
-  /** The line under the plan name, for example "₹10,000 a month · Instagram, Facebook, Google profile and Meta ads". */
+  /** The line under the plan name, for example "₹9,999 a month · Instagram, Facebook, Google profile and Meta ads". */
   readonly summary: string;
   readonly columns: readonly DetailColumn[];
 }

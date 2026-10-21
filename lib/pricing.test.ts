@@ -22,9 +22,9 @@ const pick = (website: boolean, growth: boolean, search: boolean): BasketPick =>
 
 describe("plans", () => {
   it("prices the three plans (owner decision, 2026-10-21)", () => {
-    expect(PLANS.website.monthly).toBe(3000);
-    expect(PLANS.growth.monthly).toBe(10000);
-    expect(PLANS.search.monthly).toBe(25000);
+    expect(PLANS.website.monthly).toBe(2999);
+    expect(PLANS.growth.monthly).toBe(9999);
+    expect(PLANS.search.monthly).toBe(24999);
   });
 
   it("keeps prices in whole rupees and package offers in whole percent (the paise maths relies on both)", () => {
@@ -50,13 +50,13 @@ describe("samePick", () => {
 
 describe("baskets", () => {
   it.each([
-    [pick(true, false, false), 3000, 3000, 3540, 0, 0, null],
-    [pick(false, true, false), 10000, 10000, 11800, 0, 0, null],
-    [pick(false, false, true), 25000, 25000, 29500, 0, 0, null],
-    [pick(true, true, false), 13000, 10400, 12272, 2600, 2000, "website-growth"],
-    [pick(true, false, true), 28000, 22400, 26432, 5600, 0, "website-search"],
-    [pick(false, true, true), 35000, 24500, 28910, 10500, 2000, "growth-search"],
-    [pick(true, true, true), 38000, 26600, 31388, 11400, 5000, "everything"],
+    [pick(true, false, false), 2999, 2999, 3538.82, 0, 0, null],
+    [pick(false, true, false), 9999, 9999, 11798.82, 0, 0, null],
+    [pick(false, false, true), 24999, 24999, 29498.82, 0, 0, null],
+    [pick(true, true, false), 12998, 10398.4, 12270.11, 2599.6, 2000, "website-growth"],
+    [pick(true, false, true), 27998, 22398.4, 26430.11, 5599.6, 0, "website-search"],
+    [pick(false, true, true), 34998, 24498.6, 28908.35, 10499.4, 2000, "growth-search"],
+    [pick(true, true, true), 37997, 26597.9, 31385.52, 11399.1, 5000, "everything"],
   ])("prices %o", (basket, list, monthly, withGst, saving, adCredit, packageId) => {
     expect(monthlyTotal(basket)).toBe(list);
     expect(packageTotal(basket)).toBe(monthly);
@@ -88,9 +88,9 @@ describe("firstPayment", () => {
   });
 
   it.each([
-    [3000, 540, 3540],
-    [10400, 1872, 12272],
-    [26600, 4788, 31388],
+    [2999, 539.82, 3538.82],
+    [10398.4, 1871.71, 12270.11],
+    [26597.9, 4787.62, 31385.52],
     [2999, 539.82, 3538.82],
   ])("shows GST on %i to the paisa without rounding", (base, gst, total) => {
     expect(firstPayment(base)).toEqual({ months: 1, base, gst, total });

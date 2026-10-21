@@ -8,6 +8,10 @@
 export const PLAN_IDS = ["website", "growth", "search"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];
 
+/**
+ * Plan prices are whole rupees. A package takes a whole percent off the combined price, which can leave paise (12998 less
+ * 20% is 10398.40), so every sum below is worked in whole paise and divided by 100 once at the end.
+ */
 export interface Plan {
   readonly id: PlanId;
   readonly name: string;
@@ -16,10 +20,10 @@ export interface Plan {
 }
 
 export const PLANS: Readonly<Record<PlanId, Plan>> = {
-  website: { id: "website", name: "Managed Website", short: "Website", monthly: 3000 },
+  website: { id: "website", name: "Managed Website", short: "Website", monthly: 2999 },
   // The id stays "growth" because ?plan=growth is what the platform reads.
-  growth: { id: "growth", name: "Social Media and Ads", short: "Social", monthly: 10000 },
-  search: { id: "search", name: "Local SEO + AEO", short: "SEO", monthly: 25000 },
+  growth: { id: "growth", name: "Social Media and Ads", short: "Social", monthly: 9999 },
+  search: { id: "search", name: "Local SEO + AEO", short: "SEO", monthly: 24999 },
 };
 
 export const GST_RATE = 0.18;
@@ -70,16 +74,25 @@ export function monthlyTotal(pick: BasketPick): number {
   return basketPlans(pick).reduce((sum, plan) => sum + plan.monthly, 0);
 }
 
-/** What the basket costs a month: the list price less its package offer. */
-export function packageTotal(pick: BasketPick): number {
+const PAISE_PER_RUPEE = 100;
+
+function monthlyTotalPaise(pick: BasketPick): number {
+  return Math.round(monthlyTotal(pick) * PAISE_PER_RUPEE);
+}
+
+function packageTotalPaise(pick: BasketPick): number {
   const pkg = packageFor(pick);
-  // Whole percent points in integer paise: 38000 * 70 has no float drift.
-  return pkg ? Math.round(monthlyTotal(pick) * (100 - pkg.percent)) / 100 : monthlyTotal(pick);
+  return pkg ? Math.round((monthlyTotalPaise(pick) * (100 - pkg.percent)) / 100) : monthlyTotalPaise(pick);
+}
+
+/** What the basket costs a month: the list price less its package offer, exact to the paisa. */
+export function packageTotal(pick: BasketPick): number {
+  return packageTotalPaise(pick) / PAISE_PER_RUPEE;
 }
 
 /** Rupees a month the package offer takes off the list price; 0 for a single plan. */
 export function packageSaving(pick: BasketPick): number {
-  return monthlyTotal(pick) - packageTotal(pick);
+  return (monthlyTotalPaise(pick) - packageTotalPaise(pick)) / PAISE_PER_RUPEE;
 }
 
 /** Rupees a month of ad credit the basket earns when it is bought together at the first purchase. */
@@ -96,10 +109,10 @@ export interface FirstPayment {
 
 export function firstPayment(monthly: number): FirstPayment {
   if (!Number.isFinite(monthly) || monthly < 0) throw new RangeError(`Monthly total must be a non-negative number, got ${monthly}`);
-  const base = monthly * UPFRONT_MONTHS;
-  // Integer paise maths: exact for whole-rupee bases, no float drift, and no rounding to the rupee (matches checkout).
-  const gstPaise = Math.round(base * Math.round(GST_RATE * 100));
-  return { months: UPFRONT_MONTHS, base, gst: gstPaise / 100, total: (base * 100 + gstPaise) / 100 };
+  const basePaise = Math.round(monthly * UPFRONT_MONTHS * PAISE_PER_RUPEE);
+  // GST on the whole base, half a paisa rounding up, as the platform checkout and the GST invoice do.
+  const gstPaise = Math.round((basePaise * Math.round(GST_RATE * 100)) / 100);
+  return { months: UPFRONT_MONTHS, base: basePaise / PAISE_PER_RUPEE, gst: gstPaise / PAISE_PER_RUPEE, total: (basePaise + gstPaise) / PAISE_PER_RUPEE };
 }
 
 const INR_WHOLE = new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 });

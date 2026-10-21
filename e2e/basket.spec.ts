@@ -80,7 +80,7 @@ for (const pick of PICKS) {
 
 test("the expected totals match the owner's figures", () => {
   // Guards the formula itself: if these move, prices changed and the owner signs off on the new figures.
-  expect(PICKS.map(pickTotal)).toEqual(["₹3,540", "₹12,272", "₹26,432", "₹31,388"]);
+  expect(PICKS.map(pickTotal)).toEqual(["₹3,538.82", "₹12,270.11", "₹26,430.11", "₹31,385.52"]);
 });
 
 test("Social and SEO without the website is the 30% package", async ({ page }) => {
@@ -89,7 +89,7 @@ test("Social and SEO without the website is the 30% package", async ({ page }) =
   await hero.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.search.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
-  await expect(hero.getByText("₹28,910", { exact: true })).toBeVisible();
+  await expect(hero.getByText("₹28,908.35", { exact: true })).toBeVisible();
 });
 
 test("the last switch on cannot be turned off", async ({ page }) => {

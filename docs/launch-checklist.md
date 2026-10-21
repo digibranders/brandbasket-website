@@ -85,11 +85,12 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 | Item | Date |
 |---|---|
-| Managed Website price ₹2,999 a month and the matching offer line (now ₹3,000, 2026-10-21) | 2026-10-19 |
+| Managed Website price ₹2,999 a month and the matching offer line (₹3,000 from the 2026-10-21 pricing change, back to ₹2,999 later that day) | 2026-10-19 |
 | GST shown to the paisa to match checkout | 2026-10-19 |
 | 5% off add-ons chosen at sign-up; no Premium discount (superseded 2026-10-21) | 2026-10-19 |
-| Prices ₹3,000 / ₹10,000 / ₹25,000, each plan on its own; packages 20% (Website + Social, Website + SEO) and 30% (Social + SEO, All three); monthly ad credit ₹2,000 / ₹2,000 / ₹5,000 when bought together at the first purchase; 5% offer and stay offers removed (plans 15 and 16) | 2026-10-21 |
+| Prices ₹3,000 / ₹10,000 / ₹25,000 (superseded the same day by ₹2,999 / ₹9,999 / ₹24,999, row below), each plan on its own; packages 20% (Website + Social, Website + SEO) and 30% (Social + SEO, All three); monthly ad credit ₹2,000 / ₹2,000 / ₹5,000 when bought together at the first purchase; 5% offer and stay offers removed (plans 15 and 16) | 2026-10-21 |
 | Design option B: the live basket with three switches and the offer note | 2026-10-21 |
+| List prices now ₹2,999 / ₹9,999 / ₹24,999 a month (from ₹3,000 / ₹10,000 / ₹25,000); packages 20% and 30% off as before, so they now come out in paise (₹10,398.40, ₹22,398.40, ₹24,498.60, ₹26,597.90); ad credit, the ₹10,000 ad budget and USD prices unchanged | 2026-10-21 |
 | Legal review happens on the preview, not before building | 2026-10-19 |
 | Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`) | 2026-10-19 |
 | About copy (`content/about.ts`) | 2026-10-19 |

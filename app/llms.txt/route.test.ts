@@ -7,9 +7,9 @@ import { GET } from "./route";
 describe("GET /llms.txt", () => {
   it("lists plan prices and the package terms", async () => {
     const body = await GET().text();
-    expect(body).toContain("Managed Website: ₹3,000 a month before 18% GST");
-    expect(body).toContain("Social Media and Ads: ₹10,000 a month before 18% GST");
-    expect(body).toContain("Local SEO + AEO: ₹25,000 a month before 18% GST");
+    expect(body).toContain("Managed Website: ₹2,999 a month before 18% GST");
+    expect(body).toContain("Social Media and Ads: ₹9,999 a month before 18% GST");
+    expect(body).toContain("Local SEO + AEO: ₹24,999 a month before 18% GST");
     expect(body).toContain(`- Package offer: ${PACKAGE_TERMS}`);
     expect(body).not.toContain("chosen at sign-up");
   });
@@ -23,10 +23,10 @@ describe("GET /llms.txt", () => {
 
   it("lists the four packages with list, package and with-GST figures, and the ad credit", async () => {
     const body = await GET().text();
-    expect(body).toContain("- Website + Social: ₹13,000 a month at list price; ₹10,400 a month as a package (20% off); first payment ₹12,272 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
-    expect(body).toContain("- Website + SEO: ₹28,000 a month at list price; ₹22,400 a month as a package (20% off); first payment ₹26,432 with GST.\n");
-    expect(body).toContain("- Social + SEO: ₹35,000 a month at list price; ₹24,500 a month as a package (30% off); first payment ₹28,910 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
-    expect(body).toContain("- All three: ₹38,000 a month at list price; ₹26,600 a month as a package (30% off); first payment ₹31,388 with GST. Bought together as you start: ₹5,000 a month of ad credit.");
+    expect(body).toContain("- Website + Social: ₹12,998 a month at list price; ₹10,398.40 a month as a package (20% off); first payment ₹12,270.11 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
+    expect(body).toContain("- Website + SEO: ₹27,998 a month at list price; ₹22,398.40 a month as a package (20% off); first payment ₹26,430.11 with GST.\n");
+    expect(body).toContain("- Social + SEO: ₹34,998 a month at list price; ₹24,498.60 a month as a package (30% off); first payment ₹28,908.35 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
+    expect(body).toContain("- All three: ₹37,997 a month at list price; ₹26,597.90 a month as a package (30% off); first payment ₹31,385.52 with GST. Bought together as you start: ₹5,000 a month of ad credit.");
   });
 
   it("links every indexable page and leaves the noindex notice out", async () => {

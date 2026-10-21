@@ -16,7 +16,7 @@ function Row({ items, copy }: { readonly items: readonly Industry[]; readonly co
       {items.map((industry) => {
         const IndustryIcon = HOME_ICONS[industry.icon];
         return (
-          <li key={industry.slug} className="inline-flex items-center gap-[0.4em] whitespace-nowrap pr-[clamp(32px,3.6vw,56px)] font-display text-[clamp(22px,2.6vw,36px)] leading-none tracking-[-0.03em] text-ink">
+          <li key={industry.slug} className="inline-flex items-center gap-[0.4em] whitespace-nowrap pr-[34px] font-display text-[clamp(20px,2.2vw,28px)] leading-none tracking-[-0.03em] text-ink">
             <span aria-hidden="true" className="grid size-[1.3em] place-items-center rounded-full bg-rattan-wash text-rattan-text">
               <IndustryIcon weight="light" className="size-[0.62em]" />
             </span>

@@ -17,7 +17,6 @@ export function HomeHero(): ReactElement {
           <h1 id="h-hero" className="font-display text-[clamp(40px,5.6vw,82px)] font-medium leading-[0.96] tracking-[-0.052em]">
             {HERO.headline} <em className="font-light not-italic text-rattan-text">{HERO.headlineAccent}</em>
           </h1>
-          <p className="max-w-[46ch] text-balance text-[clamp(16.5px,1.4vw,18.5px)] text-ink-2">{HERO.subhead}</p>
           <OfferLine />
           <div className="flex flex-wrap items-center gap-2.5">
             <BasketCta location="hero" />

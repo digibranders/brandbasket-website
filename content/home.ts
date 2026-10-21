@@ -48,7 +48,6 @@ export const SHARE_IMAGE = {
 export const HERO = {
   headline: "Before They Visit You, They Visit",
   headlineAccent: "Your Website.",
-  subhead: "Let's Build It for FREE.",
   offer: OFFER,
   stageLabel: "A woven 3D basket holding the services in your plan",
 } as const;

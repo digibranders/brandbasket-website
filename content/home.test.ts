@@ -8,7 +8,8 @@ import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, SHARE_IMAGE, STE
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
     expect(`${HERO.headline} ${HERO.headlineAccent}`).toBe("Before They Visit You, They Visit Your Website.");
-    expect(HERO.subhead).toBe("Let's Build It for FREE.");
+    // The owner removed the subhead line, 2026-10-21.
+    expect(HERO).not.toHaveProperty("subhead");
   });
   it("puts the owner's letterboard copy on the default share image", () => {
     expect(SHARE_IMAGE.board).toEqual({ kicker: "Today's special", headline: "Free website", note: "+ hosting and care, monthly" });

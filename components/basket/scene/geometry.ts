@@ -69,6 +69,7 @@ export interface TileGeometry {
 
 /** A rounded rectangle slab `w` by `h`, corner radius `r`, depth `d`. */
 export function roundedTile(gl: OGLRenderingContext, w: number, h: number, r: number, d: number, seg = 8): TileGeometry {
+  const bevel = Math.min(0.025, d / 4, r / 3);
   const out: [number, number, number, number][] = [];
   const corners: [number, number, number][] = [[w / 2 - r, h / 2 - r, 0], [-w / 2 + r, h / 2 - r, 90], [-w / 2 + r, -h / 2 + r, 180], [w / 2 - r, -h / 2 + r, 270]];
   for (const [cx, cy, a0] of corners) {
@@ -85,7 +86,8 @@ export function roundedTile(gl: OGLRenderingContext, w: number, h: number, r: nu
     cp.push(0, 0, z);
     cn.push(0, 0, dir);
     cu.push(0.5, 0.5);
-    for (const [x, y] of out) {
+    for (const [ox, oy, nx, ny] of out) {
+      const x = ox - nx * bevel, y = oy - ny * bevel;
       cp.push(x, y, z);
       cn.push(0, 0, dir);
       cu.push(f ? 1 - (x / w + 0.5) : x / w + 0.5, y / h + 0.5);
@@ -97,14 +99,26 @@ export function roundedTile(gl: OGLRenderingContext, w: number, h: number, r: nu
     }
   });
   const sp: number[] = [], sn: number[] = [], su: number[] = [], si: number[] = [];
-  out.forEach(([x, y, nx, ny], i) => {
-    sp.push(x, y, d / 2, x, y, -d / 2);
-    sn.push(nx, ny, 0, nx, ny, 0);
-    su.push(i / n, 0, i / n, 1);
+  // Sweep a quarter-circle from each flat cap into the side wall.
+  const rings: [number, number, number, number][] = [];
+  for (const dir of [1, -1]) {
+    for (let j = 0; j <= 4; j++) {
+      const angle = (dir === 1 ? j : 4 - j) / 4 * Math.PI / 2;
+      rings.push([bevel * (1 - Math.sin(angle)), dir * (d / 2 - bevel + bevel * Math.cos(angle)), Math.sin(angle), dir * Math.cos(angle)]);
+    }
+  }
+  rings.forEach(([inset, z, radial, nz], ring) => {
+    out.forEach(([x, y, nx, ny], i) => {
+      sp.push(x - nx * inset, y - ny * inset, z);
+      sn.push(nx * radial, ny * radial, nz);
+      su.push(i / n, ring / (rings.length - 1));
+    });
   });
-  for (let i = 0; i < n; i++) {
-    const a = i * 2, b = ((i + 1) % n) * 2;
-    si.push(a, a + 1, b, a + 1, b + 1, b);
+  for (let ring = 0; ring < rings.length - 1; ring++) {
+    for (let i = 0; i < n; i++) {
+      const a = ring * n + i, b = ring * n + (i + 1) % n;
+      si.push(a, a + n, b, a + n, b + n, b);
+    }
   }
   return { caps: meshGeometry(gl, cp, cn, cu, ci), sides: meshGeometry(gl, sp, sn, su, si) };
 }

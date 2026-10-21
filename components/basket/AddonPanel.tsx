@@ -6,7 +6,7 @@ import type { ReactElement } from "react";
 import { BASKET_COPY, HOME_ADDONS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { type AddonId, ADDONS, firstPayment, formatInr, PLANS, signupTotal } from "@/lib/pricing";
-import { ADDON_COLOUR, basketNames } from "./basket-view";
+import { PLAN_COLOUR, basketNames } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
@@ -30,7 +30,7 @@ export function AddonPanel(): ReactElement {
         const AddonIcon = ICON[id];
         return (
           <div key={id} className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-5 gap-y-4 border-t border-line px-[26px] py-[18px] max-[699px]:grid-cols-[minmax(0,1fr)_auto] max-[699px]:px-5">
-            <span aria-hidden="true" className={`grid size-[46px] place-items-center self-start rounded-[14px] text-surface max-[699px]:hidden ${ADDON_COLOUR[id]}`}>
+            <span aria-hidden="true" className={`grid size-[46px] place-items-center self-start rounded-[14px] text-surface max-[699px]:hidden ${PLAN_COLOUR[id]}`}>
               <AddonIcon weight="fill" className="size-[23px]" />
             </span>
             <div className="grid min-w-0 justify-items-start gap-[3px] max-[699px]:col-span-2">

@@ -1,15 +1,14 @@
 import { CaretDown, Check, Minus } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
-import { ADDON_COLOUR } from "@/components/basket/basket-view";
+import { PLAN_COLOUR } from "@/components/basket/basket-view";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { type DetailColumn, PLAN_DETAILS, PLAN_DETAILS_INTRO } from "@/content/pricing";
-import type { PlanId } from "@/lib/pricing";
 import { PRICING_ICONS } from "./icons";
 
 /** Colour dot per plan (tokens --c-site, --c-growth, --c-search). */
-const DOT: Readonly<Record<PlanId, string>> = { website: "bg-[var(--c-site)]", ...ADDON_COLOUR };
+const DOT = PLAN_COLOUR;
 
 function Column({ column }: { readonly column: DetailColumn }): ReactElement {
   const Mark = column.kind === "included" ? Check : Minus;

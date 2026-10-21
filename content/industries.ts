@@ -3,7 +3,7 @@
 // Every claim comes from the plan details in content/pricing.ts and the free build in content/home.ts. Every price is
 // built from lib/pricing.ts. Organic social posting is not claimed anywhere: Digital Growth covers it only if the owner
 // says so (open input D4).
-import { AD_BUDGET_CAP, type AddonPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
+import { AD_BUDGET_CAP, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
 import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
 import type { FaqItem } from "./types";
 
@@ -25,20 +25,20 @@ export interface Industry {
   /** Four to six concrete items from the plans. No invented features. */
   readonly whatYouGet: readonly string[];
   /** The basket we suggest for this trade. */
-  readonly suggested: AddonPick;
+  readonly suggested: BasketPick;
   /** Three or four question-shaped FAQs. Each answer opens with a direct answer. */
   readonly faq: readonly FaqItem[];
   /** ISO date. Feeds the sitemap lastModified. */
   readonly updated: string;
 }
 
-const WITH_GROWTH: AddonPick = { growth: true, search: false };
-const WITH_SEARCH: AddonPick = { growth: false, search: true };
+const WITH_GROWTH: BasketPick = { website: true, growth: true, search: false };
+const WITH_SEARCH: BasketPick = { website: true, growth: false, search: true };
 
 const HOURLY = formatInr(EXTRA_HOURLY_RATE);
 const UPDATED = "2026-10-19";
 
-function costAnswer(pick: AddonPick): string {
+function costAnswer(pick: BasketPick): string {
   const addon = pick.growth ? PLANS.growth : PLANS.search;
   return `₹0 to build. ${PLANS.website.name} is ${formatInr(PLANS.website.monthly)} a month. With ${addon.name}, the total is ${formatInr(monthlyTotal(pick))} a month, plus ${GST_LABEL} GST. Add ${addon.name} as you start and it is ${SIGNUP_ADDON_DISCOUNT_LABEL} off.`;
 }

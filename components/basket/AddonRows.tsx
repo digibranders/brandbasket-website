@@ -4,7 +4,7 @@ import { BASKET_COPY, PRICING_ADDONS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { ADDONS, formatInr, PLANS } from "@/lib/pricing";
 import { Switch } from "../ui/Switch";
-import { ADDON_COLOUR } from "./basket-view";
+import { PLAN_COLOUR } from "./basket-view";
 import { useBasket } from "./useBasket";
 
 /**
@@ -24,7 +24,7 @@ export function AddonRows(): ReactElement {
             onClick={() => basket.set(id, !basket.get()[id])}
             className="grid cursor-pointer grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-3.5 border-t border-line py-3.5 last:border-b"
           >
-            <i aria-hidden="true" className={`size-3 rounded-[4px] ${ADDON_COLOUR[id]}`} />
+            <i aria-hidden="true" className={`size-3 rounded-[4px] ${PLAN_COLOUR[id]}`} />
             <span>
               <b className="block font-display text-[19px] font-medium tracking-[-0.02em]">{copy.name}</b>
               <span className="text-[13.5px] text-ink-2">{copy.summary}</span>

@@ -3,7 +3,7 @@
 // .offer-note, .pbar). Percents and rupees come from lib/pricing.ts.
 import { adCreditFor, type BasketPick, basketPlans, formatInr, PACKAGES, PLAN_IDS, packageFor, packageSaving, type PlanId } from "@/lib/pricing";
 
-export interface AddonCopy {
+export interface PlanCopy {
   readonly name: string;
   readonly summary: string;
   /** Accessible name of the switch. */
@@ -11,14 +11,14 @@ export interface AddonCopy {
 }
 
 /** Pricing hero rows (mock: .add). Names match `PLANS`. */
-export const PRICING_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
+export const PRICING_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
   website: { name: "Managed Website", summary: "Built free, hosted and kept up to date", switchLabel: "Add Managed Website" },
   growth: { name: "Social Media and Ads", summary: "Instagram, Facebook, Google profile and Meta ads", switchLabel: "Add Social Media and Ads" },
   search: { name: "Local SEO + AEO", summary: "Google search and AI answers", switchLabel: "Add Local SEO + AEO" },
 };
 
 /** Homepage plan rows (mock: .ap-row). */
-export const HOME_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
+export const HOME_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
   website: {
     name: "Managed Website",
     summary: "We build it free, then host it, secure it and make 2 small edits a month.",
@@ -37,8 +37,11 @@ export const HOME_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
 };
 
 /** The smallest offer on two plans, and the offer on all three, as printed: "20%" and "30%". */
-const TWO_PLANS_FROM = `${Math.min(...PACKAGES.filter((p) => PLAN_IDS.filter((id) => p.pick[id]).length === 2).map((p) => p.percent))}%`;
-const ALL_THREE = `${PACKAGES.find((p) => PLAN_IDS.every((id) => p.pick[id]))?.percent ?? 0}%`;
+const twoPlanPercents = PACKAGES.filter((p) => basketPlans(p.pick).length === 2).map((p) => p.percent);
+const allThree = PACKAGES.find((p) => basketPlans(p.pick).length === PLAN_IDS.length);
+if (twoPlanPercents.length === 0 || !allThree) throw new RangeError("PACKAGES needs a two-plan package and an all-three package");
+const TWO_PLANS_FROM = `${Math.min(...twoPlanPercents)}%`;
+const ALL_THREE = `${allThree.percent}%`;
 
 export const BASKET_COPY = {
   panelTitle: "Build your basket",

@@ -31,7 +31,7 @@ function Cell({ value, column }: { readonly value: CompareCell; readonly column:
   );
 }
 
-/** Read-only comparison of the four baskets (mock: #h-compare, .cmp). Names, list prices and ticks only. */
+/** Read-only comparison of the four packages (mock: #h-compare, .cmp): offer, saving and ad money first, then what each includes. */
 export function CompareTable(): ReactElement {
   const span = COMPARE.columns.length + 1;
   return (

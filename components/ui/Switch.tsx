@@ -18,8 +18,8 @@ export function Switch({ checked, label, onChange, locked = false }: SwitchProps
       aria-checked={checked}
       aria-label={label}
       aria-disabled={locked || undefined}
-      onClick={(event) => { event.stopPropagation(); onChange(!checked); }}
-      className="relative h-7 w-[46px] flex-none rounded-full bg-line transition-colors duration-300 aria-checked:bg-action after:absolute after:left-[3px] after:top-[3px] after:size-[22px] after:rounded-full after:bg-white after:shadow-[0_1px_3px_rgba(21,22,26,0.25)] after:transition-transform after:duration-[350ms] after:ease-[var(--ease)] aria-checked:after:translate-x-[18px] aria-disabled:cursor-not-allowed aria-disabled:opacity-55"
+      onClick={(event) => { event.stopPropagation(); if (!locked) onChange(!checked); }}
+      className="relative h-7 w-[46px] flex-none rounded-full bg-line transition-colors duration-300 aria-checked:bg-action after:absolute after:left-[3px] after:top-[3px] after:size-[22px] after:rounded-full after:bg-surface after:shadow-[var(--shadow-knob)] after:transition-transform after:duration-[350ms] after:ease-[var(--ease)] aria-checked:after:translate-x-[18px] aria-disabled:cursor-not-allowed aria-disabled:opacity-55"
     />
   );
 }

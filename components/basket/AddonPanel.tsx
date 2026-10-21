@@ -72,7 +72,9 @@ export function AddonPanel(): ReactElement {
           <small className="text-[13px] text-ink-2">{BASKET_COPY.basketPrefix} {basketNames(pick)}</small>
           <b className="num font-display text-[30px] font-medium tracking-[-0.03em]">
             {saving ? (
-              <s className="mr-2.5 text-lg font-normal tracking-[-0.02em] text-ink-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s>
+              <>
+                <s className="mr-1 text-lg font-normal tracking-[-0.02em] text-ink-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s>{" "}
+              </>
             ) : null}
             {formatInr(monthly)}
             <span className="ml-1.5 font-sans text-sm font-medium tracking-normal text-ink-2">{BASKET_COPY.plusGst}</span>

@@ -51,11 +51,6 @@ export const PACKAGES: readonly Package[] = [
   { id: "everything", name: "All three", pick: { website: true, growth: true, search: true }, percent: 30, adCredit: 5000 },
 ];
 
-// shortcut: AddonId, AddonPick and ADDONS are kept for components/basket/scene until plan 15 Task 5 makes the website tiles a group; remove then.
-export type AddonId = Exclude<PlanId, "website">;
-export type AddonPick = Readonly<Record<AddonId, boolean>>;
-export const ADDONS: readonly AddonId[] = ["growth", "search"];
-
 export function basketPlans(pick: BasketPick): Plan[] {
   return PLAN_IDS.filter((id) => pick[id]).map((id) => PLANS[id]);
 }

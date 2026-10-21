@@ -1,6 +1,6 @@
 // components/basket/scene/scene.ts
 import { Camera, Mesh, Plane, Program, Renderer, Texture, Torus, Transform } from "ogl";
-import { ADDONS, type AddonPick } from "@/lib/pricing";
+import { PLAN_IDS, type BasketPick } from "@/lib/pricing";
 import { iconFace } from "./faces";
 import { siteFace } from "./site-preview";
 export { loadFaceFonts } from "./faces";
@@ -8,7 +8,7 @@ import { catmull, lathe, roundedTile } from "./geometry";
 import { hex, material, SHADOW } from "./materials";
 import { SHADOW_FRAG, VERT } from "./shaders";
 import { createShadowLighting } from "./shadow-lighting";
-import { BASE_TILES, DEFS, GROUPS, type TileDef, type TileId } from "./tokens";
+import { DEFS, GROUPS, type TileDef, type TileId } from "./tokens";
 import type { BasketScene, BasketSceneOptions } from "./types";
 import { bindingCanvas, weaveCanvas } from "./weave";
 
@@ -235,8 +235,7 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   }
 
   // Everything that can throw (first render included) runs before listeners, observers and timers exist.
-  let pick: AddonPick = options.initialPick;
-  for (const id of ADDONS) if (pick[id]) GROUPS[id].forEach(add);
+  let pick: BasketPick = options.initialPick;
   resize();
 
   const previousCursor = host.style.cursor;
@@ -299,11 +298,14 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   const resizer = new ResizeObserver(resize);
   resizer.observe(host);
 
-  BASE_TILES.forEach((k, i) => later(() => add(k), reduce ? 0 : BASE_DROP_DELAY_MS + i * BASE_DROP_GAP_MS));
+  for (const id of PLAN_IDS) {
+    if (!pick[id]) continue;
+    GROUPS[id].forEach((k, i) => later(() => add(k), reduce ? 0 : id === "website" ? BASE_DROP_DELAY_MS + i * BASE_DROP_GAP_MS : i * ADDON_STAGGER_MS));
+  }
 
   return {
     setPick(next) {
-      for (const id of ADDONS) {
+      for (const id of PLAN_IDS) {
         if (next[id] === pick[id]) continue;
         const on = next[id];
         GROUPS[id].forEach((k, i) => later(() => (on ? add(k) : remove(k)), reduce ? 0 : i * ADDON_STAGGER_MS));

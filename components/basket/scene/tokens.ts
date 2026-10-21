@@ -1,5 +1,5 @@
 // components/basket/scene/tokens.ts
-import type { AddonId } from "@/lib/pricing";
+import type { PlanId } from "@/lib/pricing";
 
 export type TileId = "site" | "care" | "report" | "gbp" | "meta" | "seo" | "aeo";
 
@@ -38,7 +38,9 @@ export const DEFS: Readonly<Record<TileId, TileDef>> = {
   aeo: { w: 0.86, h: 1.78, rest: [0.48, 1.8, -1.16], rx: 0.08, ry: -0.1, rz: -0.08, accent: "#2d4a7a", glyph: "" /* auto_awesome */, label: "AI search" },
 };
 
-/** The Managed Website plan: always in the basket, dropped in this order on load. */
-export const BASE_TILES: readonly TileId[] = ["site", "care", "report"];
-
-export const GROUPS: Readonly<Record<AddonId, readonly TileId[]>> = { growth: ["gbp", "meta"], search: ["seo", "aeo"] };
+/** Tiles each plan drops into the basket, in drop order. */
+export const GROUPS: Readonly<Record<PlanId, readonly TileId[]>> = {
+  website: ["site", "care", "report"],
+  growth: ["gbp", "meta"],
+  search: ["seo", "aeo"],
+};

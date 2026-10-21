@@ -300,7 +300,8 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
 
   for (const id of PLAN_IDS) {
     if (!pick[id]) continue;
-    GROUPS[id].forEach((k, i) => later(() => add(k), reduce ? 0 : id === "website" ? BASE_DROP_DELAY_MS + i * BASE_DROP_GAP_MS : i * ADDON_STAGGER_MS));
+    // Re-check the pick when the timer fires: a plan switched off before its first drop must not land afterwards.
+    GROUPS[id].forEach((k, i) => later(() => { if (pick[id]) add(k); }, reduce ? 0 : id === "website" ? BASE_DROP_DELAY_MS + i * BASE_DROP_GAP_MS : i * ADDON_STAGGER_MS));
   }
 
   return {

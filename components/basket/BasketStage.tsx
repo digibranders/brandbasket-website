@@ -35,7 +35,7 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
     let idle: { readonly cancel: () => void } | undefined;
 
     const start = async (): Promise<void> => {
-      const [mod, image] = await Promise.all([import("./scene/scene"), loadImage("/basket/site-tile.jpg")]);
+      const [mod, image] = await Promise.all([import("./scene/scene"), loadImage("/basket/studio-house.avif")]);
       const labelFamily = await mod.loadFaceFonts();
       if (cancelled) return;
       scene = mod.createBasketScene(el, image, { reducedMotion: hints.reducedMotion, initialPick: basket.get(), labelFamily });
@@ -91,7 +91,7 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
   );
 }
 
-/** Resolves null when the screenshot fails, so the site tile still draws its browser frame, as in the mock. */
+/** A missing photograph leaves the complete studio layout available as the texture fallback. */
 function loadImage(src: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {
     const img = new window.Image();

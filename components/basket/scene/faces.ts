@@ -30,49 +30,28 @@ export function loadFaceFonts(): Promise<string> {
   return fontsReady;
 }
 
-/** A service tile face: brand colour, soft top light, white glyph and label. */
-export function iconFace(bg: string, glyph: string, label: string, labelFamily: string): HTMLCanvasElement {
+/** Original service-card treatment: rich brand colour, soft top light, white icon and label. */
+export function iconFace(color: string, glyph: string, label: string, labelFamily: string, aspect = 1): HTMLCanvasElement {
   const c = document.createElement("canvas");
-  c.width = c.height = 256;
+  c.width = 768;
+  c.height = Math.round(768 * aspect);
   const g = context2d(c);
-  g.fillStyle = bg;
-  g.fillRect(0, 0, 256, 256);
-  const sh = g.createLinearGradient(0, 0, 0, 256);
-  sh.addColorStop(0, "rgba(255,255,255,0.2)");
-  sh.addColorStop(0.5, "rgba(255,255,255,0)");
-  sh.addColorStop(1, "rgba(0,0,0,0.14)");
-  g.fillStyle = sh;
-  g.fillRect(0, 0, 256, 256);
+  g.scale(3, 3);
+  const height = c.height / 3;
+  g.fillStyle = color;
+  g.fillRect(0, 0, 256, height);
+  const light = g.createLinearGradient(0, 0, 0, height);
+  light.addColorStop(0, "rgba(255,255,255,0.2)");
+  light.addColorStop(0.5, "rgba(255,255,255,0)");
+  light.addColorStop(1, "rgba(0,0,0,0.14)");
+  g.fillStyle = light;
+  g.fillRect(0, 0, 256, height);
   g.fillStyle = "#ffffff";
   g.textAlign = "center";
   g.textBaseline = "middle";
   g.font = `100px "${ICON_FAMILY}"`;
   g.fillText(glyph, 128, 100);
   g.font = `700 40px ${labelFamily}, sans-serif`;
-  g.fillText(label, 128, 196);
-  return c;
-}
-
-/** The website tile face: a browser frame around a client site screenshot. */
-export function siteFace(img: HTMLImageElement | null): HTMLCanvasElement {
-  const c = document.createElement("canvas");
-  c.width = 512;
-  c.height = 332;
-  const g = context2d(c);
-  g.fillStyle = "#eceae6";
-  g.fillRect(0, 0, 512, 332);
-  ["#e7776b", "#e9c46a", "#7cc38f"].forEach((col, i) => {
-    g.fillStyle = col;
-    g.beginPath();
-    g.arc(22 + i * 18, 16, 5.5, 0, Math.PI * 2);
-    g.fill();
-  });
-  g.fillStyle = "#ffffff";
-  g.fillRect(84, 7, 400, 18);
-  g.fillStyle = "#6b6e74";
-  g.font = "13px sans-serif";
-  g.textBaseline = "middle";
-  g.fillText("yourbusiness.in", 94, 16);
-  if (img) g.drawImage(img, 0, 32, 512, (512 * img.naturalHeight) / img.naturalWidth);
+  g.fillText(label, 128, 196, 224);
   return c;
 }

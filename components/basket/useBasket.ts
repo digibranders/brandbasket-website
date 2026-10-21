@@ -1,8 +1,8 @@
 "use client";
 import { useSyncExternalStore } from "react";
-import { basket, EMPTY_BASKET } from "@/lib/basket-store";
-import type { AddonPick } from "@/lib/pricing";
+import { basket, DEFAULT_BASKET } from "@/lib/basket-store";
+import type { BasketPick } from "@/lib/pricing";
 
-export function useBasket(): AddonPick {
-  return useSyncExternalStore(basket.subscribe, basket.get, () => EMPTY_BASKET);
+export function useBasket(): BasketPick {
+  return useSyncExternalStore(basket.subscribe, basket.get, () => DEFAULT_BASKET);
 }

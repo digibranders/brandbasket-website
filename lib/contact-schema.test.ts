@@ -11,7 +11,11 @@ describe("contactSchema", () => {
   it("accepts a phone number when given", () => expect(contactSchema.safeParse({ ...valid, phone: "+91 98200 12345" }).success).toBe(true));
   it("rejects a short phone number", () => expect(contactSchema.safeParse({ ...valid, phone: "12345" }).success).toBe(false));
   it("requires an email", () => expect(contactSchema.safeParse({ ...valid, email: "" }).success).toBe(false));
-  it("requires the website plan in every basket", () => expect(contactSchema.safeParse({ ...valid, plans: ["growth"] }).success).toBe(false));
+  it("accepts any basket of known plans", () => {
+    expect(contactSchema.safeParse({ ...valid, plans: ["growth"] }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...valid, plans: ["growth", "search"] }).success).toBe(true);
+    expect(contactSchema.safeParse({ ...valid, plans: ["nope"] }).success).toBe(false);
+  });
   it("rejects an unknown plan", () => expect(contactSchema.safeParse({ ...valid, plans: ["website", "seo"] }).success).toBe(false));
   it("requires the notice version", () => expect(contactSchema.safeParse({ ...valid, noticeVersion: "" }).success).toBe(false));
   it("accepts a general question with no basket", () => expect(contactSchema.safeParse({ ...valid, topic: "other", plans: [] }).success).toBe(true));
@@ -30,7 +34,11 @@ describe("contactSchema", () => {
 
 describe("parsePlanParam", () => {
   it("reads the signupHref format", () => expect(parsePlanParam("website,growth")).toEqual(["website", "growth"]));
-  it("adds the website when only add-ons arrive", () => expect(parsePlanParam("search")).toEqual(["website", "search"]));
+  it("keeps a basket without the website", () => {
+    expect(parsePlanParam("search")).toEqual(["search"]);
+    expect(parsePlanParam("search,website")).toEqual(["website", "search"]);
+    expect(parsePlanParam("nope")).toEqual([]);
+  });
   it("drops unknown and repeated ids", () => expect(parsePlanParam("website,seo,growth,growth")).toEqual(["website", "growth"]));
   it("returns an empty basket for a missing or junk value", () => {
     expect(parsePlanParam(null)).toEqual([]);

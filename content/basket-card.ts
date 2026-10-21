@@ -33,6 +33,7 @@ export const BASKET_CARD = {
     search: "Found on Google and in AI answers",
   } satisfies Readonly<Record<PlanId, string>>,
   trackLabel: "What the stamps unlock",
+  inBasket: "In your basket",
   fine: "The package price stays while every plan in it stays. Ad money comes with a package started together and is credited to your Meta ad account every month. Cancel anytime.",
   oneTimeTag: "One-time offer",
   nextLabel: "Next stamp:",

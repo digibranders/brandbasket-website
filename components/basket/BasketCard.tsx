@@ -1,6 +1,6 @@
 "use client";
 import type { Icon } from "@phosphor-icons/react";
-import { CalendarCheck, Globe, Lightning, MagnifyingGlass, Megaphone, PiggyBank, TrendUp } from "@phosphor-icons/react/dist/ssr";
+import { CalendarCheck, Check, Globe, Lightning, MagnifyingGlass, Megaphone, PiggyBank, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
 import type { CSSProperties, ReactElement } from "react";
@@ -46,6 +46,11 @@ function Slot({ id, pick, onlyOne }: { readonly id: PlanId; readonly pick: Baske
           <span aria-hidden="true" className="stamp-in absolute inset-[6%] grid content-center place-items-center gap-0.5 rounded-full border-4 border-double border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_7%,transparent)] text-[var(--c)] mix-blend-multiply">
             <SlotIcon weight="duotone" className="size-[clamp(26px,3vw,34px)]" />
             <i className="font-mono text-[11px] font-medium not-italic uppercase tracking-[0.16em]">{PLANS[id].short}</i>
+          </span>
+        ) : null}
+        {on ? (
+          <span aria-hidden="true" className="absolute right-[2%] top-[2%] grid size-7 place-items-center rounded-full bg-[var(--c)] text-surface shadow-[0_0_0_3px_var(--surface)] max-[560px]:size-6">
+            <Check weight="bold" className="size-4 max-[560px]:size-3.5" />
           </span>
         ) : null}
       </span>
@@ -101,6 +106,17 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
   const gains = benefits(pick);
   return (
     <div className="grid content-start justify-items-start gap-3.5 rounded-3xl border border-line bg-surface p-[26px] max-[560px]:px-[18px] max-[560px]:py-[22px]">
+      <div className="grid gap-2">
+        <span className="text-[13px] text-ink-2">{BASKET_CARD.inBasket}</span>
+        <ul aria-label={BASKET_CARD.inBasket} className="flex flex-wrap gap-1.5">
+          {basketPlans(pick).map((plan) => (
+            <li key={plan.id} style={inkStyle(plan.id)} className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg py-1 pl-1.5 pr-3 text-[13.5px] font-semibold">
+              <span aria-hidden="true" className="grid size-[18px] place-items-center rounded-full bg-[var(--c)] text-surface"><Check weight="bold" className="size-3" /></span>
+              {plan.name}
+            </li>
+          ))}
+        </ul>
+      </div>
       <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick)}</p>
       <div data-basket-total className="grid gap-1">
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">

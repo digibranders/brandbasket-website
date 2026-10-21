@@ -7,9 +7,11 @@ import "./industries.css";
 type Industry = (typeof INDUSTRIES_LINE.industries)[number];
 
 const SPLIT = Math.ceil(INDUSTRIES_LINE.industries.length / 2);
+/** Four copies per track: at the smaller text size two copies are narrower than a wide screen. The track moves by half, two copies. */
+const COPIES = [0, 1, 2, 3] as const;
 const ROWS: readonly (readonly Industry[])[] = [INDUSTRIES_LINE.industries.slice(0, SPLIT), INDUSTRIES_LINE.industries.slice(SPLIT)];
 
-/** One copy of a row. The second copy only makes the loop seamless, so screen readers skip it. */
+/** One copy of a row. The extra copies only make the loop seamless, so screen readers skip them. */
 function Row({ items, copy }: { readonly items: readonly Industry[]; readonly copy: boolean }): ReactElement {
   return (
     <ul aria-hidden={copy || undefined} className="flex shrink-0">
@@ -39,8 +41,7 @@ export function IndustriesLine(): ReactElement {
         <div className="ind-rows">
           {ROWS.map((items, i) => (
             <div key={i} className="ind-track" data-reverse={i % 2 === 1 || undefined}>
-              <Row items={items} copy={false} />
-              <Row items={items} copy />
+              {COPIES.map((copy) => <Row key={copy} items={items} copy={copy > 0} />)}
             </div>
           ))}
         </div>

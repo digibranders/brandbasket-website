@@ -18,10 +18,8 @@ function Row({ items, copy }: { readonly items: readonly Industry[]; readonly co
       {items.map((industry) => {
         const IndustryIcon = HOME_ICONS[industry.icon];
         return (
-          <li key={industry.slug} className="inline-flex items-center gap-[0.4em] whitespace-nowrap pr-[34px] font-display text-[clamp(20px,2.2vw,28px)] leading-none tracking-[-0.03em] text-ink">
-            <span aria-hidden="true" className="grid size-[1.3em] place-items-center rounded-full bg-rattan-wash text-rattan-text">
-              <IndustryIcon weight="light" className="size-[0.62em]" />
-            </span>
+          <li key={industry.slug} className="inline-flex items-center gap-2.5 whitespace-nowrap pr-[34px] font-display text-[clamp(20px,2.2vw,28px)] leading-none tracking-[-0.03em] text-ink">
+            <IndustryIcon aria-hidden="true" weight="light" className="size-[26px] text-rattan-text" />
             {industry.label}
           </li>
         );
@@ -33,7 +31,7 @@ function Row({ items, copy }: { readonly items: readonly Industry[]; readonly co
 /** The industries we serve, as two rows drifting in opposite directions inside a hairline band (mock: .inds-sec). Plain items, not links, so the list can name trades that have no page. */
 export function IndustriesLine(): ReactElement {
   return (
-    <section id="industries" aria-labelledby="h-ind" className="grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-7 overflow-hidden pb-[clamp(56px,7vw,88px)] pt-[clamp(48px,6vw,72px)]">
+    <section id="industries" aria-labelledby="h-ind" className="grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-5 overflow-hidden pb-[clamp(40px,4.5vw,56px)] pt-[clamp(36px,4vw,48px)]">
       <Reveal className="text-center">
         <h2 id="h-ind" className="font-display text-[15px] font-medium text-ink-2">{INDUSTRIES_LINE.title}</h2>
       </Reveal>

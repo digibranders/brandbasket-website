@@ -21,7 +21,7 @@ describe("clickEvent", () => {
 
   it("drops unknown plan ids and keeps the plans in the link", () => {
     expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=growth#start")?.properties).toEqual({ location: "hero", plans: "growth" });
-    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=website,nope,search#start")?.properties).toEqual({ location: "hero", plans: "website,search" });
+    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=website,phone-9876543210,search#start")?.properties).toEqual({ location: "hero", plans: "website,search" });
     expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact#start")?.properties).toEqual({ location: "hero", plans: "none" });
   });
 

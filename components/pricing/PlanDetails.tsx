@@ -7,9 +7,6 @@ import { SectionHead } from "@/components/ui/SectionHead";
 import { type DetailColumn, PLAN_DETAILS, PLAN_DETAILS_INTRO } from "@/content/pricing";
 import { PRICING_ICONS } from "./icons";
 
-/** Colour dot per plan (tokens --c-site, --c-growth, --c-search). */
-const DOT = PLAN_COLOUR;
-
 function Column({ column }: { readonly column: DetailColumn }): ReactElement {
   const Mark = column.kind === "included" ? Check : Minus;
   return (
@@ -41,7 +38,7 @@ export function PlanDetails(): ReactElement {
           return (
             <details key={plan.id} className="group/plan border-t border-line last-of-type:border-b">
               <summary className="group/sum grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 py-[22px] [&::-webkit-details-marker]:hidden">
-                <span aria-hidden="true" className={`grid size-[42px] place-items-center rounded-[13px] text-surface ${DOT[plan.id]}`}>
+                <span aria-hidden="true" className={`grid size-[42px] place-items-center rounded-[13px] text-surface ${PLAN_COLOUR[plan.id]}`}>
                   <PlanIcon className="size-[22px]" />
                 </span>
                 <span>

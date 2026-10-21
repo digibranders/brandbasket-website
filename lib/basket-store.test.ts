@@ -43,6 +43,14 @@ describe("basket store", () => {
     expect(store.get()).toEqual({ website: true, growth: true, search: true });
   });
 
+  it("treats an equal pick as no change", () => {
+    const store = createBasketStore();
+    const listener = vi.fn();
+    store.subscribe(listener);
+    store.setAll({ website: true, growth: false, search: false });
+    expect(listener).not.toHaveBeenCalled();
+  });
+
   it("stops notifying after unsubscribe", () => {
     const store = createBasketStore();
     const listener = vi.fn();

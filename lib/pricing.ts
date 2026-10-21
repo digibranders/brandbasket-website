@@ -4,7 +4,9 @@
  * docs/plans/15-website-pricing-offers.md). Prices are monthly, in rupees, before GST. Change a price or an offer here
  * and nowhere else; brandbasket-platform holds the same numbers and is changed in the same release.
  */
-export type PlanId = "website" | "growth" | "search";
+/** Every plan, in the order the site lists them. Each can be bought on its own. */
+export const PLAN_IDS = ["website", "growth", "search"] as const;
+export type PlanId = (typeof PLAN_IDS)[number];
 
 export interface Plan {
   readonly id: PlanId;
@@ -15,12 +17,11 @@ export interface Plan {
 
 export const PLANS: Readonly<Record<PlanId, Plan>> = {
   website: { id: "website", name: "Managed Website", short: "Website", monthly: 3000 },
+  // The id stays "growth" because ?plan=growth is what the platform reads.
   growth: { id: "growth", name: "Social Media and Ads", short: "Social", monthly: 10000 },
   search: { id: "search", name: "Local SEO + AEO", short: "SEO", monthly: 25000 },
 };
 
-/** Every plan, in the order the site lists them. Each can be bought on its own. */
-export const PLAN_IDS: readonly PlanId[] = ["website", "growth", "search"];
 export const GST_RATE = 0.18;
 /** GST as printed in copy, for example "18%". */
 export const GST_LABEL = `${Math.round(GST_RATE * 100)}%`;
@@ -50,7 +51,7 @@ export const PACKAGES: readonly Package[] = [
   { id: "everything", name: "All three", pick: { website: true, growth: true, search: true }, percent: 30, adCredit: 5000 },
 ];
 
-// shortcut: kept only for components/basket/scene until plan 15 Task 5 makes the website tiles a group; remove then.
+// shortcut: AddonId, AddonPick and ADDONS are kept for components/basket/scene, AddonPanel, AddonRows, content/basket.ts and e2e/basket.spec.ts until plan 15 Tasks 5, 6, 10 and 11 move them to PlanId; remove then.
 export type AddonId = Exclude<PlanId, "website">;
 export type AddonPick = Readonly<Record<AddonId, boolean>>;
 export const ADDONS: readonly AddonId[] = ["growth", "search"];
@@ -59,9 +60,14 @@ export function basketPlans(pick: BasketPick): Plan[] {
   return PLAN_IDS.filter((id) => pick[id]).map((id) => PLANS[id]);
 }
 
+/** Whether two baskets hold the same plans. */
+export function samePick(a: BasketPick, b: BasketPick): boolean {
+  return PLAN_IDS.every((id) => a[id] === b[id]);
+}
+
 /** The package this exact basket is, or null for a single plan. */
 export function packageFor(pick: BasketPick): Package | null {
-  return PACKAGES.find((p) => PLAN_IDS.every((id) => p.pick[id] === pick[id])) ?? null;
+  return PACKAGES.find((p) => samePick(p.pick, pick)) ?? null;
 }
 
 /** List price of the basket a month: the plans added up, before any package offer. */

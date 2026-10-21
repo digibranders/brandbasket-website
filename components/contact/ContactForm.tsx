@@ -12,7 +12,7 @@ import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_TOPIC_LABELS
 import { basket, DEFAULT_BASKET } from "@/lib/basket-store";
 import { CONTACT_MAX, CONTACT_TOPICS, contactSchema, parsePlanParam, parseTopicParam } from "@/lib/contact-schema";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
-import { basketPlans, type PlanId } from "@/lib/pricing";
+import { basketPlans, type PlanId, samePick } from "@/lib/pricing";
 import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS, planTokenUse } from "@/lib/security/form-fields";
 
 type Field = "name" | "phone" | "business" | "city" | "email" | "message";
@@ -51,12 +51,12 @@ async function requestToken(): Promise<FormToken | null> {
   }
 }
 
-/** `?plan=` wins (signupHref writes it); otherwise a basket picked earlier in this visit. The untouched default is a general enquiry. */
+/** `?plan=` wins (signupHref writes it); otherwise a basket picked earlier in this visit. A website-only basket is a general enquiry. */
 function pagePlans(): PlanId[] {
   const fromUrl = parsePlanParam(new URLSearchParams(window.location.search).get("plan"));
   if (fromUrl.length > 0) return fromUrl;
   const pick = basket.get();
-  return pick === DEFAULT_BASKET ? [] : basketPlans(pick).map((plan) => plan.id);
+  return samePick(pick, DEFAULT_BASKET) ? [] : basketPlans(pick).map((plan) => plan.id);
 }
 
 export function ContactForm(): ReactElement {

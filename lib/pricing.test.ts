@@ -15,6 +15,7 @@ import {
   packageTotal,
   PLAN_IDS,
   PLANS,
+  samePick,
 } from "./pricing";
 
 const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
@@ -26,8 +27,24 @@ describe("plans", () => {
     expect(PLANS.search.monthly).toBe(25000);
   });
 
+  it("keeps prices in whole rupees and package offers in whole percent (the paise maths relies on both)", () => {
+    for (const id of PLAN_IDS) expect(Number.isInteger(PLANS[id].monthly)).toBe(true);
+    for (const p of PACKAGES) {
+      expect(Number.isInteger(p.percent)).toBe(true);
+      expect(p.percent).toBeGreaterThanOrEqual(1);
+      expect(p.percent).toBeLessThanOrEqual(99);
+    }
+  });
+
   it("lists every plan, each sold on its own", () => {
     expect(PLAN_IDS).toEqual(["website", "growth", "search"]);
+  });
+});
+
+describe("samePick", () => {
+  it("compares baskets by value", () => {
+    expect(samePick(pick(true, false, false), { website: true, growth: false, search: false })).toBe(true);
+    expect(samePick(pick(true, false, false), pick(true, true, false))).toBe(false);
   });
 });
 

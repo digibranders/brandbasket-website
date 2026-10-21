@@ -22,7 +22,7 @@ export interface RouteMeta {
 
 const { legalName, tradeName, postalAddress } = businessDetails;
 const MANAGED = formatInr(PLANS.website.monthly);
-const UPDATED = "2026-10-19";
+const UPDATED = "2026-10-21";
 
 export const ROUTES = {
   home: {

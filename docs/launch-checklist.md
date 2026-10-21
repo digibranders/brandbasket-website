@@ -9,10 +9,10 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | # | Input | Status | Where it lives |
 |---|---|---|---|
 | D3 | Cancellation and refund terms for monthly billing | Answered from the published Fynix policy; owner to confirm in review. Cancel anytime with no notice period; the website stays online until the end of the month already paid for; no refund of a part-used month; a reminder before every renewal; a failed payment takes the website offline at once with no grace period, content kept and the site restored when the payment goes through; add-on changes start from the next monthly bill; the domain is the customer's, the design and content are a hosted service while subscribed | `content/legal/cancellation.ts` (used by terms, refund, the Home and Pricing FAQs, pricing "Good to know" and About) |
-| D4 | Does Digital Growth include organic social posting? | Placeholder: "8 Google profile posts a month", photo updates, reels and video editing at ₹500 an hour | `content/basket.ts`, `content/pricing.ts` |
+| D4 | What does Social Media and Ads include? | Answered 2026-10-21 (owner to confirm team capacity): Instagram and Facebook, 12 designed posts a month with captions and scheduling; Google Business Profile, 8 posts a month and review replies; Meta ads managed for up to ₹10,000 a month of the client's budget plus our ad credit; monthly report; reels at ₹500 an hour | `content/basket.ts`, `content/pricing.ts` |
 | D5 | Real proof: client sites for the showcase, Google rating, quotes | Placeholder: Curry Cook, GKR Hospitality and PayWeek sample sites and screenshots; heading "Real websites, live today." | `content/home.ts` `WORK`, `public/work/` |
 | D9 | Grievance Officer name and email | Placeholder: Siddique Ahmed (named for Digibranders in FirstFold), grievance@brandbasket.in, "Grievance Officer". Confirm the person and that the mailbox receives mail | `lib/site-config.ts` `grievanceOfficer` |
-| D10 | Plan parameter format the platform reads from the sign-up link | Placeholder: `?plan=website,growth`. Main buttons go to `/contact#start` until `NEXT_PUBLIC_SIGNUP_URL` is set | `lib/signup.ts` |
+| D10 | Plan parameter format the platform reads from the sign-up link | `?plan=` lists any of `website`, `growth`, `search` (for example `growth,search` without the website). brandbasket-platform reads it from plan 16 Task P3.1, so the website and the platform release together. Main buttons go to `/contact#start` until `NEXT_PUBLIC_SIGNUP_URL` is set | `lib/signup.ts` |
 | D11 | Phone, WhatsApp number and hours | Placeholder: +91 789 789 6607 (Fynix's), Mon to Sat, 10 am to 7 pm IST | `lib/site-config.ts` |
 
 ## Owner review of new copy
@@ -22,7 +22,10 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Legal set: privacy, terms, refund, shipping, data notice | Open: review on the preview, ideally with a lawyer. Version label `LEGAL_TEXT_VERSION` must be bumped to the real publish date |
 | About "Lock you in": "Cancel anytime, with no notice period. Your domain stays yours." (replaces the 30 days' notice placeholder) | Open |
 | Legal text version 2026-10-19.3: the new cancellation, failed payment, renewal reminder and ownership sentences in terms sections 5, 6 and 9 and the refund policy | Open |
-| Terms: "Add-ons chosen at sign-up are 5% off for as long as they run; add-ons added later are charged at the listed price." | Open |
+| Legal text version 2026-10-21.1: `PACKAGE_TERMS` and `AD_CREDIT_TERMS` in terms section 5, every plan sold on its own, the drop rule, "Your package price and ad credit stay." after a failed payment. The ad credit wording also needs the CA's yes (tax treatment) | Open |
+| Basket and pricing copy shown in the chosen mock (option B): the offer note, switch rows, comparison rows, plan details, the pricing FAQ "Do I need the website plan?" and "Can I add or drop a plan later?" | Open |
+| Home meta description shortened to 155 characters ("Add social, ads and local search any time.") | Open |
+| Cancellation, payment failure and renewal sentences say "your website"; a client on Social + SEO has no website plan. Decide the wording for them | Open |
 | Contact page meta description | Open |
 | Error page lines ("Sorry, something went wrong." and the retry line) and 404 link labels | Open |
 | Industries hub copy: lede "Pick your trade to see what we build, what we run every month and the basket we suggest.", title "Websites for local businesses, built free \| Brandbasket" and its meta description | Open |
@@ -67,6 +70,9 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 ## Deferred engineering
 
+- Analytics: `cta_click` now reports the plans in the link and `none` when the link has no plan (before, the website was always counted). Dashboards that filter on `website` change meaning from this release.
+- `e2e/contact.spec.ts` still expects the phone field that commit eb9be07 replaced with email; 3 tests fail on both projects. Fix before running e2e in CI.
+
 - Phase 9: Playwright end to end, axe accessibility and Lighthouse CI budgets.
 - Phase 10: route registry, sitemap entries for every page, OG images, llms.txt route list, internal linking and AEO pass.
 - First-load JavaScript on `/` is about 192 KB gzipped against the 120 KB budget. Investigate before launch.
@@ -77,9 +83,11 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 | Item | Date |
 |---|---|
-| Managed Website price ₹2,999 a month and the matching offer line | 2026-10-19 |
+| Managed Website price ₹2,999 a month and the matching offer line (now ₹3,000, 2026-10-21) | 2026-10-19 |
 | GST shown to the paisa to match checkout | 2026-10-19 |
-| 5% off add-ons chosen at sign-up; no Premium discount | 2026-10-19 |
+| 5% off add-ons chosen at sign-up; no Premium discount (superseded 2026-10-21) | 2026-10-19 |
+| Prices ₹3,000 / ₹10,000 / ₹25,000, each plan on its own; packages 20% (Website + Social, Website + SEO) and 30% (Social + SEO, All three); monthly ad credit ₹2,000 / ₹2,000 / ₹5,000 when bought together at the first purchase; 5% offer and stay offers removed (plans 15 and 16) | 2026-10-21 |
+| Design option B: the live basket with three switches and the offer note | 2026-10-21 |
 | Legal review happens on the preview, not before building | 2026-10-19 |
 | Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`) | 2026-10-19 |
 | About copy (`content/about.ts`) | 2026-10-19 |

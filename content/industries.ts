@@ -36,7 +36,7 @@ const WITH_GROWTH: BasketPick = { website: true, growth: true, search: false };
 const WITH_SEARCH: BasketPick = { website: true, growth: false, search: true };
 
 const HOURLY = formatInr(EXTRA_HOURLY_RATE);
-const UPDATED = "2026-10-19";
+const UPDATED = "2026-10-21";
 
 function costAnswer(pick: BasketPick): string {
   const pkg = packageFor(pick);

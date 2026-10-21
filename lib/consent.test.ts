@@ -13,7 +13,8 @@ import {
 } from "./consent";
 
 const NOW = new Date("2026-10-21T10:00:00Z");
-const ALL = toolsOf("GTM-ABC1234");
+// Every known tool, so the advertising rules stay covered while the container runs measurement only.
+const ALL = toolsOf("GTM-ABC1234", ["ga4", "clarity", "googleAds", "metaPixel"]);
 
 describe("parseGtmId", () => {
   it("treats unset and blank ids as not configured", () => {
@@ -34,6 +35,11 @@ describe("parseGtmId", () => {
 describe("tools and purposes", () => {
   it("loads no tool without a container", () => {
     expect(toolsOf(null)).toEqual([]);
+  });
+
+  it("runs Google Analytics and Clarity only, as the owner decided on 2026-10-21", () => {
+    expect(toolsOf("GTM-ABC1234")).toEqual(["ga4", "clarity"]);
+    expect(purposesOf(toolsOf("GTM-ABC1234"))).toEqual(["measurement"]);
   });
 
   it("lists the container's tools in display order", () => {

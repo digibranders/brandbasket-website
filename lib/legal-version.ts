@@ -13,7 +13,7 @@
  * 2026-10-21.2  Terms and refund policy: cancellation and a failed payment are stated for every plan, so they read
  *               right for a client without the website plan.
  * 2026-10-21.3  Privacy policy: Cookies, sharing and use describe the tools in the Google Tag Manager container (Google
- *               Analytics, Microsoft Clarity, Google Ads, Meta Pixel), loaded only with consent. With no container
- *               configured the text is unchanged.
+ *               Analytics and Microsoft Clarity), loaded only with consent. With no container configured the text
+ *               is unchanged. Not yet published, so the label was kept when Google Ads and Meta Pixel were dropped.
  */
 export const LEGAL_TEXT_VERSION = "2026-10-21.3";

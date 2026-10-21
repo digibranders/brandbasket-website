@@ -13,7 +13,7 @@ export type VendorId = "ga4" | "clarity" | "googleAds" | "metaPixel";
  * The tools set up inside the GTM container. The banner, the privacy policy and the CSP are built from this list, so
  * it must match the container: add a tool here before publishing it in GTM, and remove it here when it leaves.
  */
-export const GTM_CONTAINER_TOOLS: readonly VendorId[] = ["ga4", "clarity", "googleAds", "metaPixel"];
+export const GTM_CONTAINER_TOOLS: readonly VendorId[] = ["ga4", "clarity"];
 
 const VENDOR_ORDER: readonly VendorId[] = ["ga4", "clarity", "googleAds", "metaPixel"];
 const PURPOSE_ORDER: readonly Purpose[] = ["measurement", "advertising"];

@@ -1,6 +1,6 @@
 // content/basket.ts
 // Copy for the basket controls, word for word from the mock (docs/design/mock.html: .phc-act .adds, #h-plans .addpanel, .pbar).
-import { type AddonId, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
+import type { PlanId } from "@/lib/pricing";
 
 export interface AddonCopy {
   readonly name: string;
@@ -10,17 +10,23 @@ export interface AddonCopy {
 }
 
 /** Pricing hero rows (mock: .add). Names match `PLANS`. */
-export const PRICING_ADDONS: Readonly<Record<AddonId, AddonCopy>> = {
-  growth: { name: "Digital Growth", summary: "Google profile and Meta ads", switchLabel: "Add Digital Growth" },
+export const PRICING_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
+  website: { name: "Managed Website", summary: "Built free, then hosted, secure and kept up to date", switchLabel: "Add Managed Website" },
+  growth: { name: "Social Media and Ads", summary: "Instagram, Facebook, Google profile and Meta ads", switchLabel: "Add Social Media and Ads" },
   search: { name: "Local SEO + AEO", summary: "Google search and AI answers", switchLabel: "Add Local SEO and AEO" },
 };
 
-/** Homepage add-on panel rows (mock: .ap-row). */
-export const HOME_ADDONS: Readonly<Record<AddonId, AddonCopy>> = {
+/** Homepage plan rows (mock: .ap-row). */
+export const HOME_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
+  website: {
+    name: "Managed Website",
+    summary: "We build it free, then host it, secure it and make 2 small edits a month.",
+    switchLabel: "Add Managed Website",
+  },
   growth: {
-    name: "Digital Growth",
-    summary: "8 Google profile posts a month, and Instagram and Facebook ads run for you.",
-    switchLabel: "Add Digital Growth",
+    name: "Social Media and Ads",
+    summary: "12 Instagram and Facebook posts and 8 Google profile posts a month, and your Meta ads run for you.",
+    switchLabel: "Add Social Media and Ads",
   },
   search: {
     name: "Local SEO + AI search",
@@ -30,9 +36,7 @@ export const HOME_ADDONS: Readonly<Record<AddonId, AddonCopy>> = {
 };
 
 export const BASKET_COPY = {
-  rowsTitle: `Add to your basket. ${SIGNUP_ADDON_DISCOUNT_LABEL} off when you add them as you start.`,
   panelTitle: "Add when you are ready",
-  panelNote: `Optional. Add them as you start and they are ${SIGNUP_ADDON_DISCOUNT_LABEL} off for as long as they run.`,
   explore: "What is included",
   add: "Add",
   added: "Added",

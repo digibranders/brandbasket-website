@@ -1,6 +1,6 @@
 "use client";
 import type { ReactElement } from "react";
-import { BASKET_COPY, PRICING_ADDONS } from "@/content/basket";
+import { PRICING_PLANS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { ADDONS, formatInr, PLANS } from "@/lib/pricing";
 import { Switch } from "../ui/Switch";
@@ -15,9 +15,8 @@ export function AddonRows(): ReactElement {
   const pick = useBasket();
   return (
     <div>
-      <p className="mb-2 text-sm text-ink-2">{BASKET_COPY.rowsTitle}</p>
       {ADDONS.map((id) => {
-        const copy = PRICING_ADDONS[id];
+        const copy = PRICING_PLANS[id];
         return (
           <div
             key={id}

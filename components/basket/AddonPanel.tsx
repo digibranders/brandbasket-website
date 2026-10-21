@@ -3,9 +3,9 @@ import type { Icon } from "@phosphor-icons/react";
 import { ArrowRight, MagnifyingGlass, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import type { ReactElement } from "react";
-import { BASKET_COPY, HOME_ADDONS } from "@/content/basket";
+import { BASKET_COPY, HOME_PLANS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { type AddonId, ADDONS, firstPayment, formatInr, PLANS, signupTotal } from "@/lib/pricing";
+import { type AddonId, ADDONS, firstPayment, formatInr, PLANS, packageTotal } from "@/lib/pricing";
 import { PLAN_COLOUR, basketNames } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
@@ -15,18 +15,17 @@ const ICON: Readonly<Record<AddonId, Icon>> = { growth: TrendUp, search: Magnify
 /** Homepage add-on panel (mock: #h-plans .addpanel, .ap-row, .calc). */
 export function AddonPanel(): ReactElement {
   const pick = useBasket();
-  const monthly = signupTotal(pick);
+  const monthly = packageTotal(pick);
   const pay = firstPayment(monthly);
 
   return (
     <div className="mt-14 overflow-hidden rounded-[26px] border border-line bg-surface">
       <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1.5 px-[26px] pb-3.5 pt-[22px] max-[699px]:px-5">
         <h3 className="font-display text-[22px] font-medium tracking-[-0.03em]">{BASKET_COPY.panelTitle}</h3>
-        <span className="text-sm text-ink-2">{BASKET_COPY.panelNote}</span>
       </div>
 
       {ADDONS.map((id) => {
-        const copy = HOME_ADDONS[id];
+        const copy = HOME_PLANS[id];
         const AddonIcon = ICON[id];
         return (
           <div key={id} className="grid grid-cols-[auto_minmax(0,1fr)_auto_auto] items-center gap-x-5 gap-y-4 border-t border-line px-[26px] py-[18px] max-[699px]:grid-cols-[minmax(0,1fr)_auto] max-[699px]:px-5">

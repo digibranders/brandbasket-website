@@ -1,12 +1,24 @@
 // content/basket.test.ts
 import { describe, expect, it } from "vitest";
-import { SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
-import { BASKET_COPY } from "./basket";
+import { PLAN_IDS, PLANS } from "@/lib/pricing";
+import { BASKET_COPY, HOME_PLANS, PRICING_PLANS } from "./basket";
 
 describe("basket copy", () => {
-  it("states the sign-up discount word for word from the mock", () => {
-    expect(SIGNUP_ADDON_DISCOUNT_LABEL).toBe("5%");
-    expect(BASKET_COPY.panelNote).toBe("Optional. Add them as you start and they are 5% off for as long as they run.");
-    expect(BASKET_COPY.rowsTitle).toBe("Add to your basket. 5% off when you add them as you start.");
+  it.each([
+    ["PRICING_PLANS", PRICING_PLANS],
+    ["HOME_PLANS", HOME_PLANS],
+  ] as const)("%s has one row per plan", (_label, rows) => {
+    expect(Object.keys(rows).sort()).toEqual([...PLAN_IDS].sort());
+  });
+  it("names the pricing rows as the plans", () => {
+    for (const id of PLAN_IDS) expect(PRICING_PLANS[id].name).toBe(PLANS[id].name);
+  });
+  it("names the homepage rows as the plans, except the approved short search name", () => {
+    expect(HOME_PLANS.website.name).toBe(PLANS.website.name);
+    expect(HOME_PLANS.growth.name).toBe(PLANS.growth.name);
+    expect(HOME_PLANS.search.name).toBe("Local SEO + AI search");
+  });
+  it("no longer mentions the 5% sign-up offer", () => {
+    expect(JSON.stringify({ BASKET_COPY, PRICING_PLANS, HOME_PLANS })).not.toMatch(/5%|sign-up|signup/);
   });
 });

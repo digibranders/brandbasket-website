@@ -1,6 +1,6 @@
 // e2e/basket.spec.ts
 import { expect, test } from "@playwright/test";
-import { PRICING_ADDONS } from "@/content/basket";
+import { PRICING_PLANS } from "@/content/basket";
 import { type AddonPick, firstPayment, formatInr, signupTotal } from "@/lib/pricing";
 
 const PICKS: readonly AddonPick[] = [
@@ -15,8 +15,8 @@ for (const pick of PICKS) {
   test(`pricing total with growth=${pick.growth} search=${pick.search} is ${total}`, async ({ page }) => {
     await page.goto("/pricing");
     const hero = page.locator("section[aria-labelledby='h-pricing']");
-    if (pick.growth) await hero.getByRole("switch", { name: PRICING_ADDONS.growth.switchLabel }).click();
-    if (pick.search) await hero.getByRole("switch", { name: PRICING_ADDONS.search.switchLabel }).click();
+    if (pick.growth) await hero.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).click();
+    if (pick.search) await hero.getByRole("switch", { name: PRICING_PLANS.search.switchLabel }).click();
     await expect(hero.getByText(total, { exact: true })).toBeVisible();
   });
 }
@@ -31,5 +31,5 @@ test("the basket carries from home to pricing", async ({ page }) => {
   await page.getByRole("switch", { name: "Add Digital Growth" }).first().click();
   await page.getByRole("link", { name: "Compare all plans" }).click();
   await expect(page).toHaveURL(/\/pricing/);
-  await expect(page.getByRole("switch", { name: PRICING_ADDONS.growth.switchLabel }).first()).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).first()).toHaveAttribute("aria-checked", "true");
 });

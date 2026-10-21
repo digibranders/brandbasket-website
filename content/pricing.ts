@@ -2,8 +2,8 @@
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PACKAGES, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL, type Package, type PlanId } from "@/lib/pricing";
-import { ADDON_CHANGE, CANCEL_ANSWER } from "./legal/cancellation";
+import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, PACKAGES, packageSaving, packageTotal, PLANS, type Package, type PlanId } from "@/lib/pricing";
+import { CANCEL_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
@@ -20,7 +20,7 @@ export const PRICING_HERO = {
 
 /** One cell of the comparison table: included, not included, or a short quantity such as "2 a month". */
 export type CompareCell = boolean | string;
-/** One cell per package, in `PACKAGES` order: Website, Website + Growth, Website + Search, All three. */
+/** One cell per package, in `PACKAGES` order: Website + Social, Website + SEO, Social + SEO, All three. */
 export type CompareCells = readonly [CompareCell, CompareCell, CompareCell, CompareCell];
 
 export interface CompareRow {
@@ -40,6 +40,21 @@ export interface CompareColumn {
   /** Monthly total before GST, for example "₹9,999". */
   readonly price: string;
   readonly priceSuffix: string;
+  /** The offer: "20% off, save ₹2,600 a month". */
+  readonly note: string;
+  /** The monthly ad credit, only for packages that carry one. */
+  readonly creditNote?: string;
+}
+
+function isFourCells(cells: readonly CompareCell[]): cells is CompareCells {
+  return cells.length === 4;
+}
+
+/** The ad credit of each package, in `PACKAGES` order. */
+function adCreditCells(): CompareCells {
+  const cells = PACKAGES.map((p): CompareCell => (p.adCredit > 0 ? formatInr(p.adCredit) : "None"));
+  if (!isFourCells(cells)) throw new RangeError(`Expected 4 packages, got ${cells.length}`);
+  return cells;
 }
 
 const YES = true;
@@ -58,43 +73,53 @@ export interface Compare {
 
 export const COMPARE: Compare = {
   heading: "Which basket fits you?",
-  lede: `Four ways to combine the plans. Every price is monthly, before GST. Add-ons chosen as you start are ${SIGNUP_ADDON_DISCOUNT_LABEL} off.`,
+  lede: "Four packages. Every price is monthly, before GST, and the package price stays for as long as you keep every plan in it.",
   tabsLabel: "Show one basket",
   rowHeader: "What is included",
   included: "Included",
   notIncluded: "Not included",
   columns: PACKAGES.map(
-    (pkg): CompareColumn => ({ id: pkg.id, name: pkg.name, price: formatInr(monthlyTotal(pkg.addons)), priceSuffix: " /mo" }),
+    (pkg): CompareColumn => ({
+      id: pkg.id,
+      name: pkg.name,
+      price: formatInr(packageTotal(pkg.pick)),
+      priceSuffix: " /mo",
+      note: `${pkg.percent}% off, save ${formatInr(packageSaving(pkg.pick))} a month`,
+      ...(pkg.adCredit > 0 ? { creditNote: `+ ${formatInr(pkg.adCredit)} a month for your ads` } : {}),
+    }),
   ),
   groups: [
     {
       title: "Your website",
       rows: [
-        { label: "Hosting, SSL, backups and security", cells: [YES, YES, YES, YES] },
-        { label: "Small edits", note: "Up to 30 minutes each", cells: ["2 a month", "2 a month", "2 a month", "2 a month"] },
-        { label: "Analytics, indexing and sitemap checks", cells: [YES, YES, YES, YES] },
+        { label: "Hosting, SSL, backups and security", cells: [YES, YES, NO, YES] },
+        { label: "Small edits", note: "Up to 30 minutes each", cells: ["2 a month", "2 a month", NO, "2 a month"] },
+        { label: "Analytics, indexing and sitemap checks", cells: [YES, YES, NO, YES] },
       ],
     },
     {
       title: "Google and social",
       rows: [
-        { label: "Google Business Profile posts", cells: [NO, "8 a month", NO, "8 a month"] },
-        { label: "Review monitoring and reply drafts", cells: [NO, YES, NO, YES] },
-        { label: "Facebook and Instagram ads", note: `Ad budget up to ${AD_CAP} a month, paid by you`, cells: [NO, YES, NO, YES] },
+        { label: "Google Business Profile posts", cells: ["8 a month", NO, "8 a month", "8 a month"] },
+        { label: "Review monitoring and reply drafts", cells: [YES, NO, YES, YES] },
+        { label: "Facebook and Instagram ads", note: `Up to ${AD_CAP} a month of your own budget managed, plus our ad credit`, cells: [YES, NO, YES, YES] },
       ],
     },
     {
       title: "Search and AI answers",
       rows: [
-        { label: "Local keyword and competitor research", cells: [NO, NO, YES, YES] },
-        { label: "Pages optimised", cells: [NO, NO, "5 a month", "5 a month"] },
-        { label: "AEO: FAQs, schema and AI visibility", cells: [NO, NO, YES, YES] },
-        { label: "Ranking, traffic and enquiry tracking", cells: [NO, NO, YES, YES] },
+        { label: "Local keyword and competitor research", cells: [NO, YES, YES, YES] },
+        { label: "Pages optimised", cells: [NO, "5 a month", "5 a month", "5 a month"] },
+        { label: "AEO: FAQs, schema and AI visibility", cells: [NO, YES, YES, YES] },
+        { label: "Ranking, traffic and enquiry tracking", cells: [NO, YES, YES, YES] },
       ],
     },
     {
       title: "Every plan",
-      rows: [{ label: "Monthly report", cells: ["Website health", "+ ads and profile", "+ SEO and AEO", "All of it"] }],
+      rows: [
+        { label: "Monthly report", cells: ["Site + social", "Site + search", "Social + search", "All of it"] },
+        { label: "Ad credit from us, every month", cells: adCreditCells() },
+      ],
     },
   ],
 };
@@ -112,7 +137,7 @@ export interface PlanDetail {
   readonly id: PlanId;
   readonly name: string;
   readonly icon: PricingIconKey;
-  /** The line under the plan name, for example "+₹7,000 a month · Google Business Profile and Meta ads". */
+  /** The line under the plan name, for example "₹10,000 a month · Instagram, Facebook, Google profile and Meta ads". */
   readonly summary: string;
   readonly columns: readonly DetailColumn[];
 }
@@ -169,37 +194,32 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
     id: "growth",
     name: PLANS.growth.name,
     icon: "TrendUp",
-    summary: `+${formatInr(PLANS.growth.monthly)} a month · Google Business Profile and Meta ads`,
+    summary: `${formatInr(PLANS.growth.monthly)} a month · Instagram, Facebook, Google profile and Meta ads`,
     columns: [
       {
-        heading: "Google Business Profile",
+        heading: "Social and Google profile",
         kind: "included",
         items: [
-          "Business details and category review",
-          "Up to 8 posts a month: updates, offers, services",
-          "Photo updates from your images or agreed creatives",
-          "Hours, contact and website link checks",
-          "Review monitoring and reply suggestions",
-          "Monthly profile report",
+          "Instagram and Facebook: 12 designed posts a month, with captions and scheduling",
+          "Google Business Profile: 8 posts a month",
+          "Review replies",
+          "Monthly report",
         ],
       },
       {
-        heading: "Facebook and Instagram ads",
+        heading: "Meta ads",
         kind: "included",
         items: [
-          "Monthly campaign plan",
+          `Meta ads managed for up to ${AD_CAP} a month of your budget, plus the ad credit`,
           "Setup, audience, objective and placements",
-          "Ad copy and basic creatives",
           "Launch, monitoring and budget pacing",
           "A/B tests where budget allows",
-          "Monthly ads report",
         ],
       },
       {
         heading: "Good to know",
         kind: "excluded",
-        items: ["Ad spend is paid to Meta by you", `Covers ad budgets up to ${AD_CAP} a month`, `Reels and video editing at ${HOURLY} an hour`],
-        note: "Needs the Managed Website plan.",
+        items: ["Ad spend is paid to Meta by you", `Covers ad budgets up to ${AD_CAP} a month`, `Reels at ${HOURLY} an hour`],
       },
     ],
   },
@@ -207,7 +227,7 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
     id: "search",
     name: PLANS.search.name,
     icon: "MagnifyingGlass",
-    summary: `+${formatInr(PLANS.search.monthly)} a month · local search and AI answer visibility`,
+    summary: `${formatInr(PLANS.search.monthly)} a month · local search and AI answer visibility`,
     columns: [
       {
         heading: "Local SEO",
@@ -243,7 +263,7 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
           "Paid backlinks or placements",
           "Unlimited writing or new landing pages",
         ],
-        note: "Needs the Managed Website plan. New landing pages are quoted separately.",
+        note: "New landing pages are quoted separately.",
       },
     ],
   },
@@ -292,12 +312,12 @@ export const PRICING_FAQ: readonly FaqItem[] = [
     a: CANCEL_ANSWER,
   },
   {
-    q: "Can I add or drop Growth and Search later?",
-    a: `Yes. ${ADDON_CHANGE}`,
+    q: "Can I add or drop a plan later?",
+    a: "Yes. Add a plan any time and your basket moves to the package price from your next bill. Drop one from a package and the plans you keep go back to their own prices from your next bill, and the package offer ends.",
   },
   {
     q: "Is ad spend included?",
-    a: `No. You pay Meta directly for ads. ${PLANS.growth.name} manages budgets up to ${AD_CAP} a month.`,
+    a: `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${AD_CAP} a month of it. Packages with ad credit add our money on top.`,
   },
   {
     q: "Do you guarantee rankings or leads?",

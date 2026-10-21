@@ -1,96 +1,82 @@
 // lib/pricing.test.ts
 import { describe, expect, it } from "vitest";
 import {
-  ADDONS,
+  adCreditFor,
   basketPlans,
+  type BasketPick,
   firstPayment,
   formatInr,
   GST_LABEL,
   GST_RATE,
   monthlyTotal,
   PACKAGES,
+  packageFor,
+  packageSaving,
+  packageTotal,
+  PLAN_IDS,
   PLANS,
-  SIGNUP_ADDON_DISCOUNT,
-  signupAddonPrice,
-  signupTotal,
 } from "./pricing";
 
+const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
+
 describe("plans", () => {
-  it("prices the three plans from the plans document", () => {
-    expect(PLANS.website.monthly).toBe(2999);
-    expect(PLANS.growth.monthly).toBe(7000);
+  it("prices the three plans (owner decision, 2026-10-21)", () => {
+    expect(PLANS.website.monthly).toBe(3000);
+    expect(PLANS.growth.monthly).toBe(10000);
     expect(PLANS.search.monthly).toBe(25000);
   });
 
-  it("makes every add-on require the website plan", () => {
-    for (const id of ADDONS) expect(PLANS[id].requires).toBe("website");
+  it("lists every plan, each sold on its own", () => {
+    expect(PLAN_IDS).toEqual(["website", "growth", "search"]);
   });
 });
 
-describe("monthlyTotal", () => {
+describe("baskets", () => {
   it.each([
-    [{ growth: false, search: false }, 2999],
-    [{ growth: true, search: false }, 9999],
-    [{ growth: false, search: true }, 27999],
-    [{ growth: true, search: true }, 34999],
-  ])("totals %o as %i", (picked, expected) => {
-    expect(monthlyTotal(picked)).toBe(expected);
+    [pick(true, false, false), 3000, 3000, 3540, 0, 0, null],
+    [pick(false, true, false), 10000, 10000, 11800, 0, 0, null],
+    [pick(false, false, true), 25000, 25000, 29500, 0, 0, null],
+    [pick(true, true, false), 13000, 10400, 12272, 2600, 2000, "website-growth"],
+    [pick(true, false, true), 28000, 22400, 26432, 5600, 0, "website-search"],
+    [pick(false, true, true), 35000, 24500, 28910, 10500, 2000, "growth-search"],
+    [pick(true, true, true), 38000, 26600, 31388, 11400, 5000, "everything"],
+  ])("prices %o", (basket, list, monthly, withGst, saving, adCredit, packageId) => {
+    expect(monthlyTotal(basket)).toBe(list);
+    expect(packageTotal(basket)).toBe(monthly);
+    expect(firstPayment(packageTotal(basket)).total).toBe(withGst);
+    expect(packageSaving(basket)).toBe(saving);
+    expect(adCreditFor(basket)).toBe(adCredit);
+    expect(packageFor(basket)?.id ?? null).toBe(packageId);
   });
 
-  it("matches the four published packages", () => {
-    expect(PACKAGES.map((p) => monthlyTotal(p.addons))).toEqual([2999, 9999, 27999, 34999]);
-  });
-});
-
-describe("sign-up add-on discount", () => {
-  it("is 5% off add-ons chosen with the website", () => {
-    expect(SIGNUP_ADDON_DISCOUNT).toBe(0.05);
-    expect(signupAddonPrice("growth")).toBe(6650);
-    expect(signupAddonPrice("search")).toBe(23750);
+  it("never prices a two-plan package above all three", () => {
+    const everything = packageTotal(pick(true, true, true));
+    for (const p of PACKAGES.filter((p) => p.id !== "everything")) expect(packageTotal(p.pick)).toBeLessThan(everything);
   });
 
-  it.each([
-    [{ growth: false, search: false }, 2999, 3538.82],
-    [{ growth: true, search: false }, 9649, 11385.82],
-    [{ growth: false, search: true }, 26749, 31563.82],
-    [{ growth: true, search: true }, 33399, 39410.82],
-  ])("totals %o at sign-up as %i, %d with GST", (picked, monthly, withGst) => {
-    expect(signupTotal(picked)).toBe(monthly);
-    expect(firstPayment(signupTotal(picked)).total).toBe(withGst);
+  it("gives an empty basket no price and no package", () => {
+    expect(monthlyTotal(pick(false, false, false))).toBe(0);
+    expect(packageFor(pick(false, false, false))).toBeNull();
   });
 
-  it("never discounts the website plan", () => {
-    expect(signupTotal({ growth: false, search: false })).toBe(PLANS.website.monthly);
-    expect(signupTotal({ growth: true, search: false }) - signupAddonPrice("growth")).toBe(PLANS.website.monthly);
-  });
-
-  it("leaves list prices to monthlyTotal", () => {
-    expect(monthlyTotal({ growth: true, search: true })).toBe(34999);
+  it("lists plans in catalogue order", () => {
+    expect(basketPlans(pick(false, true, true)).map((p) => p.id)).toEqual(["growth", "search"]);
   });
 });
 
 describe("firstPayment", () => {
   it("charges one month plus 18% GST", () => {
     expect(GST_RATE).toBe(0.18);
-  });
-
-  it("prints the GST rate as 18% in copy", () => {
     expect(GST_LABEL).toBe("18%");
   });
 
   it.each([
+    [3000, 540, 3540],
+    [10400, 1872, 12272],
+    [26600, 4788, 31388],
     [2999, 539.82, 3538.82],
-    [9999, 1799.82, 11798.82],
-    [27999, 5039.82, 33038.82],
-    [34999, 6299.82, 41298.82],
   ])("shows GST on %i to the paisa without rounding", (base, gst, total) => {
     expect(firstPayment(base)).toEqual({ months: 1, base, gst, total });
-  });
-});
-
-describe("basketPlans", () => {
-  it("always starts with the website plan", () => {
-    expect(basketPlans({ growth: false, search: true }).map((p) => p.id)).toEqual(["website", "search"]);
   });
 });
 
@@ -101,13 +87,8 @@ describe("formatInr", () => {
     expect(formatInr(120000)).toBe("₹1,20,000");
   });
 
-  it("prints whole amounts without decimals", () => {
-    expect(formatInr(2999)).toBe("₹2,999");
-  });
-
   it("prints amounts with paise to exactly two decimals", () => {
     expect(formatInr(3538.82)).toBe("₹3,538.82");
     expect(formatInr(3538.8)).toBe("₹3,538.80");
-    expect(formatInr(41298.82)).toBe("₹41,298.82");
   });
 });

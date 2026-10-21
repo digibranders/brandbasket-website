@@ -1,70 +1,89 @@
 // lib/pricing.ts
 /**
- * Brandbasket's plans and every sum the site prints. Source: Brandbasket_Service_Plans.docx (October 2026).
- * Prices are monthly, in rupees, before GST. Change a price here and nowhere else.
+ * Brandbasket's plans, package offers and every sum the site prints (owner decisions, 2026-10-21;
+ * docs/plans/15-website-pricing-offers.md). Prices are monthly, in rupees, before GST. Change a price or an offer here
+ * and nowhere else; brandbasket-platform holds the same numbers and is changed in the same release.
  */
 export type PlanId = "website" | "growth" | "search";
-export type AddonId = Exclude<PlanId, "website">;
 
 export interface Plan {
   readonly id: PlanId;
   readonly name: string;
   readonly short: string;
   readonly monthly: number;
-  readonly requires?: "website";
 }
 
 export const PLANS: Readonly<Record<PlanId, Plan>> = {
-  website: { id: "website", name: "Managed Website", short: "Website", monthly: 2999 },
-  growth: { id: "growth", name: "Digital Growth", short: "Growth", monthly: 7000, requires: "website" },
-  search: { id: "search", name: "Local SEO + AEO", short: "Search", monthly: 25000, requires: "website" },
+  website: { id: "website", name: "Managed Website", short: "Website", monthly: 3000 },
+  growth: { id: "growth", name: "Social Media and Ads", short: "Social", monthly: 10000 },
+  search: { id: "search", name: "Local SEO + AEO", short: "SEO", monthly: 25000 },
 };
 
-export const ADDONS: readonly AddonId[] = ["growth", "search"];
+/** Every plan, in the order the site lists them. Each can be bought on its own. */
+export const PLAN_IDS: readonly PlanId[] = ["website", "growth", "search"];
 export const GST_RATE = 0.18;
 /** GST as printed in copy, for example "18%". */
 export const GST_LABEL = `${Math.round(GST_RATE * 100)}%`;
-/** Add-ons chosen together with the website at sign-up are this much off for as long as they run (owner decision, 2026-10-19). */
-export const SIGNUP_ADDON_DISCOUNT = 0.05;
-/** The discount as printed in copy, for example "5%". */
-export const SIGNUP_ADDON_DISCOUNT_LABEL = `${Math.round(SIGNUP_ADDON_DISCOUNT * 100)}%`;
 /** Billed monthly: the first payment covers one month (owner decision, 2026-10-19). */
 export const UPFRONT_MONTHS = 1;
 export const EXTRA_HOURLY_RATE = 500;
+/** The client's own Meta ad budget that Social Media and Ads manages each month. Ad credit comes on top of it. */
 export const AD_BUDGET_CAP = 10000;
 
-export type AddonPick = Readonly<Record<AddonId, boolean>>;
+/** Which plans are in the basket. The basket store never lets it go empty. */
+export type BasketPick = Readonly<Record<PlanId, boolean>>;
 
 export interface Package {
-  readonly id: "website-only" | "website-growth" | "website-search" | "everything";
+  readonly id: "website-growth" | "website-search" | "growth-search" | "everything";
   readonly name: string;
-  readonly addons: AddonPick;
+  readonly pick: BasketPick;
+  /** Whole percent off the combined list price, for as long as every plan in it stays. */
+  readonly percent: number;
+  /** Rupees a month Brandbasket adds to the client's ad account, only when the package is bought together at the first purchase. */
+  readonly adCredit: number;
 }
 
 export const PACKAGES: readonly Package[] = [
-  { id: "website-only", name: "Website", addons: { growth: false, search: false } },
-  { id: "website-growth", name: "Website + Growth", addons: { growth: true, search: false } },
-  { id: "website-search", name: "Website + Search", addons: { growth: false, search: true } },
-  { id: "everything", name: "All three", addons: { growth: true, search: true } },
+  { id: "website-growth", name: "Website + Social", pick: { website: true, growth: true, search: false }, percent: 20, adCredit: 2000 },
+  { id: "website-search", name: "Website + SEO", pick: { website: true, growth: false, search: true }, percent: 20, adCredit: 0 },
+  { id: "growth-search", name: "Social + SEO", pick: { website: false, growth: true, search: true }, percent: 30, adCredit: 2000 },
+  { id: "everything", name: "All three", pick: { website: true, growth: true, search: true }, percent: 30, adCredit: 5000 },
 ];
 
-export function basketPlans(picked: AddonPick): Plan[] {
-  return [PLANS.website, ...ADDONS.filter((id) => picked[id]).map((id) => PLANS[id])];
+// shortcut: kept only for components/basket/scene until plan 15 Task 5 makes the website tiles a group; remove then.
+export type AddonId = Exclude<PlanId, "website">;
+export type AddonPick = Readonly<Record<AddonId, boolean>>;
+export const ADDONS: readonly AddonId[] = ["growth", "search"];
+
+export function basketPlans(pick: BasketPick): Plan[] {
+  return PLAN_IDS.filter((id) => pick[id]).map((id) => PLANS[id]);
 }
 
-export function monthlyTotal(picked: AddonPick): number {
-  return basketPlans(picked).reduce((sum, plan) => sum + plan.monthly, 0);
+/** The package this exact basket is, or null for a single plan. */
+export function packageFor(pick: BasketPick): Package | null {
+  return PACKAGES.find((p) => PLAN_IDS.every((id) => p.pick[id] === pick[id])) ?? null;
 }
 
-/** Monthly price of an add-on chosen at sign-up. The website plan is never discounted, so it has no sign-up price. */
-export function signupAddonPrice(id: AddonId): number {
-  // Whole percent points keep the sum exact: 7000 * 95 / 100 has no float drift.
-  return Math.round(PLANS[id].monthly * Math.round((1 - SIGNUP_ADDON_DISCOUNT) * 100)) / 100;
+/** List price of the basket a month: the plans added up, before any package offer. */
+export function monthlyTotal(pick: BasketPick): number {
+  return basketPlans(pick).reduce((sum, plan) => sum + plan.monthly, 0);
 }
 
-/** Basket total at sign-up: the website at list price plus each picked add-on at its sign-up price. */
-export function signupTotal(picked: AddonPick): number {
-  return ADDONS.filter((id) => picked[id]).reduce((sum, id) => sum + signupAddonPrice(id), PLANS.website.monthly);
+/** What the basket costs a month: the list price less its package offer. */
+export function packageTotal(pick: BasketPick): number {
+  const pkg = packageFor(pick);
+  // Whole percent points in integer paise: 38000 * 70 has no float drift.
+  return pkg ? Math.round(monthlyTotal(pick) * (100 - pkg.percent)) / 100 : monthlyTotal(pick);
+}
+
+/** Rupees a month the package offer takes off the list price; 0 for a single plan. */
+export function packageSaving(pick: BasketPick): number {
+  return monthlyTotal(pick) - packageTotal(pick);
+}
+
+/** Rupees a month of ad credit the basket earns when it is bought together at the first purchase. */
+export function adCreditFor(pick: BasketPick): number {
+  return packageFor(pick)?.adCredit ?? 0;
 }
 
 export interface FirstPayment {

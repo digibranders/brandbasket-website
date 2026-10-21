@@ -9,8 +9,9 @@ export const PLAN_IDS = ["website", "growth", "search"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];
 
 /**
- * Plan prices are whole rupees. A package takes a whole percent off the combined price, which can leave paise (12998 less
- * 20% is 10398.40), so every sum below is worked in whole paise and divided by 100 once at the end.
+ * Plan prices are whole rupees. A package takes a whole percent off the combined price and rounds down to the whole
+ * rupee (12998 less 20% is 10398.40, so 10398; owner, 2026-10-21). GST can still leave paise, so every sum below is
+ * worked in whole paise and divided by 100 once at the end.
  */
 export interface Plan {
   readonly id: PlanId;
@@ -82,10 +83,12 @@ function monthlyTotalPaise(pick: BasketPick): number {
 
 function packageTotalPaise(pick: BasketPick): number {
   const pkg = packageFor(pick);
-  return pkg ? Math.round((monthlyTotalPaise(pick) * (100 - pkg.percent)) / 100) : monthlyTotalPaise(pick);
+  if (!pkg) return monthlyTotalPaise(pick);
+  const exact = (monthlyTotalPaise(pick) * (100 - pkg.percent)) / 100;
+  return Math.floor(exact / PAISE_PER_RUPEE) * PAISE_PER_RUPEE;
 }
 
-/** What the basket costs a month: the list price less its package offer, exact to the paisa. */
+/** What the basket costs a month: the list price less its package offer, rounded down to the whole rupee. */
 export function packageTotal(pick: BasketPick): number {
   return packageTotalPaise(pick) / PAISE_PER_RUPEE;
 }

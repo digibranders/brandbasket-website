@@ -38,16 +38,16 @@ describe("offerNote", () => {
     expect(offerNote(one)).toBe("Take two plans and save 20% or more. Take all three and save 30%.");
   });
   it("prices Website + Social with its ad money for both", () => {
-    expect(offerNote(pick(true, true, false))).toBe("Website + Social: 20% off, so you save ₹2,599.60 a month. Start with both and we add ₹2,000 a month to your ads.");
+    expect(offerNote(pick(true, true, false))).toBe("Website + Social: 20% off, so you save ₹2,600 a month. Start with both and we add ₹2,000 a month to your ads.");
   });
   it("prices Website + SEO without ad money", () => {
-    expect(offerNote(pick(true, false, true))).toBe("Website + SEO: 20% off, so you save ₹5,599.60 a month.");
+    expect(offerNote(pick(true, false, true))).toBe("Website + SEO: 20% off, so you save ₹5,600 a month.");
   });
   it("prices Social + SEO with its ad money for both", () => {
-    expect(offerNote(pick(false, true, true))).toBe("Social + SEO: 30% off, so you save ₹10,499.40 a month. Start with both and we add ₹2,000 a month to your ads.");
+    expect(offerNote(pick(false, true, true))).toBe("Social + SEO: 30% off, so you save ₹10,500 a month. Start with both and we add ₹2,000 a month to your ads.");
   });
   it("says all three for the full basket", () => {
-    expect(offerNote(pick(true, true, true))).toBe("All three: 30% off, so you save ₹11,399.10 a month. Start with all three and we add ₹5,000 a month to your ads.");
+    expect(offerNote(pick(true, true, true))).toBe("All three: 30% off, so you save ₹11,400 a month. Start with all three and we add ₹5,000 a month to your ads.");
   });
 });
 
@@ -56,6 +56,6 @@ describe("saveLine", () => {
     expect(saveLine(pick(true, false, false))).toBe("");
   });
   it("prints the monthly saving of a package", () => {
-    expect(saveLine(pick(true, true, true))).toBe("You save ₹11,399.10 a month");
+    expect(saveLine(pick(true, true, true))).toBe("You save ₹11,400 a month");
   });
 });

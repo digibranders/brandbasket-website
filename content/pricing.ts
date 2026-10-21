@@ -46,7 +46,7 @@ export interface CompareGroup {
 export interface CompareColumn {
   readonly id: Package["id"];
   readonly name: string;
-  /** Monthly total before GST, for example "₹10,398.40". */
+  /** Monthly total before GST, for example "₹10,398". */
   readonly price: string;
   readonly priceSuffix: string;
 }

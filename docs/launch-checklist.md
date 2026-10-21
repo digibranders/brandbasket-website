@@ -91,6 +91,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Prices ₹3,000 / ₹10,000 / ₹25,000 (superseded the same day by ₹2,999 / ₹9,999 / ₹24,999, row below), each plan on its own; packages 20% (Website + Social, Website + SEO) and 30% (Social + SEO, All three); monthly ad credit ₹2,000 / ₹2,000 / ₹5,000 when bought together at the first purchase; 5% offer and stay offers removed (plans 15 and 16) | 2026-10-21 |
 | Design option B: the live basket with three switches and the offer note | 2026-10-21 |
 | List prices now ₹2,999 / ₹9,999 / ₹24,999 a month (from ₹3,000 / ₹10,000 / ₹25,000); packages 20% and 30% off as before, so they now come out in paise (₹10,398.40, ₹22,398.40, ₹24,498.60, ₹26,597.90); ad credit, the ₹10,000 ad budget and USD prices unchanged | 2026-10-21 |
+| Package prices round down to the whole rupee (₹10,398, ₹22,398, ₹24,498, ₹26,597; savings ₹2,600, ₹5,600, ₹10,500, ₹11,400); GST stays to the paisa. The pricing total shows the plans' own price with GST struck through beside the package price | 2026-10-21 |
 | Legal review happens on the preview, not before building | 2026-10-19 |
 | Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`) | 2026-10-19 |
 | About copy (`content/about.ts`) | 2026-10-19 |

@@ -1,6 +1,6 @@
 // content/pricing.ts
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
-// Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
+// Every price, total, GST figure and cap is built from lib/pricing.ts. The hero plan rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, PACKAGES, packageSaving, packageTotal, PLANS, type Package, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";

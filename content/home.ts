@@ -1,6 +1,6 @@
 // content/home.ts
 // Copy for the homepage, word for word from the approved mock (docs/design/mock.html, #view-home).
-// Prices and rates are built from lib/pricing.ts. The add-on panel and button labels live in content/basket.ts and
+// Prices and rates are built from lib/pricing.ts. The basket panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
 import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
 import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";

@@ -4,6 +4,7 @@ import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
+import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
 import { dataNotice } from "./notice";
 import { privacyPolicy } from "./privacy";
 import { refundPolicy } from "./refund";
@@ -52,9 +53,20 @@ describe("legal documents", () => {
     expect(text).toContain(formatInr(AD_BUDGET_CAP));
     expect(text).toContain(businessDetails.courts);
   });
-  it("state the sign-up add-on discount in the fees section", () => {
+  it("state the package price and ad credit terms in the fees section", () => {
     const fees = JSON.stringify(termsOfService.sections.find((s) => s.heading === "5. Fees and payment"));
-    expect(fees).toContain("Add-ons chosen at sign-up are 5% off for as long as they run; add-ons added later are charged at the listed price.");
+    expect(fees).toContain(PACKAGE_TERMS);
+    expect(fees).toContain(AD_CREDIT_TERMS);
+  });
+  it("say each plan can be bought on its own and drop the 5% offer", () => {
+    expect(JSON.stringify(termsOfService)).toContain("each plan can be bought on its own");
+    expect(JSON.stringify(ALL)).not.toMatch(/5% off|needs the Managed Website/i);
+  });
+  it("keep the package price and ad credit when a payment fails", () => {
+    expect(PAYMENT_FAILURE).toContain("Your package price and ad credit stay.");
+  });
+  it("ships the 2026-10-21.1 text version", () => {
+    expect(LEGAL_TEXT_VERSION).toBe("2026-10-21.1");
   });
   it("use one cancellation, payment and ownership policy in the terms and the refund policy", () => {
     const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));

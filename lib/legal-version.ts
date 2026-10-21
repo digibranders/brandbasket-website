@@ -7,5 +7,8 @@
  * 2026-10-19.2  Terms section 5: add-ons chosen at sign-up are 5% off for as long as they run.
  * 2026-10-19.3  Terms and refund policy: cancel anytime with no notice period, a reminder before every renewal, a
  *               failed payment takes the website offline at once, and design and content are a hosted service.
+ * 2026-10-21.1  Terms and refund policy: every plan can be bought on its own, package prices replace the 5% sign-up
+ *               offer, monthly ad credit for packages taken at the first purchase, and dropping a plan ends the
+ *               package price.
  */
-export const LEGAL_TEXT_VERSION = "2026-10-19.3";
+export const LEGAL_TEXT_VERSION = "2026-10-21.1";

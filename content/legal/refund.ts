@@ -18,7 +18,7 @@ export const refundPolicy: LegalDocument = {
       heading: "How billing works",
       requiredBy: ["Razorpay merchant terms", "Consumer Protection (E-Commerce) Rules 2020 r.7(1)"],
       paragraphs: [
-        `Building your website is free. Your plan is billed monthly, in advance, one month at a time, and renews each month until you cancel. Add-ons are billed the same way, with your plan. ${RENEWAL_REMINDER}`,
+        `Building your website is free. Your plan is billed monthly, in advance, one month at a time, and renews each month until you cancel. Every plan on your subscription is billed the same way, in one monthly payment. ${RENEWAL_REMINDER}`,
         "If you pay by autopay, your bank or UPI app tells you before each renewal charge, as Reserve Bank of India rules require.",
       ],
     },
@@ -27,7 +27,7 @@ export const refundPolicy: LegalDocument = {
       requiredBy: ["Razorpay merchant terms", "Consumer Protection (E-Commerce) Rules 2020 r.7(1)"],
       paragraphs: [
         `You can cancel anytime: write to ${email}. ${CANCELLATION_RULE} Your domain stays yours. ${HOSTED_SERVICE}`,
-        `You can add or drop an add-on the same way. ${ADDON_CHANGE}`,
+        `You can add or drop a plan the same way. ${ADDON_CHANGE}`,
       ],
     },
     {

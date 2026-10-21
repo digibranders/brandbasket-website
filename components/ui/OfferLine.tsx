@@ -1,7 +1,7 @@
 import type { ReactElement } from "react";
 import { OFFER } from "@/content/home";
 
-/** The approved offer: ₹0 to build + ₹2,999/month to keep it running, + GST. Copy is locked and lives in OFFER. */
+/** The approved offer: ₹0 to build + ₹3,000/month to keep it running, + GST. Copy is locked and lives in OFFER. */
 export function OfferLine(): ReactElement {
   return (
     <div aria-label={OFFER.ariaLabel} className="inline-flex max-w-full items-stretch rounded-[18px] border border-line bg-surface shadow-[var(--shadow-offer)]">

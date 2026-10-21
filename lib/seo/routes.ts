@@ -28,14 +28,14 @@ export const ROUTES = {
   home: {
     path: "/",
     title: `Free business website, run for you monthly | ${tradeName}`,
-    description: `Get a professional website built free for your local business. We host, secure and update it for ${MANAGED} a month. Add Google and local search any time.`,
+    description: `Get a professional website built free for your local business. We host, secure and update it for ${MANAGED} a month. Add social, ads and local search any time.`,
     updated: UPDATED,
     priority: 1,
   },
   pricing: {
     path: "/pricing",
     title: `Pricing: free website, plans from ${MANAGED} a month`,
-    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} +${formatInr(PLANS.growth.monthly)}, Local SEO and AEO +${formatInr(PLANS.search.monthly)}. Prices before ${GST_LABEL} GST, billed monthly.`,
+    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to 30% off, before ${GST_LABEL} GST.`,
     updated: UPDATED,
     priority: 0.9,
   },

@@ -28,7 +28,7 @@ describe("route registry", () => {
     expect(new Set(indexableRoutes().map((r) => r.title)).size).toBe(paths.length);
   });
   it("builds prices from the pricing module", () => {
-    expect(ROUTES.pricing.title).toBe("Pricing: free website, plans from ₹2,999 a month");
-    expect(ROUTES.home.description).toContain("₹2,999 a month");
+    expect(ROUTES.pricing.title).toBe("Pricing: free website, plans from ₹3,000 a month");
+    expect(ROUTES.home.description).toContain("₹3,000 a month");
   });
 });

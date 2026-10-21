@@ -29,6 +29,23 @@ describe("industries", () => {
     for (const { q } of i.faq) expect(q.endsWith("?")).toBe(true);
     expect(JSON.stringify(i)).not.toMatch(/[\u2013\u2014]/);
   });
+  it("quotes the package price and ad credit in the cost answer", () => {
+    for (const i of INDUSTRIES) {
+      const cost = i.faq[0]?.a ?? "";
+      if (i.suggested.growth) {
+        expect(cost).toContain("₹10,400 a month");
+        expect(cost).toContain("₹2,000");
+      } else {
+        expect(cost).toContain("₹22,400 a month");
+      }
+    }
+  });
+  it("has no 5% offer and no website-only rule", () => {
+    const text = JSON.stringify(INDUSTRIES);
+    expect(text).not.toContain("5%");
+    expect(text).not.toContain("Can I get Digital Growth without the website plan?");
+    expect(text).not.toContain("needs the Managed Website plan");
+  });
   it("finds an industry by slug and nothing for an unknown slug", () => {
     expect(industryBySlug("clinics")?.name).toBe("Clinics");
     expect(industryBySlug("unknown")).toBeUndefined();

@@ -12,7 +12,7 @@ describe("home content", () => {
   });
   it("puts the subhead without \"for free\" and the offer line on the default share image", () => {
     expect(SHARE_IMAGE.headline).toBe("Your Business Has a Name. Give It a Place on the Internet.");
-    expect(SHARE_IMAGE.line).toBe("₹0 to build your website + ₹2,999/month to keep it running, + GST");
+    expect(SHARE_IMAGE.line).toBe("₹0 to build your website + ₹3,000/month to keep it running, + GST");
   });
   it("builds the offer line from the managed website price", () => {
     expect(OFFER.build.price).toBe("₹0");

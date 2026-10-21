@@ -210,7 +210,7 @@ export const REPORT = {
   ariaLabel: "Example monthly report",
   chip: "Example report",
   title: "October report",
-  subtitle: "A dental clinic in Pune · Website, Growth, Search",
+  subtitle: "A dental clinic in Pune · Website, Social, SEO",
   kpis: [
     { tone: "site", label: "Uptime", value: "99.97%", delta: "0 incidents" },
     { tone: "growth", label: "Profile views", value: "2,184", delta: "+18% on Sept" },
@@ -255,7 +255,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Is there anything to pay up front?",
-    a: `Only your first month. Your first payment is ${MANAGED_MONTHLY} + GST, plus any add-ons you choose, and it covers your first month. There is no separate build fee.`,
+    a: `Only your first month. Your first payment is ${MANAGED_MONTHLY} + GST for the website, or your package price + GST, and it covers your first month. There is no separate build fee.`,
   },
   {
     q: "How long does it take to build my website?",

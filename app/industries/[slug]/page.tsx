@@ -11,7 +11,7 @@ import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { Shell } from "@/components/ui/Shell";
 import { INDUSTRIES, INDUSTRY_PAGE, type Industry as IndustryCopy, industryBySlug } from "@/content/industries";
-import { basketPlans, formatInr, monthlyTotal } from "@/lib/pricing";
+import { basketPlans, formatInr, packageTotal } from "@/lib/pricing";
 import { audienceServiceJsonLd, breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { industryRoute } from "@/lib/seo/routes";
@@ -88,7 +88,7 @@ export default async function IndustryPage({ params }: IndustryPageProps): Promi
                 ))}
               </ul>
               <p className="num font-display text-[clamp(40px,4.4vw,56px)] font-normal leading-none tracking-[-0.05em]">
-                {formatInr(monthlyTotal(industry.suggested))}
+                {formatInr(packageTotal(industry.suggested))}
                 <small className="ml-2.5 font-sans text-[15px] font-medium tracking-normal text-ink-2">{INDUSTRY_PAGE.priceNote}</small>
               </p>
               <ArrowLink href="/pricing#compare">{INDUSTRY_PAGE.compareLabel}</ArrowLink>

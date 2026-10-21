@@ -1,9 +1,9 @@
 // content/industries.ts
 // Copy for /industries and the eight /industries/[slug] pages. INDUSTRIES approved by the owner on 2026-10-19 (plan 02, Task 7.1).
 // Every claim comes from the plan details in content/pricing.ts and the free build in content/home.ts. Every price is
-// built from lib/pricing.ts. Organic social posting is not claimed anywhere: Digital Growth covers it only if the owner
+// built from lib/pricing.ts. Organic social posting is not claimed anywhere: Social Media and Ads covers it only if the owner
 // says so (open input D4).
-import { AD_BUDGET_CAP, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
+import { AD_BUDGET_CAP, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, packageFor, packageTotal, PLANS } from "@/lib/pricing";
 import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
 import type { FaqItem } from "./types";
 
@@ -39,15 +39,17 @@ const HOURLY = formatInr(EXTRA_HOURLY_RATE);
 const UPDATED = "2026-10-19";
 
 function costAnswer(pick: BasketPick): string {
-  const addon = pick.growth ? PLANS.growth : PLANS.search;
-  return `₹0 to build. ${PLANS.website.name} is ${formatInr(PLANS.website.monthly)} a month. With ${addon.name}, the total is ${formatInr(monthlyTotal(pick))} a month, plus ${GST_LABEL} GST. Add ${addon.name} as you start and it is ${SIGNUP_ADDON_DISCOUNT_LABEL} off.`;
+  const pkg = packageFor(pick);
+  if (!pkg) return `₹0 to build. ${PLANS.website.name} is ${formatInr(PLANS.website.monthly)} a month, plus ${GST_LABEL} GST.`;
+  const credit = pkg.adCredit > 0 ? ` Take them together as you start and we add ${formatInr(pkg.adCredit)} a month to your ads.` : "";
+  return `₹0 to build. ${pkg.name} is ${formatInr(packageTotal(pick))} a month, plus ${GST_LABEL} GST: ${pkg.percent}% off the plans' own prices.${credit}`;
 }
 
 const SMALL_EDITS = "The plan includes 2 small edits a month, up to 30 minutes each.";
 
 const FAQ_AD_SPEND: FaqItem = {
   q: "Is ad spend included?",
-  a: `No. You pay Meta directly for ads. ${PLANS.growth.name} manages budgets up to ${formatInr(AD_BUDGET_CAP)} a month.`,
+  a: `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${formatInr(AD_BUDGET_CAP)} a month of it.`,
 };
 
 const FAQ_NO_GUARANTEE: FaqItem = {
@@ -134,7 +136,7 @@ export const INDUSTRIES: readonly Industry[] = [
       { q: "How much does a website for a salon cost?", a: costAnswer(WITH_GROWTH) },
       { q: "Can you use our own photos?", a: "Yes. Google profile photo updates use your images or creatives we agree with you." },
       FAQ_AD_SPEND,
-      { q: "Can I get Digital Growth without the website plan?", a: `No. ${PLANS.growth.name} needs the ${PLANS.website.name} plan.` },
+      { q: "Can I get Social Media and Ads without the website plan?", a: "Yes. Every plan can be bought on its own." },
     ],
     updated: UPDATED,
   },

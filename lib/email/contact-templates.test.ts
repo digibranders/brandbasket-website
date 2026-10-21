@@ -30,7 +30,7 @@ describe("buildLeadEmail", () => {
   });
 
   it("puts the topic, business and basket in the subject", () => {
-    expect(mail.subject).toBe("New enquiry, A free website: <script>alert(1)</script> Dental (Managed Website + Digital Growth)");
+    expect(mail.subject).toBe("New enquiry, A free website: <script>alert(1)</script> Dental (Managed Website + Social Media and Ads)");
   });
 
   it("leaves the basket out of the subject for a general enquiry", () => {

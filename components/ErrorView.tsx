@@ -1,26 +1,32 @@
-// components/ErrorView.tsx
-import type { ReactElement } from "react";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { ERROR_COPY } from "@/content/errors";
+"use client";
+
+import { useSyncExternalStore, type ReactElement } from "react";
+import { ErrorExperience } from "@/components/errors/ErrorExperience";
 
 interface ErrorViewProps {
   readonly retry: () => void;
-  /** Leave room for the fixed nav. Off in global-error, which renders without the root layout. */
   readonly underNav: boolean;
 }
 
-/** Shared by error.tsx and global-error.tsx (both client). The error itself is never shown to the visitor. */
+function subscribeConnectivity(onChange: () => void): () => void {
+  window.addEventListener("online", onChange);
+  window.addEventListener("offline", onChange);
+  return () => {
+    window.removeEventListener("online", onChange);
+    window.removeEventListener("offline", onChange);
+  };
+}
+
+function isOffline(): boolean {
+  return !navigator.onLine;
+}
+
+function serverOffline(): boolean {
+  return false;
+}
+
+/** Connectivity is a hint; arbitrary thrown values never become a claimed HTTP status. */
 export function ErrorView({ retry, underNav }: ErrorViewProps): ReactElement {
-  return (
-    <section className={`mx-auto grid min-h-[60dvh] w-full max-w-[1280px] content-center justify-items-start gap-5 px-[clamp(18px,4vw,56px)] pb-20 ${underNav ? "pt-32" : "pt-20"}`}>
-      <h1 className="font-display text-[clamp(40px,5.2vw,72px)] font-normal leading-none tracking-[-0.05em]">{ERROR_COPY.title}</h1>
-      <p className="max-w-[44ch] text-lg text-ink-2">{ERROR_COPY.body}</p>
-      <div className="flex flex-wrap gap-2.5">
-        <button type="button" onClick={() => retry()} className="cursor-pointer rounded-full bg-action px-[22px] py-3 text-[15px] font-semibold text-action-ink transition-transform duration-500 ease-[var(--ease)] active:scale-[0.98]">
-          {ERROR_COPY.retry}
-        </button>
-        <WhatsAppButton location="error" />
-      </div>
-    </section>
-  );
+  const offline = useSyncExternalStore(subscribeConnectivity, isOffline, serverOffline);
+  return <ErrorExperience kind={offline ? "offline" : "unexpected"} retry={retry} underNav={underNav} />;
 }

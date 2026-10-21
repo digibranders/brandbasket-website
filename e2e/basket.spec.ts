@@ -80,7 +80,7 @@ for (const pick of PICKS) {
 
 test("the expected totals match the owner's figures", () => {
   // Guards the formula itself: if these move, prices changed and the owner signs off on the new figures.
-  expect(PICKS.map(pickTotal)).toEqual(["₹3,538.82", "₹12,270.11", "₹26,430.11", "₹31,385.52"]);
+  expect(PICKS.map(pickTotal)).toEqual(["₹3,538.82", "₹12,269.64", "₹26,429.64", "₹31,384.46"]);
 });
 
 test("Social and SEO without the website is the 30% package", async ({ page }) => {
@@ -89,7 +89,7 @@ test("Social and SEO without the website is the 30% package", async ({ page }) =
   await hero.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.search.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
-  await expect(hero.getByText("₹28,908.35", { exact: true })).toBeVisible();
+  await expect(hero.getByText("₹28,907.64", { exact: true })).toBeVisible();
 });
 
 test("the last switch on cannot be turned off", async ({ page }) => {
@@ -108,10 +108,33 @@ test("the last switch on cannot be turned off", async ({ page }) => {
 
 test("the basket carries from home to pricing", async ({ page }) => {
   await page.goto("/");
-  await page.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).first().click();
+  await page.locator("#basket-card").getByRole("button", { name: "Stamp Social Media and Ads", exact: true }).click();
   await page.getByRole("link", { name: "Compare all plans" }).click();
   await expect(page).toHaveURL(/\/pricing/);
   await expect(page.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).first()).toHaveAttribute("aria-checked", "true");
+});
+
+test("the Basket Card stamps plans and ticks what is in the basket", async ({ page }) => {
+  await page.goto("/");
+  const card = page.locator("#basket-card");
+  await card.getByRole("button", { name: "Stamp Social Media and Ads", exact: true }).click();
+  await expect(card.getByText("20% off and ₹2,000 a month for your ads.", { exact: true })).toBeVisible();
+  await expect(card.getByRole("button", { name: "Remove the Social Media and Ads stamp" })).toHaveAttribute("aria-pressed", "true");
+  await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Managed Website", "Social Media and Ads"]);
+  // The "Next stamp" nudge adds the plan worth adding most.
+  await card.getByRole("button", { name: "Stamp SEO", exact: true }).click();
+  await expect(card.getByText("Full card. 30% off and ₹5,000 a month for your ads.", { exact: true })).toBeVisible();
+  await expect(card.getByText(formatInr(firstPayment(packageTotal({ website: true, growth: true, search: true })).total), { exact: false }).first()).toBeVisible();
+});
+
+test("the offer strip can be closed and the nav moves up", async ({ page }) => {
+  await page.goto("/");
+  const header = page.locator("header").first();
+  const close = page.getByRole("button", { name: "Close the offer" });
+  await expect(close).toBeVisible();
+  await close.click();
+  await expect(close).toHaveCount(0);
+  await expect.poll(async () => (await header.boundingBox())?.y).toBe(16);
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {

@@ -8,11 +8,12 @@ import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, SHARE_IMAGE, STE
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
     expect(`${HERO.headline} ${HERO.headlineAccent}`).toBe("Before They Visit You, They Visit Your Website.");
-    expect(HERO.subhead).toBe("Let's Build It for FREE.");
+    // The owner removed the subhead line, 2026-10-21.
+    expect(HERO).not.toHaveProperty("subhead");
   });
-  it("puts the subhead without \"for free\" and the offer line on the default share image", () => {
-    expect(SHARE_IMAGE.headline).toBe("Your Business Has a Name. Give It a Place on the Internet.");
-    expect(SHARE_IMAGE.line).toBe("₹0 to build your website + ₹2,999/month to keep it running, + GST");
+  it("puts the owner's letterboard copy on the default share image", () => {
+    expect(SHARE_IMAGE.board).toEqual({ kicker: "Today's special", headline: "Free website", note: "+ hosting and care, monthly" });
+    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Live in about a week. Just ask.");
   });
   it("builds the offer line from the managed website price", () => {
     expect(OFFER.build.price).toBe("₹0");

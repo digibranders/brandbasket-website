@@ -9,6 +9,7 @@ import {
   GST_LABEL,
   GST_RATE,
   monthlyTotal,
+  nextPlanToAdd,
   PACKAGES,
   packageFor,
   packageSaving,
@@ -53,10 +54,10 @@ describe("baskets", () => {
     [pick(true, false, false), 2999, 2999, 3538.82, 0, 0, null],
     [pick(false, true, false), 9999, 9999, 11798.82, 0, 0, null],
     [pick(false, false, true), 24999, 24999, 29498.82, 0, 0, null],
-    [pick(true, true, false), 12998, 10398.4, 12270.11, 2599.6, 2000, "website-growth"],
-    [pick(true, false, true), 27998, 22398.4, 26430.11, 5599.6, 0, "website-search"],
-    [pick(false, true, true), 34998, 24498.6, 28908.35, 10499.4, 2000, "growth-search"],
-    [pick(true, true, true), 37997, 26597.9, 31385.52, 11399.1, 5000, "everything"],
+    [pick(true, true, false), 12998, 10398, 12269.64, 2600, 2000, "website-growth"],
+    [pick(true, false, true), 27998, 22398, 26429.64, 5600, 0, "website-search"],
+    [pick(false, true, true), 34998, 24498, 28907.64, 10500, 2000, "growth-search"],
+    [pick(true, true, true), 37997, 26597, 31384.46, 11400, 5000, "everything"],
   ])("prices %o", (basket, list, monthly, withGst, saving, adCredit, packageId) => {
     expect(monthlyTotal(basket)).toBe(list);
     expect(packageTotal(basket)).toBe(monthly);
@@ -64,6 +65,13 @@ describe("baskets", () => {
     expect(packageSaving(basket)).toBe(saving);
     expect(adCreditFor(basket)).toBe(adCredit);
     expect(packageFor(basket)?.id ?? null).toBe(packageId);
+  });
+
+  it("rounds every package price down to the whole rupee", () => {
+    for (const p of PACKAGES) {
+      expect(Number.isInteger(packageTotal(p.pick))).toBe(true);
+      expect(packageTotal(p.pick)).toBe(Math.floor((monthlyTotal(p.pick) * (100 - p.percent)) / 100));
+    }
   });
 
   it("never prices a two-plan package above all three", () => {
@@ -89,8 +97,8 @@ describe("firstPayment", () => {
 
   it.each([
     [2999, 539.82, 3538.82],
-    [10398.4, 1871.71, 12270.11],
-    [26597.9, 4787.62, 31385.52],
+    [10398, 1871.64, 12269.64],
+    [26597, 4787.46, 31384.46],
     [2999, 539.82, 3538.82],
   ])("shows GST on %i to the paisa without rounding", (base, gst, total) => {
     expect(firstPayment(base)).toEqual({ months: 1, base, gst, total });
@@ -107,5 +115,21 @@ describe("formatInr", () => {
   it("prints amounts with paise to exactly two decimals", () => {
     expect(formatInr(3538.82)).toBe("₹3,538.82");
     expect(formatInr(3538.8)).toBe("₹3,538.80");
+  });
+});
+
+describe("nextPlanToAdd", () => {
+  it("picks the plan that adds the most saving and ad credit for its extra cost", () => {
+    // Website alone: Social adds 2,600 saved + 2,000 ads for 7,399 more; SEO adds 5,600 for 19,399 more.
+    expect(nextPlanToAdd(pick(true, false, false))).toEqual({ id: "growth", pick: pick(true, true, false), extra: 7399, saving: 2600, adCredit: 2000 });
+    expect(nextPlanToAdd(pick(false, true, false))?.id).toBe("website");
+    expect(nextPlanToAdd(pick(true, true, false))).toEqual({ id: "search", pick: pick(true, true, true), extra: 16199, saving: 11400, adCredit: 5000 });
+  });
+  it("reports a negative extra when the package costs less than the basket now", () => {
+    // SEO alone is 24,999; Social + SEO is 24,498.
+    expect(nextPlanToAdd(pick(false, false, true))).toMatchObject({ id: "growth", extra: -501, saving: 10500, adCredit: 2000 });
+  });
+  it("returns null when every plan is in the basket", () => {
+    expect(nextPlanToAdd(pick(true, true, true))).toBeNull();
   });
 });

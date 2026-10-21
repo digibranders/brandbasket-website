@@ -17,25 +17,6 @@ export const PRICING_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
   search: { name: "Local SEO + AEO", summary: "Google search and AI answers", switchLabel: "Add Local SEO + AEO" },
 };
 
-/** Homepage plan rows (mock: .ap-row). */
-export const HOME_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
-  website: {
-    name: "Managed Website",
-    summary: "We build it free, then host it, secure it and make 2 small edits a month.",
-    switchLabel: "Add Managed Website",
-  },
-  growth: {
-    name: "Social Media and Ads",
-    summary: "Instagram, Facebook and Google profile posts planned with you each month, and your Meta ads run for you.",
-    switchLabel: "Add Social Media and Ads",
-  },
-  search: {
-    name: "Local SEO + AI search",
-    summary: "5 pages improved every month, so you are found in Google and ChatGPT answers.",
-    switchLabel: "Add Local SEO and AI search",
-  },
-};
-
 /** The smallest offer on two plans, and the offer on all three, as printed: "20%" and "30%". */
 const twoPlanPercents = PACKAGES.filter((p) => basketPlans(p.pick).length === 2).map((p) => p.percent);
 const allThree = PACKAGES.find((p) => basketPlans(p.pick).length === PLAN_IDS.length);
@@ -47,9 +28,6 @@ export const BASKET_COPY = {
   panelTitle: "Build your basket",
   panelNote: `Two plans are ${TWO_PLANS_FROM} off or more. All three are ${ALL_THREE} off.`,
   heroIntro: `Build your basket. Two plans are ${TWO_PLANS_FROM} off or more, all three are ${ALL_THREE} off.`,
-  explore: "What is included",
-  add: "Add",
-  added: "Added",
   perMonth: "a month",
   basketPrefix: "Your basket:",
   /** Read before the struck list price. */

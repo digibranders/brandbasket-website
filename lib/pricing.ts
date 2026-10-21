@@ -51,7 +51,7 @@ export const PACKAGES: readonly Package[] = [
   { id: "everything", name: "All three", pick: { website: true, growth: true, search: true }, percent: 30, adCredit: 5000 },
 ];
 
-// shortcut: AddonId, AddonPick and ADDONS are kept for components/basket/scene, AddonPanel, AddonRows, content/basket.ts and e2e/basket.spec.ts until plan 15 Tasks 5, 6, 10 and 11 move them to PlanId; remove then.
+// shortcut: AddonId, AddonPick and ADDONS are kept for components/basket/scene and e2e/basket.spec.ts until plan 15 Tasks 5 and 11 move them to PlanId; remove then.
 export type AddonId = Exclude<PlanId, "website">;
 export type AddonPick = Readonly<Record<AddonId, boolean>>;
 export const ADDONS: readonly AddonId[] = ["growth", "search"];

@@ -3,6 +3,7 @@ import { AddonRows } from "@/components/basket/AddonRows";
 import { BasketCta } from "@/components/basket/BasketCta";
 import { BasketStage } from "@/components/basket/BasketStage";
 import { BasketTotal } from "@/components/basket/BasketTotal";
+import { OfferNote } from "@/components/basket/OfferNote";
 import { OfferLine } from "@/components/ui/OfferLine";
 import { HERO } from "@/content/home";
 import { PRICING_HERO } from "@/content/pricing";
@@ -28,6 +29,7 @@ export function PricingHero(): ReactElement {
         </div>
         <div className="grid min-w-0 gap-6 [grid-area:act]">
           <AddonRows />
+          <OfferNote rounded />
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
             <BasketTotal />
             <BasketCta location="pricing_hero" />

@@ -1,5 +1,5 @@
 import { CaretDown, Check, Minus } from "@phosphor-icons/react/dist/ssr";
-import type { ReactElement } from "react";
+import { Fragment, type ReactElement } from "react";
 import { PLAN_COLOUR } from "@/components/basket/basket-view";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
@@ -11,15 +11,19 @@ function Column({ column }: { readonly column: DetailColumn }): ReactElement {
   const Mark = column.kind === "included" ? Check : Minus;
   return (
     <div>
-      <h3 className="mb-3 text-[13px] font-semibold text-ink-2">{column.heading}</h3>
-      <ul className="grid gap-2 text-[14.5px]">
-        {column.items.map((item) => (
-          <li key={item} className="flex items-start gap-2.5">
-            <Mark aria-hidden="true" className={`mt-px size-[19px] flex-none ${column.kind === "included" ? "text-sage" : "text-ink-2"}`} />
-            {item}
-          </li>
-        ))}
-      </ul>
+      {[column, ...(column.more ?? [])].map((list, i) => (
+        <Fragment key={list.heading}>
+          <h3 className={`mb-3 text-[13px] font-semibold text-ink-2 ${i > 0 ? "mt-[22px]" : ""}`}>{list.heading}</h3>
+          <ul className="grid gap-2 text-[14.5px]">
+            {list.items.map((item) => (
+              <li key={item} className="flex items-start gap-2.5">
+                <Mark aria-hidden="true" className={`mt-px size-[19px] flex-none ${column.kind === "included" ? "text-sage" : "text-ink-2"}`} />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Fragment>
+      ))}
       {column.note ? <p className="mt-3.5 rounded-[14px] bg-bg px-3.5 py-3 text-[13.5px] text-ink-2">{column.note}</p> : null}
     </div>
   );

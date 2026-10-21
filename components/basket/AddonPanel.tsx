@@ -1,30 +1,35 @@
 "use client";
 import type { Icon } from "@phosphor-icons/react";
-import { ArrowRight, MagnifyingGlass, TrendUp } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, Globe, MagnifyingGlass, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import type { ReactElement } from "react";
 import { BASKET_COPY, HOME_PLANS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { type AddonId, ADDONS, firstPayment, formatInr, PLANS, packageTotal } from "@/lib/pricing";
+import { basketPlans, firstPayment, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
 import { PLAN_COLOUR, basketNames } from "./basket-view";
 import { BasketCta } from "./BasketCta";
+import { OfferNote } from "./OfferNote";
 import { useBasket } from "./useBasket";
 
-const ICON: Readonly<Record<AddonId, Icon>> = { growth: TrendUp, search: MagnifyingGlass };
+const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: TrendUp, search: MagnifyingGlass };
 
-/** Homepage add-on panel (mock: #h-plans .addpanel, .ap-row, .calc). */
+/** Homepage basket panel (mock: #h-plans .addpanel, .ap-row, .offer-note, .calc). */
 export function AddonPanel(): ReactElement {
   const pick = useBasket();
   const monthly = packageTotal(pick);
   const pay = firstPayment(monthly);
+  const saving = packageSaving(pick) > 0;
+  // The store refuses to empty the basket, so the last switch on says it cannot turn off.
+  const onlyOne = basketPlans(pick).length === 1;
 
   return (
     <div className="mt-14 overflow-hidden rounded-[26px] border border-line bg-surface">
       <div className="flex flex-wrap items-baseline justify-between gap-x-5 gap-y-1.5 px-[26px] pb-3.5 pt-[22px] max-[699px]:px-5">
         <h3 className="font-display text-[22px] font-medium tracking-[-0.03em]">{BASKET_COPY.panelTitle}</h3>
+        <span className="text-sm text-ink-2">{BASKET_COPY.panelNote}</span>
       </div>
 
-      {ADDONS.map((id) => {
+      {PLAN_IDS.map((id) => {
         const copy = HOME_PLANS[id];
         const AddonIcon = ICON[id];
         return (
@@ -41,7 +46,7 @@ export function AddonPanel(): ReactElement {
               </Link>
             </div>
             <span className="num whitespace-nowrap text-right font-display text-2xl leading-none tracking-[-0.03em] max-[699px]:text-left">
-              +{formatInr(PLANS[id].monthly)}
+              {formatInr(PLANS[id].monthly)}
               <small className="mt-1 block font-sans text-xs tracking-normal text-ink-2">{BASKET_COPY.perMonth}</small>
             </span>
             <button
@@ -49,8 +54,9 @@ export function AddonPanel(): ReactElement {
               role="switch"
               aria-checked={pick[id]}
               aria-label={copy.switchLabel}
+              aria-disabled={pick[id] && onlyOne ? true : undefined}
               onClick={() => basket.set(id, !basket.get()[id])}
-              className="group inline-flex min-h-11 cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-bg py-2 pl-2 pr-4 text-sm font-semibold text-ink transition-colors duration-300 ease-[var(--ease)] aria-checked:border-action aria-checked:bg-action aria-checked:text-action-ink"
+              className="group inline-flex min-h-11 cursor-pointer items-center gap-2.5 whitespace-nowrap rounded-full border border-line bg-bg py-2 pl-2 pr-4 text-sm font-semibold text-ink transition-colors duration-300 ease-[var(--ease)] aria-checked:border-action aria-checked:bg-action aria-checked:text-action-ink aria-disabled:cursor-not-allowed aria-disabled:opacity-55"
             >
               <span aria-hidden="true" className="relative h-6 w-10 flex-none rounded-full bg-line transition-colors duration-300 ease-[var(--ease)] after:absolute after:left-[3px] after:top-[3px] after:size-[18px] after:rounded-full after:bg-surface after:shadow-[var(--shadow-knob)] after:transition-transform after:duration-[350ms] after:ease-[var(--ease)] group-aria-checked:bg-rattan group-aria-checked:after:translate-x-4" />
               <span>{pick[id] ? BASKET_COPY.added : BASKET_COPY.add}</span>
@@ -59,10 +65,15 @@ export function AddonPanel(): ReactElement {
         );
       })}
 
+      <OfferNote />
+
       <div data-basket-total className="flex flex-wrap items-center justify-between gap-4 border-t border-line bg-bg px-[26px] py-[18px] max-[699px]:px-5">
         <div className="grid min-w-0 gap-0.5">
           <small className="text-[13px] text-ink-2">{BASKET_COPY.basketPrefix} {basketNames(pick)}</small>
           <b className="num font-display text-[30px] font-medium tracking-[-0.03em]">
+            {saving ? (
+              <s className="mr-2.5 text-lg font-normal tracking-[-0.02em] text-ink-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s>
+            ) : null}
             {formatInr(monthly)}
             <span className="ml-1.5 font-sans text-sm font-medium tracking-normal text-ink-2">{BASKET_COPY.plusGst}</span>
           </b>

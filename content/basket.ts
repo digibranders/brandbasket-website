@@ -1,6 +1,7 @@
 // content/basket.ts
-// Copy for the basket controls, word for word from the mock (docs/design/mock.html: .phc-act .adds, #h-plans .addpanel, .pbar).
-import type { PlanId } from "@/lib/pricing";
+// Copy for the basket controls, word for word from the mock (docs/design/mock.html: .phc-act .adds, #h-plans .addpanel,
+// .offer-note, .pbar). Percents and rupees come from lib/pricing.ts.
+import { adCreditFor, type BasketPick, basketPlans, formatInr, PACKAGES, PLAN_IDS, packageFor, packageSaving, type PlanId } from "@/lib/pricing";
 
 export interface AddonCopy {
   readonly name: string;
@@ -11,9 +12,9 @@ export interface AddonCopy {
 
 /** Pricing hero rows (mock: .add). Names match `PLANS`. */
 export const PRICING_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
-  website: { name: "Managed Website", summary: "Built free, then hosted, secure and kept up to date", switchLabel: "Add Managed Website" },
+  website: { name: "Managed Website", summary: "Built free, hosted and kept up to date", switchLabel: "Add Managed Website" },
   growth: { name: "Social Media and Ads", summary: "Instagram, Facebook, Google profile and Meta ads", switchLabel: "Add Social Media and Ads" },
-  search: { name: "Local SEO + AEO", summary: "Google search and AI answers", switchLabel: "Add Local SEO and AEO" },
+  search: { name: "Local SEO + AEO", summary: "Google search and AI answers", switchLabel: "Add Local SEO + AEO" },
 };
 
 /** Homepage plan rows (mock: .ap-row). */
@@ -35,16 +36,40 @@ export const HOME_PLANS: Readonly<Record<PlanId, AddonCopy>> = {
   },
 };
 
+/** The smallest offer on two plans, and the offer on all three, as printed: "20%" and "30%". */
+const TWO_PLANS_FROM = `${Math.min(...PACKAGES.filter((p) => PLAN_IDS.filter((id) => p.pick[id]).length === 2).map((p) => p.percent))}%`;
+const ALL_THREE = `${PACKAGES.find((p) => PLAN_IDS.every((id) => p.pick[id]))?.percent ?? 0}%`;
+
 export const BASKET_COPY = {
-  panelTitle: "Add when you are ready",
+  panelTitle: "Build your basket",
+  panelNote: `Two plans are ${TWO_PLANS_FROM} off or more. All three are ${ALL_THREE} off.`,
+  heroIntro: `Build your basket. Two plans are ${TWO_PLANS_FROM} off or more, all three are ${ALL_THREE} off.`,
   explore: "What is included",
   add: "Add",
   added: "Added",
   perMonth: "a month",
   basketPrefix: "Your basket:",
+  /** Read before the struck list price. */
+  was: "Usually",
   plusGst: "a month + GST",
   withGstBilled: "a month with GST, billed monthly",
   compare: "Compare all plans",
   totalLabel: "You pay each month, with GST",
   phoneBarCaption: "a month, with GST",
 } as const;
+
+/** The strip under the plan rows (mock: offerText()): the invitation for one plan, or what the package earns. */
+export function offerNote(pick: BasketPick): string {
+  const pkg = packageFor(pick);
+  if (!pkg) return `Take two plans and save ${TWO_PLANS_FROM} or more. Take all three and save ${ALL_THREE}.`;
+  const line = `${pkg.name}: ${pkg.percent}% off, so you save ${formatInr(packageSaving(pick))} a month.`;
+  const credit = adCreditFor(pick);
+  if (credit === 0) return line;
+  return `${line} Start with ${basketPlans(pick).length === PLAN_IDS.length ? "all three" : "both"} and we add ${formatInr(credit)} a month to your ads.`;
+}
+
+/** The line under the pricing hero total (mock: .was-line); empty when the basket saves nothing. */
+export function saveLine(pick: BasketPick): string {
+  const saving = packageSaving(pick);
+  return saving > 0 ? `You save ${formatInr(saving)} a month` : "";
+}

@@ -35,7 +35,7 @@ describe("planOffersJsonLd", () => {
     expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
   });
   it("adds the four packages after the plans when asked", () => {
-    const offers = planOffersJsonLd(true).hasOfferCatalog.itemListElement;
+    const offers = planOffersJsonLd({ packages: true }).hasOfferCatalog.itemListElement;
     expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([10400, 22400, 24500, 26600]);
     expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + SEO", "Social + SEO", "All three"]);
     expect(offers[3].priceSpecification.unitText).toBe("MONTH");

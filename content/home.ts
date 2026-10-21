@@ -2,7 +2,7 @@
 // Copy for the homepage, word for word from the approved mock (docs/design/mock.html, #view-home).
 // Prices and rates are built from lib/pricing.ts. The add-on panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
-import { formatInr, PLANS } from "@/lib/pricing";
+import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
 import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -255,7 +255,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Is there anything to pay up front?",
-    a: `Only your first month. Your first payment is ${MANAGED_MONTHLY} + GST for the website, or your package price + GST, and it covers your first month. There is no separate build fee.`,
+    a: `Just your first month, plus ${GST_LABEL} GST. After that you pay monthly.`,
   },
   {
     q: "How long does it take to build my website?",

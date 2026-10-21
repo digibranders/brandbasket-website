@@ -2,7 +2,7 @@
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { GST_RATE } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
+import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, email, grievanceOfficer } = businessDetails;
@@ -27,7 +27,7 @@ export const refundPolicy: LegalDocument = {
       requiredBy: ["Razorpay merchant terms", "Consumer Protection (E-Commerce) Rules 2020 r.7(1)"],
       paragraphs: [
         `You can cancel anytime: write to ${email}. ${CANCELLATION_RULE} Your domain stays yours. ${HOSTED_SERVICE}`,
-        `You can add or drop a plan the same way. ${ADDON_CHANGE}`,
+        `You can add or drop a plan the same way. ${PLAN_CHANGE}`,
       ],
     },
     {

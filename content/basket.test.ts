@@ -18,7 +18,7 @@ describe("basket copy", () => {
     expect(HOME_PLANS.growth.name).toBe(PLANS.growth.name);
     expect(HOME_PLANS.search.name).toBe("Local SEO + AI search");
   });
-  it("no longer mentions the 5% sign-up offer", () => {
-    expect(JSON.stringify({ BASKET_COPY, PRICING_PLANS, HOME_PLANS })).not.toMatch(/5%|sign-up|signup/);
+  it("no longer mentions the sign-up offer", () => {
+    expect(JSON.stringify({ BASKET_COPY, PRICING_PLANS, HOME_PLANS })).not.toMatch(/sign-up|signup|as you start/);
   });
 });

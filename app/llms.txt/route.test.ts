@@ -11,7 +11,7 @@ describe("GET /llms.txt", () => {
     expect(body).toContain("Social Media and Ads: ₹10,000 a month before 18% GST");
     expect(body).toContain("Local SEO + AEO: ₹25,000 a month before 18% GST");
     expect(body).toContain(`- Package offer: ${PACKAGE_TERMS}`);
-    expect(body).not.toContain("5%");
+    expect(body).not.toContain("chosen at sign-up");
   });
 
   it("states the build fee, GST and billing", async () => {

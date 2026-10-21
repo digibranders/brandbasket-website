@@ -3,7 +3,7 @@
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, PACKAGES, packageSaving, packageTotal, PLANS, type Package, type PlanId } from "@/lib/pricing";
-import { CANCEL_ANSWER } from "./legal/cancellation";
+import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
@@ -37,7 +37,7 @@ export interface CompareGroup {
 export interface CompareColumn {
   readonly id: Package["id"];
   readonly name: string;
-  /** Monthly total before GST, for example "₹9,999". */
+  /** Monthly total before GST, for example "₹10,400". */
   readonly price: string;
   readonly priceSuffix: string;
   /** The offer: "20% off, save ₹2,600 a month". */
@@ -313,7 +313,7 @@ export const PRICING_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Can I add or drop a plan later?",
-    a: "Yes. Add a plan any time and your basket moves to the package price from your next bill. Drop one from a package and the plans you keep go back to their own prices from your next bill, and the package offer ends.",
+    a: PLAN_CHANGE_ANSWER,
   },
   {
     q: "Is ad spend included?",

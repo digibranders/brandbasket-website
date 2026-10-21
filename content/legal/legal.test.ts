@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
+import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
 import { dataNotice } from "./notice";
 import { privacyPolicy } from "./privacy";
@@ -58,9 +58,9 @@ describe("legal documents", () => {
     expect(fees).toContain(PACKAGE_TERMS);
     expect(fees).toContain(AD_CREDIT_TERMS);
   });
-  it("say each plan can be bought on its own and drop the 5% offer", () => {
+  it("say each plan can be bought on its own and drop the sign-up offer", () => {
     expect(JSON.stringify(termsOfService)).toContain("each plan can be bought on its own");
-    expect(JSON.stringify(ALL)).not.toMatch(/5% off|needs the Managed Website/i);
+    expect(JSON.stringify(ALL)).not.toMatch(/chosen at sign-up|needs the Managed Website/i);
   });
   it("keep the package price and ad credit when a payment fails", () => {
     expect(PAYMENT_FAILURE).toContain("Your package price and ad credit stay.");
@@ -74,7 +74,7 @@ describe("legal documents", () => {
     for (const heading of ["9. Cancellation and termination", "How to cancel"]) {
       expect(section(heading)).toContain("Your domain stays yours.");
       expect(section(heading)).toContain(HOSTED_SERVICE);
-      expect(section(heading)).toContain(ADDON_CHANGE);
+      expect(section(heading)).toContain(PLAN_CHANGE);
     }
     expect(section("6. Ownership")).toContain(HOSTED_SERVICE);
     for (const heading of ["5. Fees and payment", "If a payment fails"]) expect(section(heading)).toContain(PAYMENT_FAILURE);

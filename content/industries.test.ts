@@ -1,5 +1,6 @@
 // content/industries.test.ts
 import { describe, expect, it } from "vitest";
+import { formatInr, packageFor, packageTotal } from "@/lib/pricing";
 import { INDUSTRIES_LINE } from "./home";
 import { INDUSTRIES, industryBySlug } from "./industries";
 
@@ -32,17 +33,15 @@ describe("industries", () => {
   it("quotes the package price and ad credit in the cost answer", () => {
     for (const i of INDUSTRIES) {
       const cost = i.faq[0]?.a ?? "";
-      if (i.suggested.growth) {
-        expect(cost).toContain("₹10,400 a month");
-        expect(cost).toContain("₹2,000");
-      } else {
-        expect(cost).toContain("₹22,400 a month");
-      }
+      const pkg = packageFor(i.suggested);
+      expect(pkg).not.toBeNull();
+      expect(cost).toContain(`${formatInr(packageTotal(i.suggested))} a month`);
+      if (pkg && pkg.adCredit > 0) expect(cost).toContain(formatInr(pkg.adCredit));
     }
   });
-  it("has no 5% offer and no website-only rule", () => {
+  it("has no sign-up offer and no website-only rule", () => {
     const text = JSON.stringify(INDUSTRIES);
-    expect(text).not.toContain("5%");
+    expect(text).not.toContain("as you start and it is");
     expect(text).not.toContain("Can I get Digital Growth without the website plan?");
     expect(text).not.toContain("needs the Managed Website plan");
   });

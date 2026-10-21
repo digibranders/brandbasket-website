@@ -1,7 +1,7 @@
 // content/pricing.test.ts
 import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
-import { CANCEL_ANSWER } from "./legal/cancellation";
+import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PACKAGES, packageSaving, packageTotal, PLANS } from "@/lib/pricing";
 import { COMPARE, GOOD_TO_KNOW, PLAN_DETAILS, PRICING_FAQ, PRICING_HERO } from "./pricing";
 
@@ -22,9 +22,9 @@ describe("pricing content", () => {
       expect(COMPARE.columns[i]?.note).toContain(formatInr(packageSaving(pkg.pick)));
     });
   });
-  it("has four packages and no 5% offer in the lede", () => {
+  it("has four packages and no sign-up offer in the lede", () => {
     expect(COMPARE.columns).toHaveLength(4);
-    expect(COMPARE.lede).not.toContain("5%");
+    expect(COMPARE.lede).not.toMatch(/chosen as you start|sign-up/);
   });
   it("shows the ad credit of each package", () => {
     const row = COMPARE.groups.flatMap((g) => g.rows).find((r) => r.label === "Ad credit from us, every month");
@@ -50,6 +50,9 @@ describe("pricing content", () => {
       title: "Cancel anytime",
       body: "No notice period. Your website stays online until the end of the month you have paid for, and your domain stays yours.",
     });
+  });
+  it("answers the plan change question with the shared legal wording", () => {
+    expect(PRICING_FAQ.find((f) => f.q === "Can I add or drop a plan later?")?.a).toBe(PLAN_CHANGE_ANSWER);
   });
   it("uses Phosphor icons that exist", () => {
     for (const key of [...PLAN_DETAILS.map((d) => d.icon), ...GOOD_TO_KNOW.map((g) => g.icon)]) expect(Phosphor).toHaveProperty(key);

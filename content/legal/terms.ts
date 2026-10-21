@@ -2,7 +2,7 @@
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { ADDON_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
+import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
 import type { LegalDocument } from "./types";
 
@@ -76,7 +76,7 @@ export const termsOfService: LegalDocument = {
       heading: "9. Cancellation and termination",
       paragraphs: [
         `You can cancel anytime by writing to ${email}. ${CANCELLATION_RULE} Your domain stays yours. ${HOSTED_SERVICE}`,
-        `You can add or drop a plan at any time. ${ADDON_CHANGE}`,
+        `You can add or drop a plan at any time. ${PLAN_CHANGE}`,
         "Either party may end an engagement by written notice for a material breach that is not put right within 30 days of the notice. On termination, payment is due for the services provided up to that date.",
       ],
     },

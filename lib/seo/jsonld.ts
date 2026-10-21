@@ -107,7 +107,7 @@ function monthlyOffer(name: string, price: number): ServiceLd["hasOfferCatalog"]
 }
 
 /** One Offer per plan at list price; the pricing page also lists one per package at its package price. */
-export function planOffersJsonLd(withPackages = false): ServiceLd {
+export function planOffersJsonLd({ packages = false }: { readonly packages?: boolean } = {}): ServiceLd {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -119,7 +119,7 @@ export function planOffersJsonLd(withPackages = false): ServiceLd {
       name: "Brandbasket plans",
       itemListElement: [
         ...PLAN_IDS.map((id) => monthlyOffer(PLANS[id].name, PLANS[id].monthly)),
-        ...(withPackages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick))) : []),
+        ...(packages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick))) : []),
       ],
     },
   };

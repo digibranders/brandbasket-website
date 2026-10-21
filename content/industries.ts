@@ -1,9 +1,9 @@
 // content/industries.ts
 // Copy for /industries and the eight /industries/[slug] pages. INDUSTRIES approved by the owner on 2026-10-19 (plan 02, Task 7.1).
 // Every claim comes from the plan details in content/pricing.ts and the free build in content/home.ts. Every price is
-// built from lib/pricing.ts. Organic social posting is not claimed anywhere: Social Media and Ads covers it only if the owner
-// says so (open input D4).
-import { AD_BUDGET_CAP, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, packageFor, packageTotal, PLANS } from "@/lib/pricing";
+// built from lib/pricing.ts. Organic social posting is claimed: Social Media and Ads includes 12 Instagram and Facebook
+// posts a month (owner decision, 2026-10-21).
+import { AD_BUDGET_CAP, basketPlans, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, packageFor, packageTotal, PLANS } from "@/lib/pricing";
 import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
 import type { FaqItem } from "./types";
 
@@ -40,7 +40,7 @@ const UPDATED = "2026-10-19";
 
 function costAnswer(pick: BasketPick): string {
   const pkg = packageFor(pick);
-  if (!pkg) return `₹0 to build. ${PLANS.website.name} is ${formatInr(PLANS.website.monthly)} a month, plus ${GST_LABEL} GST.`;
+  if (!pkg) return `₹0 to build. ${basketPlans(pick)[0]?.name ?? PLANS.website.name} is ${formatInr(packageTotal(pick))} a month, plus ${GST_LABEL} GST.`;
   const credit = pkg.adCredit > 0 ? ` Take them together as you start and we add ${formatInr(pkg.adCredit)} a month to your ads.` : "";
   return `₹0 to build. ${pkg.name} is ${formatInr(packageTotal(pick))} a month, plus ${GST_LABEL} GST: ${pkg.percent}% off the plans' own prices.${credit}`;
 }

@@ -24,7 +24,7 @@ describe("home content", () => {
     expect(WORK.cases).toHaveLength(3);
     expect(STEPS).toHaveLength(3);
     expect(REPORT.kpis).toHaveLength(4);
-    expect(INDUSTRIES_LINE.industries).toHaveLength(16);
+    expect(INDUSTRIES_LINE.industries).toHaveLength(15);
     expect(HOME_FAQ).toHaveLength(11);
   });
   it("keeps the Example report chip", () => {

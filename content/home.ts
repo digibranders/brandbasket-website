@@ -26,8 +26,7 @@ export type HomeIconKey =
   | "BookOpen"
   | "Scales"
   | "Calculator"
-  | "Car"
-  | "Confetti";
+  | "Car";
 
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 
@@ -90,7 +89,6 @@ export const INDUSTRIES_LINE = {
     { slug: "lawyers", label: "Lawyers", icon: "Scales" },
     { slug: "accountants", label: "Accountants", icon: "Calculator" },
     { slug: "car-services", label: "Car services", icon: "Car" },
-    { slug: "event-planners", label: "Event planners", icon: "Confetti" },
   ],
 } as const satisfies { readonly title: string; readonly industries: readonly Industry[] };
 

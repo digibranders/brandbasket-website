@@ -1,0 +1,18 @@
+/* components/home/industries.css: two rows drifting in opposite directions. Each track holds two copies of its row and moves by one copy. */
+.ind-rows {
+  display: grid;
+  gap: 14px;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent);
+}
+.ind-track { display: flex; width: max-content; animation: ind-drift 58s linear infinite; }
+.ind-track[data-reverse] { animation-direction: reverse; }
+.ind-rows:hover .ind-track { animation-play-state: paused; }
+@keyframes ind-drift { to { transform: translate3d(-50%, 0, 0); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ind-rows { -webkit-mask-image: none; mask-image: none; }
+  .ind-track { animation: none; width: auto; justify-content: center; }
+  .ind-track > ul { flex-wrap: wrap; justify-content: center; row-gap: 12px; }
+  .ind-track > ul[aria-hidden] { display: none; }
+}

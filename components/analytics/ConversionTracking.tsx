@@ -2,6 +2,7 @@
 // components/analytics/ConversionTracking.tsx
 import { track } from "@vercel/analytics";
 import { useEffect } from "react";
+import { pushConversion } from "@/components/consent/tags";
 import { clickEvent } from "@/lib/analytics";
 
 /**
@@ -13,7 +14,9 @@ export function ConversionTracking(): null {
     const onClick = (event: MouseEvent): void => {
       const link = event.target instanceof Element ? event.target.closest<HTMLAnchorElement>("a[data-track]") : null;
       const conversion = link ? clickEvent(link.dataset, link.href) : null;
-      if (conversion) track(conversion.name, conversion.properties);
+      if (!conversion) return;
+      track(conversion.name, conversion.properties);
+      pushConversion(conversion);
     };
     document.addEventListener("click", onClick, { capture: true });
     return () => document.removeEventListener("click", onClick, { capture: true });

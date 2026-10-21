@@ -1,0 +1,28 @@
+/* components/consent/consent.css */
+/* Bottom right above the WhatsApp button, over the hero's basket image, so the headline, price and main button stay clear. */
+.consent { right: max(24px, env(safe-area-inset-right, 0px)); bottom: 88px; width: 392px; filter: drop-shadow(var(--shadow-receipt)); }
+@media (width < 640px) {
+  .consent { left: 12px; right: 12px; bottom: max(12px, env(safe-area-inset-bottom, 0px)); width: auto; }
+  /* The sheet fills the bottom of a phone; WhatsApp returns once a choice is made. On desktop the chat sits above it. */
+  body:has(.consent) .whatsapp-chat { visibility: hidden; }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .consent { animation: consent-rise 520ms var(--ease) both; }
+}
+@keyframes consent-rise { from { opacity: 0; translate: 0 16px; } }
+
+/* The receipt's torn bottom edge: a row of half circles cut out of the last 10px. */
+.consent-receipt {
+  border-radius: 20px 20px 0 0;
+  max-height: calc(100dvh - 112px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  mask: radial-gradient(circle at 50% 100%, transparent 5px, #000 5.5px) bottom / 9px 10px repeat-x, linear-gradient(#000, #000) top / 100% calc(100% - 9px) no-repeat;
+}
+@media (width < 640px) {
+  .consent-receipt { max-height: calc(100dvh - 24px); }
+}
+
+/* One receipt line: what, a dotted leader, and its state. */
+.consent-item { display: grid; grid-template-columns: auto 1fr auto; gap: 8px; align-items: center; }
+.consent-lead { align-self: end; margin-bottom: 6px; border-bottom: 1px dotted color-mix(in srgb, var(--ink-2) 40%, transparent); }

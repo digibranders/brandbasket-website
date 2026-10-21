@@ -2,8 +2,9 @@
 import { ADDONS, type PlanId } from "./pricing";
 
 /**
- * Conversion events for Vercel Web Analytics. Properties hold page locations and plan ids only, never anything a
- * visitor typed, so the privacy policy's "counts visits without cookies" stays true.
+ * Conversion events for Vercel Web Analytics, and for Tag Manager once a visitor allows tracking. Properties hold page
+ * locations and plan ids only, never anything a visitor typed, so the privacy policy's "counts visits without cookies"
+ * stays true.
  */
 export type ConversionEvent =
   | { readonly name: "cta_click"; readonly properties: { readonly location: string; readonly plans: string } }

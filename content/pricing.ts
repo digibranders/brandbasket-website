@@ -317,7 +317,7 @@ export const GOOD_TO_KNOW: readonly GoodToKnowItem[] = [
   {
     icon: "SignOut",
     title: "Cancel anytime",
-    body: "No notice period. Your website stays online until the end of the month you have paid for, and your domain stays yours.",
+    body: "No notice period. Your plans keep running until the end of the month you have paid for, and your domain stays yours.",
   },
   {
     icon: "Clock",

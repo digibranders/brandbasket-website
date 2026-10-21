@@ -10,5 +10,7 @@
  * 2026-10-21.1  Terms and refund policy: every plan can be bought on its own, package prices replace the 5% sign-up
  *               offer, monthly ad credit for packages taken at the first purchase, and dropping a plan ends the
  *               package price.
+ * 2026-10-21.2  Terms and refund policy: cancellation and a failed payment are stated for every plan, so they read
+ *               right for a client without the website plan.
  */
-export const LEGAL_TEXT_VERSION = "2026-10-21.1";
+export const LEGAL_TEXT_VERSION = "2026-10-21.2";

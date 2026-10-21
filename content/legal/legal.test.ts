@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
-import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
+import { CANCEL_ANSWER, PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
 import { dataNotice } from "./notice";
 import { privacyPolicy } from "./privacy";
@@ -65,8 +65,14 @@ describe("legal documents", () => {
   it("keep the package price and ad credit when a payment fails", () => {
     expect(PAYMENT_FAILURE).toContain("Your package price and ad credit stay.");
   });
-  it("ships the 2026-10-21.1 text version", () => {
-    expect(LEGAL_TEXT_VERSION).toBe("2026-10-21.1");
+  it("states cancellation and failed payments for any plan, not only the website", () => {
+    for (const rule of [CANCEL_ANSWER, CANCELLATION_RULE, PAYMENT_FAILURE]) expect(rule).not.toMatch(/^[^.]*\b[Yy]our website\b/);
+    expect(CANCELLATION_RULE).toContain("your plans keep running");
+    expect(PAYMENT_FAILURE).toContain("Your plans pause");
+  });
+
+  it("ships the 2026-10-21.2 text version", () => {
+    expect(LEGAL_TEXT_VERSION).toBe("2026-10-21.2");
   });
   it("use one cancellation, payment and ownership policy in the terms and the refund policy", () => {
     const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));

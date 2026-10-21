@@ -60,7 +60,7 @@ describe("pricing content", () => {
     expect(GOOD_TO_KNOW.find((g) => g.icon === "SignOut")).toEqual({
       icon: "SignOut",
       title: "Cancel anytime",
-      body: "No notice period. Your website stays online until the end of the month you have paid for, and your domain stays yours.",
+      body: "No notice period. Your plans keep running until the end of the month you have paid for, and your domain stays yours.",
     });
   });
   it("asks the pricing questions in the mock's order", () => {

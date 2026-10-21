@@ -1,8 +1,8 @@
 // content/industries.ts
 // Copy for /industries and the eight /industries/[slug] pages. INDUSTRIES approved by the owner on 2026-10-19 (plan 02, Task 7.1).
 // Every claim comes from the plan details in content/pricing.ts and the free build in content/home.ts. Every price is
-// built from lib/pricing.ts. Organic social posting is claimed: Social Media and Ads includes 12 Instagram and Facebook
-// posts a month (owner decision, 2026-10-21).
+// built from lib/pricing.ts. Organic social posting is claimed; how many posts a month is agreed with each client
+// (owner decision, 2026-10-21).
 import { AD_BUDGET_CAP, basketPlans, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, packageFor, packageTotal, PLANS } from "@/lib/pricing";
 import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
 import type { FaqItem } from "./types";
@@ -126,7 +126,7 @@ export const INDUSTRIES: readonly Industry[] = [
     whatYouGet: [
       "A free website of up to 5 pages: services, prices, photos and how to reach you",
       "Click to call and an enquiry form, on a site that works on every phone",
-      "Up to 8 Google Business Profile posts a month for offers and services",
+      "Google Business Profile posts for offers and services, planned with you",
       "Photo updates on your Google profile from your own pictures",
       "Review monitoring and suggested replies",
       "Facebook and Instagram ads planned, set up and watched every month",
@@ -157,7 +157,7 @@ export const INDUSTRIES: readonly Industry[] = [
       "A free website of up to 5 pages: menu, timings, location and photos",
       "Click to call and an enquiry form for group and party bookings",
       "2 small edits a month for menu and price changes",
-      "Up to 8 Google Business Profile posts a month for specials and offers",
+      "Google Business Profile posts for specials and offers, planned with you",
       "Review monitoring and suggested replies",
       "Facebook and Instagram ads for offers and new dishes, with a monthly ads report",
     ],
@@ -187,7 +187,7 @@ export const INDUSTRIES: readonly Industry[] = [
       "A free website of up to 5 pages: memberships, timings, trainers and location",
       "An enquiry form for trial classes, and click to call",
       "Facebook and Instagram ads for new batches and offers, set up and watched for you",
-      "Up to 8 Google Business Profile posts a month",
+      "Google Business Profile posts, planned with you each month",
       "Review monitoring and suggested replies",
       "A monthly report on your site, your ads and your Google profile",
     ],
@@ -249,7 +249,7 @@ export const INDUSTRIES: readonly Industry[] = [
     whatYouGet: [
       "A free website of up to 5 pages: what you stock, brands, timings and location",
       "Click to call and an enquiry form for stock questions",
-      "Up to 8 Google Business Profile posts a month for offers and new arrivals",
+      "Google Business Profile posts for offers and new arrivals, planned with you",
       "Hours, contact and website link checks on your Google profile",
       "Review monitoring and suggested replies",
       "Facebook and Instagram ads for sales and festive offers, with a monthly ads report",

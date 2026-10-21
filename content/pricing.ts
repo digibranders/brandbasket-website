@@ -115,8 +115,8 @@ export const COMPARE: Compare = {
     {
       title: "Social media and ads",
       rows: [
-        { label: "Instagram and Facebook posts", note: "Designed, written and scheduled", cells: ["12 a month", NO, "12 a month", "12 a month"] },
-        { label: "Google Business Profile posts", cells: ["8 a month", NO, "8 a month", "8 a month"] },
+        { label: "Instagram and Facebook posts", note: "Designed, written and scheduled", cells: ["Planned with you", NO, "Planned with you", "Planned with you"] },
+        { label: "Google Business Profile posts", cells: ["Planned with you", NO, "Planned with you", "Planned with you"] },
         { label: "Review monitoring and reply drafts", cells: [YES, NO, YES, YES] },
         { label: "Facebook and Instagram ads", note: `Up to ${AD_CAP} a month of your budget managed, plus our ad money`, cells: [YES, NO, YES, YES] },
       ],
@@ -219,13 +219,13 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
       {
         heading: "Instagram and Facebook",
         kind: "included",
-        items: ["12 designed posts a month", "Captions written for you", "Posts scheduled for you"],
+        items: ["Posts each month, planned with you", "Captions written for you", "Posts scheduled for you"],
         more: [
           {
             heading: "Google Business Profile",
             items: [
               "Business details and category review",
-              "Up to 8 posts a month: updates, offers, services",
+              "Regular posts: updates, offers, services",
               "Photo updates from your images or agreed creatives",
               "Hours, contact and website link checks",
               "Review monitoring and reply suggestions",

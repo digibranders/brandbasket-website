@@ -26,7 +26,7 @@ export const HOME_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
   },
   growth: {
     name: "Social Media and Ads",
-    summary: "12 Instagram and Facebook posts and 8 Google profile posts a month, and your Meta ads run for you.",
+    summary: "Instagram, Facebook and Google profile posts planned with you each month, and your Meta ads run for you.",
     switchLabel: "Add Social Media and Ads",
   },
   search: {

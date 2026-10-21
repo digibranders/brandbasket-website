@@ -7,6 +7,7 @@ import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type Reac
 import { z } from "zod";
 import { ArrowSubmitButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { pushConversion } from "@/components/consent/tags";
 import { submitEvent } from "@/lib/analytics";
 import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_TOPIC_LABELS, CONTACT_TOPIC_LEGEND } from "@/content/contact";
 import { basket, DEFAULT_BASKET } from "@/lib/basket-store";
@@ -152,6 +153,7 @@ export function ContactForm(): ReactElement {
       if (res.ok && result.success && "ok" in result.data) {
         const sent = submitEvent(plans);
         track(sent.name, sent.properties);
+        pushConversion(sent);
         setStatus({ kind: "done" });
         return;
       }

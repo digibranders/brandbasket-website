@@ -71,8 +71,8 @@ describe("legal documents", () => {
     expect(PAYMENT_FAILURE).toContain("Your plans pause");
   });
 
-  it("ships the 2026-10-21.2 text version", () => {
-    expect(LEGAL_TEXT_VERSION).toBe("2026-10-21.2");
+  it("ships the 2026-10-21.3 text version", () => {
+    expect(LEGAL_TEXT_VERSION).toBe("2026-10-21.3");
   });
   it("use one cancellation, payment and ownership policy in the terms and the refund policy", () => {
     const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));

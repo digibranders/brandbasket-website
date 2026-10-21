@@ -135,7 +135,7 @@ export function ConsentBanner(): ReactElement | null {
         )}
         <p className="text-[12.5px] leading-normal text-ink-2">
           {CONSENT.footnote}{" "}
-          <Link href="/privacy" className="text-ink underline decoration-rattan underline-offset-[3px]">{CONSENT.policy}</Link>
+          <Link href="/privacy" className="whitespace-nowrap text-ink underline decoration-rattan underline-offset-[3px]">{CONSENT.policy}</Link>
         </p>
       </div>
     </section>

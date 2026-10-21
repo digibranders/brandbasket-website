@@ -103,6 +103,35 @@ export function adCreditFor(pick: BasketPick): number {
   return packageFor(pick)?.adCredit ?? 0;
 }
 
+export interface NextPlan {
+  readonly id: PlanId;
+  /** The basket with this plan added. */
+  readonly pick: BasketPick;
+  /** Rupees a month more than the basket costs now; negative when the package costs less. */
+  readonly extra: number;
+  /** What the new basket saves and earns a month. */
+  readonly saving: number;
+  readonly adCredit: number;
+}
+
+/**
+ * The missing plan worth adding most (the Basket Card's "Next stamp"): the one whose saving and ad credit gained, less
+ * its extra monthly cost, is largest. Null when every plan is already in the basket.
+ */
+export function nextPlanToAdd(pick: BasketPick): NextPlan | null {
+  const now = packageTotal(pick);
+  const gainedNow = packageSaving(pick) + adCreditFor(pick);
+  let best: { readonly plan: NextPlan; readonly value: number } | null = null;
+  for (const id of PLAN_IDS) {
+    if (pick[id]) continue;
+    const next: BasketPick = { ...pick, [id]: true };
+    const plan: NextPlan = { id, pick: next, extra: packageTotal(next) - now, saving: packageSaving(next), adCredit: adCreditFor(next) };
+    const value = plan.saving + plan.adCredit - gainedNow - plan.extra;
+    if (!best || value > best.value) best = { plan, value };
+  }
+  return best?.plan ?? null;
+}
+
 export interface FirstPayment {
   readonly months: number;
   readonly base: number;

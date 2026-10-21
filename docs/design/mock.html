@@ -294,9 +294,16 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
 .facts .ms { font-size: 22px; color: var(--b-rattan-text); }
 .inds-sec { padding-block: 72px 88px; display: grid; gap: 22px; justify-items: center; text-align: center; }
 .inds-title { font-family: var(--d); font-size: 15px; font-weight: 500; color: var(--b-ink-2); letter-spacing: 0; }
-.inds-line { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: 12px 34px; max-width: 980px; }
-.inds-line li { display: inline-flex; align-items: center; gap: 10px; font-family: var(--d); font-size: clamp(20px, 2.2vw, 28px); letter-spacing: -0.03em; color: var(--b-ink); }
-.inds-line .ms { font-size: 26px; color: var(--b-rattan-text); font-variation-settings: "wght" 300, "FILL" 0; }
+.inds-sec { padding-inline: 0; overflow: hidden; }
+.inds-rows { display: grid; gap: 14px; width: 100%; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
+.inds-track { display: flex; width: max-content; animation: inds-drift 58s linear infinite; }
+.inds-track.rev { animation-direction: reverse; }
+.inds-rows:hover .inds-track { animation-play-state: paused; }
+@keyframes inds-drift { to { transform: translate3d(-50%, 0, 0); } }
+.inds-line { list-style: none; margin: 0; padding: 0; display: flex; flex-shrink: 0; }
+.inds-line li { display: inline-flex; align-items: center; gap: 12px; padding-right: 48px; white-space: nowrap; font-family: var(--d); font-size: clamp(26px, 3.4vw, 44px); letter-spacing: -0.03em; color: var(--b-ink); }
+.inds-line .ms { font-size: 0.8em; color: var(--b-rattan-text); font-variation-settings: "wght" 300, "FILL" 0; }
+@media (prefers-reduced-motion: reduce) { .inds-rows { -webkit-mask-image: none; mask-image: none; } .inds-track { animation: none; width: auto; justify-content: center; } .inds-line { flex-wrap: wrap; justify-content: center; row-gap: 12px; } .inds-line[aria-hidden] { display: none; } }
 .addons-title { font-family: var(--d); font-size: 24px; font-weight: 500; letter-spacing: -0.03em; margin: 40px 0 14px; }
 .addon .row { grid-template-columns: auto 1fr auto; align-items: center; }
 .addon .row h5 { align-self: center; }
@@ -544,46 +551,124 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
 .upi-tally { font-family: var(--d); font-size: 22px; font-weight: 500; letter-spacing: -0.02em; text-align: center; }
 .upi-tally small { font-family: var(--t); font-size: 13px; font-weight: 500; letter-spacing: 0; color: var(--b-ink-2); }
 
-/* 3. stamp card: a loyalty card where each plan is a stamp and the offers are tear-off coupons */
-.ox-card { grid-template-columns: 1fr; }
-.scard { position: relative; border-radius: 22px; padding: 26px; background:
-  repeating-linear-gradient(90deg, color-mix(in srgb, var(--b-rattan) 9%, transparent) 0 6px, transparent 6px 12px),
-  repeating-linear-gradient(0deg, color-mix(in srgb, var(--b-rattan) 7%, transparent) 0 6px, transparent 6px 12px),
-  var(--b-rattan-wash); display: grid; gap: 24px; }
-.scard::before { content: ""; position: absolute; inset: 10px; border: 1.5px dashed color-mix(in srgb, var(--b-rattan-ink) 35%, transparent); border-radius: 16px; pointer-events: none; }
-.scard-top { display: grid; gap: 4px; position: relative; }
-.scard-top b { font-family: var(--d); font-size: 24px; font-weight: 500; letter-spacing: -0.03em; color: var(--b-rattan-ink); }
-.scard-top span { font-size: 15px; color: var(--b-ink-2); max-width: 60ch; }
-.scard-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; position: relative; }
-.slot { display: grid; justify-items: center; gap: 6px; border: 0; background: none; cursor: pointer; padding: 6px; border-radius: 16px; font: inherit; color: var(--b-ink); }
-.slot b { font-family: var(--d); font-size: 17px; font-weight: 500; }
+/* navbar offer: A ticket and B live stamps sit in a 44px strip above the floating nav; C is a chip inside the nav */
+.home { --promo-h: 0px; }
+.home[data-promo="ticket"]:not([data-promo-closed]), .home[data-promo="stamps"]:not([data-promo-closed]) { --promo-h: 44px; }
+.nav { top: calc(16px + var(--promo-h)); }
+.sheet { top: calc(76px + var(--promo-h)); }
+.promo { display: none; position: relative; height: 44px; }
+.home[data-promo="ticket"]:not([data-promo-closed]) .promo, .home[data-promo="stamps"]:not([data-promo-closed]) .promo { display: block; }
+.pr { display: none; }
+.home[data-promo="ticket"] .pr-ticket, .home[data-promo="stamps"] .pr-stamps { display: flex; }
+.promo-in { height: 100%; align-items: center; gap: 14px; padding-inline: clamp(14px, 4vw, 56px) 52px; font-size: 14px; }
+.promo-in p { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.promo .sh, .nchip .sh { display: none; }
+@media (max-width: 760px) { .promo .lg, .nchip .lg { display: none; } .promo .sh, .nchip .sh { display: inline; } }
+.pr-go { display: inline-flex; align-items: center; gap: 6px; flex: none; border: 0; background: none; padding: 6px 4px; font: 600 14px var(--t); color: inherit; cursor: pointer; text-decoration: underline; text-underline-offset: 4px; text-decoration-thickness: 1.5px; }
+.pr-go .ms { font-size: 17px; transition: transform 300ms var(--ease); }
+.pr-go:hover .ms { transform: translateX(3px); }
+.promo-x { position: absolute; right: clamp(8px, 2vw, 20px); top: 50%; transform: translateY(-50%); width: 32px; height: 32px; border-radius: 50%; border: 0; background: none; color: inherit; display: grid; place-items: center; cursor: pointer; opacity: 0.75; }
+.promo-x:hover { opacity: 1; }
+.promo-x .ms { font-size: 18px; }
+.home[data-promo="ticket"] .promo { background: var(--b-rattan-ink); color: var(--b-surface); }
+.home[data-promo="stamps"] .promo { background: var(--b-rattan-wash); color: var(--b-rattan-ink); border-bottom: 1px solid color-mix(in srgb, var(--b-rattan) 28%, transparent); }
+/* A. the stub is torn off along a perforation, with a notch at each end */
+.pa-stub { position: relative; align-self: stretch; display: inline-flex; align-items: center; gap: 6px; padding-right: 16px; border-right: 2px dashed color-mix(in srgb, var(--b-surface) 45%, transparent); font-family: var(--m); font-size: 11.5px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; }
+.pa-stub::before, .pa-stub::after { content: ""; position: absolute; right: -8px; width: 14px; height: 14px; border-radius: 50%; background: var(--b-bg); }
+.pa-stub::before { top: -7px; }
+.pa-stub::after { bottom: -7px; }
+.pa-stub .ms { font-size: 17px; color: var(--b-rattan-wash); }
+.pr-ticket b { font-weight: 600; }
+@media (max-width: 760px) {
+  .pa-tag { display: none; }
+  .promo-in { gap: 10px; font-size: 13px; padding-right: 44px; }
+  .pa-stub { padding-right: 10px; }
+  .pb-stamps i { width: 22px; height: 22px; }
+  .pb-stamps i .ms { font-size: 13px; }
+}
+/* B. three small stamps follow the visitor's basket and stamp in when a plan is added */
+.pb-stamps { display: inline-flex; gap: 5px; flex: none; }
+.pb-stamps i { width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center; border: 1.5px dashed color-mix(in srgb, var(--b-rattan-ink) 40%, transparent); color: transparent; transition: border-color 300ms var(--ease), background-color 300ms var(--ease), color 300ms var(--ease); }
+.pb-stamps i .ms { font-size: 15px; }
+.pb-stamps i.on { border: 3px double var(--c); color: var(--c); background: var(--b-surface); transform: rotate(-8deg); }
+.pr-stamps b { font-weight: 600; }
+@keyframes pb-in { 0% { transform: rotate(-8deg) scale(1.8); opacity: 0; } 60% { transform: rotate(-8deg) scale(0.9); opacity: 1; } 100% { transform: rotate(-8deg) scale(1); } }
+@media (prefers-reduced-motion: no-preference) { .pb-stamps i.go { animation: pb-in 450ms var(--ease) both; } }
+/* C. a chip inside the nav that opens a small ticket */
+.nchip { display: none; position: relative; flex: none; }
+.home[data-promo="chip"] .nchip { display: block; }
+.nchip-btn { display: inline-flex; align-items: center; gap: 4px; padding: 6px 12px 6px 8px; border-radius: 999px; border: 1px dashed color-mix(in srgb, var(--b-rattan-ink) 45%, transparent); background: var(--b-rattan-wash); color: var(--b-rattan-ink); font: 600 13px var(--t); cursor: pointer; white-space: nowrap; }
+.nchip-btn .ms { font-size: 16px; }
+.nchip-btn[aria-expanded="true"] { border-style: solid; }
+.nchip-pop { position: absolute; z-index: 9; top: calc(100% + 12px); left: 0; width: min(340px, calc(100vw - 32px)); display: grid; gap: 8px; padding: 16px 18px; border-radius: 20px; background: var(--b-surface); border: 1px solid var(--b-line); box-shadow: var(--b-shadow); font-size: 14.5px; line-height: 1.45; color: var(--b-ink); }
+.nchip-pop[hidden] { display: none; }
+.nchip-tag { font-family: var(--m); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.12em; color: var(--b-rattan-ink); }
+.nchip-fine { font-size: 13px; color: var(--b-ink-2); }
+.nchip-pop .pr-go { justify-self: start; color: var(--b-ink); text-decoration-color: var(--b-rattan); }
+.promo-x:focus-visible, .pr-go:focus-visible, .nchip-btn:focus-visible { outline: 2px solid var(--b-rattan-text); outline-offset: 2px; }
+@media (max-width: 760px) { .nchip { position: static; } .nchip-pop { left: 8px; right: 8px; width: auto; } }
+
+/* 3. Basket Card: a woven loyalty card, a stamp per plan in the plan's own ink, and a reward track */
+.ox-card { grid-template-columns: 1fr; align-items: stretch; }
+@media (min-width: 1000px) { .ox-card { grid-template-columns: 1.4fr 1fr; } }
+.bcard { position: relative; display: grid; gap: 22px; padding: 26px 26px 20px; border-radius: 24px; border: 1px solid color-mix(in srgb, var(--b-rattan) 32%, transparent); overflow: hidden;
+  background:
+    radial-gradient(120% 90% at 0% 0%, color-mix(in srgb, var(--b-surface) 75%, transparent), transparent 62%),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--b-rattan) 8%, transparent) 0 1.5px, transparent 1.5px 7px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--b-rattan) 8%, transparent) 0 1.5px, transparent 1.5px 7px),
+    var(--b-rattan-wash);
+  box-shadow: inset 0 1px 0 color-mix(in srgb, var(--b-surface) 70%, transparent), 0 26px 44px -32px rgba(40, 28, 14, 0.5); }
+.bcard-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; }
+.bcard-top > div { display: grid; gap: 4px; }
+.bcard-title { font-family: var(--d); font-size: 28px; font-weight: 500; letter-spacing: -0.035em; color: var(--b-rattan-ink); line-height: 1; }
+.bcard-top span { font-size: 15px; color: var(--b-ink-2); max-width: 40ch; }
+.bcard-mark { width: 30px; height: auto; flex: none; opacity: 0.85; }
+.bcard-slots { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.slot { display: grid; justify-items: center; align-content: start; gap: 4px; padding: 6px 4px; border: 0; border-radius: 18px; background: none; font: inherit; color: var(--b-ink); text-align: center; cursor: pointer; }
+.slot b { font-family: var(--d); font-size: 16px; font-weight: 500; letter-spacing: -0.015em; margin-top: 8px; }
+.slot-what { font-size: 13px; color: var(--b-ink-2); line-height: 1.35; max-width: 20ch; }
 .slot small { font-size: 13px; color: var(--b-ink-2); }
-.slot-ring { width: clamp(76px, 12vw, 108px); aspect-ratio: 1; border-radius: 50%; border: 2px dashed color-mix(in srgb, var(--b-rattan-ink) 40%, transparent); display: grid; place-items: center; background: color-mix(in srgb, var(--b-surface) 55%, transparent); }
-.slot-stamp { width: 86%; aspect-ratio: 1; border-radius: 50%; border: 3px double var(--b-ink); display: grid; place-items: center; align-content: center; gap: 0; color: var(--b-ink); transform: rotate(-9deg) scale(0); opacity: 0; mix-blend-mode: multiply; }
-.slot-stamp .ms { font-size: 26px; }
-.slot-stamp i { font-style: normal; font-family: var(--m); font-size: 11px; text-transform: uppercase; letter-spacing: 0.12em; }
-.slot[aria-pressed="true"] .slot-stamp { transform: rotate(-9deg) scale(1); opacity: 0.9; }
-.slot[data-slot="growth"] .slot-stamp { --r: 7deg; }
+.slot-ring { position: relative; width: clamp(84px, 11vw, 116px); aspect-ratio: 1; border-radius: 50%; display: grid; place-items: center; border: 2px dashed color-mix(in srgb, var(--b-rattan-ink) 38%, transparent); background: color-mix(in srgb, var(--b-surface) 62%, transparent); transition: border-color 300ms var(--ease), background-color 300ms var(--ease); }
+.slot:hover .slot-ring { border-color: color-mix(in srgb, var(--b-rattan-ink) 70%, transparent); background: var(--b-surface); }
+.slot-hint { font-family: var(--m); font-size: 11px; letter-spacing: 0.06em; color: var(--b-rattan-ink); max-width: 9ch; line-height: 1.3; }
+.slot-stamp { position: absolute; inset: 6%; border-radius: 50%; border: 4px double var(--c); color: var(--c); display: grid; place-items: center; align-content: center; gap: 2px; background: color-mix(in srgb, var(--c) 7%, transparent); transform: rotate(var(--r)) scale(0); opacity: 0; mix-blend-mode: multiply; }
+.slot-stamp .ms { font-size: clamp(26px, 3vw, 34px); }
+.slot-stamp i { font-style: normal; font-family: var(--m); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.16em; }
+.slot[aria-pressed="true"] .slot-stamp { transform: rotate(var(--r)) scale(1); opacity: 0.92; }
+.slot[aria-pressed="true"] .slot-hint { opacity: 0; }
+.slot[aria-pressed="true"] .slot-ring { border-color: transparent; background: var(--b-surface); }
 .slot[aria-disabled="true"] { cursor: not-allowed; }
-.scard-rewards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; position: relative; }
-.coupon { position: relative; display: grid; gap: 2px; padding: 16px 18px 16px 24px; border-radius: 14px; background: var(--b-surface); border: 1.5px dashed var(--b-line); color: var(--b-ink-2); }
-.coupon::before, .coupon::after { content: ""; position: absolute; left: -9px; width: 16px; height: 16px; border-radius: 50%; background: var(--b-rattan-wash); }
-.coupon::before { top: calc(50% - 8px); }
-.coupon::after { display: none; }
-.coupon small { font-size: 12.5px; font-weight: 600; }
-.coupon b { font-family: var(--d); font-size: clamp(28px, 3vw, 38px); font-weight: 500; letter-spacing: -0.04em; line-height: 1; color: var(--b-ink-2); }
-.coupon span { font-size: 13.5px; }
-.coupon.on { background: var(--b-ink); border: 1.5px solid var(--b-ink); color: var(--b-feature-soft); }
-.coupon.on b { color: var(--b-rattan); }
-.coupon.on span { color: var(--b-feature-ink); font-weight: 600; }
-.coupon.done { opacity: 0.6; }
-.coupon.done b { text-decoration: line-through; text-decoration-thickness: 2px; }
-.ox-pay { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 14px 24px; }
-.ox-pay p { display: grid; line-height: 1.15; }
-.ox-pay small { font-size: 13.5px; color: var(--b-ink-2); }
-.ox-pay b { font-family: var(--d); font-size: 40px; font-weight: 500; letter-spacing: -0.045em; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
-.ox-pay b s { font-size: 20px; font-weight: 400; color: var(--b-ink-2); letter-spacing: -0.02em; }
-@media (max-width: 560px) { .scard-rewards { grid-template-columns: 1fr; } .scard { padding: 22px 16px; } }
+.bcard-track { list-style: none; margin: 0; padding: 16px 0 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; border-top: 1px dashed color-mix(in srgb, var(--b-rattan-ink) 30%, transparent); }
+.bcard-track li { position: relative; display: grid; gap: 2px; padding-left: 26px; }
+.bcard-track li i { position: absolute; left: 0; top: 2px; width: 16px; height: 16px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--b-rattan-ink) 45%, transparent); background: var(--b-surface); transition: background-color 300ms var(--ease), box-shadow 300ms var(--ease); }
+.bcard-track li.reached i { background: var(--b-rattan-ink); border-color: var(--b-rattan-ink); }
+.bcard-track li.now i { box-shadow: 0 0 0 5px color-mix(in srgb, var(--b-rattan) 32%, transparent); }
+.bcard-track b { font-size: 12.5px; font-weight: 600; color: var(--b-ink-2); }
+.bcard-track span { font-family: var(--d); font-size: 15px; line-height: 1.25; color: var(--b-ink-2); }
+.bcard-track li.reached span { color: var(--b-ink); }
+.bcard-track li.now b { color: var(--b-rattan-ink); }
+.bcard-fine { font-size: 12.5px; color: var(--b-ink-2); max-width: 70ch; }
+.bsum { display: grid; gap: 14px; align-content: start; justify-items: start; padding: 26px; border-radius: 24px; background: var(--b-surface); border: 1px solid var(--b-line); }
+.bsum-h { font-family: var(--d); font-size: clamp(24px, 2.4vw, 30px); font-weight: 400; letter-spacing: -0.035em; line-height: 1.1; }
+.bsum-price { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.bsum-price > span { font-family: var(--d); font-size: clamp(42px, 4.6vw, 56px); font-weight: 500; letter-spacing: -0.05em; line-height: 1; display: inline-flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.bsum-price s { font-size: 22px; font-weight: 400; letter-spacing: -0.02em; color: var(--b-ink-2); text-decoration-thickness: 2px; text-decoration-color: color-mix(in srgb, var(--b-rattan-text) 80%, transparent); }
+.bsum-price small { font-size: 14px; color: var(--b-ink-2); }
+.bsum-gst { font-size: 13.5px; color: var(--b-ink-2); margin-top: -8px; }
+.bsum-gst s { margin-right: 8px; }
+.bsum-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 9px; width: 100%; }
+.bsum-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; }
+.bsum-list .ms { font-size: 20px; color: var(--b-sage); flex: none; }
+.bsum-list b { font-weight: 600; }
+.bsum-once { position: relative; width: 100%; display: grid; gap: 6px; padding: 14px 16px 14px 18px; border-radius: 16px; border: 1.5px dashed color-mix(in srgb, var(--b-rattan-text) 55%, transparent); background: var(--b-surface); font-size: 14.5px; line-height: 1.45; }
+.bsum-once-tag { justify-self: start; display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px 3px 6px; border-radius: 999px; background: var(--b-rattan-ink); color: var(--b-surface); font-family: var(--m); font-size: 11px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; }
+.bsum-once-tag .ms { font-size: 15px; }
+.bsum-once b { font-weight: 600; color: var(--b-rattan-ink); }
+.bsum-next { width: 100%; display: grid; gap: 4px; padding: 14px 16px; border-radius: 16px; background: var(--b-rattan-wash); color: var(--b-rattan-ink); font-size: 14.5px; }
+.bsum-next-h { font-size: 13px; }
+.bsum-next-h b { font-family: var(--d); font-size: 16px; font-weight: 500; }
+.bsum-next .textlink { justify-self: start; font-size: 14.5px; padding: 4px 0 0; }
+@media (max-width: 560px) { .bcard { padding: 22px 16px 18px; } .bcard-slots { gap: 6px; } .slot-what { display: none; } .bcard-track { grid-template-columns: 1fr; } .bsum { padding: 22px 18px; } }
 
 /* 4. a year back: cumulative savings and ad money, month by month, on one fixed scale */
 .ox-year { grid-template-columns: 1fr; }
@@ -610,12 +695,11 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
   .slot.go .slot-stamp { animation: slot-in 480ms var(--ease) both; }
   .slot-stamp { transition: transform 300ms var(--ease), opacity 300ms var(--ease); }
   .upi-alert.in { animation: upi-in 520ms var(--ease) both; }
-  .coupon { transition: background-color 350ms var(--ease), color 350ms var(--ease), opacity 350ms var(--ease); }
 }
 @media (prefers-reduced-motion: reduce) { .yb i, .yb-v { transition: none !important; } }
 @keyframes rp-in { from { opacity: 0; transform: translateY(-6px); } }
 @keyframes stamp-in { 0% { opacity: 0; transform: rotate(-14deg) scale(1.9); } 60% { opacity: 0.95; transform: rotate(-14deg) scale(0.94); } 100% { opacity: 0.88; transform: rotate(-14deg) scale(1); } }
-@keyframes slot-in { 0% { opacity: 0; transform: rotate(-9deg) scale(1.8); } 60% { opacity: 1; transform: rotate(-9deg) scale(0.92); } 100% { opacity: 0.9; transform: rotate(-9deg) scale(1); } }
+@keyframes slot-in { 0% { opacity: 0; transform: rotate(var(--r)) scale(1.9); } 55% { opacity: 1; transform: rotate(var(--r)) scale(0.9); } 100% { opacity: 0.92; transform: rotate(var(--r)) scale(1); } }
 @keyframes upi-in { from { opacity: 0; transform: translateY(-16px) scale(0.98); } }
 </style>
 
@@ -627,14 +711,17 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
     <p>Same prices, same basket switches. Each option turns the discount and the monthly ad money into something a shop owner already trusts: a bill, a UPI credit, a loyalty card, a year's total. Switch plans on in the Build your basket panel on Home to see each one react.</p>
     <div class="board-ctl">
       <div class="pages" role="group" aria-label="Page"><button type="button" aria-pressed="true" data-view="home">Home</button><button type="button" aria-pressed="false" data-view="pricing">Pricing</button><button type="button" aria-pressed="false" data-view="contact">Contact</button></div>
-      <div class="pages" role="group" aria-label="Offer display"><button type="button" aria-pressed="true" data-offer-opt="bill">1. The bill</button><button type="button" aria-pressed="false" data-offer-opt="upi">2. Credited</button><button type="button" aria-pressed="false" data-offer-opt="card">3. Stamp card</button><button type="button" aria-pressed="false" data-offer-opt="year">4. A year back</button><button type="button" aria-pressed="false" data-offer-opt="now">Today</button></div>
+      <div class="pages" role="group" aria-label="Offer display"><button type="button" aria-pressed="false" data-offer-opt="bill">1. The bill</button><button type="button" aria-pressed="false" data-offer-opt="upi">2. Credited</button><button type="button" aria-pressed="true" data-offer-opt="card">3. Basket Card</button><button type="button" aria-pressed="false" data-offer-opt="year">4. A year back</button><button type="button" aria-pressed="false" data-offer-opt="now">Today</button></div>
+      <div class="pages" role="group" aria-label="Navbar offer"><button type="button" aria-pressed="false" data-promo-opt="ticket">A. Ticket</button><button type="button" aria-pressed="true" data-promo-opt="stamps">B. Live stamps</button><button type="button" aria-pressed="false" data-promo-opt="chip">C. Nav chip</button><button type="button" aria-pressed="false" data-promo-opt="none">No banner</button></div>
     </div>
   </header>
 
   <div class="frame">
-    <div class="home" id="home" data-mode="light" data-view="home" data-offer="bill">
+    <div class="home" id="home" data-mode="light" data-view="home" data-offer="card" data-promo="stamps">
+      <div class="promo"><div class="promo-in pr pr-ticket"><span class="pa-stub"><span class="ms" aria-hidden="true">bolt</span><span class="pa-tag">One-time offer</span></span><p><span class="lg"><b>Start 2 or 3 plans together at checkout:</b> up to 30% off, plus up to ₹5,000 a month for your ads.</span><span class="sh"><b>Combos:</b> up to 30% off + ad money</span></p><button type="button" class="pr-go" data-go="pricing"><span class="lg">See the packages</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><div class="promo-in pr pr-stamps"><span class="pb-stamps" aria-hidden="true"><i data-pb="site" style="--c:var(--c-site)"><span class="ms">language</span></i><i data-pb="growth" style="--c:var(--c-growth)"><span class="ms">trending_up</span></i><i data-pb="search" style="--c:var(--c-search)"><span class="ms">travel_explore</span></i></span><p aria-live="polite"><span class="lg" data-pb-text="lg"></span><span class="sh" data-pb-text="sh"></span></p><button type="button" class="pr-go" data-go="pricing"><span class="lg">Fill your Basket Card</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><button type="button" class="promo-x" aria-label="Close the offer"><span class="ms" aria-hidden="true">close</span></button></div>
       <nav class="nav" aria-label="Site">
         <svg class="logo" viewBox="0 0 312.66 55" role="img" aria-label="Brandbasket"><use href="#bb-lockup"/></svg>
+        <div class="nchip"><button type="button" class="nchip-btn" aria-expanded="false" aria-controls="nchip-pop"><span class="ms" aria-hidden="true">bolt</span><span class="lg">30% off + ₹5,000 for ads</span><span class="sh">30% off</span></button><div class="nchip-pop" id="nchip-pop" hidden><span class="nchip-tag">One-time offer at checkout</span><p>Start all three plans together: <b>30% off</b> and <b>₹5,000 a month</b> added to your ads. Two plans together: 20% off, or 30% for Social + SEO.</p><p class="nchip-fine">Add a plan later and you get the package price, but no ad money.</p><button type="button" class="pr-go" data-go="pricing">See the packages<span class="ms" aria-hidden="true">arrow_forward</span></button></div></div>
         <ul><li><button type="button" data-go="home" aria-current="page">Home</button></li><li><button type="button" data-go="pricing">Pricing</button></li><li><button type="button" data-go="home" data-anchor="h-work">Our work</button></li><li><button type="button" data-go="home" data-anchor="h-faq">FAQ</button></li><li><button type="button" data-go="contact">Contact</button></li></ul>
         <div class="tools">
           <a class="icon-btn wa" href="#home" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3Z"/></svg></a>
@@ -679,11 +766,9 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           <li><span class="ms" aria-hidden="true">summarize</span>One report a month</li>
         </ul></div>
 
-        <section class="sec in-wrap inds-sec" aria-labelledby="h-ind">
+        <section class="sec inds-sec" aria-labelledby="h-ind">
           <h3 id="h-ind" class="inds-title">Built for local businesses</h3>
-          <ul class="inds-line">
-            <li><span class="ms" aria-hidden="true">dentistry</span>Clinics</li><li><span class="ms" aria-hidden="true">content_cut</span>Salons</li><li><span class="ms" aria-hidden="true">restaurant</span>Restaurants</li><li><span class="ms" aria-hidden="true">fitness_center</span>Gyms</li><li><span class="ms" aria-hidden="true">school</span>Coaching</li><li><span class="ms" aria-hidden="true">storefront</span>Shops</li><li><span class="ms" aria-hidden="true">home_repair_service</span>Home services</li><li><span class="ms" aria-hidden="true">apartment</span>Real estate</li>
-          </ul>
+          <div class="inds-rows"><div class="inds-track"><ul class="inds-line"><li><span class="ms" aria-hidden="true">dentistry</span>Clinics</li><li><span class="ms" aria-hidden="true">content_cut</span>Salons</li><li><span class="ms" aria-hidden="true">restaurant</span>Restaurants</li><li><span class="ms" aria-hidden="true">fitness_center</span>Gyms</li><li><span class="ms" aria-hidden="true">school</span>Coaching</li><li><span class="ms" aria-hidden="true">storefront</span>Shops</li><li><span class="ms" aria-hidden="true">home_repair_service</span>Home services</li><li><span class="ms" aria-hidden="true">apartment</span>Real estate</li></ul><ul class="inds-line" aria-hidden="true"><li><span class="ms" aria-hidden="true">dentistry</span>Clinics</li><li><span class="ms" aria-hidden="true">content_cut</span>Salons</li><li><span class="ms" aria-hidden="true">restaurant</span>Restaurants</li><li><span class="ms" aria-hidden="true">fitness_center</span>Gyms</li><li><span class="ms" aria-hidden="true">school</span>Coaching</li><li><span class="ms" aria-hidden="true">storefront</span>Shops</li><li><span class="ms" aria-hidden="true">home_repair_service</span>Home services</li><li><span class="ms" aria-hidden="true">apartment</span>Real estate</li></ul></div><div class="inds-track rev"><ul class="inds-line"><li><span class="ms" aria-hidden="true">bed</span>Hotels</li><li><span class="ms" aria-hidden="true">local_cafe</span>Cafes</li><li><span class="ms" aria-hidden="true">medication</span>Pharmacies</li><li><span class="ms" aria-hidden="true">menu_book</span>Tuition classes</li><li><span class="ms" aria-hidden="true">balance</span>Lawyers</li><li><span class="ms" aria-hidden="true">calculate</span>Accountants</li><li><span class="ms" aria-hidden="true">directions_car</span>Car services</li></ul><ul class="inds-line" aria-hidden="true"><li><span class="ms" aria-hidden="true">bed</span>Hotels</li><li><span class="ms" aria-hidden="true">local_cafe</span>Cafes</li><li><span class="ms" aria-hidden="true">medication</span>Pharmacies</li><li><span class="ms" aria-hidden="true">menu_book</span>Tuition classes</li><li><span class="ms" aria-hidden="true">balance</span>Lawyers</li><li><span class="ms" aria-hidden="true">calculate</span>Accountants</li><li><span class="ms" aria-hidden="true">directions_car</span>Car services</li></ul></div></div>
         </section>
 
         <section class="sec in-wrap tight" aria-labelledby="h-plans">
@@ -704,7 +789,7 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
             </div>
           </div>
 
-          <div class="addpanel"><div class="ap-head"><h4>Build your basket</h4><span>Two plans are 20% off or more. All three are 30% off.</span></div><div class="ap-row"><span class="dot" style="--c:var(--c-site)"><span class="ms" aria-hidden="true">language</span></span><div class="ap-text"><b>Managed Website</b><span>We build it free, then host it, secure it and make 2 small edits a month.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹2,999<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Managed Website" data-plan="site"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><div class="ap-row"><span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span><div class="ap-text"><b>Social Media and Ads</b><span>Instagram, Facebook and Google profile posts planned with you each month, and your Meta ads run for you.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹9,999<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Social Media and Ads" data-plan="growth"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><div class="ap-row"><span class="dot" style="--c:var(--c-search)"><span class="ms" aria-hidden="true">travel_explore</span></span><div class="ap-text"><b>Local SEO + AI search</b><span>5 pages improved every month, so you are found in Google and ChatGPT answers.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹24,999<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO and AI search" data-plan="search"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><p class="offer-note" data-only="now"><span class="ms" aria-hidden="true">sell</span><span data-bind="offer"></span></p><div class="calc" aria-live="polite" data-only="now"><div class="what"><small data-bind="names"></small><b class="num"><s data-bind="was"></s><span class="tot" data-bind="total"></span><span>a month + GST</span></b><span class="first num" data-bind="first"></span></div><div class="acts"><button class="textlink" type="button" data-go="pricing">Compare all plans</button><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div><div class="ox ox-bill" data-only="bill"><div class="rcpt-wrap"><div class="rcpt" aria-live="polite"><div class="rcpt-head"><b>BRANDBASKET</b><span>Your monthly bill</span></div><div class="rcpt-body" data-ox="bill-lines"></div><span class="rcpt-stamp" data-ox="bill-stamp" hidden>On us</span></div></div><div class="ox-pitch"><h4 class="ox-h">A bill that pays you back.</h4><p class="ox-big num" data-ox="bill-big"></p><p class="ox-sub" data-ox="bill-sub"></p><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div><div class="ox ox-upi" data-only="upi"><div class="upi-side"><div class="upi-feed" data-ox="upi-feed" aria-hidden="true"></div><p class="upi-tally num" data-ox="upi-tally"></p></div><div class="ox-pitch"><h4 class="ox-h">We top up your ads. Every month.</h4><p class="ox-big num" data-ox="upi-big"></p><p class="ox-sub" data-ox="upi-sub"></p><p class="ox-fine">Credited to your Meta ad account every month when you start with the package. Our team spends it on your ads.</p><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div><div class="ox ox-card" data-only="card"><div class="scard"><div class="scard-top"><b>Basket card</b><span>Stamp two plans for 20% off. Stamp all three for 30% off and ₹5,000 a month for your ads.</span></div><div class="scard-slots"><button type="button" class="slot" data-slot="site" aria-pressed="false"><span class="slot-ring"><span class="slot-stamp"><span class="ms" aria-hidden="true">language</span><i>Added</i></span></span><b>Website</b><small class="num">₹2,999</small></button><button type="button" class="slot" data-slot="growth" aria-pressed="false"><span class="slot-ring"><span class="slot-stamp"><span class="ms" aria-hidden="true">trending_up</span><i>Added</i></span></span><b>Social</b><small class="num">₹9,999</small></button><button type="button" class="slot" data-slot="search" aria-pressed="false"><span class="slot-ring"><span class="slot-stamp"><span class="ms" aria-hidden="true">travel_explore</span><i>Added</i></span></span><b>SEO</b><small class="num">₹24,999</small></button></div><div class="scard-rewards"><div class="coupon" data-coupon="2"><small>Any two plans</small><b data-ox="c2-b">20% off</b><span data-ox="c2"></span></div><div class="coupon" data-coupon="3"><small>All three</small><b>30% off</b><span data-ox="c3"></span></div></div></div><div class="ox-pay"><p><small>You pay each month, before GST</small><b class="num" data-ox="card-pay"></b></p><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div><div class="ox ox-year" data-only="year"><div class="yr-head"><h4 class="ox-h">What a year in the basket gives back.</h4><p class="ox-big num" data-ox="yr-big"></p><p class="ox-sub" data-ox="yr-sub"></p></div><div class="yr-chart" data-ox="yr-chart" role="img"></div><div class="yr-foot"><div class="yr-legend"><span><i class="sw-save"></i>Saved on your plans</span><span><i class="sw-ad"></i>Ad money from us</span></div><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div></div>
+          <div class="addpanel"><div class="ap-head"><h4>Build your basket</h4><span>Two plans are 20% off or more. All three are 30% off.</span></div><div class="ap-row"><span class="dot" style="--c:var(--c-site)"><span class="ms" aria-hidden="true">language</span></span><div class="ap-text"><b>Managed Website</b><span>We build it free, then host it, secure it and make 2 small edits a month.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹2,999<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Managed Website" data-plan="site"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><div class="ap-row"><span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span><div class="ap-text"><b>Social Media and Ads</b><span>Instagram, Facebook and Google profile posts planned with you each month, and your Meta ads run for you.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹9,999<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Social Media and Ads" data-plan="growth"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><div class="ap-row"><span class="dot" style="--c:var(--c-search)"><span class="ms" aria-hidden="true">travel_explore</span></span><div class="ap-text"><b>Local SEO + AI search</b><span>5 pages improved every month, so you are found in Google and ChatGPT answers.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹24,999<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO and AI search" data-plan="search"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><p class="offer-note" data-only="now"><span class="ms" aria-hidden="true">sell</span><span data-bind="offer"></span></p><div class="calc" aria-live="polite" data-only="now"><div class="what"><small data-bind="names"></small><b class="num"><s data-bind="was"></s><span class="tot" data-bind="total"></span><span>a month + GST</span></b><span class="first num" data-bind="first"></span></div><div class="acts"><button class="textlink" type="button" data-go="pricing">Compare all plans</button><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div><div class="ox ox-bill" data-only="bill"><div class="rcpt-wrap"><div class="rcpt" aria-live="polite"><div class="rcpt-head"><b>BRANDBASKET</b><span>Your monthly bill</span></div><div class="rcpt-body" data-ox="bill-lines"></div><span class="rcpt-stamp" data-ox="bill-stamp" hidden>On us</span></div></div><div class="ox-pitch"><h4 class="ox-h">A bill that pays you back.</h4><p class="ox-big num" data-ox="bill-big"></p><p class="ox-sub" data-ox="bill-sub"></p><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div><div class="ox ox-upi" data-only="upi"><div class="upi-side"><div class="upi-feed" data-ox="upi-feed" aria-hidden="true"></div><p class="upi-tally num" data-ox="upi-tally"></p></div><div class="ox-pitch"><h4 class="ox-h">We top up your ads. Every month.</h4><p class="ox-big num" data-ox="upi-big"></p><p class="ox-sub" data-ox="upi-sub"></p><p class="ox-fine">Credited to your Meta ad account every month when you start with the package. Our team spends it on your ads.</p><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div><div class="ox ox-card" data-only="card"><div class="bcard"><div class="bcard-top"><div><b class="bcard-title">Basket Card</b><span>Every plan you take earns a stamp. More stamps, bigger rewards.</span></div><svg class="bcard-mark" viewBox="13 6 38 55" aria-hidden="true"><use href="#bb-lockup" x="13" y="6" width="312.66" height="55"/></svg></div><div class="bcard-slots"><button type="button" class="slot" data-slot="site" aria-pressed="false" style="--c:var(--c-site);--r:-8deg"><span class="slot-ring"><span class="slot-hint">Tap to stamp</span><span class="slot-stamp"><span class="ms" aria-hidden="true">language</span><i>Website</i></span></span><b>Managed Website</b><span class="slot-what">Built free, kept running</span><small class="num">₹2,999 a month</small></button><button type="button" class="slot" data-slot="growth" aria-pressed="false" style="--c:var(--c-growth);--r:6deg"><span class="slot-ring"><span class="slot-hint">Tap to stamp</span><span class="slot-stamp"><span class="ms" aria-hidden="true">trending_up</span><i>Social</i></span></span><b>Social Media and Ads</b><span class="slot-what">Posts and Meta ads, run for you</span><small class="num">₹9,999 a month</small></button><button type="button" class="slot" data-slot="search" aria-pressed="false" style="--c:var(--c-search);--r:-4deg"><span class="slot-ring"><span class="slot-hint">Tap to stamp</span><span class="slot-stamp"><span class="ms" aria-hidden="true">travel_explore</span><i>SEO</i></span></span><b>Local SEO + AEO</b><span class="slot-what">Found on Google and in AI answers</span><small class="num">₹24,999 a month</small></button></div><ol class="bcard-track" aria-label="What the stamps unlock"><li data-step="1"><i></i><b>1 stamp</b><span>Each plan at its own price</span></li><li data-step="2"><i></i><b>2 stamps</b><span>20% off, or 30% for Social + SEO</span></li><li data-step="3"><i></i><b>3 stamps</b><span>30% off and ₹5,000 a month for ads</span></li></ol><p class="bcard-fine">The package price stays while every plan in it stays. Ad money comes with a package started together and is credited to your Meta ad account every month. Cancel anytime.</p></div><div class="bsum" aria-live="polite"><h4 class="bsum-h" data-ox="bs-h"></h4><p class="bsum-price"><span class="num" data-ox="bs-price"></span><small>a month + GST</small></p><p class="bsum-gst num" data-ox="gst-line"></p><ul class="bsum-list" data-ox="bs-list"></ul><div class="bsum-once" data-ox="bs-once"></div><div class="bsum-next" data-ox="bs-next"></div><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div><div class="ox ox-year" data-only="year"><div class="yr-head"><h4 class="ox-h">What a year in the basket gives back.</h4><p class="ox-big num" data-ox="yr-big"></p><p class="ox-sub" data-ox="yr-sub"></p></div><div class="yr-chart" data-ox="yr-chart" role="img"></div><div class="yr-foot"><div class="yr-legend"><span><i class="sw-save"></i>Saved on your plans</span><span><i class="sw-ad"></i>Ad money from us</span></div><div class="ox-cta"><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a><span class="ox-gst num" data-ox="gst-line"></span></div></div></div></div>
           </section>
 
         <section class="sec in-wrap tight" aria-labelledby="h-work">
@@ -1249,25 +1334,59 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
     }
   }
 
-  /* 3. stamp card */
+  /* 3. Basket Card: a stamp per plan, a reward track, and the next stamp worth taking */
+  function sortKeys(keys) { return P.ORDER.filter(function (k) { return keys.indexOf(k) > -1; }); }
+  /* the missing plan that adds the most value for the money: (saving + ad money gained) less the extra cost */
+  function nextStamp(q) {
+    var best = null;
+    P.ORDER.filter(function (k) { return q.keys.indexOf(k) < 0; }).forEach(function (k) {
+      var nq = quote(sortKeys(q.keys.concat(k))), extra = nq.net - q.net;
+      var value = (nq.save + nq.ad) - (q.save + q.ad) - extra;
+      if (!best || value > best.value) best = { key: k, q: nq, extra: extra, value: value };
+    });
+    return best;
+  }
   function card(q) {
     var n = q.keys.length;
     home.querySelectorAll(".slot").forEach(function (b) {
       var on = !!state[b.dataset.slot], was = b.getAttribute("aria-pressed") === "true";
       b.setAttribute("aria-pressed", on ? "true" : "false");
-      b.setAttribute("aria-label", (on ? "Remove " : "Stamp ") + P.PLANS[b.dataset.slot].name);
+      b.setAttribute("aria-label", (on ? "Remove the " : "Stamp ") + P.PLANS[b.dataset.slot].name + (on ? " stamp" : ""));
       if (on && n === 1) b.setAttribute("aria-disabled", "true"); else b.removeAttribute("aria-disabled");
       if (on && !was) { b.classList.remove("go"); void b.offsetWidth; b.classList.add("go"); }
     });
-    home.querySelectorAll(".coupon").forEach(function (c) {
-      var tier = +c.dataset.coupon;
-      c.classList.toggle("on", n === tier);
-      c.classList.toggle("done", n > tier);
+    home.querySelectorAll(".bcard-track li").forEach(function (li) {
+      var step = +li.dataset.step;
+      li.classList.toggle("reached", n >= step);
+      li.classList.toggle("now", n === step);
     });
-    set("c2-b", (n === 2 ? q.pct : 20) + "% off");
-    set("c2", n === 2 ? "Yours: save " + inr(q.save) + " a month" + (q.ad ? ", plus " + inr(q.ad) + " for ads" : "") : n > 2 ? "Upgraded to all three" : "Stamp one more plan");
-    set("c3", n === 3 ? "Yours: save " + inr(q.save) + " a month, plus " + inr(q.ad) + " for ads" : "and " + inr(ALL.ad) + " a month for your ads");
-    set("card-pay", inr(q.net) + (q.pack ? "<s>" + inr(q.list) + "</s>" : ""));
+    var head;
+    var nx = n < 3 ? nextStamp(q) : null;
+    if (n === 1) head = "Stamp one more plan for " + nx.q.pct + "% off.";
+    else if (n === 3) head = "Full card. 30% off and " + inr(q.ad) + " a month for your ads.";
+    else head = q.pct + "% off" + (q.ad ? " and " + inr(q.ad) + " a month for your ads." : " on both plans.");
+    set("bs-h", head);
+    set("bs-price", (q.pack ? "<s>" + inr(q.list) + "</s>" : "") + inr(q.net));
+    var items = [];
+    if (q.pack) {
+      items.push('<li><span class="ms" aria-hidden="true">savings</span><span>You save <b>' + inr(q.save) + "</b> every month</span></li>");
+      if (q.ad) items.push('<li><span class="ms" aria-hidden="true">campaign</span><span>We add <b>' + inr(q.ad) + "</b> a month to your ads</span></li>");
+      items.push('<li><span class="ms" aria-hidden="true">calendar_month</span><span><b>' + (q.save + q.ad >= 100000 / MONTHS ? lakh((q.save + q.ad) * MONTHS) : inr((q.save + q.ad) * MONTHS)) + "</b> back in your first year</span></li>");
+    } else {
+      items.push('<li><span class="ms" aria-hidden="true">language</span><span>The website build is free with every plan</span></li>');
+    }
+    set("bs-list", items.join(""));
+    /* ad money is only for plans started together, so it is a one-time offer at this checkout */
+    var once = q.ad ? "The <b>" + inr(q.ad) + " a month for your ads</b> comes only when you start these plans together, here at this checkout. Add a plan later and you get the package price, but no ad money."
+      : n === 1 ? "Start two or three plans together at this checkout and we add up to <b>" + inr(5000) + " a month to your ads</b>. Add a plan later and the ad money is gone." : "";
+    set("bs-once", once ? '<span class="bsum-once-tag"><span class="ms" aria-hidden="true">bolt</span>One-time offer</span><p>' + once + "</p>" : "");
+    $("bs-once").forEach(function (el) { el.hidden = !once; });
+    if (!nx) { set("bs-next", ""); $("bs-next").forEach(function (el) { el.hidden = true; }); return; }
+    $("bs-next").forEach(function (el) { el.hidden = false; });
+    var cost = nx.extra > 0 ? "Just " + inr(nx.extra) + " more a month." : nx.extra < 0 ? "You pay " + inr(-nx.extra) + " less a month than now." : "The same price as now.";
+    var gain = (q.save ? "Your saving goes from " + inr(q.save) + " to " + inr(nx.q.save) + " a month" : "You save " + inr(nx.q.save) + " a month") +
+      (nx.q.ad > q.ad ? (q.ad ? ", and your ad money from " + inr(q.ad) + " to " + inr(nx.q.ad) + "." : ", and we add " + inr(nx.q.ad) + " a month to your ads.") : ".");
+    set("bs-next", '<p class="bsum-next-h">Next stamp: <b>' + P.PLANS[nx.key].name + "</b></p><p>" + cost + " " + gain + '</p><button type="button" class="textlink" data-stamp="' + nx.key + '">Stamp ' + P.PLANS[nx.key].short + "</button>");
   }
 
   /* 4. a year back */
@@ -1289,13 +1408,39 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
     }
   }
 
+  /* navbar offer B: the strip's stamps and words follow the visitor's basket */
+  function promo(q) {
+    var n = q.keys.length;
+    home.querySelectorAll(".pb-stamps i").forEach(function (i) {
+      var on = !!state[i.dataset.pb], was = i.classList.contains("on");
+      i.classList.toggle("on", on);
+      if (on && !was) { i.classList.remove("go"); void i.offsetWidth; i.classList.add("go"); }
+    });
+    var lg, sh;
+    if (n === 1) {
+      lg = "<b>One-time offer:</b> start 2 plans together at checkout for 20% off. All 3 get 30% off and " + inr(5000) + " a month for your ads.";
+      sh = "<b>2 plans together:</b> 20% off";
+    } else {
+      var ad = q.ad ? " and " + inr(q.ad) + " a month for your ads" : "";
+      lg = "<b>Your basket gets " + q.pct + "% off" + ad + ".</b> One-time offer, only when you start these plans together at checkout.";
+      sh = "<b>" + q.pct + "% off</b>" + (q.ad ? " + " + inr(q.ad) + " for ads" : " on your plans");
+    }
+    home.querySelectorAll('[data-pb-text="lg"]').forEach(function (el) { el.innerHTML = lg; });
+    home.querySelectorAll('[data-pb-text="sh"]').forEach(function (el) { el.innerHTML = sh; });
+  }
   function render() {
     var q = quote(picked(state));
     var listPay = Math.round(paise(q.list) * 118 / 100) / 100;
     set("gst-line", (q.pack ? "<s>" + inr(listPay) + "</s>" : "") + inr(q.pay) + " a month with GST");
-    bill(q); upi(q); card(q); year(q);
+    bill(q); upi(q); card(q); year(q); promo(q);
   }
 
+  home.addEventListener("click", function (e) {
+    var b = e.target.closest("[data-stamp]");
+    if (!b) return;
+    var sw = home.querySelector('.addpanel .toggle[data-plan="' + b.dataset.stamp + '"]');
+    if (sw) sw.click();
+  });
   home.querySelectorAll(".slot").forEach(function (b) {
     b.addEventListener("click", function () { var sw = home.querySelector('.addpanel .toggle[data-plan="' + b.dataset.slot + '"]'); if (sw) sw.click(); });
   });
@@ -1308,6 +1453,20 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
       render();
     });
   });
+  /* review board: switch between the navbar offer options */
+  document.querySelectorAll("[data-promo-opt]").forEach(function (b) {
+    b.addEventListener("click", function () {
+      home.dataset.promo = b.dataset.promoOpt;
+      delete home.dataset.promoClosed;
+      document.querySelectorAll("[data-promo-opt]").forEach(function (o) { o.setAttribute("aria-pressed", o === b ? "true" : "false"); });
+    });
+  });
+  home.querySelector(".promo-x").addEventListener("click", function () { home.dataset.promoClosed = ""; });
+  var chip = home.querySelector(".nchip-btn"), pop = home.querySelector(".nchip-pop");
+  function chipOpen(open) { chip.setAttribute("aria-expanded", open ? "true" : "false"); pop.hidden = !open; }
+  chip.addEventListener("click", function () { chipOpen(pop.hidden); });
+  document.addEventListener("click", function (e) { if (!pop.hidden && !e.target.closest(".nchip")) chipOpen(false); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape" && !pop.hidden) { chipOpen(false); chip.focus(); } });
   render();
 })();
 </script>

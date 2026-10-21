@@ -5,20 +5,16 @@ import Link from "next/link";
 import type { ReactElement } from "react";
 import { BASKET_COPY, HOME_PLANS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, firstPayment, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
-import { PLAN_COLOUR, basketNames } from "./basket-view";
-import { BasketCta } from "./BasketCta";
-import { OfferNote } from "./OfferNote";
+import { basketPlans, formatInr, PLAN_IDS, PLANS, type PlanId } from "@/lib/pricing";
+import { PLAN_COLOUR } from "./basket-view";
+import { BasketCard } from "./BasketCard";
 import { useBasket } from "./useBasket";
 
 const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: TrendUp, search: MagnifyingGlass };
 
-/** Homepage basket panel (mock: #h-plans .addpanel, .ap-row, .offer-note, .calc). */
+/** Homepage basket panel: the plan rows, then the Basket Card (mock: #h-plans .addpanel, .ap-row, .ox-card). */
 export function AddonPanel(): ReactElement {
   const pick = useBasket();
-  const monthly = packageTotal(pick);
-  const pay = firstPayment(monthly);
-  const saving = packageSaving(pick) > 0;
   // The store refuses to empty the basket, so the last switch on says it cannot turn off.
   const onlyOne = basketPlans(pick).length === 1;
 
@@ -65,27 +61,7 @@ export function AddonPanel(): ReactElement {
         );
       })}
 
-      <OfferNote />
-
-      <div data-basket-total className="flex flex-wrap items-center justify-between gap-4 border-t border-line bg-bg px-[26px] py-[18px] max-[699px]:px-5">
-        <div className="grid min-w-0 gap-0.5">
-          <small className="text-[13px] text-ink-2">{BASKET_COPY.basketPrefix} {basketNames(pick)}</small>
-          <b className="num font-display text-[30px] font-medium tracking-[-0.03em]">
-            {saving ? (
-              <>
-                <s className="mr-1 text-lg font-normal tracking-[-0.02em] text-ink-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s>{" "}
-              </>
-            ) : null}
-            {formatInr(monthly)}
-            <span className="ml-1.5 font-sans text-sm font-medium tracking-normal text-ink-2">{BASKET_COPY.plusGst}</span>
-          </b>
-          <span aria-live="polite" aria-atomic="true" className="num text-[13.5px] text-ink-2">{formatInr(pay.total)} {BASKET_COPY.withGstBilled}</span>
-        </div>
-        <div className="flex flex-wrap items-center gap-3">
-          <Link href="/pricing#compare" className="px-0.5 py-1.5 text-[15px] font-semibold text-ink underline decoration-rattan decoration-2 underline-offset-[5px]">{BASKET_COPY.compare}</Link>
-          <BasketCta location="plans" />
-        </div>
-      </div>
+      <BasketCard />
     </div>
   );
 }

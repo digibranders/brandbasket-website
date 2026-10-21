@@ -11,6 +11,7 @@ import { ClosingGate } from "@/components/shell/ClosingGate";
 import { Footer } from "@/components/shell/Footer";
 import { WhatsAppChat } from "@/components/shell/WhatsAppChat";
 import { Nav } from "@/components/shell/Nav";
+import { PromoStrip } from "@/components/shell/PromoStrip";
 import { TOOLS } from "@/lib/consent";
 import { fontVariables } from "@/lib/fonts";
 import { organizationJsonLd } from "@/lib/seo/jsonld";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
   return (
     <html lang="en-IN" className={fontVariables}>
       <body>
+        <PromoStrip />
         <Nav />
         <main id="main">
           {children}

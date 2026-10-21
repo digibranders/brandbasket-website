@@ -11,3 +11,10 @@ export const PLAN_COLOUR = {
   growth: "bg-[var(--c-growth)]",
   search: "bg-[var(--c-search)]",
 } as const satisfies Readonly<Record<PlanId, string>>;
+
+/** Each plan's ink as a CSS colour, for stamps drawn in the plan's colour (mock: --c). */
+export const PLAN_INK = {
+  website: "var(--c-site)",
+  growth: "var(--c-growth)",
+  search: "var(--c-search)",
+} as const satisfies Readonly<Record<PlanId, string>>;

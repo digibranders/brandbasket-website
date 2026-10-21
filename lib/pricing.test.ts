@@ -9,6 +9,7 @@ import {
   GST_LABEL,
   GST_RATE,
   monthlyTotal,
+  nextPlanToAdd,
   PACKAGES,
   packageFor,
   packageSaving,
@@ -114,5 +115,21 @@ describe("formatInr", () => {
   it("prints amounts with paise to exactly two decimals", () => {
     expect(formatInr(3538.82)).toBe("₹3,538.82");
     expect(formatInr(3538.8)).toBe("₹3,538.80");
+  });
+});
+
+describe("nextPlanToAdd", () => {
+  it("picks the plan that adds the most saving and ad credit for its extra cost", () => {
+    // Website alone: Social adds 2,600 saved + 2,000 ads for 7,399 more; SEO adds 5,600 for 19,399 more.
+    expect(nextPlanToAdd(pick(true, false, false))).toEqual({ id: "growth", pick: pick(true, true, false), extra: 7399, saving: 2600, adCredit: 2000 });
+    expect(nextPlanToAdd(pick(false, true, false))?.id).toBe("website");
+    expect(nextPlanToAdd(pick(true, true, false))).toEqual({ id: "search", pick: pick(true, true, true), extra: 16199, saving: 11400, adCredit: 5000 });
+  });
+  it("reports a negative extra when the package costs less than the basket now", () => {
+    // SEO alone is 24,999; Social + SEO is 24,498.
+    expect(nextPlanToAdd(pick(false, false, true))).toMatchObject({ id: "growth", extra: -501, saving: 10500, adCredit: 2000 });
+  });
+  it("returns null when every plan is in the basket", () => {
+    expect(nextPlanToAdd(pick(true, true, true))).toBeNull();
   });
 });

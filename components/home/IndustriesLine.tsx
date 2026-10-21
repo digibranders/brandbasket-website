@@ -1,10 +1,9 @@
-import Link from "next/link";
 import type { ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { INDUSTRIES_LINE } from "@/content/home";
 import { HOME_ICONS } from "./icons";
 
-/** The industries we serve, as one centred line (mock: .inds-sec). Each item links to its industry page. */
+/** The industries we serve, as one centred line (mock: .inds-sec). Plain items, not links, so the list can name trades that have no page. */
 export function IndustriesLine(): ReactElement {
   return (
     <section
@@ -21,13 +20,10 @@ export function IndustriesLine(): ReactElement {
             const IndustryIcon = HOME_ICONS[industry.icon];
             return (
               <li key={industry.slug}>
-                <Link
-                  href={`/industries/${industry.slug}`}
-                  className="inline-flex items-center gap-2.5 font-display text-[clamp(20px,2.2vw,28px)] tracking-[-0.03em] text-ink decoration-rattan decoration-2 underline-offset-[6px] hover:underline"
-                >
+                <span className="inline-flex items-center gap-2.5 font-display text-[clamp(20px,2.2vw,28px)] tracking-[-0.03em] text-ink">
                   <IndustryIcon aria-hidden="true" weight="light" className="size-[26px] text-rattan-text" />
                   {industry.label}
-                </Link>
+                </span>
               </li>
             );
           })}

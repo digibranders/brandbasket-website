@@ -33,7 +33,6 @@ export const CONTACT_ERRORS = {
   phone: "Please check the phone number",
   business: "Please enter your business name",
   email: "Please check the email address",
-  basket: "Every basket starts with the website",
   form: "Please check the form",
   invalid: "Invalid request",
   tooLarge: "Request too large",

@@ -1,6 +1,6 @@
 // lib/seo/jsonld.ts
 import type { FaqItem } from "@/content/types";
-import { PLANS, type PlanId } from "@/lib/pricing";
+import { PACKAGES, packageTotal, PLAN_IDS, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 /** One node id for the organization, so other entities can point at it instead of repeating it. */
@@ -73,8 +73,6 @@ export function webSiteJsonLd(): WebSiteLd {
   };
 }
 
-const PLAN_ORDER: readonly PlanId[] = ["website", "growth", "search"];
-
 export interface ServiceLd {
   readonly "@context": "https://schema.org";
   readonly "@type": "Service";
@@ -99,7 +97,17 @@ export interface ServiceLd {
   };
 }
 
-export function planOffersJsonLd(): ServiceLd {
+function monthlyOffer(name: string, price: number): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
+  return {
+    "@type": "Offer",
+    name,
+    url: `${siteConfig.url}/pricing`,
+    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: "INR", unitText: "MONTH", valueAddedTaxIncluded: false },
+  };
+}
+
+/** One Offer per plan at list price; the pricing page also lists one per package at its package price. */
+export function planOffersJsonLd({ packages = false }: { readonly packages?: boolean } = {}): ServiceLd {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -109,18 +117,10 @@ export function planOffersJsonLd(): ServiceLd {
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Brandbasket plans",
-      itemListElement: PLAN_ORDER.map((id) => ({
-        "@type": "Offer",
-        name: PLANS[id].name,
-        url: `${siteConfig.url}/pricing`,
-        priceSpecification: {
-          "@type": "UnitPriceSpecification",
-          price: PLANS[id].monthly,
-          priceCurrency: "INR",
-          unitText: "MONTH",
-          valueAddedTaxIncluded: false,
-        },
-      })),
+      itemListElement: [
+        ...PLAN_IDS.map((id) => monthlyOffer(PLANS[id].name, PLANS[id].monthly)),
+        ...(packages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick))) : []),
+      ],
     },
   };
 }

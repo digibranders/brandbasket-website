@@ -1,8 +1,8 @@
 // content/home.ts
 // Copy for the homepage, word for word from the approved mock (docs/design/mock.html, #view-home).
-// Prices and rates are built from lib/pricing.ts. The add-on panel and button labels live in content/basket.ts and
+// Prices and rates are built from lib/pricing.ts. The basket panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
-import { formatInr, PLANS } from "@/lib/pricing";
+import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
 import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -19,7 +19,14 @@ export type HomeIconKey =
   | "GraduationCap"
   | "Storefront"
   | "Toolbox"
-  | "Buildings";
+  | "Buildings"
+  | "Bed"
+  | "Coffee"
+  | "Pill"
+  | "BookOpen"
+  | "Scales"
+  | "Calculator"
+  | "Car";
 
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 
@@ -40,7 +47,7 @@ export const SHARE_IMAGE = {
 export const HERO = {
   headline: "Before They Visit You, They Visit",
   headlineAccent: "Your Website.",
-  subhead: "Your Business Has a Name. Give It a Place on the Internet for free.",
+  subhead: "Let's Build It for FREE.",
   offer: OFFER,
   stageLabel: "A woven 3D basket holding the services in your plan",
 } as const;
@@ -58,7 +65,7 @@ export const FACTS: readonly Fact[] = [
 ];
 
 export interface Industry {
-  /** Route segment: each item links to /industries/[slug]. */
+  /** Matches /industries/[slug] when that industry has a page. */
   readonly slug: string;
   readonly label: string;
   readonly icon: HomeIconKey;
@@ -75,6 +82,13 @@ export const INDUSTRIES_LINE = {
     { slug: "retail", label: "Shops", icon: "Storefront" },
     { slug: "home-services", label: "Home services", icon: "Toolbox" },
     { slug: "real-estate", label: "Real estate", icon: "Buildings" },
+    { slug: "hotels", label: "Hotels", icon: "Bed" },
+    { slug: "cafes", label: "Cafes", icon: "Coffee" },
+    { slug: "pharmacies", label: "Pharmacies", icon: "Pill" },
+    { slug: "tuition-classes", label: "Tuition classes", icon: "BookOpen" },
+    { slug: "lawyers", label: "Lawyers", icon: "Scales" },
+    { slug: "accountants", label: "Accountants", icon: "Calculator" },
+    { slug: "car-services", label: "Car services", icon: "Car" },
   ],
 } as const satisfies { readonly title: string; readonly industries: readonly Industry[] };
 
@@ -196,7 +210,7 @@ export const REPORT = {
   ariaLabel: "Example monthly report",
   chip: "Example report",
   title: "October report",
-  subtitle: "A dental clinic in Pune · Website, Growth, Search",
+  subtitle: "A dental clinic in Pune · Website, Social, SEO",
   kpis: [
     { tone: "site", label: "Uptime", value: "99.97%", delta: "0 incidents" },
     { tone: "growth", label: "Profile views", value: "2,184", delta: "+18% on Sept" },
@@ -241,7 +255,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Is there anything to pay up front?",
-    a: `Only your first month. Your first payment is ${MANAGED_MONTHLY} + GST, plus any add-ons you choose, and it covers your first month. There is no separate build fee.`,
+    a: `Just your first month, plus ${GST_LABEL} GST. After that you pay monthly.`,
   },
   {
     q: "How long does it take to build my website?",

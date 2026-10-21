@@ -1,9 +1,9 @@
 // content/pricing.ts
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
-// Every price, total, GST figure and cap is built from lib/pricing.ts. The hero add-on rows and basket labels live in
+// Every price, total, GST figure and cap is built from lib/pricing.ts. The hero plan rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PACKAGES, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL, type Package, type PlanId } from "@/lib/pricing";
-import { ADDON_CHANGE, CANCEL_ANSWER } from "./legal/cancellation";
+import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, PACKAGES, packageSaving, packageTotal, PLANS, type Package, type PlanId } from "@/lib/pricing";
+import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
@@ -11,6 +11,15 @@ export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "Calendar
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 const AD_CAP = formatInr(AD_BUDGET_CAP);
 const HOURLY = formatInr(EXTRA_HOURLY_RATE);
+
+function packageById(id: Package["id"]): Package {
+  const pkg = PACKAGES.find((p) => p.id === id);
+  if (!pkg) throw new RangeError(`No package ${id}`);
+  return pkg;
+}
+const adCredit = (id: Package["id"]): number => packageById(id).adCredit;
+/** The package for a business that already has a website. */
+const SOCIAL_SEO = packageById("growth-search");
 
 /** Locked copy: change only with the owner's yes. The offer line is OFFER in content/home.ts. */
 export const PRICING_HERO = {
@@ -20,7 +29,7 @@ export const PRICING_HERO = {
 
 /** One cell of the comparison table: included, not included, or a short quantity such as "2 a month". */
 export type CompareCell = boolean | string;
-/** One cell per package, in `PACKAGES` order: Website, Website + Growth, Website + Search, All three. */
+/** One cell per package, in `PACKAGES` order: Website + Social, Website + SEO, Social + SEO, All three. */
 export type CompareCells = readonly [CompareCell, CompareCell, CompareCell, CompareCell];
 
 export interface CompareRow {
@@ -37,9 +46,20 @@ export interface CompareGroup {
 export interface CompareColumn {
   readonly id: Package["id"];
   readonly name: string;
-  /** Monthly total before GST, for example "₹9,999". */
+  /** Monthly total before GST, for example "₹10,400". */
   readonly price: string;
   readonly priceSuffix: string;
+}
+
+function isFourCells(cells: readonly CompareCell[]): cells is CompareCells {
+  return cells.length === 4;
+}
+
+/** One cell per package, in `PACKAGES` order. */
+function packageCells(cell: (pkg: Package) => CompareCell): CompareCells {
+  const cells = PACKAGES.map(cell);
+  if (!isFourCells(cells)) throw new RangeError(`Expected 4 packages, got ${cells.length}`);
+  return cells;
 }
 
 const YES = true;
@@ -58,53 +78,78 @@ export interface Compare {
 
 export const COMPARE: Compare = {
   heading: "Which basket fits you?",
-  lede: `Four ways to combine the plans. Every price is monthly, before GST. Add-ons chosen as you start are ${SIGNUP_ADDON_DISCOUNT_LABEL} off.`,
+  lede: "Four packages. Every price is monthly, before GST, and stays for as long as you keep every plan in the package.",
   tabsLabel: "Show one basket",
   rowHeader: "What is included",
   included: "Included",
   notIncluded: "Not included",
   columns: PACKAGES.map(
-    (pkg): CompareColumn => ({ id: pkg.id, name: pkg.name, price: formatInr(monthlyTotal(pkg.addons)), priceSuffix: " /mo" }),
+    (pkg): CompareColumn => ({
+      id: pkg.id,
+      name: pkg.name,
+      price: formatInr(packageTotal(pkg.pick)),
+      priceSuffix: " /mo",
+    }),
   ),
   groups: [
     {
-      title: "Your website",
+      title: "The package",
       rows: [
-        { label: "Hosting, SSL, backups and security", cells: [YES, YES, YES, YES] },
-        { label: "Small edits", note: "Up to 30 minutes each", cells: ["2 a month", "2 a month", "2 a month", "2 a month"] },
-        { label: "Analytics, indexing and sitemap checks", cells: [YES, YES, YES, YES] },
+        { label: "Off the plans' own prices", cells: packageCells((pkg) => `${pkg.percent}%`) },
+        { label: "You save each month", cells: packageCells((pkg) => formatInr(packageSaving(pkg.pick))) },
+        {
+          label: "Ad money from us, every month",
+          note: "When you start with the package",
+          cells: packageCells((pkg) => (pkg.adCredit > 0 ? formatInr(pkg.adCredit) : NO)),
+        },
       ],
     },
     {
-      title: "Google and social",
+      title: "Your website",
       rows: [
-        { label: "Google Business Profile posts", cells: [NO, "8 a month", NO, "8 a month"] },
-        { label: "Review monitoring and reply drafts", cells: [NO, YES, NO, YES] },
-        { label: "Facebook and Instagram ads", note: `Ad budget up to ${AD_CAP} a month, paid by you`, cells: [NO, YES, NO, YES] },
+        { label: "Hosting, SSL, backups and security", cells: [YES, YES, NO, YES] },
+        { label: "Small edits", note: "Up to 30 minutes each", cells: ["2 a month", "2 a month", NO, "2 a month"] },
+        { label: "Analytics, indexing and sitemap checks", cells: [YES, YES, NO, YES] },
+      ],
+    },
+    {
+      title: "Social media and ads",
+      rows: [
+        { label: "Instagram and Facebook posts", note: "Designed, written and scheduled", cells: ["Planned with you", NO, "Planned with you", "Planned with you"] },
+        { label: "Google Business Profile posts", cells: ["Planned with you", NO, "Planned with you", "Planned with you"] },
+        { label: "Review monitoring and reply drafts", cells: [YES, NO, YES, YES] },
+        { label: "Facebook and Instagram ads", note: `Up to ${AD_CAP} a month of your budget managed, plus our ad money`, cells: [YES, NO, YES, YES] },
       ],
     },
     {
       title: "Search and AI answers",
       rows: [
-        { label: "Local keyword and competitor research", cells: [NO, NO, YES, YES] },
-        { label: "Pages optimised", cells: [NO, NO, "5 a month", "5 a month"] },
-        { label: "AEO: FAQs, schema and AI visibility", cells: [NO, NO, YES, YES] },
-        { label: "Ranking, traffic and enquiry tracking", cells: [NO, NO, YES, YES] },
+        { label: "Local keyword and competitor research", cells: [NO, YES, YES, YES] },
+        { label: "Pages optimised", cells: [NO, "5 a month", "5 a month", "5 a month"] },
+        { label: "AEO: FAQs, schema and AI visibility", cells: [NO, YES, YES, YES] },
+        { label: "Ranking, traffic and enquiry tracking", cells: [NO, YES, YES, YES] },
       ],
     },
     {
       title: "Every plan",
-      rows: [{ label: "Monthly report", cells: ["Website health", "+ ads and profile", "+ SEO and AEO", "All of it"] }],
+      rows: [
+        { label: "Monthly report", cells: ["Site + social", "Site + search", "Social + search", "All of it"] },
+      ],
     },
   ],
 };
 
-export interface DetailColumn {
+export interface DetailList {
   readonly heading: string;
+  readonly items: readonly string[];
+}
+
+export interface DetailColumn extends DetailList {
   /** "excluded" columns use the minus icon and the muted style. */
   readonly kind: "included" | "excluded";
-  readonly items: readonly string[];
-  /** Small note under the list. */
+  /** Further lists in the same column, under the first. */
+  readonly more?: readonly DetailList[];
+  /** Small note under the lists. */
   readonly note?: string;
 }
 
@@ -112,7 +157,7 @@ export interface PlanDetail {
   readonly id: PlanId;
   readonly name: string;
   readonly icon: PricingIconKey;
-  /** The line under the plan name, for example "+₹7,000 a month · Google Business Profile and Meta ads". */
+  /** The line under the plan name, for example "₹10,000 a month · Instagram, Facebook, Google profile and Meta ads". */
   readonly summary: string;
   readonly columns: readonly DetailColumn[];
 }
@@ -169,18 +214,24 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
     id: "growth",
     name: PLANS.growth.name,
     icon: "TrendUp",
-    summary: `+${formatInr(PLANS.growth.monthly)} a month · Google Business Profile and Meta ads`,
+    summary: `${formatInr(PLANS.growth.monthly)} a month · Instagram, Facebook, Google profile and Meta ads`,
     columns: [
       {
-        heading: "Google Business Profile",
+        heading: "Instagram and Facebook",
         kind: "included",
-        items: [
-          "Business details and category review",
-          "Up to 8 posts a month: updates, offers, services",
-          "Photo updates from your images or agreed creatives",
-          "Hours, contact and website link checks",
-          "Review monitoring and reply suggestions",
-          "Monthly profile report",
+        items: ["Posts each month, planned with you", "Captions written for you", "Posts scheduled for you"],
+        more: [
+          {
+            heading: "Google Business Profile",
+            items: [
+              "Business details and category review",
+              "Regular posts: updates, offers, services",
+              "Photo updates from your images or agreed creatives",
+              "Hours, contact and website link checks",
+              "Review monitoring and reply suggestions",
+              "Monthly profile report",
+            ],
+          },
         ],
       },
       {
@@ -198,8 +249,8 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
       {
         heading: "Good to know",
         kind: "excluded",
-        items: ["Ad spend is paid to Meta by you", `Covers ad budgets up to ${AD_CAP} a month`, `Reels and video editing at ${HOURLY} an hour`],
-        note: "Needs the Managed Website plan.",
+        items: ["Ad spend is paid to Meta by you", `We manage up to ${AD_CAP} a month of your budget`, `Reels and video editing at ${HOURLY} an hour`],
+        note: `Start Social with the website or with Local SEO and we add ${formatInr(adCredit("website-growth"))} a month to your ads, or ${formatInr(adCredit("everything"))} a month with all three.`,
       },
     ],
   },
@@ -207,7 +258,7 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
     id: "search",
     name: PLANS.search.name,
     icon: "MagnifyingGlass",
-    summary: `+${formatInr(PLANS.search.monthly)} a month · local search and AI answer visibility`,
+    summary: `${formatInr(PLANS.search.monthly)} a month · local search and AI answer visibility`,
     columns: [
       {
         heading: "Local SEO",
@@ -243,7 +294,7 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
           "Paid backlinks or placements",
           "Unlimited writing or new landing pages",
         ],
-        note: "Needs the Managed Website plan. New landing pages are quoted separately.",
+        note: "New landing pages are quoted separately.",
       },
     ],
   },
@@ -266,7 +317,7 @@ export const GOOD_TO_KNOW: readonly GoodToKnowItem[] = [
   {
     icon: "SignOut",
     title: "Cancel anytime",
-    body: "No notice period. Your website stays online until the end of the month you have paid for, and your domain stays yours.",
+    body: "No notice period. Your plans keep running until the end of the month you have paid for, and your domain stays yours.",
   },
   {
     icon: "Clock",
@@ -276,7 +327,7 @@ export const GOOD_TO_KNOW: readonly GoodToKnowItem[] = [
   {
     icon: "Wallet",
     title: "Ads and tools are paid by you",
-    body: "Domain fees, ad spend and paid tools are billed to you directly.",
+    body: "Domain fees, your own ad spend and paid tools are billed to you directly.",
   },
 ];
 
@@ -292,12 +343,16 @@ export const PRICING_FAQ: readonly FaqItem[] = [
     a: CANCEL_ANSWER,
   },
   {
-    q: "Can I add or drop Growth and Search later?",
-    a: `Yes. ${ADDON_CHANGE}`,
+    q: "Do I need the website plan?",
+    a: `No. Every plan can be bought on its own. If you already have a website, ${SOCIAL_SEO.name} is ${SOCIAL_SEO.percent}% off.`,
+  },
+  {
+    q: "Can I add or drop a plan later?",
+    a: PLAN_CHANGE_ANSWER,
   },
   {
     q: "Is ad spend included?",
-    a: `No. You pay Meta directly for ads. ${PLANS.growth.name} manages budgets up to ${AD_CAP} a month.`,
+    a: `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${AD_CAP} a month of it. Packages started together add our ad money on top.`,
   },
   {
     q: "Do you guarantee rankings or leads?",

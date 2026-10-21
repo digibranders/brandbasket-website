@@ -1,9 +1,9 @@
 // content/industries.ts
 // Copy for /industries and the eight /industries/[slug] pages. INDUSTRIES approved by the owner on 2026-10-19 (plan 02, Task 7.1).
 // Every claim comes from the plan details in content/pricing.ts and the free build in content/home.ts. Every price is
-// built from lib/pricing.ts. Organic social posting is not claimed anywhere: Digital Growth covers it only if the owner
-// says so (open input D4).
-import { AD_BUDGET_CAP, type AddonPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, monthlyTotal, PLANS, SIGNUP_ADDON_DISCOUNT_LABEL } from "@/lib/pricing";
+// built from lib/pricing.ts. Organic social posting is claimed; how many posts a month is agreed with each client
+// (owner decision, 2026-10-21).
+import { AD_BUDGET_CAP, basketPlans, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, packageFor, packageTotal, PLANS } from "@/lib/pricing";
 import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
 import type { FaqItem } from "./types";
 
@@ -25,29 +25,31 @@ export interface Industry {
   /** Four to six concrete items from the plans. No invented features. */
   readonly whatYouGet: readonly string[];
   /** The basket we suggest for this trade. */
-  readonly suggested: AddonPick;
+  readonly suggested: BasketPick;
   /** Three or four question-shaped FAQs. Each answer opens with a direct answer. */
   readonly faq: readonly FaqItem[];
   /** ISO date. Feeds the sitemap lastModified. */
   readonly updated: string;
 }
 
-const WITH_GROWTH: AddonPick = { growth: true, search: false };
-const WITH_SEARCH: AddonPick = { growth: false, search: true };
+const WITH_GROWTH: BasketPick = { website: true, growth: true, search: false };
+const WITH_SEARCH: BasketPick = { website: true, growth: false, search: true };
 
 const HOURLY = formatInr(EXTRA_HOURLY_RATE);
-const UPDATED = "2026-10-19";
+const UPDATED = "2026-10-21";
 
-function costAnswer(pick: AddonPick): string {
-  const addon = pick.growth ? PLANS.growth : PLANS.search;
-  return `₹0 to build. ${PLANS.website.name} is ${formatInr(PLANS.website.monthly)} a month. With ${addon.name}, the total is ${formatInr(monthlyTotal(pick))} a month, plus ${GST_LABEL} GST. Add ${addon.name} as you start and it is ${SIGNUP_ADDON_DISCOUNT_LABEL} off.`;
+function costAnswer(pick: BasketPick): string {
+  const pkg = packageFor(pick);
+  if (!pkg) return `₹0 to build. ${basketPlans(pick)[0]?.name ?? PLANS.website.name} is ${formatInr(packageTotal(pick))} a month, plus ${GST_LABEL} GST.`;
+  const credit = pkg.adCredit > 0 ? ` Take them together as you start and we add ${formatInr(pkg.adCredit)} a month to your ads.` : "";
+  return `₹0 to build. ${pkg.name} is ${formatInr(packageTotal(pick))} a month, plus ${GST_LABEL} GST: ${pkg.percent}% off the plans' own prices.${credit}`;
 }
 
 const SMALL_EDITS = "The plan includes 2 small edits a month, up to 30 minutes each.";
 
 const FAQ_AD_SPEND: FaqItem = {
   q: "Is ad spend included?",
-  a: `No. You pay Meta directly for ads. ${PLANS.growth.name} manages budgets up to ${formatInr(AD_BUDGET_CAP)} a month.`,
+  a: `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${formatInr(AD_BUDGET_CAP)} a month of it.`,
 };
 
 const FAQ_NO_GUARANTEE: FaqItem = {
@@ -124,7 +126,7 @@ export const INDUSTRIES: readonly Industry[] = [
     whatYouGet: [
       "A free website of up to 5 pages: services, prices, photos and how to reach you",
       "Click to call and an enquiry form, on a site that works on every phone",
-      "Up to 8 Google Business Profile posts a month for offers and services",
+      "Google Business Profile posts for offers and services, planned with you",
       "Photo updates on your Google profile from your own pictures",
       "Review monitoring and suggested replies",
       "Facebook and Instagram ads planned, set up and watched every month",
@@ -134,7 +136,7 @@ export const INDUSTRIES: readonly Industry[] = [
       { q: "How much does a website for a salon cost?", a: costAnswer(WITH_GROWTH) },
       { q: "Can you use our own photos?", a: "Yes. Google profile photo updates use your images or creatives we agree with you." },
       FAQ_AD_SPEND,
-      { q: "Can I get Digital Growth without the website plan?", a: `No. ${PLANS.growth.name} needs the ${PLANS.website.name} plan.` },
+      { q: "Can I get Social Media and Ads without the website plan?", a: "Yes. Every plan can be bought on its own." },
     ],
     updated: UPDATED,
   },
@@ -155,7 +157,7 @@ export const INDUSTRIES: readonly Industry[] = [
       "A free website of up to 5 pages: menu, timings, location and photos",
       "Click to call and an enquiry form for group and party bookings",
       "2 small edits a month for menu and price changes",
-      "Up to 8 Google Business Profile posts a month for specials and offers",
+      "Google Business Profile posts for specials and offers, planned with you",
       "Review monitoring and suggested replies",
       "Facebook and Instagram ads for offers and new dishes, with a monthly ads report",
     ],
@@ -185,7 +187,7 @@ export const INDUSTRIES: readonly Industry[] = [
       "A free website of up to 5 pages: memberships, timings, trainers and location",
       "An enquiry form for trial classes, and click to call",
       "Facebook and Instagram ads for new batches and offers, set up and watched for you",
-      "Up to 8 Google Business Profile posts a month",
+      "Google Business Profile posts, planned with you each month",
       "Review monitoring and suggested replies",
       "A monthly report on your site, your ads and your Google profile",
     ],
@@ -247,7 +249,7 @@ export const INDUSTRIES: readonly Industry[] = [
     whatYouGet: [
       "A free website of up to 5 pages: what you stock, brands, timings and location",
       "Click to call and an enquiry form for stock questions",
-      "Up to 8 Google Business Profile posts a month for offers and new arrivals",
+      "Google Business Profile posts for offers and new arrivals, planned with you",
       "Hours, contact and website link checks on your Google profile",
       "Review monitoring and suggested replies",
       "Facebook and Instagram ads for sales and festive offers, with a monthly ads report",

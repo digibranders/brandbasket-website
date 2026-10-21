@@ -29,10 +29,17 @@ describe("planOffersJsonLd", () => {
   it("publishes each plan's monthly price from the pricing module", () => {
     const service = planOffersJsonLd();
     const prices = service.hasOfferCatalog.itemListElement.map((offer) => offer.priceSpecification.price);
-    expect(prices).toEqual([2999, 7000, 25000]);
+    expect(prices).toEqual([3000, 10000, 25000]);
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(false);
     expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
+  });
+  it("adds the four packages after the plans when asked", () => {
+    const offers = planOffersJsonLd({ packages: true }).hasOfferCatalog.itemListElement;
+    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([10400, 22400, 24500, 26600]);
+    expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + SEO", "Social + SEO", "All three"]);
+    expect(offers[3].priceSpecification.unitText).toBe("MONTH");
+    expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(false);
   });
 });
 

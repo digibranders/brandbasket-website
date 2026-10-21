@@ -24,7 +24,7 @@ export default function PricingPage(): ReactElement {
       <GoodToKnow />
       <PricingFaq />
       <PhoneTotalBar />
-      <JsonLd data={planOffersJsonLd()} />
+      <JsonLd data={planOffersJsonLd({ packages: true })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }])} />
     </>
   );

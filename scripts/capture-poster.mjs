@@ -10,8 +10,8 @@ const url = process.argv[2] ?? "http://localhost:3130/";
 const out = new URL("../public/basket/poster.avif", import.meta.url);
 const SETTLE_MS = 4000; // the last base tile drops at 770 ms; this leaves time for the bounces to finish
 const MAX_KB = 40;
-// The weave is fine detail that AVIF pays for; 880 px wide is the largest size that fits the budget at quality 60.
-const WIDTH = 880;
+// Fine cane bindings need room in the AVIF budget; this resolution keeps the final scene under 40 KB.
+const WIDTH = 832;
 
 const browser = await chromium.launch();
 try {

@@ -1,29 +1,29 @@
 import { CaretDown, Check, Minus } from "@phosphor-icons/react/dist/ssr";
-import type { ReactElement } from "react";
-import { ADDON_COLOUR } from "@/components/basket/basket-view";
+import { Fragment, type ReactElement } from "react";
+import { PLAN_COLOUR } from "@/components/basket/basket-view";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { type DetailColumn, PLAN_DETAILS, PLAN_DETAILS_INTRO } from "@/content/pricing";
-import type { PlanId } from "@/lib/pricing";
 import { PRICING_ICONS } from "./icons";
-
-/** Colour dot per plan (tokens --c-site, --c-growth, --c-search). */
-const DOT: Readonly<Record<PlanId, string>> = { website: "bg-[var(--c-site)]", ...ADDON_COLOUR };
 
 function Column({ column }: { readonly column: DetailColumn }): ReactElement {
   const Mark = column.kind === "included" ? Check : Minus;
   return (
     <div>
-      <h3 className="mb-3 text-[13px] font-semibold text-ink-2">{column.heading}</h3>
-      <ul className="grid gap-2 text-[14.5px]">
-        {column.items.map((item) => (
-          <li key={item} className="flex items-start gap-2.5">
-            <Mark aria-hidden="true" className={`mt-px size-[19px] flex-none ${column.kind === "included" ? "text-sage" : "text-ink-2"}`} />
-            {item}
-          </li>
-        ))}
-      </ul>
+      {[column, ...(column.more ?? [])].map((list, i) => (
+        <Fragment key={list.heading}>
+          <h3 className={`mb-3 text-[13px] font-semibold text-ink-2 ${i > 0 ? "mt-[22px]" : ""}`}>{list.heading}</h3>
+          <ul className="grid gap-2 text-[14.5px]">
+            {list.items.map((item) => (
+              <li key={item} className="flex items-start gap-2.5">
+                <Mark aria-hidden="true" className={`mt-px size-[19px] flex-none ${column.kind === "included" ? "text-sage" : "text-ink-2"}`} />
+                {item}
+              </li>
+            ))}
+          </ul>
+        </Fragment>
+      ))}
       {column.note ? <p className="mt-3.5 rounded-[14px] bg-bg px-3.5 py-3 text-[13.5px] text-ink-2">{column.note}</p> : null}
     </div>
   );
@@ -42,7 +42,7 @@ export function PlanDetails(): ReactElement {
           return (
             <details key={plan.id} className="group/plan border-t border-line last-of-type:border-b">
               <summary className="group/sum grid cursor-pointer list-none grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 py-[22px] [&::-webkit-details-marker]:hidden">
-                <span aria-hidden="true" className={`grid size-[42px] place-items-center rounded-[13px] text-surface ${DOT[plan.id]}`}>
+                <span aria-hidden="true" className={`grid size-[42px] place-items-center rounded-[13px] text-surface ${PLAN_COLOUR[plan.id]}`}>
                   <PlanIcon className="size-[22px]" />
                 </span>
                 <span>

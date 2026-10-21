@@ -1,12 +1,13 @@
-import { type AddonId, type AddonPick, basketPlans } from "@/lib/pricing";
+import { type BasketPick, basketPlans, type PlanId } from "@/lib/pricing";
 
-/** Short names of the plans in the basket, e.g. "Website + Growth" (mock: #calc-names, #pbar-names). */
-export function basketNames(pick: AddonPick): string {
+/** Short names of the plans in the basket, e.g. "Website + Social" (mock: #calc-names, #pbar-names). */
+export function basketNames(pick: BasketPick): string {
   return basketPlans(pick).map((plan) => plan.short).join(" + ");
 }
 
-/** Background class for each add-on's colour mark (tokens --c-growth, --c-search). */
-export const ADDON_COLOUR = {
+/** Background class for each plan's colour mark (tokens --c-site, --c-growth, --c-search). */
+export const PLAN_COLOUR = {
+  website: "bg-[var(--c-site)]",
   growth: "bg-[var(--c-growth)]",
   search: "bg-[var(--c-search)]",
-} as const satisfies Readonly<Record<AddonId, string>>;
+} as const satisfies Readonly<Record<PlanId, string>>;

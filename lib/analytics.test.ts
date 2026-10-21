@@ -19,9 +19,10 @@ describe("clickEvent", () => {
     });
   });
 
-  it("drops unknown plan ids and always counts the website", () => {
-    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=growth,phone-9876543210#start")?.properties).toEqual({ location: "hero", plans: "website,growth" });
-    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact#start")?.properties).toEqual({ location: "hero", plans: "website" });
+  it("drops unknown plan ids and keeps the plans in the link", () => {
+    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=growth#start")?.properties).toEqual({ location: "hero", plans: "growth" });
+    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=website,phone-9876543210,search#start")?.properties).toEqual({ location: "hero", plans: "website,search" });
+    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact#start")?.properties).toEqual({ location: "hero", plans: "none" });
   });
 
   it("sends only the location for WhatsApp", () => {

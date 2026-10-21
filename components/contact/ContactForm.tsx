@@ -7,12 +7,13 @@ import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type Reac
 import { z } from "zod";
 import { ArrowSubmitButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
+import { pushConversion } from "@/components/consent/tags";
 import { submitEvent } from "@/lib/analytics";
 import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_TOPIC_LABELS, CONTACT_TOPIC_LEGEND } from "@/content/contact";
-import { basket } from "@/lib/basket-store";
+import { basket, DEFAULT_BASKET } from "@/lib/basket-store";
 import { CONTACT_MAX, CONTACT_TOPICS, contactSchema, parsePlanParam, parseTopicParam } from "@/lib/contact-schema";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
-import { ADDONS, basketPlans, type PlanId } from "@/lib/pricing";
+import { basketPlans, type PlanId, samePick } from "@/lib/pricing";
 import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS, planTokenUse } from "@/lib/security/form-fields";
 
 type Field = "name" | "phone" | "business" | "city" | "email" | "message";
@@ -51,12 +52,12 @@ async function requestToken(): Promise<FormToken | null> {
   }
 }
 
-/** `?plan=` wins (signupHref writes it); otherwise a basket picked earlier in this visit. Empty means a general enquiry. */
+/** `?plan=` wins (signupHref writes it); otherwise a basket picked earlier in this visit. A website-only basket is a general enquiry. */
 function pagePlans(): PlanId[] {
   const fromUrl = parsePlanParam(new URLSearchParams(window.location.search).get("plan"));
   if (fromUrl.length > 0) return fromUrl;
   const pick = basket.get();
-  return ADDONS.some((id) => pick[id]) ? basketPlans(pick).map((plan) => plan.id) : [];
+  return samePick(pick, DEFAULT_BASKET) ? [] : basketPlans(pick).map((plan) => plan.id);
 }
 
 export function ContactForm(): ReactElement {
@@ -152,6 +153,7 @@ export function ContactForm(): ReactElement {
       if (res.ok && result.success && "ok" in result.data) {
         const sent = submitEvent(plans);
         track(sent.name, sent.properties);
+        pushConversion(sent);
         setStatus({ kind: "done" });
         return;
       }

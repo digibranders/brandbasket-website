@@ -17,13 +17,14 @@ async function mockContactApi(page: Page): Promise<() => unknown> {
 async function fillRequired(page: Page): Promise<void> {
   await page.getByLabel(CONTACT_LABELS.name).fill("Asha Rao");
   await page.getByLabel(CONTACT_LABELS.phone).fill("98765 43210");
+  await page.getByLabel(CONTACT_LABELS.email).fill("asha@example.com");
   await page.getByLabel(CONTACT_LABELS.business).fill("Asha Dental Clinic");
 }
 
 test("submitting empty shows the field errors", async ({ page }) => {
   await page.goto("/contact");
   await page.getByRole("button", { name: CONTACT_FORM_COPY.submit }).click();
-  for (const message of [CONTACT_ERRORS.name, CONTACT_ERRORS.phone, CONTACT_ERRORS.business]) {
+  for (const message of [CONTACT_ERRORS.name, CONTACT_ERRORS.email, CONTACT_ERRORS.business]) {
     await expect(page.getByText(message, { exact: true })).toBeVisible();
   }
   await expect(page.getByLabel(CONTACT_LABELS.name)).toBeFocused();

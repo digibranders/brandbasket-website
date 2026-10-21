@@ -478,14 +478,24 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
 @media (prefers-reduced-motion: reduce) {
   .home, .home *, .bib, .bib .ic, .sw::after, .pbar, .toggle, .toggle .knob::after, .ind, .stage .poster { transition: none !important; }
 }
+
+/* package offers: the live basket shows the offer as plans are added */
+.calc .what b .tot { font-family: var(--d); font-size: 30px; color: var(--b-ink); margin: 0; letter-spacing: -0.03em; }
+.calc .what b s { font-family: var(--d); font-size: 18px; font-weight: 400; color: var(--b-ink-2); margin: 0 10px 0 0; letter-spacing: -0.02em; }
+.toggle[aria-disabled="true"], .sw[aria-disabled="true"] { cursor: not-allowed; opacity: 0.55; }
+.offer-note { display: flex; gap: 10px; align-items: flex-start; margin: 0; padding: 14px 26px; border-top: 1px solid var(--b-line); background: var(--b-rattan-wash); color: var(--b-rattan-ink); font-size: 15px; font-weight: 500; }
+.offer-note .ms { font-size: 20px; margin-top: 1px; }
+.phc-act .offer-note { border: 0; border-radius: 16px; padding: 12px 16px; }
+.phc-total .was-line { font-size: 14px; font-weight: 600; color: var(--b-rattan-text); margin-top: 4px; }
+.detail .ticks + h5 { margin-top: 22px; }
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false"><symbol id="bb-lockup" viewBox="13 6 312.66 55"><g><path fill="#B0743A" fill-rule="evenodd" d="M30.68 58.88L15.86 35.03A19 19 0 1 1 48.14 35.03L33.32 58.88Q32 61 30.68 58.88ZM20.5 22.6H43.5L40.4 33.2A2.6 2.6 0 0 1 37.9 35.1H26.1A2.6 2.6 0 0 1 23.6 33.2ZM23.1 22.6A8.9 8.9 0 0 1 40.9 22.6H37.9A5.9 5.9 0 0 0 26.1 22.6Z"/><path fill="#B0743A" d="M21.2 26.4Q32 28.7 42.8 26.4L42.8 28.6Q32 30.9 21.2 28.6Z"/></g><path fill="#15161A" transform="translate(64.06 43.11)" d="M2.94 0V-33.6L7.07 -34.47V-21.79Q10.12 -24.61 14.66 -24.61Q18.1 -24.61 20.86 -22.94Q23.62 -21.27 25.25 -18.46Q26.87 -15.66 26.87 -12.13Q26.87 -8.61 25.24 -5.78Q23.61 -2.95 20.84 -1.29Q18.07 0.38 14.58 0.38Q12.52 0.38 10.57 -0.31Q8.62 -0.99 7.01 -2.27V0ZM14.18 -3.21Q16.64 -3.21 18.59 -4.38Q20.53 -5.56 21.67 -7.56Q22.8 -9.56 22.8 -12.09Q22.8 -14.62 21.67 -16.64Q20.53 -18.67 18.58 -19.84Q16.64 -21.01 14.18 -21.01Q12.01 -21.01 10.15 -20.18Q8.29 -19.34 7.07 -17.83V-6.34Q8.28 -4.89 10.17 -4.05Q12.06 -3.21 14.18 -3.21ZM29.96 0V-24.23H34.08V-20.94Q35.21 -22.77 36.91 -23.77Q38.61 -24.77 40.8 -24.77Q42.16 -24.76 43.15 -24.39V-20.65Q42.5 -20.91 41.83 -21.02Q41.16 -21.13 40.49 -21.13Q38.33 -21.13 36.69 -19.91Q35.04 -18.7 34.08 -16.42V0ZM52 0.43Q49.35 0.43 47.35 -0.49Q45.34 -1.42 44.21 -3.07Q43.08 -4.72 43.08 -6.9Q43.08 -10.34 45.69 -12.31Q48.3 -14.28 52.79 -14.28Q56.56 -14.28 59.67 -12.78V-15.68Q59.67 -18.43 58.1 -19.82Q56.52 -21.22 53.5 -21.22Q51.76 -21.22 49.95 -20.72Q48.15 -20.22 45.94 -19.12L44.4 -22.26Q47.07 -23.53 49.37 -24.12Q51.67 -24.71 53.98 -24.71Q58.64 -24.71 61.17 -22.5Q63.7 -20.29 63.7 -16.19V0H59.67V-2.24Q58.05 -0.89 56.14 -0.23Q54.23 0.43 52 0.43ZM47.03 -7Q47.03 -5.1 48.64 -3.91Q50.26 -2.72 52.83 -2.72Q54.89 -2.72 56.59 -3.34Q58.29 -3.96 59.67 -5.29V-9.63Q58.24 -10.54 56.63 -10.95Q55.02 -11.37 53.03 -11.37Q50.27 -11.37 48.65 -10.18Q47.03 -8.99 47.03 -7ZM67.79 0V-24.23H71.92V-21.55Q74.76 -24.71 79.4 -24.71Q82.17 -24.71 84.28 -23.52Q86.4 -22.33 87.59 -20.21Q88.78 -18.09 88.78 -15.27V0H84.69V-14.51Q84.69 -17.57 82.97 -19.34Q81.25 -21.11 78.26 -21.11Q76.19 -21.11 74.59 -20.21Q72.98 -19.31 71.92 -17.64V0ZM103.97 0.38Q100.58 0.38 97.79 -1.29Q95.01 -2.96 93.38 -5.79Q91.76 -8.62 91.76 -12.14Q91.76 -15.66 93.39 -18.47Q95.01 -21.28 97.81 -22.94Q100.6 -24.61 104.05 -24.61Q106.11 -24.61 108.03 -23.95Q109.96 -23.29 111.56 -22.02V-33.6L115.69 -34.47V0H111.62V-2.45Q108.47 0.38 103.97 0.38ZM104.45 -3.22Q106.62 -3.22 108.48 -4.05Q110.34 -4.89 111.56 -6.4V-17.89Q110.35 -19.35 108.48 -20.18Q106.61 -21.02 104.45 -21.02Q102.04 -21.02 100.07 -19.87Q98.1 -18.72 96.96 -16.71Q95.82 -14.71 95.82 -12.18Q95.82 -9.65 96.96 -7.63Q98.1 -5.6 100.07 -4.41Q102.04 -3.22 104.45 -3.22ZM119.53 0V-33.6L126.11 -34.69V-23.02Q129.11 -25.36 133.12 -25.36Q136.7 -25.36 139.57 -23.64Q142.44 -21.91 144.14 -19.01Q145.83 -16.1 145.83 -12.5Q145.83 -8.89 144.12 -5.98Q142.41 -3.07 139.48 -1.36Q136.56 0.35 132.93 0.35Q131.06 0.35 129.29 -0.18Q127.52 -0.71 126.03 -1.71V0ZM132.06 -5.25Q134.15 -5.25 135.79 -6.2Q137.42 -7.15 138.39 -8.79Q139.36 -10.43 139.36 -12.48Q139.36 -14.54 138.39 -16.18Q137.42 -17.83 135.77 -18.78Q134.12 -19.73 132.06 -19.73Q130.25 -19.73 128.73 -19.11Q127.22 -18.5 126.11 -17.33V-7.6Q127.19 -6.51 128.74 -5.88Q130.3 -5.25 132.06 -5.25ZM156.37 0.43Q153.69 0.43 151.63 -0.55Q149.57 -1.53 148.41 -3.27Q147.25 -5 147.25 -7.26Q147.25 -10.84 149.96 -12.83Q152.67 -14.82 157.47 -14.82Q160.7 -14.82 163.59 -13.84V-15.63Q163.59 -17.82 162.25 -18.9Q160.91 -19.99 158.31 -19.99Q156.74 -19.99 154.91 -19.5Q153.07 -19.01 150.67 -17.94L148.29 -22.82Q151.27 -24.17 153.97 -24.83Q156.68 -25.49 159.41 -25.49Q164.48 -25.49 167.28 -23.07Q170.08 -20.66 170.08 -16.24V0H163.59V-1.77Q162.03 -0.62 160.26 -0.09Q158.49 0.43 156.37 0.43ZM153.52 -7.39Q153.52 -5.96 154.76 -5.12Q155.99 -4.28 158.1 -4.28Q159.7 -4.28 161.08 -4.68Q162.46 -5.08 163.59 -5.93V-9.54Q162.38 -10.04 161.08 -10.27Q159.78 -10.5 158.32 -10.5Q156.06 -10.5 154.79 -9.68Q153.52 -8.85 153.52 -7.39ZM182.76 0.48Q179.33 0.48 176.39 -0.4Q173.45 -1.28 171.29 -2.95L174.55 -7.36Q176.75 -5.89 178.73 -5.19Q180.71 -4.49 182.68 -4.49Q184.87 -4.49 186.2 -5.22Q187.52 -5.96 187.52 -7.15Q187.52 -8.12 186.77 -8.7Q186.02 -9.27 184.4 -9.51L179.61 -10.22Q175.87 -10.78 173.94 -12.64Q172.02 -14.49 172.02 -17.52Q172.02 -19.95 173.29 -21.72Q174.56 -23.5 176.9 -24.46Q179.23 -25.42 182.42 -25.42Q185.17 -25.42 187.78 -24.66Q190.39 -23.89 192.71 -22.33L189.52 -18.06Q187.47 -19.32 185.59 -19.9Q183.72 -20.48 181.82 -20.48Q180.04 -20.48 178.96 -19.8Q177.87 -19.13 177.87 -18.04Q177.87 -17.03 178.65 -16.47Q179.43 -15.9 181.26 -15.64L186.06 -14.92Q189.76 -14.41 191.74 -12.55Q193.71 -10.7 193.71 -7.76Q193.71 -5.39 192.28 -3.53Q190.84 -1.68 188.38 -0.6Q185.92 0.48 182.76 0.48ZM195.29 0V-33.6L201.88 -34.69V-14.51L212.69 -25.01H220.15L208.33 -13.55L220.88 0H212.44L201.88 -11.42V0ZM230.99 0.47Q227.23 0.47 224.18 -1.26Q221.13 -2.98 219.35 -5.92Q217.57 -8.85 217.57 -12.5Q217.57 -16.12 219.28 -19.05Q220.98 -21.98 223.91 -23.71Q226.84 -25.43 230.43 -25.43Q234.03 -25.43 236.82 -23.67Q239.61 -21.91 241.23 -18.88Q242.84 -15.85 242.84 -11.98V-10.29H224.29Q224.75 -8.76 225.73 -7.58Q226.71 -6.4 228.16 -5.73Q229.61 -5.07 231.31 -5.07Q232.97 -5.07 234.41 -5.59Q235.84 -6.12 236.83 -7.07L241.14 -3.13Q238.85 -1.26 236.42 -0.4Q234 0.47 230.99 0.47ZM224.21 -14.98H236.36Q236 -16.49 235.11 -17.61Q234.23 -18.72 233 -19.36Q231.76 -20 230.3 -20Q228.79 -20 227.54 -19.39Q226.3 -18.77 225.44 -17.65Q224.58 -16.54 224.21 -14.98ZM256.32 0.38Q252.17 0.38 250.02 -1.51Q247.88 -3.39 247.88 -7.05V-19.51H242.73V-25.01H247.88V-31.42L254.45 -32.88V-25.01H261.6V-19.51H254.45V-8.41Q254.45 -6.66 255.23 -5.93Q256.01 -5.19 257.91 -5.19Q258.88 -5.19 259.67 -5.32Q260.46 -5.45 261.41 -5.75V-0.35Q260.39 -0.01 258.9 0.18Q257.41 0.38 256.32 0.38Z"/></symbol></svg>
 <main class="wrap">
   <header class="intro">
-    <span class="kicker">brandbasket.in · home and pricing, lean version</span>
-    <h1>Brandbasket homepage and pricing, after the review</h1>
-    <p>The homepage is now seven sections and about 400 words, with cards only where there is a price or a choice. The site is light only. The showcase sites and the footer contact details are stand-ins until we have the real ones.</p>
+    <span class="kicker">brandbasket.in · home and pricing, package offers</span>
+    <h1>Brandbasket homepage and pricing, with package offers</h1>
+    <p>Managed Website ₹3,000, Social Media and Ads ₹10,000 and Local SEO + AEO ₹25,000 a month, each on its own. Two plans are 20% off (Social + SEO 30%), all three are 30% off, and a package started together earns ad money every month. The live basket on Home and at the top of Pricing shows the offer as plans are added.</p>
     <div class="pages" role="group" aria-label="Page"><button type="button" aria-pressed="true" data-view="home">Home</button><button type="button" aria-pressed="false" data-view="pricing">Pricing</button><button type="button" aria-pressed="false" data-view="contact">Contact</button></div>
   </header>
 
@@ -515,10 +525,10 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           <div class="hero-copy">
             <h2 id="h-hero">Before They Visit You, They Visit <em class="it">Your Website.</em></h2>
             <p class="lede">Your Business Has a Name. Give It a Place on the Internet for free.</p>
-            <div class="offer" aria-label="₹0 to build your website, plus ₹2,999 a month plus GST to keep it running">
+            <div class="offer" aria-label="₹0 to build your website, plus ₹3,000 a month plus GST to keep it running">
               <div class="part"><b class="num">₹0</b><span>to build your website</span></div>
               <span class="plus" aria-hidden="true">+</span>
-              <div class="part run-part"><b class="num">₹2,999<small>/month</small></b><span>to keep it running, + GST</span></div>
+              <div class="part run-part"><b class="num">₹3,000<small>/month</small></b><span>to keep it running, + GST</span></div>
             </div>
             <div class="ctas">
               <a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
@@ -556,32 +566,14 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
             <span class="eq-plus" aria-hidden="true">+</span>
             <div class="eq-side">
               <span class="eq-label">We keep it running</span>
-              <div class="eq-price num">₹2,999<small>a month + GST</small></div>
+              <div class="eq-price num">₹3,000<small>a month + GST</small></div>
               <ul class="ticks two"><li><span class="ms" aria-hidden="true">check</span>Hosting, SSL and backups</li><li><span class="ms" aria-hidden="true">check</span>Security and uptime</li><li><span class="ms" aria-hidden="true">check</span>2 small edits a month</li><li><span class="ms" aria-hidden="true">check</span>Monthly health report</li></ul>
               <button class="explore" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">Everything the care plan covers</span><span class="ms" aria-hidden="true">arrow_forward</span></button>
             </div>
           </div>
 
-          <div class="addpanel">
-            <div class="ap-head"><h4>Add when you are ready</h4><span>Optional. Add them as you start and they are 5% off for as long as they run.</span></div>
-            <div class="ap-row">
-              <span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span>
-              <div class="ap-text"><b>Digital Growth</b><span>8 Google profile posts a month, and Instagram and Facebook ads run for you.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div>
-              <span class="ap-price num">+₹7,000<small>a month</small></span>
-              <button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Digital Growth" data-plan="growth"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button>
-            </div>
-            <div class="ap-row">
-              <span class="dot" style="--c:var(--c-search)"><span class="ms" aria-hidden="true">travel_explore</span></span>
-              <div class="ap-text"><b>Local SEO + AI search</b><span>5 pages improved every month, so you are found in Google and ChatGPT answers.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div>
-              <span class="ap-price num">+₹25,000<small>a month</small></span>
-              <button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO and AI search" data-plan="search"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button>
-            </div>
-            <div class="calc" aria-live="polite">
-              <div class="what"><small id="calc-names">Your basket: Website</small><b class="num"><span data-total style="font-family:var(--d);font-size:30px;color:var(--b-ink);margin:0;letter-spacing:-0.03em"></span><span>a month + GST</span></b><span class="first num" id="calc-first"></span></div>
-              <div class="acts"><button class="textlink" type="button" data-go="pricing">Compare all plans</button><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
-            </div>
-          </div>
-        </section>
+          <div class="addpanel"><div class="ap-head"><h4>Build your basket</h4><span>Two plans are 20% off or more. All three are 30% off.</span></div><div class="ap-row"><span class="dot" style="--c:var(--c-site)"><span class="ms" aria-hidden="true">language</span></span><div class="ap-text"><b>Managed Website</b><span>We build it free, then host it, secure it and make 2 small edits a month.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹3,000<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Managed Website" data-plan="site"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><div class="ap-row"><span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span><div class="ap-text"><b>Social Media and Ads</b><span>Instagram, Facebook and Google profile posts planned with you each month, and your Meta ads run for you.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹10,000<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Social Media and Ads" data-plan="growth"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><div class="ap-row"><span class="dot" style="--c:var(--c-search)"><span class="ms" aria-hidden="true">travel_explore</span></span><div class="ap-text"><b>Local SEO + AI search</b><span>5 pages improved every month, so you are found in Google and ChatGPT answers.</span><button class="explore sm" type="button" data-go="pricing" data-anchor="h-detail"><span class="el">What is included</span><span class="ms" aria-hidden="true">arrow_forward</span></button></div><span class="ap-price num">₹25,000<small>a month</small></span><button class="toggle" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO and AI search" data-plan="search"><span class="knob" aria-hidden="true"></span><span class="tg-label">Add</span></button></div><p class="offer-note"><span class="ms" aria-hidden="true">sell</span><span data-bind="offer"></span></p><div class="calc" aria-live="polite"><div class="what"><small data-bind="names"></small><b class="num"><s data-bind="was"></s><span class="tot" data-bind="total"></span><span>a month + GST</span></b><span class="first num" data-bind="first"></span></div><div class="acts"><button class="textlink" type="button" data-go="pricing">Compare all plans</button><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div></div>
+          </section>
 
         <section class="sec in-wrap tight" aria-labelledby="h-work">
           <div class="sec-head"><h3 id="h-work">Real websites, live today.</h3></div>
@@ -608,7 +600,7 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
               </ol>
             </div>
             <div class="report" aria-label="Example monthly report">
-              <div class="rh"><div><b>October report</b><span>A dental clinic in Pune · Website, Growth, Search</span></div><span class="ex">Example report</span></div>
+              <div class="rh"><div><b>October report</b><span>A dental clinic in Pune · Website, Social, SEO</span></div><span class="ex">Example report</span></div>
               <div class="kpis">
                 <div class="kpi" style="--c:var(--c-site)"><small><i></i>Uptime</small><b class="num">99.97%</b><span class="up">0 incidents</span></div>
                 <div class="kpi" style="--c:var(--c-growth)"><small><i></i>Profile views</small><b class="num">2,184</b><span class="up">+18% on Sept</span></div>
@@ -630,9 +622,9 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           <div class="faq-wrap">
             <div class="sec-head"><h3 id="h-faq">Questions, answered.</h3></div>
             <div class="faq plain">
-              <details open><summary>Is the website really free?<span class="ms" aria-hidden="true">add</span></summary><p>Yes, there is no build fee. The ₹2,999 monthly plan keeps it hosted, secure and up to date.</p></details>
+              <details open><summary>Is the website really free?<span class="ms" aria-hidden="true">add</span></summary><p>Yes, there is no build fee. The ₹3,000 monthly plan keeps it hosted, secure and up to date.</p></details>
               <details><summary>What do I pay at the start?<span class="ms" aria-hidden="true">add</span></summary><p>Just your first month, plus 18% GST. After that you pay monthly.</p></details>
-              <details><summary>Is ad spend included?<span class="ms" aria-hidden="true">add</span></summary><p>No. You pay Meta directly for ads. We manage budgets up to ₹10,000 a month.</p></details>
+              <details><summary>Is ad spend included?<span class="ms" aria-hidden="true">add</span></summary><p>No. You pay Meta directly for your own ads, and we manage up to ₹10,000 a month of it. Packages started together add our ad money on top.</p></details>
               <details><summary>Do you guarantee rankings?<span class="ms" aria-hidden="true">add</span></summary><p>No one honestly can. We show you the work and the numbers every month.</p></details>
             </div>
           </div>
@@ -644,44 +636,43 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
         <section class="ph ph-c in-wrap" aria-labelledby="h-pc">
           <div class="phc-head">
             <h2 id="h-pc">Simple monthly plans. <em class="it">Start with your website.</em></h2>
-            <div class="offer" aria-label="₹0 to build your website, plus ₹2,999 a month plus GST to keep it running">
+            <div class="offer" aria-label="₹0 to build your website, plus ₹3,000 a month plus GST to keep it running">
               <div class="part"><b class="num">₹0</b><span>to build your website</span></div>
               <span class="plus" aria-hidden="true">+</span>
-              <div class="part run-part"><b class="num">₹2,999<small>/month</small></b><span>to keep it running, + GST</span></div>
+              <div class="part run-part"><b class="num">₹3,000<small>/month</small></b><span>to keep it running, + GST</span></div>
             </div>
           </div>
           <div class="phc-stage" data-stage-slot></div>
-          <div class="phc-act">
-            <div class="adds"><p>Add to your basket. 5% off when you add them as you start.</p>
-              <div class="add" data-row="growth" style="--c:var(--c-growth)"><i aria-hidden="true"></i><span><b>Digital Growth</b><span class="d">Google profile and Meta ads</span></span><span class="p num">+₹7,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Digital Growth" data-plan="growth"></button></div>
-              <div class="add" data-row="search" style="--c:var(--c-search)"><i aria-hidden="true"></i><span><b>Local SEO + AEO</b><span class="d">Google search and AI answers</span></span><span class="p num">+₹25,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO and AEO" data-plan="search"></button></div>
-            </div>
-            <div class="phc-total" data-sum aria-live="polite"><p><small>You pay each month, with GST</small><b class="num" data-bind="pay"></b></p><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div>
-          </div>
-        </section>
+          <div class="phc-act"><div class="adds"><p>Build your basket. Two plans are 20% off or more, all three are 30% off.</p><div class="add" data-row="site" style="--c:var(--c-site)"><i aria-hidden="true"></i><span><b>Managed Website</b><span class="d">Built free, hosted and kept up to date</span></span><span class="p num">₹3,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Managed Website" data-plan="site"></button></div><div class="add" data-row="growth" style="--c:var(--c-growth)"><i aria-hidden="true"></i><span><b>Social Media and Ads</b><span class="d">Instagram, Facebook, Google profile and Meta ads</span></span><span class="p num">₹10,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Social Media and Ads" data-plan="growth"></button></div><div class="add" data-row="search" style="--c:var(--c-search)"><i aria-hidden="true"></i><span><b>Local SEO + AEO</b><span class="d">Google search and AI answers</span></span><span class="p num">₹25,000</span><button class="sw" type="button" role="switch" aria-checked="false" aria-label="Add Local SEO + AEO" data-plan="search"></button></div></div><p class="offer-note"><span class="ms" aria-hidden="true">sell</span><span data-bind="offer"></span></p><div class="phc-total" data-sum aria-live="polite"><p><small>You pay each month, with GST</small><b class="num" data-bind="pay"></b><span class="was-line" data-bind="saveline"></span></p><a class="bib" href="#home">Get my free website<span class="ic" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M4.5 11.5 11.5 4.5M6 4.5h5.5V10" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a></div></div>
+          </section>
 
         <section class="sec in-wrap" style="padding-top:64px" aria-labelledby="h-compare">
-          <div class="sec-head"><h3 id="h-compare">Which basket fits you?</h3><p>Four ways to combine the plans. Every price is monthly, before GST. Add-ons chosen as you start are 5% off.</p></div>
-          <div class="bk-tabs" aria-label="Show one basket"><button type="button" data-show="0" aria-pressed="true"><b>Website</b><span>₹2,999 a month</span></button><button type="button" data-show="1" aria-pressed="false"><b>Website + Growth</b><span>₹9,999 a month</span></button><button type="button" data-show="2" aria-pressed="false"><b>Website + Search</b><span>₹27,999 a month</span></button><button type="button" data-show="3" aria-pressed="false"><b>All three</b><span>₹34,999 a month</span></button></div>
+          <div class="sec-head"><h3 id="h-compare">Which basket fits you?</h3><p>Four packages. Every price is monthly, before GST, and stays for as long as you keep every plan in the package.</p></div>
+          <div class="bk-tabs" aria-label="Show one basket"><button type="button" data-show="0" aria-pressed="true"><b>Website + Social</b><span>₹10,400 a month</span></button><button type="button" data-show="1" aria-pressed="false"><b>Website + SEO</b><span>₹22,400 a month</span></button><button type="button" data-show="2" aria-pressed="false"><b>Social + SEO</b><span>₹24,500 a month</span></button><button type="button" data-show="3" aria-pressed="false"><b>All three</b><span>₹26,600 a month</span></button></div>
           <div class="cmp-wrap" data-show="0">
             <table class="cmp">
-              <thead><tr><th scope="col"><span class="vh">What is included</span></th><th scope="col" data-c="0"><span class="pk-name">Website</span><span class="pk-price num">₹2,999<small> /mo</small></span></th><th scope="col" data-c="1"><span class="pk-name">Website + Growth</span><span class="pk-price num">₹9,999<small> /mo</small></span></th><th scope="col" data-c="2"><span class="pk-name">Website + Search</span><span class="pk-price num">₹27,999<small> /mo</small></span></th><th scope="col" data-c="3"><span class="pk-name">All three</span><span class="pk-price num">₹34,999<small> /mo</small></span></th></tr></thead>
+              <thead><tr><th scope="col"><span class="vh">What is included</span></th><th scope="col" data-c="0"><span class="pk-name">Website + Social</span><span class="pk-price num">₹10,400<small> /mo</small></span></th><th scope="col" data-c="1"><span class="pk-name">Website + SEO</span><span class="pk-price num">₹22,400<small> /mo</small></span></th><th scope="col" data-c="2"><span class="pk-name">Social + SEO</span><span class="pk-price num">₹24,500<small> /mo</small></span></th><th scope="col" data-c="3"><span class="pk-name">All three</span><span class="pk-price num">₹26,600<small> /mo</small></span></th></tr></thead>
               <tbody>
+                <tr class="grp"><th colspan="5">The package</th></tr>
+                <tr><th scope="row">Off the plans' own prices</th><td class="qty" data-c="0">20%</td><td class="qty" data-c="1">20%</td><td class="qty" data-c="2">30%</td><td class="qty" data-c="3">30%</td></tr>
+                <tr><th scope="row">You save each month</th><td class="qty" data-c="0">₹2,600</td><td class="qty" data-c="1">₹5,600</td><td class="qty" data-c="2">₹10,500</td><td class="qty" data-c="3">₹11,400</td></tr>
+                <tr><th scope="row">Ad money from us, every month<small>When you start with the package</small></th><td class="qty" data-c="0">₹2,000</td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="2">₹2,000</td><td class="qty" data-c="3">₹5,000</td></tr>
                 <tr class="grp"><th colspan="5">Your website</th></tr>
-                <tr><th scope="row">Hosting, SSL, backups and security</th><td data-c="0"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
-                <tr><th scope="row">Small edits<small>Up to 30 minutes each</small></th><td class="qty" data-c="0">2 a month</td><td class="qty" data-c="1">2 a month</td><td class="qty" data-c="2">2 a month</td><td class="qty" data-c="3">2 a month</td></tr>
-                <tr><th scope="row">Analytics, indexing and sitemap checks</th><td data-c="0"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
-                <tr class="grp"><th colspan="5">Google and social</th></tr>
-                <tr><th scope="row">Google Business Profile posts</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="1">8 a month</td><td data-c="2"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="3">8 a month</td></tr>
-                <tr><th scope="row">Review monitoring and reply drafts</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
-                <tr><th scope="row">Facebook and Instagram ads<small>Ad budget up to ₹10,000 a month, paid by you</small></th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr><th scope="row">Hosting, SSL, backups and security</th><td data-c="0"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr><th scope="row">Small edits<small>Up to 30 minutes each</small></th><td class="qty" data-c="0">2 a month</td><td class="qty" data-c="1">2 a month</td><td data-c="2"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="3">2 a month</td></tr>
+                <tr><th scope="row">Analytics, indexing and sitemap checks</th><td data-c="0"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr class="grp"><th colspan="5">Social media and ads</th></tr>
+                <tr><th scope="row">Instagram and Facebook posts<small>Designed, written and scheduled</small></th><td class="qty" data-c="0">Planned with you</td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="2">Planned with you</td><td class="qty" data-c="3">Planned with you</td></tr>
+                <tr><th scope="row">Google Business Profile posts</th><td class="qty" data-c="0">Planned with you</td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="2">Planned with you</td><td class="qty" data-c="3">Planned with you</td></tr>
+                <tr><th scope="row">Review monitoring and reply drafts</th><td data-c="0"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr><th scope="row">Facebook and Instagram ads<small>Up to ₹10,000 a month of your budget managed, plus our ad money</small></th><td data-c="0"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
                 <tr class="grp"><th colspan="5">Search and AI answers</th></tr>
-                <tr><th scope="row">Local keyword and competitor research</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
-                <tr><th scope="row">Pages optimised</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="2">5 a month</td><td class="qty" data-c="3">5 a month</td></tr>
-                <tr><th scope="row">AEO: FAQs, schema and AI visibility</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
-                <tr><th scope="row">Ranking, traffic and enquiry tracking</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr><th scope="row">Local keyword and competitor research</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr><th scope="row">Pages optimised</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td class="qty" data-c="1">5 a month</td><td class="qty" data-c="2">5 a month</td><td class="qty" data-c="3">5 a month</td></tr>
+                <tr><th scope="row">AEO: FAQs, schema and AI visibility</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
+                <tr><th scope="row">Ranking, traffic and enquiry tracking</th><td data-c="0"><span class="ms n" aria-hidden="true">remove</span><span class="vh">Not included</span></td><td data-c="1"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="2"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td><td data-c="3"><span class="ms y" aria-hidden="true">check</span><span class="vh">Included</span></td></tr>
                 <tr class="grp"><th colspan="5">Every plan</th></tr>
-                <tr><th scope="row">Monthly report</th><td class="qty" data-c="0">Website health</td><td class="qty" data-c="1">+ ads and profile</td><td class="qty" data-c="2">+ SEO and AEO</td><td class="qty" data-c="3">All of it</td></tr>
+                <tr><th scope="row">Monthly report</th><td class="qty" data-c="0">Site + social</td><td class="qty" data-c="1">Site + search</td><td class="qty" data-c="2">Social + search</td><td class="qty" data-c="3">All of it</td></tr>
               </tbody>
             </table>
           </div>
@@ -690,23 +681,23 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
         <section class="sec in-wrap tight" aria-labelledby="h-detail">
           <div class="sec-head"><h3 id="h-detail">What each plan includes.</h3><p>Open a plan for every monthly task, and what it leaves out.</p></div>
           <div class="detail">
-            <details><summary><span class="dot" style="--c:var(--c-site)"><span class="ms" aria-hidden="true">language</span></span><span><b>Managed Website</b><span class="s">₹2,999 a month · for businesses that want a site without the technical work</span></span><span class="tg">Details<span class="ms" aria-hidden="true">expand_more</span></span></summary>
+            <details><summary><span class="dot" style="--c:var(--c-site)"><span class="ms" aria-hidden="true">language</span></span><span><b>Managed Website</b><span class="s">₹3,000 a month · for businesses that want a site without the technical work</span></span><span class="tg">Details<span class="ms" aria-hidden="true">expand_more</span></span></summary>
               <div class="cols">
                 <div><h5>Looking after your site</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Hosting and SSL certificate</li><li><span class="ms" aria-hidden="true">check</span>Uptime and availability monitoring</li><li><span class="ms" aria-hidden="true">check</span>Security checks and routine maintenance</li><li><span class="ms" aria-hidden="true">check</span>Regular backups and recovery support</li><li><span class="ms" aria-hidden="true">check</span>Bug fixes and small mobile fixes</li></ul></div>
                 <div><h5>Keeping it working for you</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Contact and enquiry form checks</li><li><span class="ms" aria-hidden="true">check</span>Basic analytics setup and monitoring</li><li><span class="ms" aria-hidden="true">check</span>Indexing and sitemap checks</li><li><span class="ms" aria-hidden="true">check</span>Monthly health check and support</li><li><span class="ms" aria-hidden="true">check</span>2 small content edits a month, 30 minutes each</li></ul></div>
                 <div class="no"><h5>Not included</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">remove</span>Domain registration or renewal</li><li><span class="ms" aria-hidden="true">remove</span>New pages or redesigns</li><li><span class="ms" aria-hidden="true">remove</span>Content writing, SEO or AEO</li><li><span class="ms" aria-hidden="true">remove</span>Ads or ad spend</li><li><span class="ms" aria-hidden="true">remove</span>E-commerce or new features</li></ul></div>
               </div></details>
-            <details><summary><span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span><span><b>Digital Growth</b><span class="s">+₹7,000 a month · Google Business Profile and Meta ads</span></span><span class="tg">Details<span class="ms" aria-hidden="true">expand_more</span></span></summary>
+            <details><summary><span class="dot" style="--c:var(--c-growth)"><span class="ms" aria-hidden="true">trending_up</span></span><span><b>Social Media and Ads</b><span class="s">₹10,000 a month · Instagram, Facebook, Google profile and Meta ads</span></span><span class="tg">Details<span class="ms" aria-hidden="true">expand_more</span></span></summary>
               <div class="cols">
-                <div><h5>Google Business Profile</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Business details and category review</li><li><span class="ms" aria-hidden="true">check</span>Up to 8 posts a month: updates, offers, services</li><li><span class="ms" aria-hidden="true">check</span>Photo updates from your images or agreed creatives</li><li><span class="ms" aria-hidden="true">check</span>Hours, contact and website link checks</li><li><span class="ms" aria-hidden="true">check</span>Review monitoring and reply suggestions</li><li><span class="ms" aria-hidden="true">check</span>Monthly profile report</li></ul></div>
+                <div><h5>Instagram and Facebook</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Posts each month, planned with you</li><li><span class="ms" aria-hidden="true">check</span>Captions written for you</li><li><span class="ms" aria-hidden="true">check</span>Posts scheduled for you</li></ul><h5>Google Business Profile</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Business details and category review</li><li><span class="ms" aria-hidden="true">check</span>Regular posts: updates, offers, services</li><li><span class="ms" aria-hidden="true">check</span>Photo updates from your images or agreed creatives</li><li><span class="ms" aria-hidden="true">check</span>Hours, contact and website link checks</li><li><span class="ms" aria-hidden="true">check</span>Review monitoring and reply suggestions</li><li><span class="ms" aria-hidden="true">check</span>Monthly profile report</li></ul></div>
                 <div><h5>Facebook and Instagram ads</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Monthly campaign plan</li><li><span class="ms" aria-hidden="true">check</span>Setup, audience, objective and placements</li><li><span class="ms" aria-hidden="true">check</span>Ad copy and basic creatives</li><li><span class="ms" aria-hidden="true">check</span>Launch, monitoring and budget pacing</li><li><span class="ms" aria-hidden="true">check</span>A/B tests where budget allows</li><li><span class="ms" aria-hidden="true">check</span>Monthly ads report</li></ul></div>
-                <div class="no"><h5>Good to know</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">remove</span>Ad spend is paid to Meta by you</li><li><span class="ms" aria-hidden="true">remove</span>Covers ad budgets up to ₹10,000 a month</li><li><span class="ms" aria-hidden="true">remove</span>Reels and video editing at ₹500 an hour</li></ul><p class="note">Needs the Managed Website plan.</p></div>
+                <div class="no"><h5>Good to know</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">remove</span>Ad spend is paid to Meta by you</li><li><span class="ms" aria-hidden="true">remove</span>We manage up to ₹10,000 a month of your budget</li><li><span class="ms" aria-hidden="true">remove</span>Reels and video editing at ₹500 an hour</li></ul><p class="note">Start Social with the website or with Local SEO and we add ₹2,000 a month to your ads, or ₹5,000 a month with all three.</p></div>
               </div></details>
-            <details><summary><span class="dot" style="--c:var(--c-search)"><span class="ms" aria-hidden="true">travel_explore</span></span><span><b>Local SEO + AEO</b><span class="s">+₹25,000 a month · local search and AI answer visibility</span></span><span class="tg">Details<span class="ms" aria-hidden="true">expand_more</span></span></summary>
+            <details><summary><span class="dot" style="--c:var(--c-search)"><span class="ms" aria-hidden="true">travel_explore</span></span><span><b>Local SEO + AEO</b><span class="s">₹25,000 a month · local search and AI answer visibility</span></span><span class="tg">Details<span class="ms" aria-hidden="true">expand_more</span></span></summary>
               <div class="cols">
                 <div><h5>Local SEO</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Local keyword and intent research</li><li><span class="ms" aria-hidden="true">check</span>Competitor analysis</li><li><span class="ms" aria-hidden="true">check</span>Titles, descriptions and headings, up to 5 pages a month</li><li><span class="ms" aria-hidden="true">check</span>Service area page optimisation</li><li><span class="ms" aria-hidden="true">check</span>Name, address and phone consistency</li><li><span class="ms" aria-hidden="true">check</span>Schema, citation and directory audit</li><li><span class="ms" aria-hidden="true">check</span>Ranking, traffic and enquiry tracking</li></ul></div>
                 <div><h5>Answer Engine Optimisation</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">check</span>Research the questions customers ask</li><li><span class="ms" aria-hidden="true">check</span>Content shaped into direct answers</li><li><span class="ms" aria-hidden="true">check</span>FAQ planning and structured data</li><li><span class="ms" aria-hidden="true">check</span>Brand and entity consistency checks</li><li><span class="ms" aria-hidden="true">check</span>Topic and content gap analysis</li><li><span class="ms" aria-hidden="true">check</span>AI visibility tracking where measurable</li></ul></div>
-                <div class="no"><h5>Not included</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">remove</span>Guaranteed rankings or AI citations</li><li><span class="ms" aria-hidden="true">remove</span>Guaranteed leads or traffic</li><li><span class="ms" aria-hidden="true">remove</span>Paid backlinks or placements</li><li><span class="ms" aria-hidden="true">remove</span>Unlimited writing or new landing pages</li></ul><p class="note">Needs the Managed Website plan. New landing pages are quoted separately.</p></div>
+                <div class="no"><h5>Not included</h5><ul class="ticks"><li><span class="ms" aria-hidden="true">remove</span>Guaranteed rankings or AI citations</li><li><span class="ms" aria-hidden="true">remove</span>Guaranteed leads or traffic</li><li><span class="ms" aria-hidden="true">remove</span>Paid backlinks or placements</li><li><span class="ms" aria-hidden="true">remove</span>Unlimited writing or new landing pages</li></ul><p class="note">New landing pages are quoted separately.</p></div>
               </div></details>
           </div>
         </section>
@@ -715,9 +706,9 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           <div class="sec-head"><h3 id="h-rules">Good to know <em>before you start.</em></h3></div>
           <div class="rules">
             <div class="rule"><span class="ms" aria-hidden="true">event_repeat</span><div><b>Billed monthly, plus GST</b><p>Pay one month at a time, plus 18% GST. Your invoice shows both.</p></div></div>
-            <div class="rule"><span class="ms" aria-hidden="true">logout</span><div><b>Cancel any month</b><p>Give 30 days' notice to stop. Your website, domain and content stay yours.</p></div></div>
+            <div class="rule"><span class="ms" aria-hidden="true">logout</span><div><b>Cancel anytime</b><p>No notice period. Your plans keep running until the end of the month you have paid for, and your domain stays yours.</p></div></div>
             <div class="rule"><span class="ms" aria-hidden="true">schedule</span><div><b>₹500 an hour for extras</b><p>New pages, extra edits and video editing. Always quoted before we start.</p></div></div>
-            <div class="rule"><span class="ms" aria-hidden="true">account_balance_wallet</span><div><b>Ads and tools are paid by you</b><p>Domain fees, ad spend and paid tools are billed to you directly.</p></div></div>
+            <div class="rule"><span class="ms" aria-hidden="true">account_balance_wallet</span><div><b>Ads and tools are paid by you</b><p>Domain fees, your own ad spend and paid tools are billed to you directly.</p></div></div>
           </div>
         </section>
 
@@ -725,10 +716,11 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
           <div class="faq-wrap">
             <div class="sec-head"><h3 id="h-pfaq">Questions about pricing.</h3></div>
             <div class="faq plain">
-              <details open><summary>Is the website build really free?<span class="ms" aria-hidden="true">add</span></summary><p>Yes. We design and build it for ₹0. The ₹2,999 monthly plan keeps it hosted, secure and up to date.</p></details>
-              <details><summary>Can I cancel?<span class="ms" aria-hidden="true">add</span></summary><p>Yes, with 30 days' notice. Your website, domain and content stay yours.</p></details>
-              <details><summary>Can I add or drop Growth and Search later?<span class="ms" aria-hidden="true">add</span></summary><p>Yes. The change starts from your next monthly bill.</p></details>
-              <details><summary>Is ad spend included?<span class="ms" aria-hidden="true">add</span></summary><p>No. You pay Meta directly for ads. Digital Growth manages budgets up to ₹10,000 a month.</p></details>
+              <details open><summary>Is the website build really free?<span class="ms" aria-hidden="true">add</span></summary><p>Yes. We design and build it for ₹0. The ₹3,000 monthly plan keeps it hosted, secure and up to date.</p></details>
+              <details><summary>Can I cancel?<span class="ms" aria-hidden="true">add</span></summary><p>Yes, anytime, with no notice period. Your plans keep running until the end of the month you have already paid for, and your domain stays yours. We remind you before every renewal, so you are never charged by surprise.</p></details>
+              <details><summary>Do I need the website plan?<span class="ms" aria-hidden="true">add</span></summary><p>No. Every plan can be bought on its own. If you already have a website, Social + SEO is 30% off.</p></details>
+              <details><summary>Can I add or drop a plan later?<span class="ms" aria-hidden="true">add</span></summary><p>Yes. Add a plan any time and your basket moves to the package price from your next bill. Drop one from a package and the plans you keep go back to their own prices from your next bill, and package prices never apply to your account again.</p></details>
+              <details><summary>Is ad spend included?<span class="ms" aria-hidden="true">add</span></summary><p>No. You pay Meta directly for your own ads, and Social Media and Ads manages up to ₹10,000 a month of it. Packages started together add our ad money on top.</p></details>
               <details><summary>Do you guarantee rankings or leads?<span class="ms" aria-hidden="true">add</span></summary><p>No one honestly can. You see the work and the numbers in a report every month.</p></details>
             </div>
           </div>
@@ -810,45 +802,60 @@ em.it { font-style: italic; font-weight: 300; color: var(--b-rattan-text); paddi
 (function () {
   "use strict";
   var home = document.getElementById("home");
-  var PRICE = { site: 2999, growth: 7000, search: 25000 };
-  var NAMES = { site: "Managed Website", growth: "Digital Growth", search: "Local SEO + AEO" };
-  var SHORT = { growth: "Growth", search: "Search" };
-  var state = { growth: false, search: false };
+  var PLANS = { site: { name: "Managed Website", short: "Website", price: 3000 }, growth: { name: "Social Media and Ads", short: "Social", price: 10000 }, search: { name: "Local SEO + AEO", short: "SEO", price: 25000 } };
+  var ORDER = ["site", "growth", "search"];
+  /* package offers (owner, 2026-10-21): percent off the whole basket, and ad money a month when the package is started together */
+  var PACKS = { "site,growth": { name: "Website + Social", pct: 20, ad: 2000 }, "site,search": { name: "Website + SEO", pct: 20, ad: 0 }, "growth,search": { name: "Social + SEO", pct: 30, ad: 2000 }, "site,growth,search": { name: "All three", pct: 30, ad: 5000 } };
+  var state = { site: true, growth: false, search: false };
   window.bbState = state;
   /* GST is charged to the paisa (as the platform checkout does), so show paise only when there are any */
   function inr(n) { return "₹" + n.toLocaleString("en-IN", { minimumFractionDigits: n % 1 ? 2 : 0, maximumFractionDigits: 2 }); }
-  /* add-ons chosen at sign-up are 5% off for as long as they run (platform checkout does the same); the website plan never is */
-  function signup(n) { return Math.round(n * 95) / 100; }
-  function total() { return PRICE.site + (state.growth ? signup(PRICE.growth) : 0) + (state.search ? signup(PRICE.search) : 0); }
+  function picked() { return ORDER.filter(function (k) { return state[k]; }); }
+  function pack() { return PACKS[picked().join(",")] || null; }
+  function list() { return picked().reduce(function (sum, k) { return sum + PLANS[k].price; }, 0); }
+  function total() { var p = pack(); return p ? Math.round(list() * (100 - p.pct)) / 100 : list(); }
+  function withGst(n) { return (n * 100 + Math.round(n * 18)) / 100; }
+  function offerText() {
+    var p = pack();
+    if (!p) return "Take two plans and save 20% or more. Take all three and save 30%.";
+    var line = p.name + ": " + p.pct + "% off, so you save " + inr(list() - total()) + " a month.";
+    return p.ad ? line + " Start with " + (picked().length === 3 ? "all three" : "both") + " and we add " + inr(p.ad) + " a month to your ads." : line;
+  }
   function render() {
-    var t = total(), first = t, firstGst = (first * 100 + Math.round(first * 18)) / 100;
-    home.querySelectorAll("[data-total]").forEach(function (el) { el.textContent = inr(t); });
-    home.querySelectorAll("[role=switch][data-plan]").forEach(function (s) { s.setAttribute("aria-checked", state[s.dataset.plan] ? "true" : "false"); });
-    home.querySelectorAll(".toggle[data-plan] .tg-label").forEach(function (l) { l.textContent = state[l.parentNode.dataset.plan] ? "Added" : "Add"; });
-    var names = ["Website"].concat(Object.keys(SHORT).filter(function (k) { return state[k]; }).map(function (k) { return SHORT[k]; }));
-    document.getElementById("calc-names").textContent = "Your basket: " + names.join(" + ");
-    document.getElementById("calc-first").textContent = inr(firstGst) + " a month with GST, billed monthly";
-    var gst = Math.round(t * 18) / 100;
-    var binds = { pay: inr(firstGst), gst: inr(gst), sub: inr(t), split: inr(t) + " a month + " + inr(gst) + " GST" };
-    home.querySelectorAll("[data-bind]").forEach(function (el) { el.textContent = binds[el.dataset.bind]; });
+    var t = total(), l = list(), pay = withGst(t), only = picked().length === 1;
+    var binds = {
+      names: "Your basket: " + picked().map(function (k) { return PLANS[k].short; }).join(" + "),
+      total: inr(t), was: t < l ? inr(l) : "", first: inr(pay) + " a month with GST, billed monthly",
+      pay: inr(pay), offer: offerText(), saveline: t < l ? "You save " + inr(l - t) + " a month" : ""
+    };
+    home.querySelectorAll("[data-bind]").forEach(function (el) { var v = binds[el.dataset.bind]; el.textContent = v; el.hidden = v === ""; });
+    home.querySelectorAll("[role=switch][data-plan]").forEach(function (sw) {
+      var on = state[sw.dataset.plan];
+      sw.setAttribute("aria-checked", on ? "true" : "false");
+      /* the last plan in the basket cannot be switched off */
+      if (on && only) sw.setAttribute("aria-disabled", "true"); else sw.removeAttribute("aria-disabled");
+    });
+    home.querySelectorAll(".toggle[data-plan] .tg-label").forEach(function (lb) { lb.textContent = state[lb.parentNode.dataset.plan] ? "Added" : "Add"; });
     home.querySelectorAll("[data-row]").forEach(function (r) { r.classList.toggle("on", !!state[r.dataset.row]); });
-    document.getElementById("pbar-pay").textContent = inr(firstGst);
+    document.getElementById("pbar-pay").textContent = inr(pay);
     document.getElementById("pbar-names").textContent = "a month, with GST";
   }
   function showBasket(i) {
     home.querySelector(".cmp-wrap").dataset.show = i;
     home.querySelectorAll(".bk-tabs button").forEach(function (b) { b.setAttribute("aria-pressed", +b.dataset.show === i ? "true" : "false"); });
   }
-  function setPlan(k, on) {
-    if (state[k] === on) return;
+  function flip(k, on) {
     state[k] = on;
     document.dispatchEvent(new CustomEvent("basket:change", { detail: { key: k, on: on } }));
+  }
+  function setPlan(k, on) {
+    if (state[k] === on || (!on && picked().length === 1)) return;
+    flip(k, on);
     render();
   }
   home.querySelectorAll("[role=switch][data-plan]").forEach(function (b) { b.addEventListener("click", function (e) { e.stopPropagation(); setPlan(b.dataset.plan, !state[b.dataset.plan]); }); });
   home.querySelectorAll("[data-row]").forEach(function (r) { r.addEventListener("click", function () { setPlan(r.dataset.row, !state[r.dataset.row]); }); });
   home.querySelectorAll(".bk-tabs button").forEach(function (b) { b.addEventListener("click", function () { showBasket(+b.dataset.show); }); });
-
   /* pages and menu */
   var views = { home: document.getElementById("view-home"), pricing: document.getElementById("view-pricing"), contact: document.getElementById("view-contact") };
   var sheet = document.getElementById("sheet"), menuBtn = document.getElementById("menu-btn");
@@ -1205,7 +1212,7 @@ const DEFS = {
   seo: { w: 0.94, h: 0.94, rest: [-0.42, 1.82, -0.96], rz: 0.1, bg: "#3d5a8a", glyph: "travel_explore", label: "SEO" },
   aeo: { w: 0.94, h: 0.94, rest: [0.58, 1.86, -1.0], rz: -0.12, bg: "#2d4a7a", glyph: "auto_awesome", label: "AI search" }
 };
-const GROUPS = { growth: ["gbp", "meta"], search: ["seo", "aeo"] };
+const GROUPS = { site: ["site", "care", "report"], growth: ["gbp", "meta"], search: ["seo", "aeo"] };
 const tokens = {};
 function build(img) {
   for (const [k, d] of Object.entries(DEFS)) {
@@ -1218,8 +1225,8 @@ function build(img) {
     node.visible = false;
     tokens[k] = { node, d, y: 0, vy: 0, phase: "off", s: 1 };
   }
-  ["site", "care", "report"].forEach((k, i) => setTimeout(() => add(k), reduce ? 0 : 250 + i * 260));
-  const st = window.bbState; if (st) Object.keys(GROUPS).forEach(g => { if (st[g]) GROUPS[g].forEach(add); });
+  const st = window.bbState || { site: true };
+  Object.keys(GROUPS).filter(g => st[g]).flatMap(g => GROUPS[g]).forEach((k, i) => setTimeout(() => add(k), reduce ? 0 : 250 + i * 260));
 }
 function add(k) {
   const t = tokens[k]; if (!t) return;

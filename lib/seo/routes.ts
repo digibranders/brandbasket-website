@@ -7,7 +7,7 @@ import { privacyPolicy } from "@/content/legal/privacy";
 import { refundPolicy } from "@/content/legal/refund";
 import { shippingPolicy } from "@/content/legal/shipping";
 import { termsOfService } from "@/content/legal/terms";
-import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
+import { formatInr, GST_LABEL, PACKAGES, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 export interface RouteMeta {
@@ -22,20 +22,20 @@ export interface RouteMeta {
 
 const { legalName, tradeName, postalAddress } = businessDetails;
 const MANAGED = formatInr(PLANS.website.monthly);
-const UPDATED = "2026-10-19";
+const UPDATED = "2026-10-21";
 
 export const ROUTES = {
   home: {
     path: "/",
     title: `Free business website, run for you monthly | ${tradeName}`,
-    description: `Get a professional website built free for your local business. We host, secure and update it for ${MANAGED} a month. Add Google and local search any time.`,
+    description: `Get a professional website built free for your local business. We host, secure and update it for ${MANAGED} a month. Add social, ads and local search any time.`,
     updated: UPDATED,
     priority: 1,
   },
   pricing: {
     path: "/pricing",
     title: `Pricing: free website, plans from ${MANAGED} a month`,
-    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} +${formatInr(PLANS.growth.monthly)}, Local SEO and AEO +${formatInr(PLANS.search.monthly)}. Prices before ${GST_LABEL} GST, billed monthly.`,
+    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off, before ${GST_LABEL} GST.`,
     updated: UPDATED,
     priority: 0.9,
   },

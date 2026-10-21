@@ -35,7 +35,7 @@ function EquationSide({ side, free = false, twoColumns = false }: PlanSideProps)
   );
 }
 
-/** Build free + keep it running, then the add-on panel (mock: #h-plans, .eq, .addpanel). Prices are not revealed. */
+/** Build free + keep it running, then the basket panel (mock: #h-plans, .eq, .addpanel). */
 export function PlansSection(): ReactElement {
   return (
     <Section labelledBy="h-plans" tight>

@@ -1,19 +1,22 @@
-import type { AddonId, AddonPick } from "./pricing";
+import { type BasketPick, PLAN_IDS, type PlanId, samePick } from "./pricing";
 
-export const EMPTY_BASKET: AddonPick = Object.freeze({ growth: false, search: false });
+/** What every "Get my free website" button starts from: the website plan on its own. */
+export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: true, growth: false, search: false });
 
 export interface BasketStore {
-  get(): AddonPick;
-  set(id: AddonId, on: boolean): void;
-  setAll(pick: AddonPick): void;
+  get(): BasketPick;
+  set(id: PlanId, on: boolean): void;
+  setAll(pick: BasketPick): void;
   subscribe(listener: () => void): () => void;
 }
 
-export function createBasketStore(initial: AddonPick = EMPTY_BASKET): BasketStore {
-  let state = initial;
+export function createBasketStore(initial: BasketPick = DEFAULT_BASKET): BasketStore {
+  let state: BasketPick = Object.freeze({ ...initial });
   const listeners = new Set<() => void>();
-  const commit = (next: AddonPick): void => {
-    if (next.growth === state.growth && next.search === state.search) return;
+  const commit = (next: BasketPick): void => {
+    // A basket always holds at least one plan, so the last switch on cannot turn off.
+    if (!PLAN_IDS.some((id) => next[id])) return;
+    if (samePick(next, state)) return;
     state = Object.freeze({ ...next });
     listeners.forEach((listener) => listener());
   };

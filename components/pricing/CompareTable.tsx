@@ -31,7 +31,7 @@ function Cell({ value, column }: { readonly value: CompareCell; readonly column:
   );
 }
 
-/** Read-only comparison of the four baskets (mock: #h-compare, .cmp). Names, list prices and ticks only. */
+/** Read-only comparison of the four packages (mock: #h-compare, .cmp): offer, saving and ad money first, then what each includes. */
 export function CompareTable(): ReactElement {
   const span = COMPARE.columns.length + 1;
   return (
@@ -41,7 +41,7 @@ export function CompareTable(): ReactElement {
       </Reveal>
       <Reveal>
         <CompareTabs label={COMPARE.tabsLabel} baskets={COMPARE.columns.map((col) => ({ name: col.name, price: `${col.price} ${BASKET_COPY.perMonth}` }))}>
-          <table aria-labelledby="h-compare" className="w-full border-separate border-spacing-0 text-[14.5px] [&_tr:last-child>*]:border-b-0">
+          <table aria-labelledby="h-compare" className="w-full border-separate border-spacing-0 text-[14.5px] leading-[normal] [&_tr:last-child>*]:border-b-0">
             {/* Phones hide the header row visually but keep it, minus the hidden columns, for screen readers. */}
             <thead className="max-[760.98px]:sr-only">
               <tr>

@@ -1,4 +1,5 @@
 // content/legal/privacy.ts
+import { PURPOSE_OF, TOOLS, type VendorId } from "@/lib/consent";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { businessDetails } from "@/lib/site-config";
 import type { LegalDocument } from "./types";
@@ -6,6 +7,27 @@ import type { LegalDocument } from "./types";
 const { legalName, tradeName, cin, grievanceOfficer, processors } = businessDetails;
 const office = businessDetails.address.join(" ");
 const writeToOfficer = `our ${grievanceOfficer.designation}, ${grievanceOfficer.name}, at ${grievanceOfficer.email}`;
+
+// The cookie text describes exactly the tools this build can load (plan 12); with none it says no cookies are set.
+const tagged = TOOLS.length > 0;
+const hasAds = TOOLS.some((tool) => PURPOSE_OF[tool] === "advertising");
+const COMPANY: Readonly<Record<VendorId, string>> = { ga4: "Google", clarity: "Microsoft", googleAds: "Google", metaPixel: "Meta" };
+const companies = [...new Set(TOOLS.map((tool) => COMPANY[tool]))].join(", ").replace(/, ([^,]*)$/, " and $1");
+const TOOL_NOTICE: Readonly<Record<VendorId, string>> = {
+  ga4: "Measurement: Google Analytics counts visits and where they come from, so we know which pages help. Its cookies (_ga) last up to 2 years, and Google keeps the data for 14 months.",
+  clarity: "Measurement: Microsoft Clarity records how visitors scroll and click, with anything you type hidden, so we can see where a page confuses people. Its cookies (_clck, _clsk) last up to 1 year.",
+  googleAds: "Advertising: Google Ads tells us when a visitor from our ads gets in touch, and Google may use this to show you our ads elsewhere. Its cookie (_gcl_au) lasts 90 days.",
+  metaPixel: "Advertising: Meta Pixel tells us when a visitor from our Facebook or Instagram ads gets in touch, and Meta may use this to show you our ads elsewhere. Its cookie (_fbp) lasts 90 days.",
+};
+const cookieParagraphs: string[] = tagged
+  ? [
+      "This website sets cookies only if you allow them. On your first visit a notice lists each tool, and nothing loads until you choose. Google Tag Manager loads the tools you allow, and starts only once you allow at least one.",
+      ...TOOLS.map((tool) => TOOL_NOTICE[tool]),
+      ...(hasAds ? ["If your browser sends a Global Privacy Control signal, we treat it as a no to advertising."] : []),
+      "We store your choice on your device for 12 months so we don't ask again. It contains no tracking.",
+      "Change or withdraw your choice any time from Cookie settings at the foot of every page. When you turn something off, we delete its cookies. Vercel Web Analytics and Speed Insights count visits and measure page speed without cookies either way.",
+    ]
+  : ["This website sets no cookies. Vercel Web Analytics and Speed Insights count visits and measure page speed without cookies and without storing anything on your device."];
 
 export const privacyPolicy: LegalDocument = {
   title: "Privacy policy",
@@ -30,6 +52,7 @@ export const privacyPolicy: LegalDocument = {
         "If you message us on WhatsApp, call us or email us, we receive your name, number or address and whatever you send. WhatsApp is run by Meta, so a WhatsApp conversation is also covered by WhatsApp's own terms and privacy policy.",
         "When you become a client, we hold your account and billing details, your GSTIN if you give one, and what we need to run your services: your website content, and access to your Google Business Profile, domain and ad accounts.",
         "We count visits to this website in aggregate, without cookies and without identifying you.",
+        ...(tagged ? [`If you allow it, ${companies} also collect the cookie identifiers and visit details described under Cookies.`] : []),
       ],
     },
     {
@@ -38,14 +61,16 @@ export const privacyPolicy: LegalDocument = {
       paragraphs: [
         "We use your details to reply to your enquiry and, if you become a client, to build and run your website and the services in your plan, and to bill you for them. We use technical records to keep this website safe and working.",
         "We use your details only for the purpose you gave them for, and keep a record where the law requires one, for example tax invoices.",
-        "We don't sell personal data, and we don't use it for advertising.",
+        tagged
+          ? `We don't sell personal data. Only if you allow it, we use cookies to measure visits${hasAds ? " and our ads" : ""}, as described under Cookies.`
+          : "We don't sell personal data, and we don't use it for advertising.",
       ],
     },
     {
       heading: "Cookies",
-      requiredBy: ["DPDP Rules 2025 r.3(1)(a): what we collect must be stated accurately"],
+      requiredBy: ["DPDP Rules 2025 r.3(1)(a): what we collect must be stated accurately", "DPDP Act s.6: consent and its withdrawal"],
       paragraphs: [
-        "This website sets no cookies. Vercel Web Analytics and Speed Insights count visits and measure page speed without cookies and without storing anything on your device.",
+        ...cookieParagraphs,
         `The ${tradeName} client dashboard, where clients sign in, needs a cookie to keep you signed in and explains it there.`,
       ],
     },
@@ -55,6 +80,7 @@ export const privacyPolicy: LegalDocument = {
       paragraphs: [
         "We share personal data only with the service providers that help us run our business, each for one job. They process it on our behalf and only for that purpose.",
         ...processors.map((p) => `${p.name} ${p.purpose}, ${p.location}.`),
+        ...(tagged ? [`Only if you allow it in Cookie settings, ${companies} receive cookie data from this website, from the United States. They also use it under their own privacy policies.`] : []),
         `We may also disclose information when the law requires it, or to a successor business if ${tradeName} is merged or sold.`,
       ],
     },

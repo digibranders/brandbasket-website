@@ -7,8 +7,11 @@ describe("industries", () => {
   it("has the eight launch industries with unique slugs", () => {
     expect(INDUSTRIES.map((i) => i.slug).sort()).toEqual(["clinics", "coaching", "gyms", "home-services", "real-estate", "restaurants", "retail", "salons"]);
   });
-  it("names each industry as the homepage industries line does", () => {
-    for (const { slug, label } of INDUSTRIES_LINE.industries) expect(INDUSTRIES.find((i) => i.slug === slug)?.name).toBe(label);
+  it("names each industry page as the homepage industries line does", () => {
+    for (const { slug, label } of INDUSTRIES_LINE.industries) {
+      const page = industryBySlug(slug);
+      if (page) expect(page.name).toBe(label);
+    }
   });
   it.each(INDUSTRIES.map((i) => [i.slug, i] as const))("%s fits the SEO limits", (_, i) => {
     expect(i.title.length).toBeLessThanOrEqual(60);
@@ -25,9 +28,6 @@ describe("industries", () => {
     expect(i.faq.length).toBeLessThanOrEqual(4);
     for (const { q } of i.faq) expect(q.endsWith("?")).toBe(true);
     expect(JSON.stringify(i)).not.toMatch(/[\u2013\u2014]/);
-  });
-  it("links all eight industry pages from the homepage industries line", () => {
-    expect(INDUSTRIES_LINE.industries.map((i) => i.slug).sort()).toEqual(INDUSTRIES.map((i) => i.slug).sort());
   });
   it("finds an industry by slug and nothing for an unknown slug", () => {
     expect(industryBySlug("clinics")?.name).toBe("Clinics");

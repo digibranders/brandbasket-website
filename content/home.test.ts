@@ -8,7 +8,7 @@ import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, SHARE_IMAGE, STE
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
     expect(`${HERO.headline} ${HERO.headlineAccent}`).toBe("Before They Visit You, They Visit Your Website.");
-    expect(HERO.subhead).toBe("Your Business Has a Name. Give It a Place on the Internet for free.");
+    expect(HERO.subhead).toBe("Let's Build It for FREE.");
   });
   it("puts the subhead without \"for free\" and the offer line on the default share image", () => {
     expect(SHARE_IMAGE.headline).toBe("Your Business Has a Name. Give It a Place on the Internet.");

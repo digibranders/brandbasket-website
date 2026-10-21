@@ -15,4 +15,4 @@ export const PAYMENT_FAILURE = "Your website is taken offline as soon as a payme
 /** When adding or dropping a plan takes effect. Shared by the terms and the refund policy. */
 export const PLAN_CHANGE = "The change starts from your next monthly bill.";
 /** Owner-approved answer to "Can I add or drop a plan later?", used by the pricing FAQ. */
-export const PLAN_CHANGE_ANSWER = "Yes. Add a plan any time and your basket moves to the package price from your next bill. Drop one from a package and the plans you keep go back to their own prices from your next bill, and the package offer ends.";
+export const PLAN_CHANGE_ANSWER = "Yes. Add a plan any time and your basket moves to the package price from your next bill. Drop one from a package and the plans you keep go back to their own prices from your next bill, and package prices never apply to your account again.";

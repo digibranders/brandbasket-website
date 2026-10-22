@@ -22,8 +22,7 @@ describe("Basket Card copy", () => {
 describe("headline", () => {
   it("asks a single plan to add one more at the next package's percent", () => {
     expect(headline(pick(true, false, false))).toBe("Add one more plan for 20% off.");
-    // SEO alone: Social is the best next plan, and Social + SEO is 30% off.
-    expect(headline(pick(false, false, true))).toBe("Add one more plan for 30% off.");
+    expect(headline(pick(false, false, true))).toBe("Add one more plan for 20% off.");
   });
   it("names the package offer and its ad money", () => {
     expect(headline(pick(true, true, false))).toBe("20% off and ₹2,000 a month for your ads.");
@@ -80,7 +79,7 @@ describe("nextStamp", () => {
   });
   it("says when the next plan costs less than the basket now", () => {
     expect(nextStamp(pick(false, false, true))?.body).toBe(
-      "With 30% off both plans, your total drops from ₹24,999 to ₹24,498 a month. You save ₹10,500 a month, and we add ₹2,000 a month to your ads.",
+      "With 20% off both plans, your total drops from ₹24,999 to ₹22,398 a month. You save ₹5,600 a month.",
     );
   });
   it("is null on a full card", () => {

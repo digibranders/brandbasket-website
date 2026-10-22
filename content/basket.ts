@@ -25,7 +25,7 @@ const TWO_PLANS_FROM = `${Math.min(...twoPlanPercents)}%`;
 const ALL_THREE = `${allThree.percent}%`;
 
 export const BASKET_COPY = {
-  heroIntro: `Build your basket. Two plans are ${TWO_PLANS_FROM} off or more, all three are ${ALL_THREE} off.`,
+  heroIntro: `Build your basket. Two plans are ${TWO_PLANS_FROM} off, all three are ${ALL_THREE} off.`,
   perMonth: "a month",
   basketPrefix: "Your basket:",
   /** Read before the struck list price. */
@@ -40,7 +40,7 @@ export const BASKET_COPY = {
 /** The strip under the plan rows (mock: offerText()): the invitation for one plan, or what the package earns. */
 export function offerNote(pick: BasketPick): string {
   const pkg = packageFor(pick);
-  if (!pkg) return `Take two plans and save ${TWO_PLANS_FROM} or more. Take all three and save ${ALL_THREE}.`;
+  if (!pkg) return `Take two plans and save ${TWO_PLANS_FROM}. Take all three and save ${ALL_THREE}.`;
   const line = `${pkg.name}: ${pkg.percent}% off, so you save ${formatInr(packageSaving(pick))} a month.`;
   const credit = adCreditFor(pick);
   if (credit === 0) return line;

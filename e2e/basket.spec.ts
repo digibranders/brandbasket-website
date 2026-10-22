@@ -83,13 +83,13 @@ test("the expected totals match the owner's figures", () => {
   expect(PICKS.map(pickTotal)).toEqual(["₹3,538.82", "₹12,269.64", "₹26,429.64", "₹31,384.46"]);
 });
 
-test("Social and SEO without the website is the 30% package", async ({ page }) => {
+test("Social and SEO without the website is the 20% package", async ({ page }) => {
   await page.goto("/pricing");
   const hero = page.locator("section[aria-labelledby='h-pricing']");
   await hero.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.search.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
-  await expect(hero.getByText("₹28,907.64", { exact: true })).toBeVisible();
+  await expect(hero.getByText("₹33,037.64", { exact: true })).toBeVisible();
 });
 
 test("the last switch on cannot be turned off", async ({ page }) => {

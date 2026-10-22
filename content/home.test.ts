@@ -25,17 +25,16 @@ describe("home content", () => {
     expect(WORK.cases).toHaveLength(3);
     expect(STEPS).toHaveLength(3);
     expect(REPORT.kpis).toHaveLength(4);
-    expect(INDUSTRIES_LINE.industries).toHaveLength(15);
+    expect(INDUSTRIES_LINE.industries).toHaveLength(8);
     expect(HOME_FAQ).toHaveLength(11);
   });
   it("keeps the Example report chip", () => {
     expect(REPORT.chip).toBe("Example report");
   });
-  it("gives every industry a unique slug and no href yet", () => {
+  it("gives every industry a unique slug", () => {
     const slugs = INDUSTRIES_LINE.industries.map((i) => i.slug);
     expect(new Set(slugs).size).toBe(slugs.length);
     for (const slug of slugs) expect(slug).toMatch(/^[a-z]+(-[a-z]+)*$/);
-    expect(JSON.stringify(INDUSTRIES_LINE)).not.toContain("href");
   });
   it("points every work case at a desktop and phone image", () => {
     for (const c of WORK.cases) {

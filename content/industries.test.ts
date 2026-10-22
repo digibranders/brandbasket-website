@@ -8,11 +8,9 @@ describe("industries", () => {
   it("has the eight launch industries with unique slugs", () => {
     expect(INDUSTRIES.map((i) => i.slug).sort()).toEqual(["clinics", "coaching", "gyms", "home-services", "real-estate", "restaurants", "retail", "salons"]);
   });
-  it("names each industry page as the homepage industries line does", () => {
-    for (const { slug, label } of INDUSTRIES_LINE.industries) {
-      const page = industryBySlug(slug);
-      if (page) expect(page.name).toBe(label);
-    }
+  it("gives every industry page one homepage tile, named as the page is", () => {
+    expect(INDUSTRIES_LINE.industries.map((i) => i.slug).sort()).toEqual(INDUSTRIES.map((i) => i.slug).sort());
+    for (const { slug, label } of INDUSTRIES_LINE.industries) expect(industryBySlug(slug)?.name).toBe(label);
   });
   it.each(INDUSTRIES.map((i) => [i.slug, i] as const))("%s fits the SEO limits", (_, i) => {
     expect(i.title.length).toBeLessThanOrEqual(60);

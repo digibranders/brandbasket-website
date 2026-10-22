@@ -26,7 +26,7 @@ export function RichText({ line }: { readonly line: Rich }): ReactElement {
   return <>{line.before}<b className="font-semibold">{line.strong}</b>{line.after}</>;
 }
 
-/** One stamp slot: tapping it adds or removes the plan, like the switches above. */
+/** One plan slot: tapping it adds or removes the plan. */
 function Slot({ id, pick, onlyOne }: { readonly id: PlanId; readonly pick: BasketPick; readonly onlyOne: boolean }): ReactElement {
   const on = pick[id];
   const SlotIcon = ICON[id];

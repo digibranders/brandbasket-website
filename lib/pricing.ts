@@ -115,7 +115,7 @@ export interface NextPlan {
 }
 
 /**
- * The missing plan worth adding most (the Basket Card's "Next stamp"): the one whose saving and ad credit gained, less
+ * The missing plan worth adding most (the Basket Card's "Add next"): the one whose saving and ad credit gained, less
  * its extra monthly cost, is largest. Null when every plan is already in the basket.
  */
 export function nextPlanToAdd(pick: BasketPick): NextPlan | null {

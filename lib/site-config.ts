@@ -70,11 +70,11 @@ export const businessDetails: BusinessDetails = {
   phoneHref: "+917897896607",
   whatsappHref: "https://wa.me/917897896607",
   email: "support@brandbasket.in",
-  // Open input D11: confirm the hours with the phone and WhatsApp number.
+  // D11: the phone and WhatsApp number confirmed by the owner 2026-10-22; the hours are still to confirm.
   hours: "Mon to Sat, 10 am to 7 pm IST",
   foundingYear: 2021,
-  // Open input D9: the name is Digibranders' Grievance Officer on its other brand; confirm the person and the mailbox before launch.
-  grievanceOfficer: { name: "Siddique Ahmed", designation: "Grievance Officer", email: "grievance@brandbasket.in" },
+  // D9, confirmed by the owner 2026-10-22: Siddique Ahmed, reached at the support mailbox (there is no separate grievance mailbox).
+  grievanceOfficer: { name: "Siddique Ahmed", designation: "Grievance Officer", email: "support@brandbasket.in" },
   courts: "Thane, Maharashtra",
   processors: [
     { name: "Vercel", purpose: "hosts this website, counts visits without cookies and measures page speed", location: "from the United States and edge servers in India" },

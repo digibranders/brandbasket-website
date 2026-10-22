@@ -15,5 +15,6 @@
  * 2026-10-21.3  Privacy policy: Cookies, sharing and use describe the tools in the Google Tag Manager container (Google
  *               Analytics and Microsoft Clarity), loaded only with consent. With no container configured the text
  *               is unchanged. Not yet published, so the label was kept when Google Ads and Meta Pixel were dropped.
+ * 2026-10-22.1  Terms: Social + SEO is 20% off, like the other two-plan packages (was 30%).
  */
-export const LEGAL_TEXT_VERSION = "2026-10-21.3";
+export const LEGAL_TEXT_VERSION = "2026-10-22.1";

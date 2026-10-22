@@ -56,7 +56,7 @@ describe("baskets", () => {
     [pick(false, false, true), 24999, 24999, 29498.82, 0, 0, null],
     [pick(true, true, false), 12998, 10398, 12269.64, 2600, 2000, "website-growth"],
     [pick(true, false, true), 27998, 22398, 26429.64, 5600, 0, "website-search"],
-    [pick(false, true, true), 34998, 24498, 28907.64, 10500, 2000, "growth-search"],
+    [pick(false, true, true), 34998, 27998, 33037.64, 7000, 2000, "growth-search"],
     [pick(true, true, true), 37997, 26597, 31384.46, 11400, 5000, "everything"],
   ])("prices %o", (basket, list, monthly, withGst, saving, adCredit, packageId) => {
     expect(monthlyTotal(basket)).toBe(list);
@@ -74,9 +74,11 @@ describe("baskets", () => {
     }
   });
 
-  it("never prices a two-plan package above all three", () => {
+  it("prices every two-plan package below all three except Social + SEO (owner's choice, 2026-10-22)", () => {
     const everything = packageTotal(pick(true, true, true));
-    for (const p of PACKAGES.filter((p) => p.id !== "everything")) expect(packageTotal(p.pick)).toBeLessThan(everything);
+    for (const p of PACKAGES.filter((p) => p.id !== "everything" && p.id !== "growth-search")) expect(packageTotal(p.pick)).toBeLessThan(everything);
+    // Every two-plan package is 20% off, so Social + SEO (27,998) costs more than all three (26,597).
+    expect(packageTotal(pick(false, true, true))).toBeGreaterThan(everything);
   });
 
   it("gives an empty basket no price and no package", () => {
@@ -126,8 +128,8 @@ describe("nextPlanToAdd", () => {
     expect(nextPlanToAdd(pick(true, true, false))).toEqual({ id: "search", pick: pick(true, true, true), extra: 16199, saving: 11400, adCredit: 5000 });
   });
   it("reports a negative extra when the package costs less than the basket now", () => {
-    // SEO alone is 24,999; Social + SEO is 24,498.
-    expect(nextPlanToAdd(pick(false, false, true))).toMatchObject({ id: "growth", extra: -501, saving: 10500, adCredit: 2000 });
+    // SEO alone is 24,999; Website + SEO is 22,398.
+    expect(nextPlanToAdd(pick(false, false, true))).toMatchObject({ id: "website", extra: -2601, saving: 5600, adCredit: 0 });
   });
   it("returns null when every plan is in the basket", () => {
     expect(nextPlanToAdd(pick(true, true, true))).toBeNull();

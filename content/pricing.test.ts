@@ -34,8 +34,8 @@ describe("pricing content", () => {
       PACKAGES.map((p) => (p.adCredit > 0 ? formatInr(p.adCredit) : false)),
     ]);
     expect(first?.rows.map((r) => r.cells)).toEqual([
-      ["20%", "20%", "30%", "30%"],
-      ["₹2,600", "₹5,600", "₹10,500", "₹11,400"],
+      ["20%", "20%", "20%", "30%"],
+      ["₹2,600", "₹5,600", "₹7,000", "₹11,400"],
       ["₹2,000", false, "₹2,000", "₹5,000"],
     ]);
   });
@@ -72,7 +72,7 @@ describe("pricing content", () => {
       "Is ad spend included?",
       "Do you guarantee rankings or leads?",
     ]);
-    expect(PRICING_FAQ[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + SEO is 30% off.");
+    expect(PRICING_FAQ[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + SEO is 20% off.");
   });
   it("states the Social ad money from the packages", () => {
     const note = PLAN_DETAILS.find((d) => d.id === "growth")?.columns.at(-1)?.note;

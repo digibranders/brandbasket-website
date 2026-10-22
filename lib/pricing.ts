@@ -52,7 +52,7 @@ export interface Package {
 export const PACKAGES: readonly Package[] = [
   { id: "website-growth", name: "Website + Social", pick: { website: true, growth: true, search: false }, percent: 20, adCredit: 2000 },
   { id: "website-search", name: "Website + SEO", pick: { website: true, growth: false, search: true }, percent: 20, adCredit: 0 },
-  { id: "growth-search", name: "Social + SEO", pick: { website: false, growth: true, search: true }, percent: 30, adCredit: 2000 },
+  { id: "growth-search", name: "Social + SEO", pick: { website: false, growth: true, search: true }, percent: 20, adCredit: 2000 },
   { id: "everything", name: "All three", pick: { website: true, growth: true, search: true }, percent: 30, adCredit: 5000 },
 ];
 

@@ -36,7 +36,7 @@ describe("planOffersJsonLd", () => {
   });
   it("adds the four packages after the plans when asked", () => {
     const offers = planOffersJsonLd({ packages: true }).hasOfferCatalog.itemListElement;
-    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([10398, 22398, 24498, 26597]);
+    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([10398, 22398, 27998, 26597]);
     expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + SEO", "Social + SEO", "All three"]);
     expect(offers[3].priceSpecification.unitText).toBe("MONTH");
     expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(false);

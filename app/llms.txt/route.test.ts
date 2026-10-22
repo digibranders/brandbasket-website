@@ -25,7 +25,7 @@ describe("GET /llms.txt", () => {
     const body = await GET().text();
     expect(body).toContain("- Website + Social: ₹12,998 a month at list price; ₹10,398 a month as a package (20% off); first payment ₹12,269.64 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
     expect(body).toContain("- Website + SEO: ₹27,998 a month at list price; ₹22,398 a month as a package (20% off); first payment ₹26,429.64 with GST.\n");
-    expect(body).toContain("- Social + SEO: ₹34,998 a month at list price; ₹24,498 a month as a package (30% off); first payment ₹28,907.64 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
+    expect(body).toContain("- Social + SEO: ₹34,998 a month at list price; ₹27,998 a month as a package (20% off); first payment ₹33,037.64 with GST. Bought together as you start: ₹2,000 a month of ad credit.");
     expect(body).toContain("- All three: ₹37,997 a month at list price; ₹26,597 a month as a package (30% off); first payment ₹31,384.46 with GST. Bought together as you start: ₹5,000 a month of ad credit.");
   });
 

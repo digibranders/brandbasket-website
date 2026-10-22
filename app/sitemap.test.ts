@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
-import { INDUSTRIES } from "@/content/industries";
 import sitemap from "./sitemap";
 
 describe("sitemap", () => {
-  it("lists the hub, About and every industry page", () => {
+  it("lists About and no industry pages", () => {
     const urls = sitemap().map((entry) => entry.url);
-    expect(urls).toContain("https://brandbasket.in/industries");
     expect(urls).toContain("https://brandbasket.in/about");
-    for (const { slug } of INDUSTRIES) expect(urls).toContain(`https://brandbasket.in/industries/${slug}`);
+    expect(urls.some((url) => url.includes("/industries"))).toBe(false);
     expect(new Set(urls).size).toBe(urls.length);
   });
   it("leaves the noindex data notice out", () => {

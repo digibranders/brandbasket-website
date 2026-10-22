@@ -14,12 +14,11 @@ export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Contact", href: "/contact" },
 ];
 
-// Mock footer order, with the plan's "Industries" link after "Our work".
+// Mock footer order.
 export const FOOTER_NAV: readonly NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
-  { label: "Industries", href: "/industries" },
   { label: "About us", href: "/about" },
   { label: "Contact us", href: "/contact" },
 ];

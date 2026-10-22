@@ -19,14 +19,7 @@ export type HomeIconKey =
   | "GraduationCap"
   | "Storefront"
   | "Toolbox"
-  | "Buildings"
-  | "Bed"
-  | "Coffee"
-  | "Pill"
-  | "BookOpen"
-  | "Scales"
-  | "Calculator"
-  | "Car";
+  | "Buildings";
 
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 
@@ -65,7 +58,6 @@ export const FACTS: readonly Fact[] = [
 ];
 
 export interface Industry {
-  /** Matches /industries/[slug] when that industry has a page. */
   readonly slug: string;
   readonly label: string;
   readonly icon: HomeIconKey;
@@ -82,13 +74,6 @@ export const INDUSTRIES_LINE = {
     { slug: "retail", label: "Shops", icon: "Storefront" },
     { slug: "home-services", label: "Home services", icon: "Toolbox" },
     { slug: "real-estate", label: "Real estate", icon: "Buildings" },
-    { slug: "hotels", label: "Hotels", icon: "Bed" },
-    { slug: "cafes", label: "Cafes", icon: "Coffee" },
-    { slug: "pharmacies", label: "Pharmacies", icon: "Pill" },
-    { slug: "tuition-classes", label: "Tuition classes", icon: "BookOpen" },
-    { slug: "lawyers", label: "Lawyers", icon: "Scales" },
-    { slug: "accountants", label: "Accountants", icon: "Calculator" },
-    { slug: "car-services", label: "Car services", icon: "Car" },
   ],
 } as const satisfies { readonly title: string; readonly industries: readonly Industry[] };
 

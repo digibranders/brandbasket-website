@@ -1,7 +1,6 @@
 // lib/seo/routes.ts
 // One place for every page's title, description and sitemap entry. Titles are complete (they are set as absolute
 // titles, so the layout's "%s | Brandbasket" template never runs). Prices are built from lib/pricing.ts.
-import { INDUSTRIES, type Industry } from "@/content/industries";
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
 import { refundPolicy } from "@/content/legal/refund";
@@ -38,13 +37,6 @@ export const ROUTES = {
     description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off, before ${GST_LABEL} GST.`,
     updated: UPDATED,
     priority: 0.9,
-  },
-  industries: {
-    path: "/industries",
-    title: `Websites for local businesses, built free | ${tradeName}`,
-    description: "Free websites for clinics, salons, restaurants, gyms, coaching classes, shops, home services and real estate agents, run for you every month.",
-    updated: UPDATED,
-    priority: 0.8,
   },
   contact: {
     path: "/contact",
@@ -98,14 +90,9 @@ export const ROUTES = {
   },
 } as const satisfies Record<string, RouteMeta>;
 
-/** An industry page's entry. Its title and description live with the rest of its copy in content/industries.ts. */
-export function industryRoute(industry: Industry): RouteMeta {
-  return { path: `/industries/${industry.slug}`, title: industry.title, description: industry.description, updated: industry.updated, priority: 0.8 };
-}
-
-/** Every page search engines may index: the registry plus the eight industry pages, without noindex pages. */
+/** Every page search engines may index: the registry without noindex pages. */
 export function indexableRoutes(): RouteMeta[] {
-  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...INDUSTRIES.map(industryRoute)];
+  const routes: readonly RouteMeta[] = Object.values(ROUTES);
   return routes.filter((r) => !r.noindex);
 }
 

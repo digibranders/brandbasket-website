@@ -9,7 +9,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | # | Input | Status | Where it lives |
 |---|---|---|---|
 | D3 | Cancellation and refund terms for monthly billing | Answered from the published Fynix policy; owner to confirm in review. Cancel anytime with no notice period; the website stays online until the end of the month already paid for; no refund of a part-used month; a reminder before every renewal; a failed payment takes the website offline at once with no grace period, content kept and the site restored when the payment goes through; plan changes start from the next monthly bill; the domain is the customer's, the design and content are a hosted service while subscribed | `content/legal/cancellation.ts` (used by terms, refund, the Home and Pricing FAQs, pricing "Good to know" and About) |
-| D4 | What does Social Media and Ads include? | Answered 2026-10-21: Instagram, Facebook and Google Business Profile posts, with the number each month agreed directly with each client (owner); review replies; Meta ads managed for up to ₹10,000 a month of the client's budget plus our ad credit; monthly report; reels at ₹500 an hour | `content/basket.ts`, `content/pricing.ts`, `content/industries.ts` |
+| D4 | What does Social Media and Ads include? | Answered 2026-10-21: Instagram, Facebook and Google Business Profile posts, with the number each month agreed directly with each client (owner); review replies; Meta ads managed for up to ₹10,000 a month of the client's budget plus our ad credit; monthly report; reels at ₹500 an hour | `content/basket.ts`, `content/pricing.ts` |
 | D5 | Real proof: client sites for the showcase, Google rating, quotes | Placeholder: Curry Cook, GKR Hospitality and PayWeek sample sites and screenshots; heading "Real websites, live today." | `content/home.ts` `WORK`, `public/work/` |
 | D9 | Grievance Officer name and email | Placeholder: Siddique Ahmed (named for Digibranders in FirstFold), grievance@brandbasket.in, "Grievance Officer". Confirm the person and that the mailbox receives mail | `lib/site-config.ts` `grievanceOfficer` |
 | D10 | Plan parameter format the platform reads from the sign-up link | `?plan=` lists any of `website`, `growth`, `search` (for example `growth,search` without the website). brandbasket-platform reads it from plan 16 Task P3.1, so the website and the platform release together. Main buttons go to `/contact#start` until `NEXT_PUBLIC_SIGNUP_URL` is set | `lib/signup.ts` |
@@ -30,12 +30,9 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | Locked copy with a basket that has no website ("Get my free website" buttons, pricing headline "Simple monthly plans. Start with your website.") | Decided by Claude 2026-10-21, owner delegated ("take your decisions"): kept unchanged; locked copy changes only with the owner's own yes, and the free build is still the offer |
 | Contact page meta description | Open |
 | Error page lines ("Sorry, something went wrong." and the retry line) and 404 link labels | Open |
-| Industries hub copy: lede "Pick your trade to see what we build, what we run every month and the basket we suggest.", title "Websites for local businesses, built free \| Brandbasket" and its meta description | Open |
-| Industry page labels: "Compare all plans" link, OG image alt "Brandbasket logo and the page headline" | Open |
 | Default share image: "Your Business Has a Name. Give It a Place on the Internet." over the offer line | Open |
 | FAQ answers that do not open with a direct answer: Pricing "Do you guarantee rankings or leads?" opens with "No one honestly can." Suggested: start with "No." | Open |
 | Unselected work showcase tab names are 45% ink (2.9:1 contrast, fails WCAG AA; matches the mock). 60% would pass | Open |
-| Pricing page has no in-page link to `/industries` (footer only); add one only with owner copy | Open |
 
 ## Legal statements the owner must confirm
 
@@ -67,8 +64,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 ## Pages and links held back
 
-- Nav "Industries" points to the homepage section `/#industries`.
-- The pricing page copy has no natural place for an `/industries` link (plan 10.3); it reaches the hub through the footer only. Add an in-page link only with owner-approved copy.
+- The industry pages (`/industries` and the eight `/industries/[slug]` pages) were removed at the owner's request, 2026-10-22. The homepage keeps the eight trades as plain icon tiles with no links.
 
 ## Deferred engineering
 
@@ -93,6 +89,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | List prices now ₹2,999 / ₹9,999 / ₹24,999 a month (from ₹3,000 / ₹10,000 / ₹25,000); packages 20% and 30% off as before, so they now come out in paise (₹10,398.40, ₹22,398.40, ₹24,498.60, ₹26,597.90); ad credit, the ₹10,000 ad budget and USD prices unchanged | 2026-10-21 |
 | Package prices round down to the whole rupee (₹10,398, ₹22,398, ₹24,498, ₹26,597; savings ₹2,600, ₹5,600, ₹10,500, ₹11,400); GST stays to the paisa. The pricing total shows the plans' own price with GST struck through beside the package price | 2026-10-21 |
 | Legal review happens on the preview, not before building | 2026-10-19 |
-| Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`) | 2026-10-19 |
+| Industries copy: the eight industry pages (`content/industries.ts` `INDUSTRIES`; superseded 2026-10-22, pages removed) | 2026-10-19 |
+| Industry pages removed; the homepage industries section is eight icon tiles with no links | 2026-10-22 |
 | About copy (`content/about.ts`) | 2026-10-19 |
 | Homepage FAQ: the 11 questions and answers (`content/home.ts` `HOME_FAQ`) | 2026-10-19 |

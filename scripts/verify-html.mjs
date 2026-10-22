@@ -17,7 +17,6 @@ const pages = [];
 const REQUIRED_LD = [
   [/\/index\.html$/, ["WebSite", "Organization", "Service", "FAQPage"]],
   [/\/pricing\.html$/, ["Service", "BreadcrumbList", "FAQPage"]],
-  [/\/industries\/[^/]+\.html$/, ["Service", "BreadcrumbList", "FAQPage"]],
   [/\/about\.html$/, ["AboutPage", "BreadcrumbList"]],
   [/\/contact\.html$/, ["ContactPage", "BreadcrumbList"]],
   [/\/(privacy|terms|refund|shipping|notice)\.html$/, ["BreadcrumbList"]],

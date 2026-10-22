@@ -11,9 +11,9 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | D3 | Cancellation and refund terms for monthly billing | Answered from the published Fynix policy; owner to confirm in review. Cancel anytime with no notice period; the website stays online until the end of the month already paid for; no refund of a part-used month; a reminder before every renewal; a failed payment takes the website offline at once with no grace period, content kept and the site restored when the payment goes through; plan changes start from the next monthly bill; the domain is the customer's, the design and content are a hosted service while subscribed | `content/legal/cancellation.ts` (used by terms, refund, the Home and Pricing FAQs, pricing "Good to know" and About) |
 | D4 | What does Social Media and Ads include? | Answered 2026-10-21: Instagram, Facebook and Google Business Profile posts, with the number each month agreed directly with each client (owner); review replies; Meta ads managed for up to ₹10,000 a month of the client's budget plus our ad credit; monthly report; reels at ₹500 an hour | `content/basket.ts`, `content/pricing.ts` |
 | D5 | Real proof: client sites for the showcase, Google rating, quotes | Placeholder: Curry Cook, GKR Hospitality and PayWeek sample sites and screenshots; heading "Real websites, live today." | `content/home.ts` `WORK`, `public/work/` |
-| D9 | Grievance Officer name and email | Placeholder: Siddique Ahmed (named for Digibranders in FirstFold), grievance@brandbasket.in, "Grievance Officer". Confirm the person and that the mailbox receives mail | `lib/site-config.ts` `grievanceOfficer` |
+| D9 | Grievance Officer name and email | Answered 2026-10-22 (owner): Siddique Ahmed, "Grievance Officer", reached at support@brandbasket.in (a real mailbox; no separate grievance@) | `lib/site-config.ts` `grievanceOfficer` |
 | D10 | Plan parameter format the platform reads from the sign-up link | `?plan=` lists any of `website`, `growth`, `search` (for example `growth,search` without the website). brandbasket-platform reads it from plan 16 Task P3.1, so the website and the platform release together. Main buttons go to `/contact#start` until `NEXT_PUBLIC_SIGNUP_URL` is set | `lib/signup.ts` |
-| D11 | Phone, WhatsApp number and hours | Placeholder: +91 789 789 6607 (Fynix's), Mon to Sat, 10 am to 7 pm IST | `lib/site-config.ts` |
+| D11 | Phone, WhatsApp number and hours | +91 789 789 6607 confirmed 2026-10-22 (owner: answered for Brandbasket); hours Mon to Sat, 10 am to 7 pm IST still to confirm | `lib/site-config.ts` |
 
 ## Owner review of new copy
 
@@ -37,7 +37,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 ## Legal statements the owner must confirm
 
 - Billing method: Razorpay autopay (e-mandate) or monthly invoices. The refund policy is worded to be true either way.
-- Mailbox provider behind hello@, grievance@ and the contact inbox: not yet in the processor list.
+- Mailbox provider behind hello@, support@ and the contact inbox: not yet in the processor list.
 - DNS on Cloudflare (Cloudflare is listed as a processor).
 - DPDP Rules 2025 r.8(3) log retention of one year is cited; the site keeps no logs beyond Vercel's window. Add a log drain or drop the citation after legal advice.
 - Retention: leads 12 months, client records 8 years, support email 3 years. Customer data deleted within 30 days of a plan ending.

@@ -1,6 +1,5 @@
 // lib/og/share-image.tsx
-// The share-image designs (1200x630). shareImage: logo lockup, a headline and a rattan line, used by the industry pages.
-// letterboardShareImage: the site's default card, a café letterboard with an italic line and the logo underneath.
+// The share-image design (1200x630). letterboardShareImage: the site's default card, a café letterboard with an italic line and the logo underneath.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
@@ -41,21 +40,6 @@ const FONTS = [
 ] as const;
 
 const lockupSrc = `data:image/svg+xml;base64,${lockup}`;
-
-export function shareImage({ headline, line }: { readonly headline: string; readonly line: string }): ImageResponse {
-  return new ImageResponse(
-    (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "space-between", padding: 72, background: BONE, color: INK, fontFamily: "Red Hat Display" }}>
-        {/* The lockup's viewBox is 312.66 by 55. next/image cannot render inside ImageResponse, so this is a plain img. */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img src={lockupSrc} width={341} height={60} alt="" />
-        <div style={{ display: "flex", fontSize: 68, lineHeight: 1.04, letterSpacing: "-0.045em", maxWidth: 980 }}>{headline}</div>
-        <div style={{ display: "flex", fontSize: 34, letterSpacing: "-0.02em", color: RATTAN_TEXT }}>{line}</div>
-      </div>
-    ),
-    { ...SHARE_IMAGE_SIZE, fonts: [...FONTS] },
-  );
-}
 
 export interface LetterboardCopy {
   readonly board: { readonly kicker: string; readonly headline: string; readonly note: string };

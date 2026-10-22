@@ -58,7 +58,6 @@ export const FACTS: readonly Fact[] = [
 ];
 
 export interface Industry {
-  /** The /industries/[slug] page the tile opens. */
   readonly slug: string;
   readonly label: string;
   readonly icon: HomeIconKey;

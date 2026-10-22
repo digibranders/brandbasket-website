@@ -11,7 +11,7 @@ interface PageHeroProps {
 }
 
 /**
- * Short text hero for inner pages (industries hub, industry pages, About). No Reveal: the hero paints at once.
+ * Short text hero for inner pages (About). No Reveal: the hero paints at once.
  * The --hero wash is masked to fade out at the bottom. Its rattan glow sits on the bottom edge, which on a short
  * hero shows as a hard line where the section ends; the tall homepage and pricing heroes hide it.
  */

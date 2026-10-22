@@ -25,8 +25,6 @@ const TWO_PLANS_FROM = `${Math.min(...twoPlanPercents)}%`;
 const ALL_THREE = `${allThree.percent}%`;
 
 export const BASKET_COPY = {
-  panelTitle: "Build your basket",
-  panelNote: `Two plans are ${TWO_PLANS_FROM} off or more. All three are ${ALL_THREE} off.`,
   heroIntro: `Build your basket. Two plans are ${TWO_PLANS_FROM} off or more, all three are ${ALL_THREE} off.`,
   perMonth: "a month",
   basketPrefix: "Your basket:",

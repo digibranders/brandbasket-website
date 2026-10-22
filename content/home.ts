@@ -92,40 +92,11 @@ export const INDUSTRIES_LINE = {
   ],
 } as const satisfies { readonly title: string; readonly industries: readonly Industry[] };
 
-export interface PlanSide {
-  readonly label: string;
-  readonly price: string;
-  readonly priceNote: string;
-  readonly ticks: readonly string[];
-  readonly explore: string;
-}
-
-/** Heading kept word for word. Explore links go to /pricing#details. */
+/** Heading for the homepage basket section (owner asked for a plans heading, 2026-10-22). */
 export const PLANS_SECTION = {
-  heading: "You do not pay to build it.",
-  headingAccent: "You pay to keep it running.",
-  exploreHref: "/pricing#details",
-  build: {
-    label: "We build it",
-    price: "₹0",
-    priceNote: "development fee",
-    ticks: ["Up to 5 pages", "Works on every phone", "Enquiry forms and click to call"],
-    explore: "What is in the free build",
-  },
-  run: {
-    label: "We keep it running",
-    price: MANAGED_MONTHLY,
-    priceNote: "a month + GST",
-    ticks: ["Hosting, SSL and backups", "Security and uptime", "2 small edits a month", "Monthly health report"],
-    explore: "Everything the care plan covers",
-  },
-} as const satisfies {
-  readonly heading: string;
-  readonly headingAccent: string;
-  readonly exploreHref: string;
-  readonly build: PlanSide;
-  readonly run: PlanSide;
-};
+  heading: "Pick your plans.",
+  headingAccent: "The more you add, the more you save.",
+} as const;
 
 export interface WorkImage {
   readonly src: string;

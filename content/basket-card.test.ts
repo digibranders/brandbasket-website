@@ -1,41 +1,34 @@
 // content/basket-card.test.ts
 import { describe, expect, it } from "vitest";
 import { type BasketPick, PLAN_IDS } from "@/lib/pricing";
-import { BASKET_CARD, benefits, headline, nextStamp, oneTimeNote, type Rich, stripLine, trackSteps } from "./basket-card";
+import { BASKET_CARD, benefits, headline, nextStamp, oneTimeNote, type Rich } from "./basket-card";
 
 const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
 const text = (rich: Rich | null): string | null => (rich ? `${rich.before}${rich.strong}${rich.after}` : null);
 
 describe("Basket Card copy", () => {
-  it("has a stamp line for every plan", () => {
+  it("has a line for every plan", () => {
     expect(Object.keys(BASKET_CARD.slots).sort()).toEqual([...PLAN_IDS].sort());
   });
-  it("states what each number of stamps unlocks, from the package table", () => {
-    expect(trackSteps()).toEqual([
-      { count: "1 stamp", reward: "Each plan at its own price" },
-      { count: "2 stamps", reward: "20% off, or 30% for Social + SEO" },
-      { count: "3 stamps", reward: "30% off and ₹5,000 a month for ads" },
-    ]);
-  });
   it("has no em or en dashes", () => {
-    const all: unknown[] = [BASKET_CARD, trackSteps()];
+    const all: unknown[] = [BASKET_CARD];
     for (const p of [pick(true, false, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(true, true, true)]) {
-      all.push([headline(p), benefits(p), oneTimeNote(p), nextStamp(p), stripLine(p)]);
+      all.push([headline(p), benefits(p), oneTimeNote(p), nextStamp(p)]);
     }
     expect(JSON.stringify(all)).not.toMatch(/[\u2013\u2014]/);
   });
 });
 
 describe("headline", () => {
-  it("asks a single plan for one more stamp at the next package's percent", () => {
-    expect(headline(pick(true, false, false))).toBe("Stamp one more plan for 20% off.");
+  it("asks a single plan to add one more at the next package's percent", () => {
+    expect(headline(pick(true, false, false))).toBe("Add one more plan for 20% off.");
     // SEO alone: Social is the best next plan, and Social + SEO is 30% off.
-    expect(headline(pick(false, false, true))).toBe("Stamp one more plan for 30% off.");
+    expect(headline(pick(false, false, true))).toBe("Add one more plan for 30% off.");
   });
   it("names the package offer and its ad money", () => {
     expect(headline(pick(true, true, false))).toBe("20% off and ₹2,000 a month for your ads.");
     expect(headline(pick(true, false, true))).toBe("20% off on both plans.");
-    expect(headline(pick(true, true, true))).toBe("Full card. 30% off and ₹5,000 a month for your ads.");
+    expect(headline(pick(true, true, true))).toBe("Full basket. 30% off and ₹5,000 a month for your ads.");
   });
 });
 
@@ -76,7 +69,7 @@ describe("nextStamp", () => {
       id: "growth",
       name: "Social Media and Ads",
       body: "Just ₹7,399 more a month. You save ₹2,600 a month, and we add ₹2,000 a month to your ads.",
-      button: "Stamp Social",
+      button: "Add Social",
     });
     expect(nextStamp(pick(true, true, false))?.body).toBe(
       "Just ₹16,199 more a month. Your saving goes from ₹2,600 to ₹11,400 a month, and your ad money from ₹2,000 to ₹5,000.",
@@ -92,23 +85,5 @@ describe("nextStamp", () => {
   });
   it("is null on a full card", () => {
     expect(nextStamp(pick(true, true, true))).toBeNull();
-  });
-});
-
-describe("stripLine", () => {
-  it("invites a single plan to start plans together", () => {
-    const line = stripLine(pick(true, false, false));
-    expect(text(line.long)).toBe("Start plans together at checkout: 2 plans are 20% off. All 3 are 30% off, plus ₹5,000 a month for your ads.");
-    expect(text(line.short)).toBe("Plans together: up to 30% off");
-  });
-  it("calls the ad money a one-time offer", () => {
-    const line = stripLine(pick(true, true, false));
-    expect(text(line.long)).toBe("Your basket gets 20% off and ₹2,000 a month for your ads. The ad money is a one-time offer, only when you start these plans together at checkout.");
-    expect(text(line.short)).toBe("20% off + ₹2,000 for ads");
-  });
-  it("points Website + SEO at the ad money all three earn", () => {
-    const line = stripLine(pick(true, false, true));
-    expect(text(line.long)).toBe("Your basket gets 20% off. Start Social with it at checkout and we add ₹5,000 a month to your ads.");
-    expect(text(line.short)).toBe("20% off on your plans");
   });
 });

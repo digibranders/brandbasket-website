@@ -1,6 +1,5 @@
 // content/basket-card.ts
-// Copy for the homepage Basket Card and the live stamps strip above the nav (docs/design/mock.html: .ox-card, .bsum,
-// .promo .pr-stamps; owner picked both, 2026-10-21). Percents and rupees come from lib/pricing.ts.
+// Copy for the homepage Basket Card (docs/design/mock.html: .ox-card, .bsum; owner's pick, 2026-10-21). Percents and rupees come from lib/pricing.ts.
 import { adCreditFor, type BasketPick, basketPlans, formatInr, nextPlanToAdd, type Package, PACKAGES, PLAN_IDS, PLANS, packageFor, packageSaving, type PlanId } from "@/lib/pricing";
 
 /** A line with one bold run, rendered as before<b>strong</b>after. */
@@ -19,46 +18,27 @@ const found = PACKAGES.find((p) => basketPlans(p.pick).length === PLAN_IDS.lengt
 if (twoPlanPackages.length === 0 || !found) throw new RangeError("PACKAGES needs two-plan packages and an all-three package");
 const fullCard: Package = found;
 const TWO_PLAN_PERCENT = Math.min(...twoPlanPackages.map((p) => p.percent));
-const twoPlanBest = twoPlanPackages.find((p) => p.percent > TWO_PLAN_PERCENT);
 const MAX_AD_CREDIT = Math.max(...PACKAGES.map((p) => p.adCredit));
 
 export const BASKET_CARD = {
   id: "basket-card",
   title: "Basket Card",
-  intro: "Every plan you take earns a stamp. More stamps, bigger rewards.",
-  tapHint: "Tap to stamp",
+  intro: "Pick the plans you need. Each one you add saves you more.",
+  tapHint: "Tap to add",
   slots: {
     website: "Built free, kept running",
     growth: "Posts and Meta ads, run for you",
     search: "Found on Google and in AI answers",
   } satisfies Readonly<Record<PlanId, string>>,
-  trackLabel: "What the stamps unlock",
   inBasket: "In your basket",
-  fine: "The package price stays while every plan in it stays. Ad money comes with a package started together and is credited to your Meta ad account every month. Cancel anytime.",
+  totalLabel: "Your total",
   oneTimeTag: "One-time offer",
-  nextLabel: "Next stamp:",
-  stripCta: "Fill your Basket Card",
-  stripClose: "Close the offer",
+  nextLabel: "Add next:",
 } as const;
 
-/** Accessible name of a stamp slot. */
-export function slotLabel(id: PlanId, stamped: boolean): string {
-  return stamped ? `Remove the ${PLANS[id].name} stamp` : `Stamp ${PLANS[id].name}`;
-}
-
-export interface TrackStep {
-  readonly count: string;
-  readonly reward: string;
-}
-
-/** The reward track under the stamps: one step per number of plans. */
-export function trackSteps(): TrackStep[] {
-  const two = twoPlanBest ? `${TWO_PLAN_PERCENT}% off, or ${twoPlanBest.percent}% for ${twoPlanBest.name}` : `${TWO_PLAN_PERCENT}% off`;
-  return [
-    { count: "1 stamp", reward: "Each plan at its own price" },
-    { count: "2 stamps", reward: two },
-    { count: "3 stamps", reward: `${fullCard.percent}% off and ${formatInr(fullCard.adCredit)} a month for ads` },
-  ];
+/** Accessible name of a plan slot. */
+export function slotLabel(id: PlanId, added: boolean): string {
+  return added ? `Remove ${PLANS[id].name}` : `Add ${PLANS[id].name}`;
 }
 
 /** The summary's headline (mock: card() head). */
@@ -67,10 +47,10 @@ export function headline(pick: BasketPick): string {
   if (!pkg) {
     const next = nextPlanToAdd(pick);
     const percent = next ? (packageFor(next.pick)?.percent ?? TWO_PLAN_PERCENT) : TWO_PLAN_PERCENT;
-    return `Stamp one more plan for ${percent}% off.`;
+    return `Add one more plan for ${percent}% off.`;
   }
   const ads = pkg.adCredit > 0 ? ` and ${formatInr(pkg.adCredit)} a month for your ads.` : " on both plans.";
-  return `${pkg === fullCard ? "Full card. " : ""}${pkg.percent}% off${ads}`;
+  return `${pkg === fullCard ? "Full basket. " : ""}${pkg.percent}% off${ads}`;
 }
 
 export type BenefitKind = "saving" | "ads" | "year" | "build";
@@ -109,7 +89,7 @@ export interface NextStampCopy {
   readonly button: string;
 }
 
-/** The "Next stamp" nudge: the plan worth adding most, what it costs and what it gains. */
+/** The "Add next" nudge: the plan worth adding most, what it costs and what it gains. */
 export function nextStamp(pick: BasketPick): NextStampCopy | null {
   const next = nextPlanToAdd(pick);
   if (!next) return null;
@@ -124,32 +104,5 @@ export function nextStamp(pick: BasketPick): NextStampCopy | null {
       : creditNow > 0
         ? `, and your ad money from ${formatInr(creditNow)} to ${formatInr(next.adCredit)}.`
         : `, and we add ${formatInr(next.adCredit)} a month to your ads.`;
-  return { id: next.id, name: PLANS[next.id].name, body: `${cost} ${saving}${credit}`, button: `Stamp ${PLANS[next.id].short}` };
-}
-
-export interface StripLine {
-  /** Wide screens, 1180 px and up. */
-  readonly long: Rich;
-  /** Narrower screens: fits one line beside the stamps on a phone. */
-  readonly short: Rich;
-}
-
-/** The live stamps strip above the nav (mock: promo()). */
-export function stripLine(pick: BasketPick): StripLine {
-  const pkg = packageFor(pick);
-  if (!pkg) {
-    return {
-      long: rich("", "Start plans together at checkout:", ` 2 plans are ${TWO_PLAN_PERCENT}% off. All 3 are ${fullCard.percent}% off, plus ${formatInr(fullCard.adCredit)} a month for your ads.`),
-      short: rich("", "Plans together:", ` up to ${fullCard.percent}% off`),
-    };
-  }
-  if (pkg.adCredit > 0) {
-    return {
-      long: rich("", `Your basket gets ${pkg.percent}% off and ${formatInr(pkg.adCredit)} a month for your ads.`, " The ad money is a one-time offer, only when you start these plans together at checkout."),
-      short: rich("", `${pkg.percent}% off`, ` + ${formatInr(pkg.adCredit)} for ads`),
-    };
-  }
-  const missing = PLAN_IDS.find((id) => !pick[id]);
-  const withMissing = missing ? ` Start ${PLANS[missing].short} with it at checkout and we add ${formatInr(fullCard.adCredit)} a month to your ads.` : "";
-  return { long: rich("", `Your basket gets ${pkg.percent}% off.`, withMissing), short: rich("", `${pkg.percent}% off`, " on your plans") };
+  return { id: next.id, name: PLANS[next.id].name, body: `${cost} ${saving}${credit}`, button: `Add ${PLANS[next.id].short}` };
 }

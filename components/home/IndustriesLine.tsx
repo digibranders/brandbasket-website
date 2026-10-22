@@ -28,7 +28,7 @@ function Row({ items, copy }: { readonly items: readonly Industry[]; readonly co
   );
 }
 
-/** The industries we serve, as two rows drifting in opposite directions inside a hairline band (mock: .inds-sec). Plain items, not links, so the list can name trades that have no page. */
+/** The industries we serve, as two rows drifting in opposite directions (mock: .inds-sec). Plain items, not links, so the list can name trades that have no page. */
 export function IndustriesLine(): ReactElement {
   return (
     <section id="industries" aria-labelledby="h-ind" className="grid scroll-mt-24 grid-cols-[minmax(0,1fr)] gap-5 overflow-hidden pb-[clamp(40px,4.5vw,56px)] pt-[clamp(36px,4vw,48px)]">

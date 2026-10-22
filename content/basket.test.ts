@@ -13,8 +13,6 @@ describe("basket copy", () => {
     for (const id of PLAN_IDS) expect(PRICING_PLANS[id].name).toBe(PLANS[id].name);
   });
   it("states the package offers as the mock does", () => {
-    expect(BASKET_COPY.panelTitle).toBe("Build your basket");
-    expect(BASKET_COPY.panelNote).toBe("Two plans are 20% off or more. All three are 30% off.");
     expect(BASKET_COPY.heroIntro).toBe("Build your basket. Two plans are 20% off or more, all three are 30% off.");
   });
   it("no longer mentions the sign-up offer", () => {

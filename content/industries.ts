@@ -4,7 +4,8 @@
 // built from lib/pricing.ts. Organic social posting is claimed; how many posts a month is agreed with each client
 // (owner decision, 2026-10-21).
 import { AD_BUDGET_CAP, basketPlans, type BasketPick, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, packageFor, packageTotal, PLANS } from "@/lib/pricing";
-import { HOME_FAQ_HEADING, PLANS_SECTION } from "./home";
+import { BASKET_COPY } from "./basket";
+import { HOME_FAQ_HEADING } from "./home";
 import type { FaqItem } from "./types";
 
 export interface Industry {
@@ -73,7 +74,7 @@ export const INDUSTRY_PAGE = {
   problemsHeading: "What changes with a website",
   getHeading: "What you get",
   basketHeading: "The basket we suggest",
-  priceNote: PLANS_SECTION.run.priceNote,
+  priceNote: BASKET_COPY.plusGst,
   compareLabel: "Compare all plans",
   faqHeading: HOME_FAQ_HEADING,
   contactLabel: "Contact us",

@@ -11,8 +11,7 @@ export function Nav(): ReactElement {
   return (
     <>
       <NavScrollState />
-      {/* The offer strip renders on the server, so the nav starts below it and rises once it scrolls away or closes. */}
-      <header className="pointer-events-none fixed inset-x-0 top-4 z-30 in-wrap translate-y-11 transition-transform duration-500 ease-[var(--ease)] [html[data-promo=away]_&]:translate-y-0 [html[data-promo=closed]_&]:translate-y-0">
+      <header className="pointer-events-none fixed inset-x-0 top-4 z-30 in-wrap">
         <nav aria-label="Site" className="pointer-events-auto relative flex w-full items-center gap-3 rounded-full border border-[var(--line-2)] bg-[var(--nav)] py-[7px] pl-[18px] pr-[7px] shadow-[var(--shadow-nav)] backdrop-blur-xl transition-[background-color,box-shadow] duration-500 [html[data-scrolled=true]_&]:bg-surface/95 [html[data-scrolled=true]_&]:shadow-[var(--shadow-nav-scrolled)]">
           <Link href="/" aria-label="Brandbasket home"><Logo priority /></Link>
           <ul className="ml-auto hidden gap-1 min-[1000px]:flex">

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { signupHref } from "./signup";
+import { hasSignup, signupHref } from "./signup";
 
 describe("signupHref", () => {
   it("sends people to the contact form while the platform is not live", () => {
@@ -12,5 +12,16 @@ describe("signupHref", () => {
 
   it("builds the platform login link with the picked plans", () => {
     expect(signupHref({ website: true, growth: false, search: true }, "https://app.brandbasket.in")).toBe("https://app.brandbasket.in/login?plan=website%2Csearch");
+  });
+});
+
+describe("hasSignup", () => {
+  it("is false while the sign-up URL is unset or empty", () => {
+    expect(hasSignup(undefined)).toBe(false);
+    expect(hasSignup("")).toBe(false);
+  });
+
+  it("is true once the platform URL is set", () => {
+    expect(hasSignup("https://app.brandbasket.in")).toBe(true);
   });
 });

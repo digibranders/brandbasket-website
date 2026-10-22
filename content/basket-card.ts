@@ -34,6 +34,8 @@ export const BASKET_CARD = {
   totalLabel: "Your total",
   oneTimeTag: "One-time offer",
   nextLabel: "Add next:",
+  /** The Basket Card button once sign-up leads to checkout (owner's pick, 2026-10-22). Until then it keeps "Get my free website". */
+  checkoutCta: "Continue to checkout",
 } as const;
 
 /** Accessible name of a plan slot. */

@@ -1,6 +1,6 @@
 // content/basket-card.ts
 // Copy for the homepage Basket Card (docs/design/mock.html: .ox-card, .bsum; owner's pick, 2026-10-21). Percents and rupees come from lib/pricing.ts.
-import { adCreditFor, type BasketPick, basketPlans, formatInr, nextPlanToAdd, type Package, PACKAGES, PLAN_IDS, PLANS, packageFor, packageSaving, type PlanId } from "@/lib/pricing";
+import { adCreditFor, type BasketPick, basketPlans, formatInr, nextPlanToAdd, type Package, PACKAGES, PLAN_IDS, PLANS, packageFor, packageSaving, packageTotal, type PlanId } from "@/lib/pricing";
 
 /** A line with one bold run, rendered as before<b>strong</b>after. */
 export interface Rich {
@@ -93,8 +93,13 @@ export interface NextStampCopy {
 export function nextStamp(pick: BasketPick): NextStampCopy | null {
   const next = nextPlanToAdd(pick);
   if (!next) return null;
-  const cost =
-    next.extra > 0 ? `Just ${formatInr(next.extra)} more a month.` : next.extra < 0 ? `You pay ${formatInr(-next.extra)} less a month than now.` : "The same price as now.";
+  // Name the new total, not the difference: "₹7,399 more" next to a plan priced ₹9,999 read as a wrong price.
+  const now = formatInr(packageTotal(pick));
+  const after = formatInr(packageTotal(next.pick));
+  const change = next.extra > 0 ? `goes from ${now} to ${after}` : next.extra < 0 ? `drops from ${now} to ${after}` : `stays at ${now}`;
+  const pkg = packageFor(next.pick);
+  const plans = basketPlans(next.pick).length === PLAN_IDS.length ? "all three plans" : "both plans";
+  const cost = pkg ? `With ${pkg.percent}% off ${plans}, your total ${change} a month.` : `Your total ${change} a month.`;
   const savingNow = packageSaving(pick);
   const creditNow = adCreditFor(pick);
   const saving = savingNow > 0 ? `Your saving goes from ${formatInr(savingNow)} to ${formatInr(next.saving)} a month` : `You save ${formatInr(next.saving)} a month`;

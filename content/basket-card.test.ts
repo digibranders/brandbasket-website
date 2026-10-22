@@ -68,19 +68,19 @@ describe("nextStamp", () => {
     expect(nextStamp(pick(true, false, false))).toEqual({
       id: "growth",
       name: "Social Media and Ads",
-      body: "Just ₹7,399 more a month. You save ₹2,600 a month, and we add ₹2,000 a month to your ads.",
+      body: "With 20% off both plans, your total goes from ₹2,999 to ₹10,398 a month. You save ₹2,600 a month, and we add ₹2,000 a month to your ads.",
       button: "Add Social",
     });
     expect(nextStamp(pick(true, true, false))?.body).toBe(
-      "Just ₹16,199 more a month. Your saving goes from ₹2,600 to ₹11,400 a month, and your ad money from ₹2,000 to ₹5,000.",
+      "With 30% off all three plans, your total goes from ₹10,398 to ₹26,597 a month. Your saving goes from ₹2,600 to ₹11,400 a month, and your ad money from ₹2,000 to ₹5,000.",
     );
     expect(nextStamp(pick(true, false, true))?.body).toBe(
-      "Just ₹4,199 more a month. Your saving goes from ₹5,600 to ₹11,400 a month, and we add ₹5,000 a month to your ads.",
+      "With 30% off all three plans, your total goes from ₹22,398 to ₹26,597 a month. Your saving goes from ₹5,600 to ₹11,400 a month, and we add ₹5,000 a month to your ads.",
     );
   });
   it("says when the next plan costs less than the basket now", () => {
     expect(nextStamp(pick(false, false, true))?.body).toBe(
-      "You pay ₹501 less a month than now. You save ₹10,500 a month, and we add ₹2,000 a month to your ads.",
+      "With 30% off both plans, your total drops from ₹24,999 to ₹24,498 a month. You save ₹10,500 a month, and we add ₹2,000 a month to your ads.",
     );
   });
   it("is null on a full card", () => {

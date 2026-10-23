@@ -66,7 +66,7 @@ test("chat resets on navigation and fits the viewport", async ({ page }) => {
 test("phone chat clears the basket dock", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/pricing");
-  await page.locator("#details").scrollIntoViewIfNeeded();
+  await page.locator("#included").scrollIntoViewIfNeeded();
   const bar = page.locator("[data-basket-dock]:not([inert])");
   await expect(bar).toBeVisible();
   const toggle = page.getByRole("button", { name: "Open WhatsApp chat" });

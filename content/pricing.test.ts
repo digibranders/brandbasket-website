@@ -3,7 +3,7 @@ import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PACKAGES, packageSaving, packageTotal, PLANS } from "@/lib/pricing";
-import { BUNDLES, COMPARE, EVERY_PLAN, GOOD_TO_KNOW, INCLUDED, PLAN_COLUMNS, PLAN_DETAILS, PRICING_FAQ, PRICING_HERO } from "./pricing";
+import { BUNDLES, COMPARE, EVERY_PLAN, GOOD_TO_KNOW, INCLUDED, PLAN_COLUMNS, PRICING_FAQ, PRICING_HERO } from "./pricing";
 
 describe("pricing content", () => {
   it("keeps the locked hero headline", () => {
@@ -12,7 +12,6 @@ describe("pricing content", () => {
   it("has the item counts of the mock", () => {
     expect(PRICING_FAQ).toHaveLength(6);
     expect(GOOD_TO_KNOW).toHaveLength(4);
-    expect(PLAN_DETAILS).toHaveLength(3);
   });
   it("has one comparison column per plan, priced from lib/pricing", () => {
     expect(PLAN_COLUMNS.map((c) => c.id)).toEqual(["website", "growth", "search"]);
@@ -71,9 +70,8 @@ describe("pricing content", () => {
     expect(COMPARE.lede).not.toMatch(/chosen as you start|sign-up/);
     expect(EVERY_PLAN.items).toHaveLength(4);
   });
-  it("builds plan summaries and caps from lib/pricing", () => {
-    for (const detail of PLAN_DETAILS) expect(detail.summary).toContain(formatInr(PLANS[detail.id].monthly));
-    const text = JSON.stringify([PLAN_DETAILS, GOOD_TO_KNOW, PRICING_FAQ, PLAN_COLUMNS]);
+  it("builds the caps and the hourly rate from lib/pricing", () => {
+    const text = JSON.stringify([GOOD_TO_KNOW, PRICING_FAQ, PLAN_COLUMNS]);
     expect(text).toContain(formatInr(AD_BUDGET_CAP));
     expect(text).toContain(formatInr(EXTRA_HOURLY_RATE));
   });
@@ -96,9 +94,7 @@ describe("pricing content", () => {
     ]);
     expect(PRICING_FAQ[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + SEO is 20% off.");
   });
-  it("states the Social ad money from the packages", () => {
-    const note = PLAN_DETAILS.find((d) => d.id === "growth")?.columns.at(-1)?.note;
-    expect(note).toBe("Start Social with the website or with Local SEO and we add ₹2,000 a month to your ads, or ₹5,000 a month with all three.");
+  it("keeps the Social ad money equal across the two-plan packages that include it", () => {
     // One amount covers both two-plan packages with Social, so they must stay equal.
     expect(PACKAGES.find((p) => p.id === "website-growth")?.adCredit).toBe(PACKAGES.find((p) => p.id === "growth-search")?.adCredit);
   });
@@ -106,9 +102,9 @@ describe("pricing content", () => {
     expect(PRICING_FAQ.find((f) => f.q === "Can I add or drop a plan later?")?.a).toBe(PLAN_CHANGE_ANSWER);
   });
   it("uses Phosphor icons that exist", () => {
-    for (const key of [...PLAN_DETAILS.map((d) => d.icon), ...GOOD_TO_KNOW.map((g) => g.icon)]) expect(Phosphor).toHaveProperty(key);
+    for (const key of GOOD_TO_KNOW.map((g) => g.icon)) expect(Phosphor).toHaveProperty(key);
   });
   it("has no em or en dashes", () => {
-    expect(JSON.stringify({ PRICING_HERO, COMPARE, PLAN_COLUMNS, EVERY_PLAN, BUNDLES, INCLUDED, PLAN_DETAILS, GOOD_TO_KNOW, PRICING_FAQ })).not.toMatch(/[\u2013\u2014]/);
+    expect(JSON.stringify({ PRICING_HERO, COMPARE, PLAN_COLUMNS, EVERY_PLAN, BUNDLES, INCLUDED, GOOD_TO_KNOW, PRICING_FAQ })).not.toMatch(/[\u2013\u2014]/);
   });
 });

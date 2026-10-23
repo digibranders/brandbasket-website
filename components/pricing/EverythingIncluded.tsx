@@ -1,14 +1,30 @@
-import { CaretDown, ChartLineUp, FileText, Headset, LockKey, PencilSimpleLine, PlugsConnected, Phone, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
+import { CaretDown, Check, ChartLineUp, FileText, Headset, LockKey, Minus, PencilSimpleLine, PlugsConnected, Phone, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { INCLUDED, type IncludedGroup, type IncludedIconKey, type IncludedPart } from "@/content/pricing";
-import { Column } from "./PlanDetails";
+import { type DetailColumn, INCLUDED, type IncludedGroup, type IncludedIconKey, type IncludedPart } from "@/content/pricing";
 
 const ICONS: Readonly<Record<IncludedIconKey, Icon>> = { FileText, Phone, PencilSimpleLine, PlugsConnected, ShieldCheck, LockKey, ChartLineUp, Headset };
 const COLOUR: Readonly<Record<IncludedGroup["colour"], string>> = { site: "var(--c-site)", growth: "var(--c-growth)", search: "var(--c-search)", care: "var(--c-care)" };
+
+function Column({ column }: { readonly column: DetailColumn }): ReactElement {
+  const Mark = column.kind === "included" ? Check : Minus;
+  return (
+    <div>
+      <h4 className="mb-3 text-[13px] font-semibold text-ink-2">{column.heading}</h4>
+      <ul className="grid gap-2 text-[14.5px]">
+        {column.items.map((item) => (
+          <li key={item} className="flex items-start gap-2.5">
+            <Mark aria-hidden="true" className={`mt-px size-[19px] flex-none ${column.kind === "included" ? "text-sage" : "text-ink-2"}`} />
+            {item}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
 
 function Group({ group }: { readonly group: IncludedGroup }): ReactElement {
   const GroupIcon = ICONS[group.icon];

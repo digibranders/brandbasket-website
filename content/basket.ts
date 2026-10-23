@@ -42,7 +42,7 @@ export const BASKET_COPY = {
   /** The basket pop-up opened from the nav button and the dock. */
   reviewBasket: "Review your basket",
   panelClose: "Close basket",
-  proceed: "Proceed to sign up",
+  proceed: "Proceed to checkout",
   rowAdd: "Add",
   rowRemove: "Remove",
   rowLast: "In basket",

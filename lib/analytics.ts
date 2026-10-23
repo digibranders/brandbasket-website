@@ -9,9 +9,10 @@ import { PLAN_IDS, type PlanId } from "./pricing";
 export type ConversionEvent =
   | { readonly name: "cta_click"; readonly properties: { readonly location: string; readonly plans: string } }
   | { readonly name: "whatsapp_click"; readonly properties: { readonly location: string } }
+  | { readonly name: "basket_open"; readonly properties: { readonly location: string } }
   | { readonly name: "contact_submit"; readonly properties: { readonly plans: string } };
 
-type ClickName = "cta_click" | "whatsapp_click";
+type ClickName = "cta_click" | "whatsapp_click" | "basket_open";
 
 export interface TrackAttrs {
   readonly "data-track": ClickName;
@@ -32,7 +33,7 @@ export function planList(ids: readonly PlanId[]): string {
 export function clickEvent(data: { readonly track?: string; readonly location?: string }, href: string): ConversionEvent | null {
   const { track, location } = data;
   if (!location) return null;
-  if (track === "whatsapp_click") return { name: track, properties: { location } };
+  if (track === "whatsapp_click" || track === "basket_open") return { name: track, properties: { location } };
   if (track !== "cta_click") return null;
   const picked = new URL(href, "https://brandbasket.invalid").searchParams.get("plan")?.split(",") ?? [];
   const plans = PLAN_IDS.filter((id) => picked.includes(id));

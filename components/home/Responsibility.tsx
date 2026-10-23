@@ -74,11 +74,11 @@ export function Responsibility(): ReactElement {
   return (
     <Band tone="ink">
     <section id="responsibility" aria-labelledby="h-resp" className="in-wrap py-[clamp(56px,8vw,112px)]">
-      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-[clamp(28px,5vw,72px)] min-[1000px]:grid-cols-[1.15fr_0.85fr]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-[clamp(20px,5vw,72px)] min-[1000px]:grid-cols-[1.15fr_0.85fr]">
         <div className="min-[1000px]:order-2">
           <TwoTierHead id="h-resp" small={RESPONSIBILITY.small} large={RESPONSIBILITY.large} onDark />
-          <p className="mt-[22px] max-w-[46ch] text-pretty text-[17px] leading-[1.65] text-action-ink/74">{RESPONSIBILITY.body}</p>
-          <div className="mt-[34px] flex items-stretch gap-7 max-[640px]:gap-5">
+          <p className="mt-[22px] max-w-[46ch] max-[640px]:mt-4 text-pretty text-[17px] leading-[1.65] text-action-ink/74">{RESPONSIBILITY.body}</p>
+          <div className="mt-[34px] flex items-stretch gap-7 max-[640px]:mt-6 max-[640px]:gap-5">
             <div>
               <b ref={onMind} className="num block font-display text-[clamp(48px,5vw,68px)] font-semibold leading-none tracking-[-0.04em]">{total}</b>
               <span className="mt-2 block text-sm text-action-ink/62">{RESPONSIBILITY.onYourMind}</span>

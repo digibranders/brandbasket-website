@@ -6,7 +6,7 @@ import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, PACKAGES, packa
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
-export type PricingIconKey = "Globe" | "TrendUp" | "MagnifyingGlass" | "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
+export type PricingIconKey = "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
 
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 const AD_CAP = formatInr(AD_BUDGET_CAP);
@@ -17,7 +17,6 @@ function packageById(id: Package["id"]): Package {
   if (!pkg) throw new RangeError(`No package ${id}`);
   return pkg;
 }
-const adCredit = (id: Package["id"]): number => packageById(id).adCredit;
 /** The package for a business that already has a website. */
 const SOCIAL_SEO = packageById("growth-search");
 
@@ -142,166 +141,13 @@ export const BUNDLES = {
   ),
 } as const;
 
-export interface DetailList {
+/** One list in an Everything included group: ticked lines, or lines that are quoted or added with other plans. */
+export interface DetailColumn {
   readonly heading: string;
-  readonly items: readonly string[];
-}
-
-export interface DetailColumn extends DetailList {
   /** "excluded" columns use the minus icon and the muted style. */
   readonly kind: "included" | "excluded";
-  /** Further lists in the same column, under the first. */
-  readonly more?: readonly DetailList[];
-  /** Small note under the lists. */
-  readonly note?: string;
+  readonly items: readonly string[];
 }
-
-export interface PlanDetail {
-  readonly id: PlanId;
-  readonly name: string;
-  readonly icon: PricingIconKey;
-  /** The line under the plan name, for example "₹9,999 a month · Instagram, Facebook, Google profile and Meta ads". */
-  readonly summary: string;
-  readonly columns: readonly DetailColumn[];
-}
-
-export const PLAN_DETAILS_INTRO = {
-  heading: "What each plan includes.",
-  lede: "Open a plan for every monthly task, and what it leaves out.",
-  toggle: "Details",
-} as const;
-
-export const PLAN_DETAILS: readonly PlanDetail[] = [
-  {
-    id: "website",
-    name: PLANS.website.name,
-    icon: "Globe",
-    summary: `${MANAGED_MONTHLY} a month · for businesses that want a site without the technical work`,
-    columns: [
-      {
-        heading: "Looking after your site",
-        kind: "included",
-        items: [
-          "Hosting and SSL certificate",
-          "Uptime and availability monitoring",
-          "Security checks and routine maintenance",
-          "Regular backups and recovery support",
-          "Bug fixes and small mobile fixes",
-        ],
-      },
-      {
-        heading: "Keeping it working for you",
-        kind: "included",
-        items: [
-          "Contact and enquiry form checks",
-          "Basic analytics setup and monitoring",
-          "Indexing and sitemap checks",
-          "Monthly health check and support",
-          "2 small content edits a month, 30 minutes each",
-        ],
-      },
-      {
-        heading: "Not included",
-        kind: "excluded",
-        items: [
-          "Domain registration or renewal",
-          "Pages beyond the first 10, or a redesign",
-          "Content writing, SEO or AEO",
-          "Ads or ad spend",
-          "E-commerce or new features",
-        ],
-      },
-    ],
-  },
-  {
-    id: "growth",
-    name: PLANS.growth.name,
-    icon: "TrendUp",
-    summary: `${formatInr(PLANS.growth.monthly)} a month · Instagram, Facebook, Google profile and Meta ads`,
-    columns: [
-      {
-        heading: "Instagram and Facebook",
-        kind: "included",
-        items: ["Posts each month, planned with you", "Captions written for you", "Posts scheduled for you"],
-        more: [
-          {
-            heading: "Google Business Profile",
-            items: [
-              "Business details and category review",
-              "Regular posts: updates, offers, services",
-              "Photo updates from your images or agreed creatives",
-              "Hours, contact and website link checks",
-              "Review monitoring and reply suggestions",
-              "Monthly profile report",
-            ],
-          },
-        ],
-      },
-      {
-        heading: "Facebook and Instagram ads",
-        kind: "included",
-        items: [
-          "Monthly campaign plan",
-          "Setup, audience, objective and placements",
-          "Ad copy and basic creatives",
-          "Launch, monitoring and budget pacing",
-          "A/B tests where budget allows",
-          "Monthly ads report",
-        ],
-      },
-      {
-        heading: "Good to know",
-        kind: "excluded",
-        items: ["Ad spend is paid to Meta by you", `We manage up to ${AD_CAP} a month of your budget`, `Reels and video editing at ${HOURLY} an hour`],
-        note: `Start Social with the website or with Local SEO and we add ${formatInr(adCredit("website-growth"))} a month to your ads, or ${formatInr(adCredit("everything"))} a month with all three.`,
-      },
-    ],
-  },
-  {
-    id: "search",
-    name: PLANS.search.name,
-    icon: "MagnifyingGlass",
-    summary: `${formatInr(PLANS.search.monthly)} a month · local search and AI answer visibility`,
-    columns: [
-      {
-        heading: "Local SEO",
-        kind: "included",
-        items: [
-          "Local keyword and intent research",
-          "Competitor analysis",
-          "Titles, descriptions and headings, up to 5 pages a month",
-          "Service area page optimisation",
-          "Name, address and phone consistency",
-          "Schema, citation and directory audit",
-          "Ranking, traffic and enquiry tracking",
-        ],
-      },
-      {
-        heading: "Answer Engine Optimisation",
-        kind: "included",
-        items: [
-          "Research the questions customers ask",
-          "Content shaped into direct answers",
-          "FAQ planning and structured data",
-          "Brand and entity consistency checks",
-          "Topic and content gap analysis",
-          "AI visibility tracking where measurable",
-        ],
-      },
-      {
-        heading: "Not included",
-        kind: "excluded",
-        items: [
-          "Guaranteed rankings or AI citations",
-          "Guaranteed leads or traffic",
-          "Paid backlinks or placements",
-          "Unlimited writing or new landing pages",
-        ],
-        note: "New landing pages are quoted separately.",
-      },
-    ],
-  },
-];
 
 export type IncludedIconKey = "FileText" | "Phone" | "PencilSimpleLine" | "PlugsConnected" | "ShieldCheck" | "LockKey" | "ChartLineUp" | "Headset";
 

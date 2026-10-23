@@ -3,8 +3,9 @@
    Written here, not in utilities, because the chips and SVGs are driven by the physics loop and the chat is staged by a data attribute. */
 
 .rb-stage {
-  position: relative; height: 440px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: pan-y;
+  position: relative; height: 340px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: pan-y;
 }
+@media (min-width: 641px) { .rb-stage { height: 400px; } }
 @media (min-width: 1000px) { .rb-stage { height: 480px; } }
 .rb-floor { position: absolute; left: 0; right: 0; height: 1px; background: color-mix(in srgb, var(--action-ink) 16%, transparent); }
 

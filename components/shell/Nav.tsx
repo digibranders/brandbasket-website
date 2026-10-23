@@ -1,9 +1,9 @@
 // components/shell/Nav.tsx
 import Link from "next/link";
 import type { ReactElement } from "react";
-import { BasketCta } from "@/components/basket/BasketCta";
+import { BasketTrigger } from "@/components/basket/BasketTrigger";
 import { BASKET_COPY } from "@/content/basket";
-import { PRIMARY_NAV } from "@/content/navigation";
+import { LOGIN_LINK, PRIMARY_NAV } from "@/content/navigation";
 import { MobileMenu } from "./MobileMenu";
 import { Logo } from "./Logo";
 import { NavScrollState } from "./NavScrollState";
@@ -21,7 +21,8 @@ export function Nav(): ReactElement {
             ))}
           </ul>
           <div className="ml-auto flex items-center gap-1.5 min-[1000px]:ml-0">
-            <span className="hidden sm:inline-flex"><BasketCta location="nav" size="sm" label={BASKET_COPY.startPlan} /></span>
+            <a href={LOGIN_LINK.href} className="hidden rounded-full px-3 py-[7px] text-[14.5px] text-ink-2 hover:text-ink sm:inline-flex">{LOGIN_LINK.label}</a>
+            <span className="hidden sm:inline-flex"><BasketTrigger anchor="nav" location="nav" size="sm" label={BASKET_COPY.startPlan} /></span>
             <MobileMenu />
           </div>
         </nav>

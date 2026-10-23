@@ -17,7 +17,7 @@ const BUBBLE = "absolute z-[3] flex w-fit max-w-full gap-3 rounded-[22px] py-3.5
 export function Promises(): ReactElement {
   const { chat } = PROMISES;
   return (
-    <section id="promises" aria-labelledby="h-promises" className="in-wrap pb-24 pt-[clamp(48px,6vw,80px)]">
+    <section id="promises" aria-labelledby="h-promises" className="in-wrap pb-16 pt-[clamp(40px,6vw,80px)] min-[640px]:pb-24">
       <div className="relative isolate overflow-clip rounded-[36px] bg-sunken shadow-[0_50px_80px_-56px_rgba(40,28,14,0.45),0_0_0_1px_rgba(21,22,26,0.05)]">
         <Image src={PHOTO} alt="" aria-hidden="true" fill sizes="100vw" className="-z-20 scale-[1.3] object-cover blur-[46px] saturate-[1.2]" />
         <div aria-hidden="true" className="absolute inset-0 -z-10 bg-[linear-gradient(180deg,rgba(246,245,242,0.78),rgba(244,230,211,0.74))]" />

@@ -3,14 +3,17 @@ import { Basket } from "@phosphor-icons/react/dist/ssr";
 import { usePathname } from "next/navigation";
 import { type CSSProperties, type ReactElement, useEffect, useRef, useState } from "react";
 import { BASKET_COPY, saveLine } from "@/content/basket";
+import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
 import { basketPlans, firstPayment, formatInr, PLAN_IDS, packageTotal } from "@/lib/pricing";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { showsDock } from "./dock-paths";
 import { FLY_MS, flyDot } from "./fly";
+import { basketPanel } from "./basket-panel";
 import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
+import { useBasketPanel } from "./useBasketPanel";
 
 /** One change to the basket, for the motion: which way it went and how long to wait for a flying dot to land. */
 interface Pulse {
@@ -36,6 +39,7 @@ const CLICK_WINDOW_MS = 600;
 export function BasketDock(): ReactElement | null {
   const pathname = usePathname();
   const pick = useBasket();
+  const panel = useBasketPanel();
   const [hidden, setHidden] = useState(true);
   const [pulse, setPulse] = useState<Pulse | null>(null);
   const hiddenRef = useRef(true);
@@ -121,6 +125,16 @@ export function BasketDock(): ReactElement | null {
       {saving ? (
         <span key={saving} aria-hidden="true" style={delayStyle} className={`num absolute -top-3.5 left-16 rounded-full bg-sage px-3 py-1 text-[12.5px] font-semibold leading-none text-action-ink shadow-[0_8px_16px_-8px_rgba(40,28,14,0.5)] ${pulse ? "dock-chip-in" : ""}`}>{saving}</span>
       ) : null}
+      <button
+        type="button"
+        data-basket-trigger
+        aria-haspopup="dialog"
+        aria-expanded={panel.open && panel.anchor === "dock"}
+        aria-label={BASKET_COPY.reviewBasket}
+        {...(panel.open && panel.anchor === "dock" ? {} : trackAttrs("basket_open", "dock"))}
+        onClick={(event) => basketPanel.toggle("dock", event.currentTarget)}
+        className="flex min-w-0 flex-auto cursor-pointer items-center gap-3 rounded-full text-left"
+      >
       <span ref={iconRef} aria-hidden="true" className="relative grid size-11 flex-none place-items-center rounded-full bg-rattan-wash text-rattan-ink">
         <span key={`icon${pulse?.id ?? 0}`} style={delayStyle} className={`grid place-items-center ${pulse ? (dir > 0 ? "dock-bump" : "dock-shrink") : ""}`}>
           <Basket weight="fill" className="size-6" />
@@ -133,6 +147,7 @@ export function BasketDock(): ReactElement | null {
         </b>
         <span className="truncate text-xs text-ink-2">{count} {count === 1 ? BASKET_COPY.planOne : BASKET_COPY.planMany} · {BASKET_COPY.phoneBarCaption}</span>
       </div>
+      </button>
       <div className="flex-none">
         <BasketCta location="dock" size="sm" label={BASKET_COPY.startPlan} />
       </div>

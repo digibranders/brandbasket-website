@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
-import { createBasketStore, DEFAULT_BASKET } from "./basket-store";
+import { BASKET_STORAGE_KEY, createBasketStore, DEFAULT_BASKET, parseSavedBasket, serialiseBasket } from "./basket-store";
 
 describe("basket store", () => {
   it("starts with the website plan only", () => {
@@ -60,3 +60,31 @@ describe("basket store", () => {
     expect(listener).not.toHaveBeenCalled();
   });
 });
+
+describe("saved basket", () => {
+  it("round-trips a pick as a list of plan ids", () => {
+    const pick = { website: true, growth: false, search: true };
+    expect(serialiseBasket(pick)).toBe('["website","search"]');
+    expect(parseSavedBasket(serialiseBasket(pick))).toEqual(pick);
+    expect(BASKET_STORAGE_KEY).toBe("brandbasket-basket");
+  });
+
+  it("ignores anything that is not a usable list", () => {
+    for (const raw of [null, "", "not json", "{}", "42", '"website"', "[]", '["nothing"]', "[1,2]"]) expect(parseSavedBasket(raw)).toBeNull();
+  });
+
+  it("keeps the known plans and drops the rest", () => {
+    expect(parseSavedBasket('["growth","unknown","growth"]')).toEqual({ website: false, growth: true, search: false });
+  });
+
+  it("saves after every real change, and not after a refused or equal one", () => {
+    const save = vi.fn();
+    const store = createBasketStore(DEFAULT_BASKET, { save });
+    store.set("growth", true);
+    store.set("growth", true);
+    store.setAll({ website: false, growth: false, search: false });
+    expect(save).toHaveBeenCalledTimes(1);
+    expect(save).toHaveBeenLastCalledWith({ website: true, growth: true, search: false });
+  });
+});
+

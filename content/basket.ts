@@ -35,6 +35,12 @@ export const BASKET_COPY = {
   compare: "Compare all plans",
   totalLabel: "You pay each month, with GST",
   phoneBarCaption: "a month, with GST",
+  /** The pricing page's two main buttons, beside the basket total. They work for any plan, so they do not say "free website" (owner's pick, 2026-10-23). */
+  startPlan: "Start my plan",
+  /** The floating basket at the foot of the screen. */
+  dockLabel: "Your basket",
+  planOne: "plan",
+  planMany: "plans",
 } as const;
 
 /** The strip under the plan rows (mock: offerText()): the invitation for one plan, or what the package earns. */

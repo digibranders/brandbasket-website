@@ -5,6 +5,7 @@ import { BasketStage } from "@/components/basket/BasketStage";
 import { BasketTotal } from "@/components/basket/BasketTotal";
 import { OfferNote } from "@/components/basket/OfferNote";
 import { OfferLine } from "@/components/ui/OfferLine";
+import { BASKET_COPY } from "@/content/basket";
 import { HERO } from "@/content/home";
 import { PRICING_HERO } from "@/content/pricing";
 
@@ -32,7 +33,7 @@ export function PricingHero(): ReactElement {
           <OfferNote rounded />
           <div className="flex flex-wrap items-center justify-between gap-x-6 gap-y-4">
             <BasketTotal />
-            <BasketCta location="pricing_hero" />
+            <BasketCta location="pricing_hero" label={BASKET_COPY.startPlan} />
           </div>
         </div>
       </div>

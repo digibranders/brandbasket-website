@@ -1,6 +1,6 @@
 import { Camera, Mesh, Plane, Program, Shadow, type OGLRenderingContext, type Transform } from "ogl";
 import { L, SHADOW } from "./materials";
-import { GROUND_SHADOW_FRAG, VERT } from "./shaders";
+import { GROUND_SHADOW_FRAG, SHADOW_MAP_SIZE, VERT } from "./shaders";
 
 /** Cast/receive shadows from the same upper-left key light used by the material shaders. */
 export function createShadowLighting(gl: OGLRenderingContext, scene: Transform, basket: Transform): () => void {
@@ -8,7 +8,7 @@ export function createShadowLighting(gl: OGLRenderingContext, scene: Transform, 
   const direction = L.uKeyDir.value;
   light.position.set(direction[0] * 8, 1.15 + direction[1] * 8, direction[2] * 8);
   light.lookAt([0, 1.15, 0]);
-  const shadows = new Shadow(gl, { light, width: 1024, height: 1024 });
+  const shadows = new Shadow(gl, { light, width: SHADOW_MAP_SIZE, height: SHADOW_MAP_SIZE });
   // Packed depth must be compared per texel; interpolating its RGBA channels corrupts depth.
   shadows.target.texture.minFilter = gl.NEAREST;
   shadows.target.texture.magFilter = gl.NEAREST;
@@ -35,15 +35,13 @@ export function createShadowLighting(gl: OGLRenderingContext, scene: Transform, 
   ground.setParent(scene);
   shadows.add({ mesh: ground, cast: false });
 
-  let lastRender = -Infinity;
+  // Rendered with every frame: the main pass compares each pixel's current position with this map, so a map one
+  // frame behind shadows a moving tile with its own old position and the surface flickers.
   return (): void => {
-    const now = performance.now();
-    if (now - lastRender < 1000 / 30) return;
     // Empty depth texels represent the far plane, not a blocker at depth zero.
     gl.clearColor(1, 1, 1, 1);
     try {
       shadows.render({ scene });
-      lastRender = now;
     } finally {
       gl.clearColor(0, 0, 0, 0);
     }

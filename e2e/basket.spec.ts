@@ -128,6 +128,8 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {
+  // Headless Chromium renders WebGL on the CPU, so drag-driven specs share their time budget with every other spec.
+  test.slow();
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   page.on("console", (message) => {
@@ -182,6 +184,8 @@ test("the studio preview still renders when its photograph is unavailable", asyn
 });
 
 test("basket dragging releases after focus loss, cancellation, and a missed mouseup", async ({ page }) => {
+  // Headless Chromium renders WebGL on the CPU, so drag-driven specs share their time budget with every other spec.
+  test.slow();
   await page.goto("/");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
@@ -218,6 +222,8 @@ test("basket dragging releases after focus loss, cancellation, and a missed mous
 });
 
 test("a released basket keeps its momentum without keeping pointer capture", async ({ page }) => {
+  // Headless Chromium renders WebGL on the CPU, so drag-driven specs share their time budget with every other spec.
+  test.slow();
   await page.clock.install();
   await page.clock.pauseAt(new Date(Date.now() + 1000));
   // Observe the basket body's real render matrix, excluding translated tiles and the shadow.

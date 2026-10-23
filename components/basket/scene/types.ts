@@ -15,4 +15,6 @@ export interface BasketSceneOptions {
   readonly initialPick: BasketPick;
   /** CSS font family list for the tile labels, from `loadFaceFonts()`. */
   readonly labelFamily: string;
+  /** The browser took the WebGL context away. The scene cannot draw again; destroy it and show the poster. */
+  readonly onContextLost?: () => void;
 }

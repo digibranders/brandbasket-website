@@ -32,13 +32,15 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
     let started = false;
     let cancelled = false;
     let visible = false;
+    let rebuilds = 0;
+    let rebuildTimer: number | undefined;
     let idle: { readonly cancel: () => void } | undefined;
 
     const start = async (): Promise<void> => {
       const [mod, image] = await Promise.all([import("./scene/scene"), loadImage("/basket/studio-house.avif")]);
       const labelFamily = await mod.loadFaceFonts();
       if (cancelled) return;
-      scene = mod.createBasketScene(el, image, { reducedMotion: hints.reducedMotion, initialPick: basket.get(), labelFamily });
+      scene = mod.createBasketScene(el, image, { reducedMotion: hints.reducedMotion, initialPick: basket.get(), labelFamily, onContextLost: recover });
       scene.setVisible(visible);
       unsubscribe = basket.subscribe(() => scene?.setPick(basket.get()));
       setLive(true);
@@ -47,6 +49,17 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
       // A failed load or WebGL setup leaves the poster in place, which is the designed fallback.
       start().catch((error: unknown) => console.warn("Basket stage stayed on its poster.", error));
     };
+    // The browser took the WebGL context (a phone backgrounding the tab, a GPU reset). Show the poster at once, then try
+    // one rebuild; a context lost again means this device cannot hold it, and the poster stays.
+    function recover(): void {
+      unsubscribe?.();
+      unsubscribe = undefined;
+      scene?.destroy();
+      scene = undefined;
+      setLive(false);
+      if (cancelled || rebuilds++ > 0) return;
+      rebuildTimer = window.setTimeout(begin, 1000);
+    }
 
     const io = new IntersectionObserver(([entry]) => {
       visible = Boolean(entry?.isIntersecting);
@@ -67,6 +80,7 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
 
     return () => {
       cancelled = true;
+      window.clearTimeout(rebuildTimer);
       idle?.cancel();
       io.disconnect();
       unsubscribe?.();
@@ -85,7 +99,7 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : "auto"}
         sizes="(min-width: 660px) 620px, 100vw"
-        className={`pointer-events-none object-contain transition-opacity duration-700 ease-(--ease) ${live ? "opacity-0" : "opacity-100"}`}
+        className={`pointer-events-none object-contain transition-opacity duration-300 ease-(--ease) ${live ? "opacity-0" : "opacity-100"}`}
       />
     </div>
   );

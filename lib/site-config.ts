@@ -87,12 +87,15 @@ export const businessDetails: BusinessDetails = {
 export interface SiteConfig {
   readonly name: string;
   readonly url: string;
+  /** The customer app where "Get my free website" signs people up (brandbasket-platform). */
+  readonly appUrl: string;
   readonly description: string;
 }
 
 export const siteConfig: SiteConfig = {
   name: businessDetails.tradeName,
   url: "https://brandbasket.in",
+  appUrl: "https://app.brandbasket.in",
   description: `Website, Google profile, ads and local search for local businesses in India, run for you every month. From ${formatInr(PLANS.website.monthly)} a month.`,
 };
 

@@ -51,15 +51,11 @@ test("?plan=website,search preselects a free website and posts the plans", async
 });
 
 for (const path of ["/", "/pricing"]) {
-  test(`every main button on ${path} leads to /contact`, async ({ page, baseURL }) => {
-    test.skip(Boolean(process.env.NEXT_PUBLIC_SIGNUP_URL), "Main buttons go to the platform once NEXT_PUBLIC_SIGNUP_URL is set");
+  test(`every main button on ${path} leads to the app's sign-in`, async ({ page }) => {
     await page.goto(path);
     const hrefs = await page.locator("a", { hasText: PRIMARY_CTA.label }).evaluateAll((links) => links.map((a) => a.getAttribute("href") ?? ""));
     expect(hrefs.length).toBeGreaterThan(0);
-    for (const href of hrefs) expect(new URL(href, baseURL).pathname, href).toBe("/contact");
-
-    await page.locator("main").getByRole("link", { name: PRIMARY_CTA.label }).first().click();
-    await expect(page).toHaveURL(/\/contact\?plan=website#start$/);
+    for (const href of hrefs) expect(href).toMatch(/^https:\/\/app\.brandbasket\.in\/login\?plan=/);
   });
 }
 

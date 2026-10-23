@@ -6,8 +6,9 @@ import { siteFace } from "./site-preview";
 export { loadFaceFonts } from "./faces";
 import { catmull, lathe, roundedTile } from "./geometry";
 import { hex, material, SHADOW } from "./materials";
-import { SHADOW_FRAG, VERT } from "./shaders";
+import { FLAT_VERT, SHADOW_FRAG } from "./shaders";
 import { createShadowLighting } from "./shadow-lighting";
+import { recordSpin, releaseSpin, type SpinSample } from "./spin";
 import { DEFS, GROUPS, type TileDef, type TileId } from "./tokens";
 import type { BasketScene, BasketSceneOptions } from "./types";
 import { bindingCanvas, weaveCanvas } from "./weave";
@@ -27,10 +28,10 @@ const INNER_PROFILE = catmull([[1.74, 1.42], [1.64, 1.02], [1.48, 0.45], [1.26, 
 const BASE_DROP_DELAY_MS = 250;
 const BASE_DROP_GAP_MS = 260;
 const ADDON_STAGGER_MS = 180;
-const IDLE_MS = 4000;
+/** Nothing but the slow idle sway moves between interactions, so it draws at this pace instead of every refresh. */
+const IDLE_FRAME_MS = 1000 / 24;
 const SPIN_DAMPING = Math.log(25);
-const MAX_SPIN_SPEED = 6;
-const RELEASE_PAUSE_MS = 200;
+const MAX_DPR = 2;
 
 /**
  * The woven 3D basket from the mock. Appends its canvas to `host`, drops the website tiles in, then keeps the add-on
@@ -38,7 +39,9 @@ const RELEASE_PAUSE_MS = 200;
  * with the right glyphs.
  */
 export function createBasketScene(host: HTMLElement, image: HTMLImageElement | null, options: BasketSceneOptions): BasketScene {
-  const renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, 2), alpha: true, antialias: true, premultipliedAlpha: false });
+  // Premultiplied: with straight alpha the multisample resolve averages the clear colour (0,0,0,0) into silhouette
+  // pixels and rims the basket and tiles with a dark fringe.
+  const renderer = new Renderer({ dpr: Math.min(window.devicePixelRatio || 1, MAX_DPR), alpha: true, antialias: true, premultipliedAlpha: true });
   try {
     return mountScene(renderer, host, image, options);
   } catch (error) {
@@ -54,7 +57,9 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   const gl = renderer.gl;
   gl.clearColor(0, 0, 0, 0);
   const canvas = gl.canvas;
-  canvas.style.cssText = "position:relative;z-index:1;display:block;width:100%;height:100%;touch-action:pan-y";
+  // Starts transparent and fades in over the poster, so the two near-identical baskets cross-dissolve rather than overlap.
+  canvas.style.cssText =
+    "position:relative;z-index:1;display:block;width:100%;height:100%;touch-action:pan-y;opacity:0;transition:opacity .3s ease;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent";
   host.insertBefore(canvas, host.firstChild);
 
   const camera = new Camera(gl, { fov: 30, near: 0.1, far: 100 });
@@ -96,7 +101,7 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   }
 
   const shadowProg = new Program(gl, {
-    vertex: VERT,
+    vertex: FLAT_VERT,
     fragment: SHADOW_FRAG,
     transparent: true,
     depthWrite: false,
@@ -131,15 +136,16 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   }
   const renderCastShadows = createShadowLighting(gl, scene, group);
 
-  let running = false, visible = false, destroyed = false, last = performance.now(), time = 0, idleUntil = 0, frame = 0;
-  let drag = 0, dragV = 0, dragging = false, lastX = 0, lastMoveAt = 0;
+  // `last` is the rAF timestamp of the previous drawn frame, -1 until the loop has drawn since it (re)started.
+  let running = false, visible = false, destroyed = false, last = -1, time = 0, frame = 0;
+  let drag = 0, dragV = 0, dragging = false, lastX = 0, hostWidth = 1;
   let activePointer: number | undefined;
+  const spinSamples: SpinSample[] = [];
 
   function kick(): void {
-    idleUntil = performance.now() + IDLE_MS;
     if (visible && !running && !destroyed) {
       running = true;
-      last = performance.now();
+      last = -1;
       frame = requestAnimationFrame(loop);
     }
   }
@@ -147,12 +153,18 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   function add(k: TileId): void {
     const t = tokens.get(k);
     if (!t) return;
+    // Switched back on while still lifting out: fall from where it is instead of vanishing and reappearing above.
+    const resume = t.phase === "lift";
     t.phase = "drop";
     t.node.visible = true;
+    t.vy = 0;
+    if (resume) {
+      kick();
+      return;
+    }
     t.s = 1;
     t.node.scale.set(1, 1, 1);
     t.y = t.d.rest[1] + (reduce ? 0 : 5 + Math.random() * 1.5);
-    t.vy = 0;
     t.node.rotation.set(-0.2 + (reduce ? 0 : (Math.random() - 0.5) * 1.6), (Math.random() - 0.5) * 0.8, t.d.rz + (reduce ? 0 : (Math.random() - 0.5) * 2));
     kick();
   }
@@ -170,6 +182,10 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
       if (t.phase === "off") continue;
       const r = t.d.rest, m = t.node;
       if (t.phase === "drop") {
+        if (t.s < 1) {
+          t.s = Math.min(1, t.s + dt * 4);
+          m.scale.set(t.s, t.s, t.s);
+        }
         t.vy -= 24 * dt;
         t.y += t.vy * dt;
         if (t.y < r[1]) {
@@ -207,31 +223,43 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
     camera.lookAt([0, 1.15, 0]);
   }
 
-  function loop(now: number): void {
-    const dt = Math.min(0.05, (now - last) / 1000);
-    last = now;
-    time += dt;
-    step(dt);
+  /** The shadow map and the picture are drawn together: a map from another frame shadows moving tiles wrongly. */
+  function draw(): void {
     renderCastShadows();
     renderer.render({ scene, camera });
-    let busy = dragging || dragV !== 0;
-    for (const t of tokens.values()) busy ||= t.phase === "drop" || t.phase === "lift";
-    if (visible && (!reduce || busy) && (busy || performance.now() < idleUntil || !reduce)) frame = requestAnimationFrame(loop);
+  }
+
+  function moving(): boolean {
+    if (dragging || dragV !== 0) return true;
+    for (const t of tokens.values()) if (t.phase === "drop" || t.phase === "lift") return true;
+    return false;
+  }
+
+  function loop(now: number): void {
+    const busy = moving();
+    if (busy || last < 0 || now - last >= IDLE_FRAME_MS - 1) {
+      const dt = last < 0 ? 0 : Math.min(0.05, (now - last) / 1000);
+      last = now;
+      time += dt;
+      step(dt);
+      draw();
+    }
+    if (visible && (!reduce || busy)) frame = requestAnimationFrame(loop);
     else running = false;
   }
 
   function resize(): void {
     const w = host.clientWidth, h = host.clientHeight;
     if (!w || !h) return;
+    renderer.dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR);
     renderer.setSize(w, h);
     // setSize writes pixel sizes inline; keep the canvas fluid so the stage can shrink again (the mock used !important).
     canvas.style.width = canvas.style.height = "100%";
     camera.perspective({ aspect: w / h });
-    if (!running) {
-      step(0);
-      renderCastShadows();
-      renderer.render({ scene, camera });
-    }
+    hostWidth = w;
+    // Resizing clears the drawing buffer and the browser paints before the next animation frame, so draw now or the stage blinks.
+    step(0);
+    draw();
   }
 
   // Everything that can throw (first render included) runs before listeners, observers and timers exist.
@@ -245,7 +273,8 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
 
   const endDrag = (coast = false): void => {
     // Momentum is independent of pointer ownership; interrupted or paused drags stop cleanly.
-    if (!coast || performance.now() - lastMoveAt > RELEASE_PAUSE_MS) dragV = 0;
+    dragV = coast ? releaseSpin(spinSamples, performance.now()) : 0;
+    spinSamples.length = 0;
     if (activePointer === undefined) return;
     const pointer = activePointer;
     activePointer = undefined;
@@ -261,14 +290,9 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
       endDrag(true);
       return;
     }
-    const r = host.getBoundingClientRect();
-    const dx = ((e.clientX - lastX) / r.width) * 4;
-    const now = performance.now();
-    const elapsed = Math.max((now - lastMoveAt) / 1000, 1 / 120);
-    dragV = Math.max(-MAX_SPIN_SPEED, Math.min(MAX_SPIN_SPEED, dx / elapsed));
-    drag += dx;
+    drag += ((e.clientX - lastX) / hostWidth) * 4;
     lastX = e.clientX;
-    lastMoveAt = now;
+    recordSpin(spinSamples, performance.now(), drag);
     kick();
   };
   const onDown = (e: PointerEvent): void => {
@@ -278,7 +302,8 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
     dragging = true;
     dragV = 0;
     lastX = e.clientX;
-    lastMoveAt = performance.now();
+    spinSamples.length = 0;
+    recordSpin(spinSamples, performance.now(), drag);
     host.style.cursor = "grabbing";
     host.setPointerCapture(e.pointerId);
     kick();
@@ -297,6 +322,16 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
 
   const resizer = new ResizeObserver(resize);
   resizer.observe(host);
+
+  // The browser may reclaim the context (a backgrounded tab on a phone, a GPU reset). Say so, or the stage stays blank.
+  const onContextLost = (e: Event): void => {
+    e.preventDefault();
+    options.onContextLost?.();
+  };
+  canvas.addEventListener("webglcontextlost", onContextLost);
+  requestAnimationFrame(() => {
+    canvas.style.opacity = "1";
+  });
 
   for (const id of PLAN_IDS) {
     if (!pick[id]) continue;
@@ -327,6 +362,7 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
       timers.forEach((id) => window.clearTimeout(id));
       timers.clear();
       resizer.disconnect();
+      canvas.removeEventListener("webglcontextlost", onContextLost);
       host.removeEventListener("pointermove", onMove);
       host.removeEventListener("pointerdown", onDown);
       host.removeEventListener("pointerup", onUp);
@@ -336,7 +372,8 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
       window.removeEventListener("blur", onBlur);
       host.style.cursor = previousCursor;
       host.style.userSelect = previousUserSelect;
-      gl.getExtension("WEBGL_lose_context")?.loseContext();
+      // Losing a context that is already lost raises an INVALID_OPERATION warning.
+      if (!gl.isContextLost()) gl.getExtension("WEBGL_lose_context")?.loseContext();
       canvas.remove();
     },
   };

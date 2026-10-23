@@ -7,7 +7,6 @@ import type { CSSProperties, ReactElement } from "react";
 import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNote, type Rich, slotLabel } from "@/content/basket-card";
 import { BASKET_COPY } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { hasSignup } from "@/lib/signup";
 import { basketPlans, type BasketPick, firstPayment, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
@@ -87,7 +86,7 @@ function StampCard({ pick }: { readonly pick: BasketPick }): ReactElement {
         </div>
       ) : null}
       <div className="flex flex-wrap items-center gap-x-4 gap-y-3 pt-1">
-        <BasketCta location="plans" label={hasSignup() ? BASKET_CARD.checkoutCta : undefined} />
+        <BasketCta location="plans" label={BASKET_CARD.checkoutCta} />
         <Link href="/pricing#compare" className="px-0.5 py-1.5 text-[15px] font-semibold text-ink underline decoration-rattan decoration-2 underline-offset-[5px]">{BASKET_COPY.compare}</Link>
       </div>
     </div>

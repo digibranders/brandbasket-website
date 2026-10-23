@@ -1,18 +1,12 @@
 import { type BasketPick, PLAN_IDS } from "./pricing";
+import { siteConfig } from "./site-config";
 
 /**
- * Where every "Get my free website" button goes. The plan list format must match what brandbasket-platform reads
- * from `?plan=` (docs/plans/16, Task P2.4); change it here only.
+ * Where every "Get my free website" button goes: the app's sign-in, with the picked plans. The plan list format must match
+ * what brandbasket-platform reads from `?plan=` (docs/plans/16, Task P2.4); change it here only.
  */
-/** True once the platform sign-up is live; until then the buttons fall back to the contact form. */
-export function hasSignup(base: string | undefined = process.env.NEXT_PUBLIC_SIGNUP_URL): boolean {
-  return Boolean(base);
-}
-
-export function signupHref(pick: BasketPick, base: string | undefined = process.env.NEXT_PUBLIC_SIGNUP_URL): string {
-  const plan = PLAN_IDS.filter((id) => pick[id]).join(",");
-  if (!base) return `/contact?${new URLSearchParams({ plan }).toString()}#start`;
-  const url = new URL("/login", base);
-  url.searchParams.set("plan", plan);
+export function signupHref(pick: BasketPick): string {
+  const url = new URL("/login", siteConfig.appUrl);
+  url.searchParams.set("plan", PLAN_IDS.filter((id) => pick[id]).join(","));
   return url.toString();
 }

@@ -14,22 +14,48 @@ void main() {
   gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 }`;
 
-/** OGL's packed RGBA depth, sampled with a soft 3x3 percentage-closer filter. */
+/**
+ * Vertex shader for the painted contact shadow, which has no cast shadow to look up. Sharing VERT left its shadow
+ * matrices unsupplied and OGL logged a warning for each, on every draw.
+ */
+export const FLAT_VERT = /* glsl */ `
+attribute vec3 position; attribute vec2 uv;
+uniform mat4 modelViewMatrix; uniform mat4 projectionMatrix;
+varying vec2 vUv;
+void main() {
+  vUv = uv;
+  gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+}`;
+
+/** Side of OGL's square shadow map, in texels. */
+export const SHADOW_MAP_SIZE = 1024;
+
+/**
+ * OGL's packed RGBA depth, filtered over a lattice whose cells are `cell` texels wide. A 3x3 quadratic B-spline weights
+ * the lattice, so the penumbra changes continuously as the basket turns. Equal-weight taps spaced texels apart showed
+ * as stepped, crawling shadow edges. Nodes sit on texel centres so NEAREST sampling never straddles a texel edge.
+ */
 const SHADOW_SAMPLE = /* glsl */ `
 uniform sampler2D tShadow;
 varying vec4 vLight;
-float shadowAt(float bias, float radius) {
+float pick(vec3 v, int i) { return i == 0 ? v.x : (i == 1 ? v.y : v.z); }
+vec3 spline(float d) { return vec3(0.5 * (0.5 - d) * (0.5 - d), 0.75 - d * d, 0.5 * (0.5 + d) * (0.5 + d)); }
+float shadowAt(float bias, float cell) {
   vec3 p = vLight.xyz / vLight.w * 0.5 + 0.5;
   if (p.x <= 0.0 || p.x >= 1.0 || p.y <= 0.0 || p.y >= 1.0 || p.z <= 0.0 || p.z >= 1.0) return 0.0;
+  vec2 size = vec2(cell / ${SHADOW_MAP_SIZE}.0);
+  vec2 q = p.xy / size - 0.5;
+  vec2 node = floor(q + 0.5);
+  vec3 wx = spline(q.x - node.x), wy = spline(q.y - node.y);
   float blocked = 0.0;
-  for (int y = -1; y <= 1; y++) {
-    for (int x = -1; x <= 1; x++) {
-      vec4 depthTexel = texture2D(tShadow, p.xy + vec2(float(x), float(y)) * radius / 1024.0);
+  for (int y = 0; y < 3; y++) {
+    for (int x = 0; x < 3; x++) {
+      vec4 depthTexel = texture2D(tShadow, (node + vec2(float(x) - 0.5, float(y) - 0.5)) * size);
       float depth = dot(depthTexel, vec4(1.0, 1.0 / 255.0, 1.0 / 65025.0, 1.0 / 16581375.0));
-      blocked += step(depth + bias, p.z);
+      blocked += pick(wx, x) * pick(wy, y) * step(depth + bias, p.z);
     }
   }
-  return blocked / 9.0;
+  return blocked;
 }`;
 
 /** Key light with cast shadows, hemisphere fill, interior occlusion and ACES tone mapping. */
@@ -69,13 +95,13 @@ void main() {
   bool cavity = uInterior > 1.5 || inside;
   if (uInterior > 0.5 && cavity) ao = mix(0.32, 0.88, smoothstep(0.0, 1.45, vW.y));
   if (uInterior > 0.5 && !cavity) ao = mix(0.7, 1.0, smoothstep(0.0, 0.5, vW.y));
-  float shade = 1.0 - shadowAt(0.0006 + 0.0012 * (1.0 - ndl), 2.0) * 0.82;
+  float shade = 1.0 - shadowAt(0.0006 + 0.0012 * (1.0 - ndl), 3.0) * 0.82;
   vec3 col = base * (hemi * 0.44 + uKeyCol * ndl * shade) * ao + uKeyCol * spec * shade * ao + uRimCol * fres * 0.08 * ao;
   col = aces(col * uExposure);
   gl_FragColor = vec4(pow(col, vec3(1.0 / 2.2)), 1.0);
 }`;
 
-/** Transparent receiver: only the basket's projected silhouette is composited onto the page. */
+/** Transparent receiver: only the basket's projected silhouette is composited onto the page. Output is premultiplied. */
 export const GROUND_SHADOW_FRAG = /* glsl */ `
 precision highp float;
 uniform vec3 uTint;
@@ -83,10 +109,11 @@ varying vec2 vUv;
 ${SHADOW_SAMPLE}
 void main() {
   float edge = 1.0 - smoothstep(0.7, 1.0, length((vUv - 0.5) * 2.0));
-  gl_FragColor = vec4(uTint, shadowAt(0.0008, 8.0) * 0.24 * edge);
+  float alpha = shadowAt(0.0008, 8.0) * 0.24 * edge;
+  gl_FragColor = vec4(uTint * alpha, alpha);
 }`;
 
-/** Soft contact shadow, painted rather than computed. */
+/** Soft contact shadow, painted rather than computed. Output is premultiplied. */
 export const SHADOW_FRAG = /* glsl */ `
 precision highp float;
 uniform float uStrength; uniform vec3 uTint;
@@ -97,5 +124,6 @@ void main() {
   float d = length(p);
   float soft = pow(1.0 - smoothstep(0.0, 1.0, d), 1.8);
   float core = 1.0 - smoothstep(0.0, 0.62, d);
-  gl_FragColor = vec4(uTint, (soft * 0.55 + core * 0.45) * uStrength);
+  float alpha = (soft * 0.55 + core * 0.45) * uStrength;
+  gl_FragColor = vec4(uTint * alpha, alpha);
 }`;

@@ -54,8 +54,9 @@ interface Handles {
 const STEP_MS = 1000 / 60;
 /** Pixels per step squared at gravity.y = 1. */
 const GRAV = 0.001 * STEP_MS * STEP_MS;
-const RATIO = 0.5;
-const MAX_TW = 320;
+const RATIO = 0.56;
+const SMALL_RATIO = 0.58;
+const MAX_TW = 360;
 const BASKET_X = 0.73;
 const SMALL_BELOW = 520;
 const SVG_NS = "http://www.w3.org/2000/svg";
@@ -120,7 +121,7 @@ export function createBasket(M: MatterLib, parts: BasketParts): BasketRun {
     const shown = chipEls.filter((el) => !el.hidden);
     onCount(shown.length, 0);
 
-    const Tw = Math.max(170, Math.min(MAX_TW, W * RATIO));
+    const Tw = Math.max(170, Math.min(MAX_TW, W * (small ? SMALL_RATIO : RATIO)));
     const base = { Tw, bh: Tw * 0.62, ins: Tw * 0.1, wall: 14, pad: 18 };
     const left = Math.min(W * BASKET_X, W - Tw / 2 - 8) - Tw / 2;
     const g: Geometry = { ...base, left, topY: floorY - base.bh };

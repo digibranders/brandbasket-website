@@ -4,7 +4,7 @@ import { BasketCta } from "@/components/basket/BasketCta";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { CLOSING_COPY } from "@/content/closing";
 
-/** Mock: section.closing. PhoneTotalBar hides itself once #closing is reached, so the id is load-bearing. */
+/** Mock: section.closing. BasketDock hides itself once #closing is reached, so the id is load-bearing. */
 export function Closing(): ReactElement {
   return (
     <div className="mx-auto w-full max-w-[1280px] px-[clamp(18px,4vw,56px)]">

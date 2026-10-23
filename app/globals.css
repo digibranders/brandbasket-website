@@ -69,10 +69,10 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .faq-item::details-content { block-size: 0; overflow: hidden; transition: block-size 400ms var(--ease), content-visibility 400ms allow-discrete; }
 .faq-item[open]::details-content { block-size: auto; }
 
-/* Keep WhatsApp clear of the phone pricing bar and device safe areas. */
+/* Keep WhatsApp clear of the basket dock (full width on phones) and device safe areas. */
 .whatsapp-chat { bottom: max(16px, env(safe-area-inset-bottom, 0px)); }
 @media (width < 1000px) {
-  body:has([data-phone-total-bar]:not([inert])) .whatsapp-chat {
+  body:has([data-basket-dock]:not([inert])) .whatsapp-chat {
     bottom: calc(88px + env(safe-area-inset-bottom, 0px));
   }
 }

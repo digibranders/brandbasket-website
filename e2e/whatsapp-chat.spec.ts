@@ -63,15 +63,15 @@ test("chat resets on navigation and fits the viewport", async ({ page }) => {
   await expect(page.getByRole("button", { name: "Open WhatsApp chat" })).toHaveAttribute("aria-expanded", "false");
 });
 
-test("phone chat clears the pricing total bar", async ({ page }) => {
+test("phone chat clears the basket dock", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/pricing");
   await page.locator("#details").scrollIntoViewIfNeeded();
-  const bar = page.locator("[data-phone-total-bar]:not([inert])");
+  const bar = page.locator("[data-basket-dock]:not([inert])");
   await expect(bar).toBeVisible();
   const toggle = page.getByRole("button", { name: "Open WhatsApp chat" });
   const barBox = await bar.boundingBox();
   const toggleBox = await toggle.boundingBox();
-  if (!barBox || !toggleBox) throw new Error("The total bar or chat launcher is missing");
+  if (!barBox || !toggleBox) throw new Error("The basket dock or chat launcher is missing");
   expect(toggleBox.y + toggleBox.height).toBeLessThan(barBox.y);
 });

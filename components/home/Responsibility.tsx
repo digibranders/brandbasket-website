@@ -1,6 +1,7 @@
 "use client";
 import { Check, ExclamationMark } from "@phosphor-icons/react/dist/ssr";
 import { type ReactElement, useEffect, useRef } from "react";
+import { Band } from "@/components/ui/Band";
 import { TwoTierHead } from "@/components/ui/TwoTierHead";
 import { RESPONSIBILITY } from "@/content/home";
 import { createBasket, type MatterLib } from "./responsibility-physics";
@@ -14,9 +15,9 @@ function loadMatter(): Promise<MatterLib> {
 }
 
 /**
- * "More Than a Website. We Take Responsibility." (mock: #s-resp). Nine worries are tossed into a woven basket; the ledger
- * counts them over. Drag-and-throw on fine pointers; reduced motion shows the finished state. The stage is decorative,
- * so the words beside it carry the meaning.
+ * "More Than a Website. We Take Responsibility." (mock: #s-resp, homepage-v2). The page's one dark band: nine worries are
+ * tossed into a woven basket that stands on the band, and the ledger counts them over. Drag-and-throw on fine pointers;
+ * reduced motion shows the finished state. The stage is decorative, so the words beside it carry the meaning.
  */
 export function Responsibility(): ReactElement {
   const arena = useRef<HTMLDivElement>(null);
@@ -71,24 +72,25 @@ export function Responsibility(): ReactElement {
 
   const total = RESPONSIBILITY.worries.length;
   return (
-    <section id="responsibility" aria-labelledby="h-resp" className="in-wrap pb-[clamp(40px,5vw,64px)] pt-[clamp(56px,6vw,88px)]">
-      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-[clamp(28px,5vw,72px)] min-[1000px]:grid-cols-[0.85fr_1.15fr]">
-        <div>
-          <TwoTierHead id="h-resp" small={RESPONSIBILITY.small} large={RESPONSIBILITY.large} />
-          <p className="mt-[22px] max-w-[46ch] text-pretty text-[17px] leading-[1.65] text-ink-2">{RESPONSIBILITY.body}</p>
+    <Band tone="ink">
+    <section id="responsibility" aria-labelledby="h-resp" className="in-wrap py-[clamp(56px,8vw,112px)]">
+      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-[clamp(28px,5vw,72px)] min-[1000px]:grid-cols-[1.15fr_0.85fr]">
+        <div className="min-[1000px]:order-2">
+          <TwoTierHead id="h-resp" small={RESPONSIBILITY.small} large={RESPONSIBILITY.large} onDark />
+          <p className="mt-[22px] max-w-[46ch] text-pretty text-[17px] leading-[1.65] text-action-ink/74">{RESPONSIBILITY.body}</p>
           <div className="mt-[34px] flex items-stretch gap-7 max-[640px]:gap-5">
             <div>
               <b ref={onMind} className="num block font-display text-[clamp(48px,5vw,68px)] font-semibold leading-none tracking-[-0.04em]">{total}</b>
-              <span className="mt-2 block text-sm text-ink-2">{RESPONSIBILITY.onYourMind}</span>
+              <span className="mt-2 block text-sm text-action-ink/62">{RESPONSIBILITY.onYourMind}</span>
             </div>
-            <i aria-hidden="true" className="w-px bg-line" />
+            <i aria-hidden="true" className="w-px bg-action-ink/20" />
             <div>
-              <b ref={caught} className="num block font-display text-[clamp(48px,5vw,68px)] font-semibold leading-none tracking-[-0.04em] text-sage">0</b>
-              <span className="mt-2 block text-sm text-ink-2">{RESPONSIBILITY.inBasket}</span>
+              <b ref={caught} className="num block font-display text-[clamp(48px,5vw,68px)] font-semibold leading-none tracking-[-0.04em] text-sage-on-ink">0</b>
+              <span className="mt-2 block text-sm text-action-ink/62">{RESPONSIBILITY.inBasket}</span>
             </div>
           </div>
         </div>
-        <div ref={arena} aria-hidden="true" className="rb-stage">
+        <div ref={arena} aria-hidden="true" className="rb-stage min-[1000px]:order-1">
           <div ref={floor} className="rb-floor" />
           <div ref={svgHost} className="contents" />
           {RESPONSIBILITY.worries.map((label) => (
@@ -103,5 +105,6 @@ export function Responsibility(): ReactElement {
         </div>
       </div>
     </section>
+    </Band>
   );
 }

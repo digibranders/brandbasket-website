@@ -2,12 +2,13 @@
 @import "tailwindcss";
 @import "../components/motion/reveal.css";
 @import "../components/home/responsibility.css";
+@import "../components/ui/band.css";
 
 :root {
   --bg: #f6f5f2; --surface: #ffffff; --sunken: #eeece7;
   --ink: #15161a; --ink-2: #4e5057; --line: #e3e0d9; --line-2: rgba(21, 22, 26, 0.08);
   --rattan: #c48a47; --rattan-text: #a46c2f; --rattan-ink: #8a5524; --rattan-wash: #f4e6d3;
-  --sage: #4a745e; --whatsapp: #1f8f4e; --error: #b42318;
+  --sage: #4a745e; --sage-on-ink: #7cc4a0; --whatsapp: #1f8f4e; --error: #b42318;
   --hero: radial-gradient(ellipse 55% 60% at 74% 58%, rgba(255, 255, 255, 0.95), transparent 70%), radial-gradient(ellipse 80% 60% at 74% 100%, rgba(196, 138, 71, 0.12), transparent 70%);
   --action: #15161a; --action-ink: #ffffff; --nav: rgba(255, 255, 255, 0.82);
   --shadow: 0 30px 60px -36px rgba(40, 28, 14, 0.28);
@@ -36,6 +37,7 @@
   --color-rattan-ink: var(--rattan-ink);
   --color-rattan-wash: var(--rattan-wash);
   --color-sage: var(--sage);
+  --color-sage-on-ink: var(--sage-on-ink);
   --color-error: var(--error);
   --color-action: var(--action);
   --color-action-ink: var(--action-ink);

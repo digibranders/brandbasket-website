@@ -3,13 +3,10 @@
    Written here, not in utilities, because the chips and SVGs are driven by the physics loop and the chat is staged by a data attribute. */
 
 .rb-stage {
-  position: relative; height: 440px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: pan-y; border-radius: 32px;
-  background: radial-gradient(120% 90% at 25% 0%, var(--surface), transparent 70%), linear-gradient(180deg, color-mix(in srgb, var(--rattan-wash) 45%, var(--surface)), var(--rattan-wash));
-  box-shadow: 0 44px 70px -50px rgba(40, 28, 14, 0.5), 0 0 0 1px rgba(21, 22, 26, 0.05);
+  position: relative; height: 440px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: pan-y;
 }
 @media (min-width: 1000px) { .rb-stage { height: 480px; } }
-@media (max-width: 640px) { .rb-stage { border-radius: 26px; } }
-.rb-floor { position: absolute; left: 0; right: 0; height: 1px; background: color-mix(in srgb, var(--rattan) 38%, transparent); }
+.rb-floor { position: absolute; left: 0; right: 0; height: 1px; background: color-mix(in srgb, var(--action-ink) 16%, transparent); }
 
 .rb-svg { position: absolute; pointer-events: none; overflow: visible; }
 .rb-svg.back { z-index: 1; }
@@ -29,7 +26,7 @@
   position: absolute; left: 0; top: 0; z-index: 2; display: flex; align-items: center; gap: 7px; padding: 0 14px 0 6px; border-radius: 999px;
   background: var(--surface); color: var(--ink); font: 500 13px var(--font-red-hat-display), sans-serif; letter-spacing: -0.01em; white-space: nowrap;
   cursor: grab; will-change: transform; opacity: 0;
-  box-shadow: 0 0 0 1px rgba(21, 22, 26, 0.1), 0 12px 20px -14px rgba(40, 28, 14, 0.6);
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px -12px rgba(0, 0, 0, 0.7);
   transition: background 500ms var(--ease), color 500ms var(--ease), box-shadow 500ms var(--ease);
 }
 .rb-chip[hidden] { display: none; }

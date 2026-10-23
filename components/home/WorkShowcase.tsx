@@ -250,8 +250,8 @@ export function WorkShowcase(): ReactElement {
   const current = WORK.cases[active] ?? WORK.cases[0];
 
   return (
-    <Section id="work" labelledBy="h-work" tight className="scroll-mt-24">
-      <SectionHead id="h-work" title={WORK.heading} />
+    <Section id="work" labelledBy="h-work" tight className="scroll-mt-24 pb-0!">
+      <SectionHead id="h-work" title={WORK.heading} step />
       <Reveal>
         <div ref={rootRef} className="grid grid-cols-1 items-center gap-8 min-[1000px]:grid-cols-[0.36fr_1fr] min-[1000px]:gap-14">
           <ul role="tablist" aria-label={WORK.tabsLabel} className="m-0 grid list-none p-0 max-[999px]:auto-cols-[minmax(0,1fr)] max-[999px]:grid-flow-col max-[999px]:gap-3.5">

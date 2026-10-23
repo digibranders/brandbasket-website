@@ -1,7 +1,6 @@
 import { User } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import type { ReactElement } from "react";
-import { BasketCta } from "@/components/basket/BasketCta";
 import { InView } from "@/components/motion/InView";
 import { TwoTierHead } from "@/components/ui/TwoTierHead";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
@@ -58,7 +57,6 @@ export function Promises(): ReactElement {
               })}
             </div>
             <div className="cta-pair mt-7">
-              <BasketCta location="promises" />
               <WhatsAppButton location="promises" />
             </div>
           </div>

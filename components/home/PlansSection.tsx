@@ -10,7 +10,7 @@ export function PlansSection(): ReactElement {
   return (
     <Section labelledBy="h-plans" tight>
       <Reveal>
-        <TwoTierHead id="h-plans" small={PLANS_SECTION.small} large={PLANS_SECTION.large} className="mb-10" />
+        <TwoTierHead id="h-plans" small={PLANS_SECTION.small} large={PLANS_SECTION.large} tier="step" className="mb-10" />
       </Reveal>
       <BasketCard />
     </Section>

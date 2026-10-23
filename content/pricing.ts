@@ -27,117 +27,120 @@ export const PRICING_HERO = {
   accent: "Start with your website.",
 } as const;
 
-/** One cell of the comparison table: included, not included, or a short quantity such as "2 a month". */
-export type CompareCell = boolean | string;
-/** One cell per package, in `PACKAGES` order: Website + Social, Website + SEO, Social + SEO, All three. */
-export type CompareCells = readonly [CompareCell, CompareCell, CompareCell, CompareCell];
-
-export interface CompareRow {
-  readonly label: string;
-  readonly note?: string;
-  readonly cells: CompareCells;
+/** One plan as a column of the comparison (docs/design/homepage-v2.html, #cmp-new). Prices come from lib/pricing. */
+export interface PlanColumn {
+  readonly id: PlanId;
+  readonly name: string;
+  readonly price: string;
+  readonly priceNote: string;
+  /** A short tag under the name, only where it adds a fact. */
+  readonly tag?: string;
+  readonly audience: string;
+  readonly does: readonly string[];
+  readonly excludes: readonly string[];
 }
 
-export interface CompareGroup {
-  readonly title: string;
-  readonly rows: readonly CompareRow[];
-}
+export const COMPARE = {
+  heading: "Which plan fits you?",
+  lede: "Three plans, each on its own. Prices are monthly, before GST. Add more than one and the prices drop.",
+  doesLabel: "What we do",
+  excludesLabel: "Not included",
+} as const;
 
-export interface CompareColumn {
+const PRICE_NOTE = "a month + GST";
+
+/** Order is the order on the page: Website, Social, Search. Numbers are built from lib/pricing, so a price change shows here. */
+export const PLAN_COLUMNS: readonly PlanColumn[] = [
+  {
+    id: "website",
+    name: PLANS.website.name,
+    price: formatInr(PLANS.website.monthly),
+    priceNote: PRICE_NOTE,
+    tag: "Free build",
+    audience: "For businesses that want a website without the technical work.",
+    does: [
+      "Up to 10 pages, built for you",
+      "Enquiry forms, click to call and WhatsApp",
+      "A dashboard to edit your own site",
+      "Hosting, SSL and backups",
+      "Security updates and uptime monitoring",
+      "Privacy and DPDP readiness support",
+      "Human support when you need it",
+      "2 small edits a month, 30 minutes each",
+      "A monthly website health report",
+    ],
+    excludes: ["Domain registration or renewal", "Extra pages or a redesign, quoted first", "Content writing, SEO or ads", "E-commerce or new features"],
+  },
+  {
+    id: "growth",
+    name: PLANS.growth.name,
+    price: formatInr(PLANS.growth.monthly),
+    priceNote: PRICE_NOTE,
+    audience: "For businesses that want posts, reviews and ads handled for them.",
+    does: [
+      "Instagram and Facebook posts, planned with you",
+      "Captions written and posts scheduled",
+      "Google Business Profile posts and updates",
+      "Review monitoring and reply drafts",
+      "Facebook and Instagram ads: plan, setup and launch",
+      `Ad monitoring and budget pacing, up to ${AD_CAP} a month of your budget`,
+      "Human support when you need it",
+      "A monthly posts, profile and ads report",
+    ],
+    excludes: ["Ad spend, paid to Meta by you", `Reels and video editing, ${HOURLY} an hour`, "Guaranteed leads or sales"],
+  },
+  {
+    id: "search",
+    name: PLANS.search.name,
+    price: formatInr(PLANS.search.monthly),
+    priceNote: PRICE_NOTE,
+    audience: "For businesses that want to be found on Google and in AI answers.",
+    does: [
+      "Local keyword and competitor research",
+      "5 pages optimised a month: titles, descriptions, headings",
+      "Service area page optimisation",
+      "Name, address and phone consistency",
+      "Schema, citation and directory audit",
+      "AEO: your customers' questions shaped into direct answers",
+      "AI visibility tracking where measurable",
+      "A monthly report on rankings, traffic and enquiries",
+    ],
+    excludes: ["Guaranteed rankings or AI citations", "Paid backlinks or placements", "Unlimited writing, or new landing pages (quoted separately)"],
+  },
+];
+
+/** What every plan has in common, shown once under the columns. */
+export const EVERY_PLAN = {
+  label: "Every plan",
+  items: ["Cancel anytime, no notice period", `Billed monthly, plus ${GST_LABEL} GST`, "A real person to ask", "A monthly report in plain words"],
+} as const;
+
+export interface BundleTile {
   readonly id: Package["id"];
   readonly name: string;
-  /** Monthly total before GST, for example "₹10,398". */
   readonly price: string;
-  readonly priceSuffix: string;
+  readonly offer: string;
+  /** Null when the package adds no ad money. */
+  readonly adMoney: string | null;
+  readonly biggest: boolean;
 }
 
-function isFourCells(cells: readonly CompareCell[]): cells is CompareCells {
-  return cells.length === 4;
-}
-
-/** One cell per package, in `PACKAGES` order. */
-function packageCells(cell: (pkg: Package) => CompareCell): CompareCells {
-  const cells = PACKAGES.map(cell);
-  if (!isFourCells(cells)) throw new RangeError(`Expected 4 packages, got ${cells.length}`);
-  return cells;
-}
-
-const YES = true;
-const NO = false;
-
-export interface Compare {
-  readonly heading: string;
-  readonly lede: string;
-  readonly tabsLabel: string;
-  readonly rowHeader: string;
-  readonly included: string;
-  readonly notIncluded: string;
-  readonly columns: readonly CompareColumn[];
-  readonly groups: readonly CompareGroup[];
-}
-
-export const COMPARE: Compare = {
-  heading: "Which basket fits you?",
-  lede: "Four packages. Every price is monthly, before GST, and stays for as long as you keep every plan in the package.",
-  tabsLabel: "Show one basket",
-  rowHeader: "What is included",
-  included: "Included",
-  notIncluded: "Not included",
-  columns: PACKAGES.map(
-    (pkg): CompareColumn => ({
+export const BUNDLES = {
+  heading: "Add plans together and save.",
+  lede: "Two plans are 20% off. All three are 30% off, with ad money from us when you start together.",
+  priceSuffix: "a month",
+  biggestFlag: "Biggest saving",
+  tiles: PACKAGES.map(
+    (pkg): BundleTile => ({
       id: pkg.id,
       name: pkg.name,
       price: formatInr(packageTotal(pkg.pick)),
-      priceSuffix: " /mo",
+      offer: `${pkg.percent}% off, you save ${formatInr(packageSaving(pkg.pick))}`,
+      adMoney: pkg.adCredit > 0 ? `plus ${formatInr(pkg.adCredit)} ad money` : null,
+      biggest: pkg.id === "everything",
     }),
   ),
-  groups: [
-    {
-      title: "The package",
-      rows: [
-        { label: "Off the plans' own prices", cells: packageCells((pkg) => `${pkg.percent}%`) },
-        { label: "You save each month", cells: packageCells((pkg) => formatInr(packageSaving(pkg.pick))) },
-        {
-          label: "Ad money from us, every month",
-          note: "When you start with the package",
-          cells: packageCells((pkg) => (pkg.adCredit > 0 ? formatInr(pkg.adCredit) : NO)),
-        },
-      ],
-    },
-    {
-      title: "Your website",
-      rows: [
-        { label: "Hosting, SSL, backups and security", cells: [YES, YES, NO, YES] },
-        { label: "Small edits", note: "Up to 30 minutes each", cells: ["2 a month", "2 a month", NO, "2 a month"] },
-        { label: "Analytics, indexing and sitemap checks", cells: [YES, YES, NO, YES] },
-      ],
-    },
-    {
-      title: "Social media and ads",
-      rows: [
-        { label: "Instagram and Facebook posts", note: "Designed, written and scheduled", cells: ["Planned with you", NO, "Planned with you", "Planned with you"] },
-        { label: "Google Business Profile posts", cells: ["Planned with you", NO, "Planned with you", "Planned with you"] },
-        { label: "Review monitoring and reply drafts", cells: [YES, NO, YES, YES] },
-        { label: "Facebook and Instagram ads", note: `Up to ${AD_CAP} a month of your budget managed, plus our ad money`, cells: [YES, NO, YES, YES] },
-      ],
-    },
-    {
-      title: "Search and AI answers",
-      rows: [
-        { label: "Local keyword and competitor research", cells: [NO, YES, YES, YES] },
-        { label: "Pages optimised", cells: [NO, "5 a month", "5 a month", "5 a month"] },
-        { label: "AEO: FAQs, schema and AI visibility", cells: [NO, YES, YES, YES] },
-        { label: "Ranking, traffic and enquiry tracking", cells: [NO, YES, YES, YES] },
-      ],
-    },
-    {
-      title: "Every plan",
-      rows: [
-        { label: "Monthly report", cells: ["Site + social", "Site + search", "Social + search", "All of it"] },
-      ],
-    },
-  ],
-};
+} as const;
 
 export interface DetailList {
   readonly heading: string;
@@ -202,7 +205,7 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
         kind: "excluded",
         items: [
           "Domain registration or renewal",
-          "New pages or redesigns",
+          "Pages beyond the first 10, or a redesign",
           "Content writing, SEO or AEO",
           "Ads or ad spend",
           "E-commerce or new features",
@@ -299,6 +302,145 @@ export const PLAN_DETAILS: readonly PlanDetail[] = [
     ],
   },
 ];
+
+export type IncludedIconKey = "FileText" | "Phone" | "PencilSimpleLine" | "PlugsConnected" | "ShieldCheck" | "LockKey" | "ChartLineUp" | "Headset";
+
+export interface IncludedGroup {
+  readonly id: string;
+  readonly icon: IncludedIconKey;
+  /** One of the site's plan colours (--c-site, --c-growth, --c-search, --c-care). */
+  readonly colour: "site" | "growth" | "search" | "care";
+  readonly title: string;
+  readonly summary: string;
+  readonly columns: readonly DetailColumn[];
+}
+
+export interface IncludedPart {
+  readonly label: string;
+  readonly note: string;
+  readonly groups: readonly IncludedGroup[];
+}
+
+/**
+ * "Everything included" (docs/design/homepage-v2.html, docs/plans/21-pricing-page-content.md): the owner's checklist cut
+ * to what a shop owner can check. Lines that wait on an owner decision are left out until it is made: tested backup
+ * restores, revision history, published support hours and the privacy-request contact.
+ */
+export const INCLUDED = {
+  heading: "Everything",
+  accent: "included.",
+  lede: "What you get with the free website, and what the monthly plan keeps doing for you.",
+  toggle: "Details",
+  build: {
+    label: "We build it",
+    note: "₹0 development fee",
+    groups: [
+      {
+        id: "pages",
+        icon: "FileText",
+        colour: "site",
+        title: "Website pages",
+        summary: "Up to 10 pages, built for you",
+        columns: [
+          { heading: "The pages", kind: "included", items: ["Homepage", "About Us", "Services or Products", "Contact Us", "FAQ", "Individual service pages"] },
+          { heading: "The essentials", kind: "included", items: ["Privacy Policy and Terms and Conditions", "Refund and shipping policies, where your business needs them", "Reviews and testimonials on your pages", "Works on every phone"] },
+        ],
+      },
+      {
+        id: "enquiries",
+        icon: "Phone",
+        colour: "growth",
+        title: "Enquiries and conversion",
+        summary: "Forms, calls and WhatsApp",
+        columns: [
+          { heading: "Ways to reach you", kind: "included", items: ["Contact and enquiry forms", "Click-to-call buttons", "WhatsApp click-to-chat", "Every enquiry emailed to you"] },
+          { heading: "Built to convert", kind: "included", items: ["Spam and bot protection", "Clear contact details, map and location", "Customer reviews and trust signals"] },
+        ],
+      },
+      {
+        id: "dashboard",
+        icon: "PencilSimpleLine",
+        colour: "search",
+        title: "An easy dashboard",
+        summary: "Edit your own website, safely",
+        columns: [
+          { heading: "Edit and publish", kind: "included", items: ["Edit pages, text and images", "Secure login", "Publish blog posts"] },
+          { heading: "Stay in control", kind: "included", items: ["Edit your SEO titles and descriptions", "A training video that shows you how"] },
+        ],
+      },
+      {
+        id: "tools",
+        icon: "PlugsConnected",
+        colour: "site",
+        title: "Connected tools",
+        summary: "Maps, reviews and social",
+        columns: [
+          { heading: "Connected for you", kind: "included", items: ["Google Maps", "Your Google reviews", "Links to your social accounts"] },
+          { heading: "Quoted separately", kind: "excluded", items: ["Chatbot", "Appointment booking and calendar", "Payment gateway and online payments", "Business email, billed by the provider"] },
+        ],
+      },
+    ],
+  },
+  run: {
+    label: "We keep it running",
+    note: `${MANAGED_MONTHLY} a month + GST`,
+    groups: [
+      {
+        id: "security",
+        icon: "ShieldCheck",
+        colour: "site",
+        title: "Security and reliability",
+        summary: "Kept safe, backed up and watched",
+        columns: [
+          { heading: "Locked down", kind: "included", items: ["HTTPS and an SSL certificate that stays valid", "Secure login for you and your team", "Security updates and vulnerability checks"] },
+          { heading: "Protected and recoverable", kind: "included", items: ["Regular backups and recovery support", "Uptime and error monitoring", "Recovery if something breaks"] },
+        ],
+      },
+      {
+        id: "privacy",
+        icon: "LockKey",
+        colour: "care",
+        title: "Privacy and DPDP readiness",
+        summary: "Handling customer data the right way",
+        columns: [
+          { heading: "Notices and consent", kind: "included", items: ["A privacy policy written for your business", "Privacy notices on your forms", "Consent where the law requires it"] },
+          { heading: "The data you collect", kind: "included", items: ["Forms that ask only for what you need"] },
+        ],
+      },
+      {
+        id: "analytics",
+        icon: "ChartLineUp",
+        colour: "growth",
+        title: "Analytics and reporting",
+        summary: "Know what your website is doing",
+        columns: [
+          { heading: "What we set up", kind: "included", items: ["Google Search Console", "Enquiry form tracking", "Phone and WhatsApp click tracking", "A monthly website health report"] },
+          { heading: "Added with the growth plans", kind: "excluded", items: ["Google Analytics 4 and Tag Manager", "Heatmaps and session recordings"] },
+        ],
+      },
+      {
+        id: "support",
+        icon: "Headset",
+        colour: "search",
+        title: "Support and maintenance",
+        summary: "Real people, every month",
+        columns: [
+          { heading: "Support", kind: "included", items: ["A clear way to reach us", "Change requests, 2 small edits a month", "Help if you cancel or move"] },
+          { heading: "Monthly checks", kind: "included", items: ["Forms and links tested", "Performance checks", "SEO and indexing checks", "Domain and SSL renewal monitoring", "Integration checks, where used"] },
+        ],
+      },
+    ],
+  },
+  privacyNote: "Policy pages and consent banners alone do not establish legal compliance. We help you take the right steps, and your own data practices still matter.",
+} as const satisfies {
+  readonly heading: string;
+  readonly accent: string;
+  readonly lede: string;
+  readonly toggle: string;
+  readonly build: IncludedPart;
+  readonly run: IncludedPart;
+  readonly privacyNote: string;
+};
 
 export interface GoodToKnowItem {
   readonly icon: PricingIconKey;

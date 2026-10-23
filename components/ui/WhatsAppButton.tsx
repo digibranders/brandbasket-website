@@ -3,25 +3,18 @@ import { WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { trackAttrs } from "@/lib/analytics";
 import { businessDetails } from "@/lib/site-config";
-
-type Tone = "default" | "inverse";
-
-const TONES: Readonly<Record<Tone, string>> = {
-  default: "border-line bg-surface text-ink hover:border-[var(--whatsapp)]",
-  // Mock: .closing .wa-btn, on the dark closing block.
-  inverse: "border-action-ink/30 bg-transparent text-action-ink",
-};
+import { outlineClasses } from "./OutlineButton";
 
 interface WhatsAppButtonProps {
   /** Where the button sits, reported with its whatsapp_click event. */
   readonly location: string;
   readonly label?: string;
-  readonly tone?: Tone;
+  readonly tone?: "default" | "inverse";
 }
 
 export function WhatsAppButton({ location, label = "Chat on WhatsApp", tone = "default" }: WhatsAppButtonProps): ReactElement {
   return (
-    <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" {...trackAttrs("whatsapp_click", location)} className={`inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border py-3 pl-3.5 pr-5 text-[15px] font-semibold ${TONES[tone]}`}>
+    <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" {...trackAttrs("whatsapp_click", location)} className={`${outlineClasses(tone)} pl-[18px] pr-6`}>
       <WhatsappLogo aria-hidden="true" weight="fill" className="size-5 text-[var(--whatsapp)]" />
       {label}
     </a>

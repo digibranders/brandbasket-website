@@ -3,7 +3,7 @@ import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
 import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
 import { CANCEL_ANSWER, PAYMENT_FAILURE } from "./legal/cancellation";
-import { FACTS, HERO, HOME_FAQ, INDUSTRIES_LINE, OFFER, REPORT, SHARE_IMAGE, STEPS, WORK } from "./home";
+import { FACTS, HERO, HOME_FAQ, OFFER, PROMISES, REPORT, RESPONSIBILITY, SHARE_IMAGE, STEPS, WHAT_YOU_GET, WORK } from "./home";
 
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
@@ -25,22 +25,27 @@ describe("home content", () => {
     expect(WORK.cases).toHaveLength(3);
     expect(STEPS).toHaveLength(3);
     expect(REPORT.kpis).toHaveLength(4);
-    expect(INDUSTRIES_LINE.industries).toHaveLength(8);
+    expect(WHAT_YOU_GET.build.items).toHaveLength(6);
+    expect(WHAT_YOU_GET.run.items).toHaveLength(6);
+    expect(RESPONSIBILITY.worries).toHaveLength(9);
+    expect(PROMISES.cards).toHaveLength(2);
     expect(HOME_FAQ).toHaveLength(11);
   });
   it("keeps the Example report chip", () => {
     expect(REPORT.chip).toBe("Example report");
   });
-  it("gives every industry a unique slug", () => {
-    const slugs = INDUSTRIES_LINE.industries.map((i) => i.slug);
-    expect(new Set(slugs).size).toBe(slugs.length);
-    for (const slug of slugs) expect(slug).toMatch(/^[a-z]+(-[a-z]+)*$/);
+  it("shows the phone basket's jobs as a subset of the full list", () => {
+    for (const w of RESPONSIBILITY.phoneWorries) expect(RESPONSIBILITY.worries).toContain(w);
   });
   it("points every work case at a desktop and phone image", () => {
     for (const c of WORK.cases) {
       expect(c.desktop.src).toBe(`/work/full-${c.id}-desk.jpg`);
       expect(c.phone.src).toBe(`/work/full-${c.id}-mob.jpg`);
     }
+  });
+  it("tells the same page limit in the FAQ and the included list", () => {
+    expect(HOME_FAQ.find((f) => f.q === "How many pages do I get?")?.a).toContain("Up to 10 pages.");
+    expect(WHAT_YOU_GET.build.items[0].text).toContain("Up to 10 pages");
   });
   it("builds the FAQ prices from lib/pricing", () => {
     expect(HOME_FAQ[0]?.a).toContain(`${formatInr(PLANS.website.monthly)} a month + GST`);
@@ -53,10 +58,10 @@ describe("home content", () => {
     expect(answer("Who owns the domain and the content?")).toContain("provided as a hosted service while you are subscribed.");
   });
   it("uses Phosphor icons that exist", () => {
-    const keys = [...FACTS.map((f) => f.icon), ...INDUSTRIES_LINE.industries.map((i) => i.icon)];
+    const keys = [...FACTS, ...WHAT_YOU_GET.build.items, ...WHAT_YOU_GET.run.items, ...PROMISES.cards].map((f) => f.icon);
     for (const key of keys) expect(Phosphor).toHaveProperty(key);
   });
   it("has no em or en dashes", () => {
-    expect(JSON.stringify({ HERO, FACTS, INDUSTRIES_LINE, WORK, REPORT, STEPS, HOME_FAQ })).not.toMatch(/[\u2013\u2014]/);
+    expect(JSON.stringify({ HERO, FACTS, RESPONSIBILITY, WHAT_YOU_GET, PROMISES, WORK, REPORT, STEPS, HOME_FAQ })).not.toMatch(/[\u2013\u2014]/);
   });
 });

@@ -1,8 +1,9 @@
 // components/shell/Nav.tsx
 import Link from "next/link";
 import type { ReactElement } from "react";
-import { ArrowButton } from "@/components/ui/ArrowButton";
-import { PRIMARY_CTA, PRIMARY_NAV } from "@/content/navigation";
+import { BasketCta } from "@/components/basket/BasketCta";
+import { BASKET_COPY } from "@/content/basket";
+import { PRIMARY_NAV } from "@/content/navigation";
 import { MobileMenu } from "./MobileMenu";
 import { Logo } from "./Logo";
 import { NavScrollState } from "./NavScrollState";
@@ -20,7 +21,7 @@ export function Nav(): ReactElement {
             ))}
           </ul>
           <div className="ml-auto flex items-center gap-1.5 min-[1000px]:ml-0">
-            <span className="hidden sm:inline-flex"><ArrowButton href={PRIMARY_CTA.href} location="nav" size="sm">{PRIMARY_CTA.label}</ArrowButton></span>
+            <span className="hidden sm:inline-flex"><BasketCta location="nav" size="sm" label={BASKET_COPY.startPlan} /></span>
             <MobileMenu />
           </div>
         </nav>

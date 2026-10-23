@@ -3,7 +3,7 @@ import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PACKAGES, packageSaving, packageTotal, PLANS } from "@/lib/pricing";
-import { COMPARE, GOOD_TO_KNOW, PLAN_DETAILS, PRICING_FAQ, PRICING_HERO } from "./pricing";
+import { BUNDLES, COMPARE, EVERY_PLAN, GOOD_TO_KNOW, INCLUDED, PLAN_COLUMNS, PLAN_DETAILS, PRICING_FAQ, PRICING_HERO } from "./pricing";
 
 describe("pricing content", () => {
   it("keeps the locked hero headline", () => {
@@ -14,44 +14,66 @@ describe("pricing content", () => {
     expect(GOOD_TO_KNOW).toHaveLength(4);
     expect(PLAN_DETAILS).toHaveLength(3);
   });
-  it("prices each comparison column from its package", () => {
-    expect(COMPARE.columns).toHaveLength(PACKAGES.length);
+  it("has one comparison column per plan, priced from lib/pricing", () => {
+    expect(PLAN_COLUMNS.map((c) => c.id)).toEqual(["website", "growth", "search"]);
+    for (const column of PLAN_COLUMNS) {
+      expect(column.name).toBe(PLANS[column.id].name);
+      expect(column.price).toBe(formatInr(PLANS[column.id].monthly));
+    }
+  });
+  it("lists what each plan does and leaves out, and says it only once", () => {
+    for (const column of PLAN_COLUMNS) {
+      expect(column.does.length).toBeGreaterThan(5);
+      expect(column.excludes.length).toBeGreaterThan(2);
+      const all = [...column.does, ...column.excludes];
+      expect(new Set(all).size).toBe(all.length);
+    }
+  });
+  it("says up to 10 pages and the 2 small edits on the website plan, and the 5 optimised pages on the search plan", () => {
+    const [website, , search] = PLAN_COLUMNS;
+    expect(website?.does).toContain("Up to 10 pages, built for you");
+    expect(website?.does).toContain("2 small edits a month, 30 minutes each");
+    expect(search?.does.join(" ")).toContain("5 pages optimised a month");
+  });
+  it("builds the ad cap and hourly rate into the social plan", () => {
+    const social = PLAN_COLUMNS.find((c) => c.id === "growth");
+    expect(social?.does.join(" ")).toContain(`up to ${formatInr(AD_BUDGET_CAP)} a month of your budget`);
+    expect(social?.excludes.join(" ")).toContain(`${formatInr(EXTRA_HOURLY_RATE)} an hour`);
+  });
+  it("shows every package as a bundle tile with its total, saving and ad money", () => {
+    expect(BUNDLES.tiles).toHaveLength(PACKAGES.length);
     PACKAGES.forEach((pkg, i) => {
-      expect(COMPARE.columns[i]?.id).toBe(pkg.id);
-      expect(COMPARE.columns[i]?.price).toBe(formatInr(packageTotal(pkg.pick)));
+      const tile = BUNDLES.tiles[i];
+      expect(tile?.id).toBe(pkg.id);
+      expect(tile?.price).toBe(formatInr(packageTotal(pkg.pick)));
+      expect(tile?.offer).toBe(`${pkg.percent}% off, you save ${formatInr(packageSaving(pkg.pick))}`);
+      expect(tile?.adMoney).toBe(pkg.adCredit > 0 ? `plus ${formatInr(pkg.adCredit)} ad money` : null);
     });
+    expect(BUNDLES.tiles.filter((t) => t.biggest).map((t) => t.id)).toEqual(["everything"]);
   });
-  it("has four packages and no sign-up offer in the lede", () => {
-    expect(COMPARE.columns).toHaveLength(4);
+  it("has the two parts of Everything included, four groups each, priced from lib/pricing", () => {
+    expect(INCLUDED.build.groups).toHaveLength(4);
+    expect(INCLUDED.run.groups).toHaveLength(4);
+    expect(INCLUDED.run.note).toContain(formatInr(PLANS.website.monthly));
+    const ids = [...INCLUDED.build.groups, ...INCLUDED.run.groups].map((g) => g.id);
+    expect(new Set(ids).size).toBe(ids.length);
+  });
+  it("states the 10 pages and the 2 small edits in Everything included", () => {
+    const text = JSON.stringify(INCLUDED);
+    expect(text).toContain("Up to 10 pages, built for you");
+    expect(text).toContain("2 small edits a month");
+  });
+  it("leaves out claims that wait on an owner decision", () => {
+    const text = JSON.stringify(INCLUDED).toLowerCase();
+    for (const claim of ["we test that they restore", "restore earlier versions", "support hours", "privacy requests"]) expect(text).not.toContain(claim);
+  });
+  it("keeps the lede free of sign-up wording and states what every plan shares", () => {
     expect(COMPARE.lede).not.toMatch(/chosen as you start|sign-up/);
-  });
-  it("opens with the package offer, saving and ad money of each package", () => {
-    const [first] = COMPARE.groups;
-    expect(first?.title).toBe("The package");
-    expect(first?.rows.map((r) => r.cells)).toEqual([
-      PACKAGES.map((p) => `${p.percent}%`),
-      PACKAGES.map((p) => formatInr(packageSaving(p.pick))),
-      PACKAGES.map((p) => (p.adCredit > 0 ? formatInr(p.adCredit) : false)),
-    ]);
-    expect(first?.rows.map((r) => r.cells)).toEqual([
-      ["20%", "20%", "20%", "30%"],
-      ["₹2,600", "₹5,600", "₹7,000", "₹11,400"],
-      ["₹2,000", false, "₹2,000", "₹5,000"],
-    ]);
-  });
-  it("groups the comparison as the mock does", () => {
-    expect(COMPARE.groups.map((g) => g.title)).toEqual(["The package", "Your website", "Social media and ads", "Search and AI answers", "Every plan"]);
-  });
-  it("has one cell per package in every comparison row", () => {
-    for (const group of COMPARE.groups) for (const row of group.rows) expect(row.cells).toHaveLength(PACKAGES.length);
-  });
-  it("includes the ranking and tracking row on Search packages only", () => {
-    const row = COMPARE.groups.flatMap((g) => g.rows).find((r) => r.label === "Ranking, traffic and enquiry tracking");
-    expect(row?.cells).toEqual(PACKAGES.map((p) => p.pick.search));
+    expect(EVERY_PLAN.items).toHaveLength(4);
   });
   it("builds plan summaries and caps from lib/pricing", () => {
     for (const detail of PLAN_DETAILS) expect(detail.summary).toContain(formatInr(PLANS[detail.id].monthly));
-    const text = JSON.stringify([PLAN_DETAILS, GOOD_TO_KNOW, PRICING_FAQ, COMPARE.groups]);
+    const text = JSON.stringify([PLAN_DETAILS, GOOD_TO_KNOW, PRICING_FAQ, PLAN_COLUMNS]);
     expect(text).toContain(formatInr(AD_BUDGET_CAP));
     expect(text).toContain(formatInr(EXTRA_HOURLY_RATE));
   });
@@ -87,6 +109,6 @@ describe("pricing content", () => {
     for (const key of [...PLAN_DETAILS.map((d) => d.icon), ...GOOD_TO_KNOW.map((g) => g.icon)]) expect(Phosphor).toHaveProperty(key);
   });
   it("has no em or en dashes", () => {
-    expect(JSON.stringify({ PRICING_HERO, COMPARE, PLAN_DETAILS, GOOD_TO_KNOW, PRICING_FAQ })).not.toMatch(/[\u2013\u2014]/);
+    expect(JSON.stringify({ PRICING_HERO, COMPARE, PLAN_COLUMNS, EVERY_PLAN, BUNDLES, INCLUDED, PLAN_DETAILS, GOOD_TO_KNOW, PRICING_FAQ })).not.toMatch(/[\u2013\u2014]/);
   });
 });

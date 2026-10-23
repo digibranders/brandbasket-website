@@ -12,14 +12,18 @@ export type HomeIconKey =
   | "RocketLaunch"
   | "Wrench"
   | "FileText"
-  | "Tooth"
-  | "Scissors"
-  | "ForkKnife"
-  | "Barbell"
-  | "GraduationCap"
-  | "Storefront"
-  | "Toolbox"
-  | "Buildings";
+  | "DeviceMobile"
+  | "Phone"
+  | "Prohibit"
+  | "PencilSimpleLine"
+  | "Scroll"
+  | "CloudCheck"
+  | "ShieldCheck"
+  | "LockKey"
+  | "Headset"
+  | "PencilSimple"
+  | "ChartBar"
+  | "LockOpen";
 
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 
@@ -57,30 +61,87 @@ export const FACTS: readonly Fact[] = [
   { icon: "FileText", text: "One report a month" },
 ];
 
-export interface Industry {
-  readonly slug: string;
-  readonly label: string;
+/** The responsibility section (docs/design/homepage-final.html, #s-resp). The six on a phone are the ones owners ask about most. */
+export const RESPONSIBILITY = {
+  small: "More Than a Website.",
+  large: "We Take Responsibility.",
+  body: "You’re not just paying for a website; you’re paying for the responsibility of keeping it running, secure, and up to date. We take care of the technical side so you can focus on growing your business.",
+  worries: ["Hosting", "Security", "Backups", "Updates", "Domain renewal", "Contact form", "Slow pages", "Hackers", "Bug fixes"],
+  phoneWorries: ["Hosting", "Security", "Backups", "Updates", "Contact form", "Bug fixes"],
+  onYourMind: "On your mind",
+  inBasket: "In our basket",
+} as const;
+
+export interface IncludedItem {
   readonly icon: HomeIconKey;
+  readonly text: string;
 }
 
-export const INDUSTRIES_LINE = {
-  title: "Built for local businesses",
-  industries: [
-    { slug: "clinics", label: "Clinics", icon: "Tooth" },
-    { slug: "salons", label: "Salons", icon: "Scissors" },
-    { slug: "restaurants", label: "Restaurants", icon: "ForkKnife" },
-    { slug: "gyms", label: "Gyms", icon: "Barbell" },
-    { slug: "coaching", label: "Coaching", icon: "GraduationCap" },
-    { slug: "retail", label: "Shops", icon: "Storefront" },
-    { slug: "home-services", label: "Home services", icon: "Toolbox" },
-    { slug: "real-estate", label: "Real estate", icon: "Buildings" },
-  ],
-} as const satisfies { readonly title: string; readonly industries: readonly Industry[] };
+export interface IncludedPanel {
+  readonly title: string;
+  readonly pill: string;
+  readonly items: readonly IncludedItem[];
+}
+
+/** "What you get": the free build, then the monthly run. Page limit and edit allowance wait on owner decisions 1 and 2 (docs/plans/19). */
+export const WHAT_YOU_GET = {
+  small: "Built free. Looked after every month.",
+  heading: "What you get.",
+  build: {
+    title: "Built for you",
+    pill: "Free",
+    items: [
+      { icon: "FileText", text: "Up to 10 pages, built for you" },
+      { icon: "DeviceMobile", text: "Works on every phone" },
+      { icon: "Phone", text: "Enquiry forms, click to call and WhatsApp" },
+      { icon: "Prohibit", text: "Spam and bot protection" },
+      { icon: "PencilSimpleLine", text: "A dashboard to edit your own site" },
+      { icon: "Scroll", text: "Privacy policy and terms included" },
+    ],
+  },
+  run: {
+    title: "Kept running",
+    pill: "Every month",
+    items: [
+      { icon: "CloudCheck", text: "Hosting, SSL and backups" },
+      { icon: "ShieldCheck", text: "Security updates and uptime monitoring" },
+      { icon: "LockKey", text: "Privacy and DPDP readiness support" },
+      { icon: "Headset", text: "Human support when you need it" },
+      { icon: "PencilSimple", text: "2 small edits a month" },
+      { icon: "ChartBar", text: "Monthly health report" },
+    ],
+  },
+  more: "See everything included",
+} as const satisfies { readonly small: string; readonly heading: string; readonly build: IncludedPanel; readonly run: IncludedPanel; readonly more: string };
+
+export interface PromiseCard {
+  readonly icon: HomeIconKey;
+  readonly title: string;
+  readonly text: string;
+}
+
+const PROMISE_CARDS: readonly PromiseCard[] = [
+  { icon: "LockOpen", title: "No Lock-Ins. Cancel Anytime.", text: "Stay with us because we deliver value, not because you’re tied to a contract." },
+  { icon: "ShieldCheck", title: "Privacy-Ready. Compliance-Focused.", text: "We help align your website with applicable requirements of India’s Digital Personal Data Protection (DPDP) Act." },
+];
+
+/** Promises with the support chat. The photo and the name Priya are placeholders until a real team member is photographed. */
+export const PROMISES = {
+  small: "Human Support",
+  large: "When It Matters Most",
+  body: "When your website goes down or faces a security breach, our dedicated human support team is here to help. Get real assistance when you need it most.",
+  photoAlt: "A Brandbasket support team member wearing a headset at her desk",
+  chat: {
+    customer: "Our website is showing an error.",
+    rep: { name: "Priya", role: "Brandbasket support", text: "On it. I will keep you posted until it is fixed." },
+  },
+  cards: PROMISE_CARDS,
+} as const;
 
 /** Heading for the homepage basket section (owner asked for a plans heading, 2026-10-22). */
 export const PLANS_SECTION = {
-  heading: "Pick your plans.",
-  headingAccent: "The more you add, the more you save.",
+  small: "The more you add, the more you save.",
+  large: "Pick your plans.",
 } as const;
 
 export interface WorkImage {
@@ -219,7 +280,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "How many pages do I get?",
-    a: "Up to 5 pages. More pages or bigger features can be added for an extra fee, and we always confirm the price before doing anything.",
+    a: "Up to 10 pages. More pages or bigger features can be added for an extra fee, and we always confirm the price before doing anything.",
   },
   {
     q: "Do I pay for hosting separately?",

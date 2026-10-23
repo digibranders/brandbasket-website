@@ -15,7 +15,7 @@ export function HomeFaq(): ReactElement {
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 min-[980px]:grid-cols-[0.8fr_1.2fr] min-[980px]:gap-16">
         <div className="min-[980px]:sticky min-[980px]:top-28 min-[980px]:self-start">
           <Reveal>
-            <SectionHead id="h-faq" title={HOME_FAQ_HEADING} />
+            <SectionHead id="h-faq" title={HOME_FAQ_HEADING} step />
           </Reveal>
         </div>
         <Reveal className="min-w-0">

@@ -2,9 +2,10 @@
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
-import { PhoneTotalBar } from "@/components/basket/PhoneTotalBar";
-import { CompareTable } from "@/components/pricing/CompareTable";
+import { BasketBand } from "@/components/pricing/BasketBand";
+import { EverythingIncluded } from "@/components/pricing/EverythingIncluded";
 import { GoodToKnow } from "@/components/pricing/GoodToKnow";
+import { PlanColumns } from "@/components/pricing/PlanColumns";
 import { PlanDetails } from "@/components/pricing/PlanDetails";
 import { PricingFaq } from "@/components/pricing/PricingFaq";
 import { PricingHero } from "@/components/pricing/PricingHero";
@@ -14,16 +15,17 @@ import { ROUTES } from "@/lib/seo/routes";
 
 export const metadata: Metadata = pageMetadata(ROUTES.pricing);
 
-/** Sections in mock order (docs/design/mock.html, #view-pricing). The closing section comes from the root layout. */
+/** Sections in mock order (docs/design/homepage-v2.html, Pricing view). The closing section comes from the root layout. */
 export default function PricingPage(): ReactElement {
   return (
     <>
       <PricingHero />
-      <CompareTable />
+      <PlanColumns />
+      <BasketBand />
+      <EverythingIncluded />
       <PlanDetails />
       <GoodToKnow />
       <PricingFaq />
-      <PhoneTotalBar />
       <JsonLd data={planOffersJsonLd({ packages: true })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }])} />
     </>

@@ -4,6 +4,7 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import type { ReactElement, ReactNode } from "react";
 import { JsonLd } from "@/components/JsonLd";
+import { BasketDock } from "@/components/basket/BasketDock";
 import { ConversionTracking } from "@/components/analytics/ConversionTracking";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { Closing } from "@/components/shell/Closing";
@@ -38,6 +39,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
         </main>
         <Footer />
         <WhatsAppChat />
+        <BasketDock />
         {TOOLS.length > 0 && <ConsentBanner />}
         <JsonLd data={organizationJsonLd()} />
         <ConversionTracking />

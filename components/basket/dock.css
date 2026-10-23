@@ -1,0 +1,42 @@
+/* components/basket/dock.css
+   Motion for the basket dock (components/basket/BasketDock.tsx). Every animation is transform and opacity only.
+   --d is a delay, so the dock can wait for a flying dot to land before it reacts. Reduced motion is handled by the
+   global rule in globals.css, which cuts animation time to nothing. */
+
+/* Numbers roll: the new value slides in from below when the total goes up, from above when it goes down. */
+.dock-roll { position: relative; display: inline-block; overflow: clip; vertical-align: top; }
+.dock-roll-in-up, .dock-roll-in-down, .dock-roll-out-up, .dock-roll-out-down { display: inline-block; }
+.dock-roll-in-up { animation: dock-in-up 460ms var(--ease) var(--d, 0ms) both; }
+.dock-roll-in-down { animation: dock-in-down 460ms var(--ease) var(--d, 0ms) both; }
+.dock-roll-out-up { animation: dock-out-up 460ms var(--ease) var(--d, 0ms) both; }
+.dock-roll-out-down { animation: dock-out-down 460ms var(--ease) var(--d, 0ms) both; }
+@keyframes dock-in-up { from { transform: translateY(105%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes dock-in-down { from { transform: translateY(-105%); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes dock-out-up { to { transform: translateY(-105%); opacity: 0; } }
+@keyframes dock-out-down { to { transform: translateY(105%); opacity: 0; } }
+
+/* The basket squashes and tilts when a plan lands in it, and sags a little when one leaves. */
+.dock-bump { animation: dock-bump 560ms var(--ease) var(--d, 0ms) both; transform-origin: 50% 70%; }
+@keyframes dock-bump {
+  0% { transform: none; }
+  30% { transform: scale(1.28) rotate(-10deg); }
+  55% { transform: scale(0.92) rotate(6deg); }
+  80% { transform: scale(1.06) rotate(-2deg); }
+  100% { transform: none; }
+}
+.dock-shrink { animation: dock-shrink 420ms var(--ease) var(--d, 0ms) both; transform-origin: 50% 70%; }
+@keyframes dock-shrink { 0% { transform: none; } 35% { transform: scale(0.8); } 70% { transform: scale(1.05); } 100% { transform: none; } }
+
+/* The count pops in with an overshoot when it goes up, and settles down from large when it goes down. */
+.dock-badge-add { animation: dock-badge-add 520ms cubic-bezier(0.34, 1.7, 0.5, 1) var(--d, 0ms) both; }
+@keyframes dock-badge-add { from { transform: scale(0.3); } to { transform: none; } }
+.dock-badge-drop { animation: dock-badge-drop 380ms var(--ease) var(--d, 0ms) both; }
+@keyframes dock-badge-drop { from { transform: scale(1.4); } to { transform: none; } }
+
+/* A ring leaves the pill, once, so the change reads even when the eye is elsewhere. */
+.dock-ring { position: absolute; inset: 0; border-radius: 999px; border: 2px solid var(--rattan); pointer-events: none; animation: dock-ring 700ms var(--ease) var(--d, 0ms) both; }
+@keyframes dock-ring { from { opacity: 0.6; transform: scale(1); } to { opacity: 0; transform: scale(1.04, 1.4); } }
+
+/* The saving tag rises from the pill when a package is reached. */
+.dock-chip-in { animation: dock-chip 480ms cubic-bezier(0.34, 1.5, 0.5, 1) var(--d, 0ms) both; }
+@keyframes dock-chip { from { opacity: 0; transform: translateY(10px) scale(0.85); } to { opacity: 1; transform: none; } }

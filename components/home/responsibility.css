@@ -1,0 +1,60 @@
+/* components/home/responsibility.css
+   The basket stage and its chips (components/home/Responsibility.tsx), and the support chat (components/home/Promises.tsx).
+   Written here, not in utilities, because the chips and SVGs are driven by the physics loop and the chat is staged by a data attribute. */
+
+.rb-stage {
+  position: relative; height: 440px; overflow: hidden; user-select: none; -webkit-user-select: none; touch-action: pan-y;
+}
+@media (min-width: 1000px) { .rb-stage { height: 480px; } }
+.rb-floor { position: absolute; left: 0; right: 0; height: 1px; background: color-mix(in srgb, var(--action-ink) 16%, transparent); }
+
+.rb-svg { position: absolute; pointer-events: none; overflow: visible; }
+.rb-svg.back { z-index: 1; }
+.rb-svg.front { z-index: 3; }
+.rb-p0 { fill: var(--rattan-ink); }
+.rb-p1 { fill: var(--rattan); }
+.rb-p2 { fill: var(--rattan-text); }
+.rb-shade { fill: var(--ink); opacity: 0.42; }
+.rb-rim { fill: none; stroke: var(--rattan-ink); stroke-width: 9px; stroke-linecap: round; }
+.rb-rim-hi { fill: none; stroke: var(--rattan); stroke-width: 3px; stroke-linecap: round; }
+.rb-rim-back { fill: none; stroke: var(--rattan-text); stroke-width: 8px; }
+.rb-plate { font: 600 14px var(--font-red-hat-display), sans-serif; letter-spacing: -0.02em; fill: var(--ink); text-anchor: middle; }
+.rb-plate .lt { font-weight: 400; }
+
+/* Chips stay invisible until the physics loop places them, so they never flash in the corner. */
+.rb-chip {
+  position: absolute; left: 0; top: 0; z-index: 2; display: flex; align-items: center; gap: 7px; padding: 0 14px 0 6px; border-radius: 999px;
+  background: var(--surface); color: var(--ink); font: 500 13px var(--font-red-hat-display), sans-serif; letter-spacing: -0.01em; white-space: nowrap;
+  cursor: grab; will-change: transform; opacity: 0;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.12), 0 14px 22px -12px rgba(0, 0, 0, 0.7);
+  transition: background 500ms var(--ease), color 500ms var(--ease), box-shadow 500ms var(--ease);
+}
+.rb-chip[hidden] { display: none; }
+.rb-chip.live { opacity: 1; }
+.rb-chip-ic { display: grid; place-items: center; width: 24px; height: 24px; flex: none; border-radius: 50%; background: var(--rattan-wash); color: var(--rattan-ink); font-size: 14px; transition: background 500ms var(--ease), color 500ms var(--ease); }
+.rb-ck { display: none; }
+.rb-chip.ok { background: color-mix(in srgb, var(--sage) 14%, var(--surface)); color: var(--sage); box-shadow: 0 0 0 1px rgba(74, 116, 94, 0.28), 0 12px 20px -14px rgba(40, 28, 14, 0.5); }
+.rb-chip.ok .rb-chip-ic { background: var(--sage); color: #fff; }
+.rb-chip.ok .rb-ex { display: none; }
+.rb-chip.ok .rb-ck { display: block; }
+.rb-stage.grabbing .rb-chip { cursor: grabbing; }
+@media (max-width: 640px) {
+  .rb-chip { font-size: 11.5px; gap: 5px; padding-right: 10px; }
+  .rb-chip-ic { width: 20px; height: 20px; font-size: 12px; }
+  .rb-plate { font-size: 12px; }
+}
+
+/* ----- support chat: the bubbles come in when the section scrolls into view (components/motion/InView.tsx sets data-in) ----- */
+.px-bub { opacity: 0; transform: translateY(14px); transition: opacity 600ms var(--ease), transform 700ms var(--ease); }
+.px-bub.cust { transition-delay: 250ms; }
+.px-bub.rep { transition-delay: 1800ms; }
+.px-typing { opacity: 0; }
+.px-typing span { animation: px-dot 1s var(--ease) infinite; }
+.px-typing span:nth-child(2) { animation-delay: 150ms; }
+.px-typing span:nth-child(3) { animation-delay: 300ms; }
+@keyframes px-dot { 0%, 100% { transform: translateY(0); opacity: 0.5; } 40% { transform: translateY(-4px); opacity: 1; } }
+@keyframes px-showhide { 0% { opacity: 0; } 12%, 88% { opacity: 1; } 100% { opacity: 0; } }
+[data-in="true"] .px-bub { opacity: 1; transform: none; }
+[data-in="true"] .px-typing { animation: px-showhide 1100ms linear 900ms 1 both; }
+/* With reduced motion the finished chat shows at once. */
+@media (prefers-reduced-motion: reduce) { .px-bub { opacity: 1; transform: none; } }

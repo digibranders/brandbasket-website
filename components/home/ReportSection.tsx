@@ -41,21 +41,21 @@ function ReportChart(): ReactElement {
 export function ReportSection(): ReactElement {
   return (
     <Section labelledBy="h-report" tight>
-      <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-10 min-[1000px]:grid-cols-[0.8fr_1.2fr] min-[1000px]:gap-16">
+      <div className="grid grid-cols-[minmax(0,1fr)] gap-9">
         <Reveal>
-          <SectionHead id="h-report" className="mb-7" title={<>{REPORT.heading} <em className="pivot pr-1">{REPORT.headingAccent}</em></>} />
-          <StepsList steps={STEPS} />
+          <SectionHead id="h-report" step className="mb-6" title={<>{REPORT.heading} <em className="pivot pr-1">{REPORT.headingAccent}</em></>} />
+          <StepsList steps={STEPS} layout="columns" />
         </Reveal>
         <Reveal className="min-w-0">
-          <div role="group" aria-label={REPORT.ariaLabel} className="grid min-w-0 gap-[18px] rounded-[26px] border border-line bg-surface p-6 shadow-[var(--shadow)]">
-            <div className="flex flex-wrap items-start justify-between gap-3.5">
+          <div role="group" aria-label={REPORT.ariaLabel} className="grid min-w-0 gap-[18px] rounded-[26px] border border-line bg-surface p-6 shadow-[var(--shadow)] min-[900px]:grid-cols-[1fr_1.1fr] min-[900px]:items-center min-[900px]:gap-x-7">
+            <div className="flex flex-wrap items-start justify-between gap-3.5 min-[900px]:col-span-full">
               <div>
                 <b className="block font-display text-xl font-medium tracking-[-0.02em]">{REPORT.title}</b>
                 <span className="text-[13px] text-ink-2">{REPORT.subtitle}</span>
               </div>
               <span className="whitespace-nowrap rounded-full bg-rattan-wash px-2.5 py-1 font-mono text-[11.5px] text-rattan-ink">{REPORT.chip}</span>
             </div>
-            <dl className="grid grid-cols-2 gap-2.5 min-[640px]:grid-cols-4">
+            <dl className="grid grid-cols-2 gap-2.5 min-[640px]:grid-cols-4 min-[900px]:grid-cols-2">
               {REPORT.kpis.map((kpi) => (
                 <div key={kpi.label} className="grid min-w-0 gap-1 rounded-2xl bg-bg p-3.5">
                   <dt className="flex items-center gap-1.5 text-xs text-ink-2"><i aria-hidden="true" className={`size-2 rounded-[2px] ${TONE[kpi.tone]}`} />{kpi.label}</dt>

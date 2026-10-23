@@ -7,7 +7,7 @@ import { SectionHead } from "@/components/ui/SectionHead";
 import { type DetailColumn, PLAN_DETAILS, PLAN_DETAILS_INTRO } from "@/content/pricing";
 import { PRICING_ICONS } from "./icons";
 
-function Column({ column }: { readonly column: DetailColumn }): ReactElement {
+export function Column({ column }: { readonly column: DetailColumn }): ReactElement {
   const Mark = column.kind === "included" ? Check : Minus;
   return (
     <div>

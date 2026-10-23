@@ -14,6 +14,7 @@ describe("basket copy", () => {
   });
   it("states the package offers as the mock does", () => {
     expect(BASKET_COPY.heroIntro).toBe("Build your basket. Two plans are 20% off, all three are 30% off.");
+    expect(BASKET_COPY.startPlan).toBe("Start my plan");
   });
   it("no longer mentions the sign-up offer", () => {
     expect(JSON.stringify({ BASKET_COPY, PRICING_PLANS })).not.toMatch(/sign-up|signup|as you start/);

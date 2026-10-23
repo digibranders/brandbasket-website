@@ -4,16 +4,14 @@
 import { List, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type ReactElement, useEffect, useId, useRef, useState } from "react";
-import { useBasket } from "@/components/basket/useBasket";
+import { basketPanel } from "@/components/basket/basket-panel";
 import { BASKET_COPY } from "@/content/basket";
-import { PRIMARY_NAV } from "@/content/navigation";
+import { LOGIN_LINK, PRIMARY_NAV } from "@/content/navigation";
 import { trackAttrs } from "@/lib/analytics";
-import { signupHref } from "@/lib/signup";
 
 export function MobileMenu(): ReactElement {
   const [open, setOpen] = useState(false);
   const sheetId = useId();
-  const pick = useBasket();
   const toggleRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -36,7 +34,15 @@ export function MobileMenu(): ReactElement {
           {PRIMARY_NAV.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{link.label}</Link>
           ))}
-          <Link href={signupHref(pick)} onClick={() => setOpen(false)} {...trackAttrs("cta_click", "menu")} className="m-1.5 rounded-full bg-action px-5 py-3 text-center font-semibold text-action-ink">{BASKET_COPY.startPlan}</Link>
+          <a href={LOGIN_LINK.href} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{LOGIN_LINK.label}</a>
+          <button
+            type="button"
+            data-basket-trigger
+            aria-haspopup="dialog"
+            onClick={() => { setOpen(false); basketPanel.open("nav", null); }}
+            {...trackAttrs("basket_open", "menu")}
+            className="m-1.5 cursor-pointer rounded-full bg-action px-5 py-3 text-center font-semibold text-action-ink"
+          >{BASKET_COPY.startPlan}</button>
         </div>
       )}
     </>

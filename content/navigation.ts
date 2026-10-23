@@ -1,6 +1,6 @@
 import { DEFAULT_BASKET } from "@/lib/basket-store";
 import { TOOLS } from "@/lib/consent";
-import { signupHref } from "@/lib/signup";
+import { loginHref, signupHref } from "@/lib/signup";
 
 // content/navigation.ts
 export interface NavLink {
@@ -35,5 +35,8 @@ export const LEGAL_NAV: readonly NavLink[] = [
 ];
 
 export const PRIMARY_CTA: NavLink = { label: "Get my free website", href: signupHref(DEFAULT_BASKET) };
+
+/** The nav and menu link for returning customers. It goes to the app's sign-in with no plan chosen. */
+export const LOGIN_LINK: NavLink = { label: "Log in", href: loginHref() };
 
 export const PRICING_CTA: NavLink = { label: "View pricing", href: "/pricing" };

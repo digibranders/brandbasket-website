@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { signupHref } from "./signup";
+import { loginHref, signupHref } from "./signup";
 
 describe("signupHref", () => {
   it("sends the picked plans to the app's sign-in, in catalogue order", () => {
@@ -7,3 +7,10 @@ describe("signupHref", () => {
     expect(signupHref({ website: false, growth: true, search: true })).toBe("https://app.brandbasket.in/login?plan=growth%2Csearch");
   });
 });
+
+describe("loginHref", () => {
+  it("opens the app's sign-in with no plan in the address", () => {
+    expect(loginHref()).toBe("https://app.brandbasket.in/login");
+  });
+});
+

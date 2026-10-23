@@ -29,6 +29,11 @@ describe("clickEvent", () => {
     expect(clickEvent({ track: "whatsapp_click", location: "nav" }, "https://wa.me/917897896607")).toEqual({ name: "whatsapp_click", properties: { location: "nav" } });
   });
 
+  it("reports opening the basket pop-up with its location only", () => {
+    expect(clickEvent({ track: "basket_open", location: "nav" }, "")).toEqual({ name: "basket_open", properties: { location: "nav" } });
+    expect(trackAttrs("basket_open", "dock")).toEqual({ "data-track": "basket_open", "data-location": "dock" });
+  });
+
   it("ignores links without a known event or a location", () => {
     expect(clickEvent({ track: "signup", location: "hero" }, "/")).toBeNull();
     expect(clickEvent({ track: "cta_click" }, "/contact")).toBeNull();

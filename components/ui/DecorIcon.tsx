@@ -18,7 +18,7 @@ export function DecorIcon({ icon: Glyph, size, rotate, className, faint = false 
   const style: CSSProperties = { transform: `rotate(${rotate}deg)` };
   return (
     <span aria-hidden="true" style={style} className={`pointer-events-none absolute -z-10 max-[760px]:scale-[0.62] ${className}`}>
-      <Glyph weight="thin" size={size} className={faint ? "text-rattan-text/20" : "text-rattan-text/35"} />
+      <Glyph weight="thin" size={size} className={faint ? "text-rattan-text/[0.11]" : "text-rattan-text/[0.17]"} />
     </span>
   );
 }

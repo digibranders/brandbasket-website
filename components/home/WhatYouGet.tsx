@@ -1,4 +1,4 @@
-import { Browser, GlobeHemisphereWest, Globe, Megaphone, MagnifyingGlass, TrendUp } from "@phosphor-icons/react/dist/ssr";
+import { GlobeHemisphereWest, Globe, Megaphone, MagnifyingGlass, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Band } from "@/components/ui/Band";
@@ -13,14 +13,15 @@ interface PanelProps {
   readonly warm?: boolean;
 }
 
-/** One frosted panel. A large faint icon bleeds off its corner, behind the text. */
+/** One frosted panel. The monthly one has a large, very faint icon bleeding off its corner, behind the text. */
 function Panel({ panel, warm = false }: PanelProps): ReactElement {
-  const Mark = warm ? GlobeHemisphereWest : Browser;
   return (
     <article className={`glass-panel relative flex flex-col gap-6 overflow-clip rounded-[28px] p-[clamp(24px,3vw,36px)] ${warm ? "glass-panel-warm" : ""}`}>
-      <span aria-hidden="true" className={`pointer-events-none absolute -bottom-11 -right-7 z-0 text-[190px] leading-none text-rattan-text/[0.17] min-[761px]:text-[290px] ${warm ? "rotate-[8deg]" : "-rotate-[8deg]"}`}>
-        <Mark weight="thin" />
-      </span>
+      {warm ? (
+        <span aria-hidden="true" className="pointer-events-none absolute -bottom-11 -right-7 z-0 rotate-[8deg] text-[190px] leading-none text-rattan-text/[0.10] min-[761px]:text-[290px]">
+          <GlobeHemisphereWest weight="thin" />
+        </span>
+      ) : null}
       <div className="relative z-10 flex items-center justify-between gap-3">
         <h3 className="font-display text-[clamp(24px,2.4vw,32px)] font-semibold leading-[1.1] tracking-[-0.035em]">{panel.title}</h3>
         <span className={`whitespace-nowrap rounded-full px-3 py-1.5 text-[13px] font-semibold leading-none text-rattan-ink ${warm ? "bg-surface" : "bg-rattan-wash"}`}>{panel.pill}</span>

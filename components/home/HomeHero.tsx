@@ -18,7 +18,7 @@ export function HomeHero(): ReactElement {
             {HERO.headline} <em className="font-light not-italic text-rattan-text">{HERO.headlineAccent}</em>
           </h1>
           <OfferLine />
-          <div className="flex flex-wrap items-center gap-2.5">
+          <div className="cta-pair">
             <BasketCta location="hero" />
             <PricingButton />
           </div>

@@ -23,9 +23,9 @@ interface ArrowSubmitButtonProps {
 }
 
 function pillClasses(size: Size, tone: Tone): string {
-  const pad = size === "sm" ? "gap-2.5 py-[5px] pr-[5px] pl-4 text-sm" : "gap-3 py-[7px] pr-[7px] pl-[22px] text-[15px]";
+  const pad = size === "sm" ? "h-10 gap-2.5 pr-[5px] pl-[18px] text-sm" : "h-[52px] gap-3.5 pr-2 pl-6 text-[15.5px]";
   const colours = tone === "action" ? "bg-action text-action-ink" : "bg-action-ink text-action";
-  return `group inline-flex items-center whitespace-nowrap rounded-full font-semibold transition-transform duration-500 ease-[var(--ease)] active:scale-[0.98] ${pad} ${colours}`;
+  return `group inline-flex items-center justify-between whitespace-nowrap rounded-full font-semibold transition-transform duration-500 ease-[var(--ease)] active:scale-[0.98] ${pad} ${colours}`;
 }
 
 function Arrow({ size }: { readonly size: Size }): ReactElement {

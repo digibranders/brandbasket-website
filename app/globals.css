@@ -3,6 +3,7 @@
 @import "../components/motion/reveal.css";
 @import "../components/home/responsibility.css";
 @import "../components/ui/band.css";
+@import "../components/basket/dock.css";
 
 :root {
   --bg: #f6f5f2; --surface: #ffffff; --sunken: #eeece7;

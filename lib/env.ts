@@ -1,4 +1,5 @@
 import { z } from "zod";
+import type { PlatformLeadsEnv } from "@/lib/platform-leads";
 
 const serverSchema = z.object({
   BREVO_API_KEY: z.string().min(1, "BREVO_API_KEY is required"),
@@ -55,3 +56,25 @@ export function parseRevalidateSecret(source: Record<string, string | undefined>
   if (!result.success) throw new Error(`Invalid environment. ${result.error.issues.map((issue) => issue.message).join("; ")}`);
   return result.data;
 }
+
+const platformLeadsSchema = z.object({
+  PLATFORM_LEADS_URL: z.url("PLATFORM_LEADS_URL must be the platform address, such as https://app.brandbasket.in"),
+  LEADS_API_TOKEN: z.string().min(32, "LEADS_API_TOKEN must be at least 32 characters"),
+});
+
+/**
+ * Where enquiries are copied for the staff console, or null when neither variable is set (local work without the
+ * platform). One without the other, or a short token, is a mistake and throws.
+ */
+export function parsePlatformLeadsEnv(source: Record<string, string | undefined>): PlatformLeadsEnv | null {
+  if ((source.PLATFORM_LEADS_URL ?? "") === "" && (source.LEADS_API_TOKEN ?? "") === "") return null;
+  const result = platformLeadsSchema.safeParse(source);
+  if (!result.success) {
+    const names = result.error.issues.map((issue) => `${issue.path.join(".")}: ${issue.message}`).join("; ");
+    throw new Error(`Invalid platform leads environment. ${names}`);
+  }
+  return { url: result.data.PLATFORM_LEADS_URL.replace(/\/+$/, ""), token: result.data.LEADS_API_TOKEN };
+}
+
+export const platformLeadsEnv = (): PlatformLeadsEnv | null => parsePlatformLeadsEnv(process.env);
+

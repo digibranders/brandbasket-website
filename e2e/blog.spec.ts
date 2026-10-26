@@ -79,6 +79,15 @@ test.describe("a post", () => {
   });
 });
 
+test("an old category or author address moves to the current one with a 308", async ({ request }) => {
+  const category = await request.get("/blog/category/basics", { maxRedirects: 0 });
+  expect(category.status()).toBe(308);
+  expect(category.headers().location).toMatch(/\/blog\/category\/website-basics$/);
+  const author = await request.get("/blog/author/ananya-k", { maxRedirects: 0 });
+  expect(author.status()).toBe(308);
+  expect(author.headers().location).toMatch(/\/blog\/author\/ananya-kulkarni$/);
+});
+
 test("a category lists its posts, and an unknown one is a 404", async ({ page, request }) => {
   await page.goto("/blog/category/website-basics");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Website basics");

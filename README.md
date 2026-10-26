@@ -33,7 +33,7 @@ To run it against a local CMS, add these to `.env.local` (copy `.env.example`) w
 CMS_URL=http://localhost:3140
 CMS_SITE_TOKEN=...        # the CMS's CMS_SITE_TOKEN
 REVALIDATE_SECRET=...     # the CMS's REVALIDATE_SECRET
-BLOG_MEDIA_ORIGIN=http://localhost:3140   # development pictures are served by the CMS
+BLOG_MEDIA_ORIGIN=http://localhost:3140   # development pictures are served by the CMS (read at build and at dev start)
 ```
 
 When the CMS changes a response, copy its `lib/site/schema.ts` to `lib/cms/schema.ts` and its `test/site-contract/` to `e2e/fixtures/cms/`; a test fails if they drift. Until the owner approves launch the whole site, blog included, is noindex.

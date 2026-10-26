@@ -1,7 +1,7 @@
 // app/blog/category/[slug]/page.tsx: a category and all its posts.
 // shortcut: no pagination until a category passes about 24 posts (plan 22, section 8).
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { ReactElement } from "react";
 import { CategoryPills } from "@/components/blog/CategoryPills";
 import { Crumbs } from "@/components/blog/Crumbs";
@@ -17,13 +17,14 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const found = await getCategory((await params).slug);
-  return found === null ? {} : categoryMetadata(found.category);
+  return found === null || "redirect" in found ? {} : categoryMetadata(found.category);
 }
 
 export default async function CategoryPage({ params }: Props): Promise<ReactElement> {
   const slug = (await params).slug;
   const [found, { categories }] = await Promise.all([getCategory(slug), getCategories()]);
   if (found === null) notFound();
+  if ("redirect" in found) permanentRedirect(`/blog/category/${found.redirect}`);
   const { category, posts } = found;
   return (
     <div className="in-wrap pb-24 pt-32">

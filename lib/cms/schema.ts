@@ -60,8 +60,10 @@ export const postSchema = postCardSchema.omit({ author: true }).extend({
 export const postsPageSchema = z.object({ posts: z.array(postCardSchema), page: z.number().int().positive(), pages: z.number().int().nonnegative(), total: z.number().int().nonnegative() });
 export const postResponseSchema = z.union([z.object({ post: postSchema }), z.object({ redirect: z.string() })]);
 export const categoriesResponseSchema = z.object({ categories: z.array(categorySchema.extend({ postCount: z.number().int().positive() })) });
-export const categoryResponseSchema = z.object({ category: categorySchema, posts: z.array(postCardSchema) });
-export const authorResponseSchema = z.object({ author: authorSchema, posts: z.array(postCardSchema) });
+/** An old address answers with where the record lives now. */
+const redirectSchema = z.object({ redirect: z.string() });
+export const categoryResponseSchema = z.union([z.object({ category: categorySchema, posts: z.array(postCardSchema) }), redirectSchema]);
+export const authorResponseSchema = z.union([z.object({ author: authorSchema, posts: z.array(postCardSchema) }), redirectSchema]);
 export const sitemapSchema = z.object({
   posts: z.array(z.object({ slug: z.string(), lastModified: z.string() })),
   categories: z.array(z.object({ slug: z.string(), lastModified: z.string() })),

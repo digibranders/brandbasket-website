@@ -1,7 +1,7 @@
 // app/blog/author/[slug]/page.tsx: an author, their links and all their posts.
 import { ArrowUpRight, LinkedinLogo } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import type { ReactElement } from "react";
 import { Avatar } from "@/components/blog/Avatar";
 import { Crumbs } from "@/components/blog/Crumbs";
@@ -24,12 +24,13 @@ function linkLabel(address: string): { readonly label: string; readonly linkedin
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const found = await getAuthor((await params).slug);
-  return found === null ? {} : authorMetadata(found.author);
+  return found === null || "redirect" in found ? {} : authorMetadata(found.author);
 }
 
 export default async function AuthorPage({ params }: Props): Promise<ReactElement> {
   const found = await getAuthor((await params).slug);
   if (found === null) notFound();
+  if ("redirect" in found) permanentRedirect(`/blog/author/${found.redirect}`);
   const { author, posts } = found;
   return (
     <div className="in-wrap pb-24 pt-32">

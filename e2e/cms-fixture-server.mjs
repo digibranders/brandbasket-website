@@ -15,6 +15,8 @@ const card = load("post-card");
 const second = post.related[0];
 /** An address the post used to have: the CMS answers it with where the post lives now. */
 const OLD_SLUG = "website-price-india";
+const OLD_CATEGORY_SLUG = "basics";
+const OLD_AUTHOR_SLUG = "ananya-k";
 
 // Fourteen posts, so the list has a second page at twelve to a page. The first two are the real fixtures.
 const cards = [card, second, ...Array.from({ length: 12 }, (_, i) => ({ ...card, slug: `more-guide-${i + 1}`, title: `More guide ${i + 1}`, publishedAt: `2026-09-${String(28 - i).padStart(2, "0")}T04:30:00.000Z`, modifiedAt: `2026-09-${String(28 - i).padStart(2, "0")}T04:30:00.000Z` }))];
@@ -40,6 +42,8 @@ createServer((req, res) => {
     return bySlug[slug] ? send(res, 200, { post: bySlug[slug] }) : send(res, 404, { error: "Not found" });
   }
   if (path === "/categories") return send(res, 200, categories);
+  if (path.startsWith("/categories/") && slug === OLD_CATEGORY_SLUG) return send(res, 200, { redirect: category.slug });
+  if (path.startsWith("/authors/") && slug === OLD_AUTHOR_SLUG) return send(res, 200, { redirect: author.slug });
   if (path.startsWith("/categories/")) return slug === category.slug ? send(res, 200, { category, posts: [card, second] }) : send(res, 404, { error: "Not found" });
   if (path.startsWith("/authors/")) return slug === author.slug ? send(res, 200, { author, posts: [card, second] }) : send(res, 404, { error: "Not found" });
   if (path === "/sitemap") return send(res, 200, sitemap);

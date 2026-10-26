@@ -27,7 +27,7 @@ const CLICK_WINDOW_MS = 600;
 
 /**
  * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month with GST, and the
- * way to start. A pill at the foot of the screen on phones and a centred pill on desktop.
+ * way to start. A pill at the foot of the screen on phones and tablets; from 1000px up the Woven basket (BasketWall) does this job.
  * It stays out of the way: hidden while the hero is on screen, while any [data-basket-total] is on screen (the totals
  * already say it) and once #closing has been reached. Inert while hidden, so its link leaves the tab order.
  *
@@ -119,7 +119,7 @@ export function BasketDock(): ReactElement | null {
       role="region"
       aria-label={BASKET_COPY.dockLabel}
       inert={hidden}
-      className={`fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 mx-auto flex items-center gap-3 rounded-full border border-line bg-surface py-[7px] pl-[9px] pr-[7px] shadow-[var(--shadow-bar)] transition-[transform,opacity] duration-[450ms] min-[1000px]:inset-x-0 min-[1000px]:bottom-6 min-[1000px]:w-[min(640px,calc(100vw-200px))] ${hidden ? "pointer-events-none translate-y-[150%] opacity-0 ease-[var(--ease)]" : "ease-[cubic-bezier(0.34,1.4,0.64,1)]"}`}
+      className={`fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 mx-auto flex items-center gap-3 rounded-full border border-line bg-surface py-[7px] pl-[9px] pr-[7px] shadow-[var(--shadow-bar)] transition-[transform,opacity] duration-[450ms] min-[1000px]:hidden ${hidden ? "pointer-events-none translate-y-[150%] opacity-0 ease-[var(--ease)]" : "ease-[cubic-bezier(0.34,1.4,0.64,1)]"}`}
     >
       {pulse ? <span key={`ring${pulse.id}`} aria-hidden="true" style={delayStyle} className="dock-ring" /> : null}
       {saving ? (

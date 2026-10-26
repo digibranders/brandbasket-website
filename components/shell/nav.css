@@ -1,0 +1,26 @@
+/* components/shell/nav.css
+   The Quiet nav (components/shell/Nav.tsx; mock docs/design/nav-cart-options.html). A full-width bar that sits on the
+   page with nothing around it at the top, turns frosted with a hairline once the page moves, steps away while the page
+   scrolls down and comes back on any scroll up. NavScrollState writes data-scrolled and data-nav on <html>. */
+
+.site-nav {
+  border-bottom: 1px solid transparent;
+  transition: transform 420ms var(--ease), background-color 300ms var(--ease), border-color 300ms var(--ease), box-shadow 300ms var(--ease);
+}
+html[data-scrolled="true"] .site-nav {
+  background: var(--nav);
+  -webkit-backdrop-filter: blur(18px) saturate(1.4);
+  backdrop-filter: blur(18px) saturate(1.4);
+  border-color: var(--line-2);
+  box-shadow: var(--shadow-nav-scrolled);
+}
+/* Stays put while someone is using it: keyboard focus inside, or the menu or basket it opened is showing. */
+html[data-nav="hidden"] .site-nav:not(:focus-within):not(:has([aria-expanded="true"])) { transform: translateY(-101%); }
+
+/* A rattan underline draws in under a link on hover. */
+.nav-link { position: relative; }
+.nav-link::after {
+  content: ""; position: absolute; left: 14px; right: 14px; bottom: 3px; height: 1.5px; border-radius: 2px; background: var(--rattan);
+  transform: scaleX(0); transform-origin: left; transition: transform 380ms var(--ease);
+}
+.nav-link:hover::after, .nav-link:focus-visible::after { transform: scaleX(1); }

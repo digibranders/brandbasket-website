@@ -1,7 +1,7 @@
 // content/basket.test.ts
 import { describe, expect, it } from "vitest";
 import { type BasketPick, PLAN_IDS, PLANS } from "@/lib/pricing";
-import { BASKET_COPY, offerNote, PRICING_PLANS, saveLine } from "./basket";
+import { BASKET_COPY, offerNote, planCount, PRICING_PLANS, saveLine } from "./basket";
 
 const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
 
@@ -22,6 +22,13 @@ describe("basket copy", () => {
   });
   it("has no em or en dashes", () => {
     expect(JSON.stringify({ BASKET_COPY, PRICING_PLANS })).not.toMatch(/[\u2013\u2014]/);
+  });
+});
+
+describe("planCount", () => {
+  it("counts the basket out of every plan", () => {
+    expect(planCount(pick(true, false, false))).toBe("1 of 3 plans");
+    expect(planCount(pick(true, true, true))).toBe("3 of 3 plans");
   });
 });
 

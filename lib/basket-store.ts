@@ -1,6 +1,6 @@
 import { type BasketPick, PLAN_IDS, type PlanId, samePick } from "./pricing";
 
-/** What every "Get my free website" button starts from: the website plan on its own. */
+/** What every "Start my plan" button starts from: the website plan on its own. */
 export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: true, growth: false, search: false });
 
 /** Where the page-wide basket is remembered in the browser. It holds plan ids only. */

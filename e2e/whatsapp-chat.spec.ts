@@ -14,7 +14,8 @@ test("hero keeps its pricing CTA and navbar has one Pricing link", async ({ page
   await expect(hero.locator('a[href*="wa.me"]')).toHaveCount(0);
   const nav = page.getByRole("navigation", { name: "Site", exact: true });
   if ((page.viewportSize()?.width ?? 0) < 1000) await page.getByRole("button", { name: "Open menu" }).click();
-  await expect(nav.getByRole("link", { name: PRIMARY_CTA.label }).filter({ visible: true })).toBeVisible();
+  // The nav button opens the basket pop-up rather than leaving the page, so it is a button, not a link.
+  await expect(nav.getByRole("button", { name: PRIMARY_CTA.label }).filter({ visible: true })).toBeVisible();
   await expect(nav.getByRole("link", { name: "View pricing", includeHidden: true })).toHaveCount(0);
   await expect(nav.getByRole("link", { name: "Pricing", exact: true })).toHaveCount(1);
   await expect(nav.getByRole("link", { name: "Pricing", exact: true })).toHaveAttribute("href", "/pricing");

@@ -50,6 +50,11 @@ export const BASKET_COPY = {
   planMany: "plans",
 } as const;
 
+/** The basket card's count beside its title, e.g. "2 of 3 plans" (docs/design/nav-cart-options.html). */
+export function planCount(pick: BasketPick): string {
+  return `${basketPlans(pick).length} of ${PLAN_IDS.length} plans`;
+}
+
 /** The strip under the plan rows (mock: offerText()): the invitation for one plan, or what the package earns. */
 export function offerNote(pick: BasketPick): string {
   const pkg = packageFor(pick);

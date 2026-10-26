@@ -34,7 +34,7 @@ export const LEGAL_NAV: readonly NavLink[] = [
   ...(TOOLS.length > 0 ? [{ label: "Cookie settings", href: COOKIE_SETTINGS_HREF }] : []),
 ];
 
-export const PRIMARY_CTA: NavLink = { label: "Get my free website", href: signupHref(DEFAULT_BASKET) };
+export const PRIMARY_CTA: NavLink = { label: "Start my plan", href: signupHref(DEFAULT_BASKET) };
 
 /** The nav and menu link for returning customers. It goes to the app's sign-in with no plan chosen. */
 export const LOGIN_LINK: NavLink = { label: "Log in", href: loginHref() };

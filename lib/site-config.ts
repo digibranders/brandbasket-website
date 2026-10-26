@@ -87,7 +87,7 @@ export const businessDetails: BusinessDetails = {
 export interface SiteConfig {
   readonly name: string;
   readonly url: string;
-  /** The customer app where "Get my free website" signs people up (brandbasket-platform). */
+  /** The customer app where "Start my plan" signs people up (brandbasket-platform). */
   readonly appUrl: string;
   readonly description: string;
 }

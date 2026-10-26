@@ -7,9 +7,10 @@ import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNo
 import { BASKET_COPY } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { basketPlans, type BasketPick, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
+import { signupHref } from "@/lib/signup";
+import { ArrowButton } from "../ui/ArrowButton";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
-import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
 const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: TrendUp, search: MagnifyingGlass };
@@ -85,7 +86,7 @@ function StampCard({ pick }: { readonly pick: BasketPick }): ReactElement {
         </div>
       ) : null}
       <div className="cta-pair pt-1">
-        <BasketCta location="plans" label={BASKET_CARD.checkoutCta} short={BASKET_CARD.checkoutCtaShort} />
+        <ArrowButton href={signupHref(pick)} location="plans" short={BASKET_CARD.checkoutCtaShort}>{BASKET_CARD.checkoutCta}</ArrowButton>
         <OutlineButton href="/pricing#compare" location="plans_compare" short={BASKET_COPY.compareShort}>{BASKET_COPY.compare}</OutlineButton>
       </div>
     </div>

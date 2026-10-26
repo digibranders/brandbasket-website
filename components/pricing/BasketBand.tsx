@@ -30,7 +30,7 @@ export function BasketBand(): ReactElement {
             <p className="mt-4 max-w-[52ch] text-[15.5px] leading-[1.55] text-action-ink/74">{offerNote(pick)}</p>
           </div>
           <div className="cta-pair">
-            <BasketCta location="pricing_band" tone="inverse" label={BASKET_COPY.startPlan} />
+            <BasketCta location="pricing_band" tone="inverse" label={BASKET_COPY.startPlan} anchor="dock" />
             <WhatsAppButton location="pricing_band" tone="inverse" />
           </div>
         </div>

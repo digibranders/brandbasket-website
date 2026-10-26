@@ -13,7 +13,7 @@ export function Closing(): ReactElement {
         <h2 id="h-close" className="relative max-w-[16ch] font-display text-[clamp(32px,4.4vw,60px)] font-normal leading-none tracking-[-0.045em]">{CLOSING_COPY.title}</h2>
         <p className="relative max-w-[48ch] text-action-ink/72">{CLOSING_COPY.body}</p>
         <div className="cta-pair relative z-[1]">
-          <BasketCta location="closing" tone="inverse" />
+          <BasketCta location="closing" tone="inverse" anchor="dock" />
           <WhatsAppButton location="closing" tone="inverse" short={CLOSING_COPY.whatsappShort} />
         </div>
       </section>

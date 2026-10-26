@@ -9,7 +9,7 @@ test.use({ actionTimeout: 5_000 });
 test("hero keeps its pricing CTA and navbar has one Pricing link", async ({ page }) => {
   await page.goto("/");
   const hero = page.locator("#hero");
-  await expect(hero.getByRole("link", { name: PRIMARY_CTA.label })).toBeVisible();
+  await expect(hero.getByRole("button", { name: PRIMARY_CTA.label })).toBeVisible();
   await expect(hero.getByRole("link", { name: "View pricing" })).toHaveAttribute("href", "/pricing");
   await expect(hero.locator('a[href*="wa.me"]')).toHaveCount(0);
   const nav = page.getByRole("navigation", { name: "Site", exact: true });

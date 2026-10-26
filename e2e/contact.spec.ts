@@ -1,5 +1,6 @@
 // e2e/contact.spec.ts
 import { expect, type Page, test } from "@playwright/test";
+import { BASKET_COPY } from "@/content/basket";
 import { CONTACT_ERRORS, CONTACT_PAGE, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_PLACEHOLDERS } from "@/content/contact";
 import { PRIMARY_CTA } from "@/content/navigation";
 
@@ -87,11 +88,20 @@ test("?plan=website,search posts the plans and no topic", async ({ page }) => {
 });
 
 for (const path of ["/", "/pricing"]) {
-  test(`every main button on ${path} leads to the app's sign-in`, async ({ page }) => {
+  test(`every main button on ${path} opens the basket, and the basket leads to the app's sign-in`, async ({ page }) => {
     await page.goto(path);
-    const hrefs = await page.locator("a", { hasText: PRIMARY_CTA.label }).evaluateAll((links) => links.map((a) => a.getAttribute("href") ?? ""));
-    expect(hrefs.length).toBeGreaterThan(0);
-    for (const href of hrefs) expect(href).toMatch(/^https:\/\/app\.brandbasket\.in\/login\?plan=/);
+    await expect(page.getByRole("link", { name: PRIMARY_CTA.label })).toHaveCount(0);
+    const buttons = page.locator("main").getByRole("button", { name: PRIMARY_CTA.label });
+    expect(await buttons.count()).toBeGreaterThan(0);
+    for (let i = 0; i < (await buttons.count()); i += 1) {
+      await buttons.nth(i).scrollIntoViewIfNeeded();
+      await buttons.nth(i).click();
+      const basket = page.getByRole("dialog", { name: BASKET_COPY.dockLabel });
+      await expect(basket).toBeVisible();
+      await expect(basket.getByRole("link", { name: BASKET_COPY.proceed })).toHaveAttribute("href", /^https:\/\/app\.brandbasket\.in\/login\?plan=/);
+      await page.keyboard.press("Escape");
+      await expect(basket).toHaveCount(0);
+    }
   });
 }
 

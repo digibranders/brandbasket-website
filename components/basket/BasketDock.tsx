@@ -154,7 +154,7 @@ export function BasketDock(): ReactElement | null {
       </div>
       </button>
       <div className="flex-none">
-        <BasketCta location="dock" size="sm" tone="inverse" label={BASKET_COPY.startPlan} />
+        <BasketCta location="dock" size="sm" tone="inverse" label={BASKET_COPY.startPlan} anchor="dock" />
       </div>
     </div>
   );

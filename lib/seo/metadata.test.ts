@@ -37,4 +37,11 @@ describe("pageMetadata", () => {
     expect(meta.alternates?.canonical).toBe("/pricing");
     expect(meta.openGraph).toMatchObject({ url: "https://brandbasket.in/pricing" });
   });
+
+  it("makes an article of a post, with its own share image", () => {
+    const image = { url: "https://media.brandbasket.in/blog/cover.jpg", width: 1200, height: 630, alt: "A shop front" };
+    const meta = pageMetadata(base, { article: { publishedTime: "2026-10-05T04:30:00.000Z", modifiedTime: "2026-10-12T06:00:00.000Z", authors: ["Ananya Kulkarni"], section: "Website basics" }, image });
+    expect(meta.openGraph).toMatchObject({ type: "article", publishedTime: "2026-10-05T04:30:00.000Z", modifiedTime: "2026-10-12T06:00:00.000Z", authors: ["Ananya Kulkarni"], section: "Website basics", images: [image] });
+    expect(meta.twitter).toMatchObject({ images: [image] });
+  });
 });

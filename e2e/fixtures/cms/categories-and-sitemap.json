@@ -1,0 +1,50 @@
+{
+  "categories": {
+    "categories": [
+      {
+        "name": "Google and Maps",
+        "slug": "google-and-maps",
+        "description": "What a small business needs from its website.",
+        "metaTitle": "Website basics for small businesses",
+        "metaDescription": "Plain answers on what a small business needs from its website, from the first page to the monthly running costs.",
+        "postCount": 1
+      },
+      {
+        "name": "Website basics",
+        "slug": "website-basics",
+        "description": "What a small business needs from its website.",
+        "metaTitle": "Website basics for small businesses",
+        "metaDescription": "Plain answers on what a small business needs from its website, from the first page to the monthly running costs.",
+        "postCount": 2
+      }
+    ]
+  },
+  "sitemap": {
+    "posts": [
+      {
+        "slug": "website-cost-india",
+        "lastModified": "2026-10-12T06:00:00.000Z"
+      },
+      {
+        "slug": "pick-a-domain-name",
+        "lastModified": "2026-10-08T04:30:00.000Z"
+      }
+    ],
+    "categories": [
+      {
+        "slug": "google-and-maps",
+        "lastModified": "2026-10-08T04:30:00.000Z"
+      },
+      {
+        "slug": "website-basics",
+        "lastModified": "2026-10-12T06:00:00.000Z"
+      }
+    ],
+    "authors": [
+      {
+        "slug": "ananya-kulkarni",
+        "lastModified": "2026-10-12T06:00:00.000Z"
+      }
+    ]
+  }
+}

@@ -11,16 +11,16 @@ export interface Header {
  * Insights load from and post to /_vercel/* on this origin in production; only their development debug scripts come
  * from va.vercel-scripts.com. Google Tag Manager and its tools' origins are added only when a container is configured
  * (plan 12); the consent banner still keeps GTM from loading until a purpose is allowed. A tool added to the container
- * needs its origins here too, or the browser blocks it.
+ * needs its origins here too, or the browser blocks it. Blog pictures come from the CMS's public media bucket (`mediaOrigin`).
  */
-export function securityHeaders({ dev, tools = TOOLS }: { readonly dev: boolean; readonly tools?: readonly VendorId[] }): Header[] {
+export function securityHeaders({ dev, tools = TOOLS, mediaOrigin }: { readonly dev: boolean; readonly tools?: readonly VendorId[]; readonly mediaOrigin?: string }): Header[] {
   const origins = tagOrigins(tools);
   const extra = (list: readonly string[]): string => list.map((origin) => ` ${origin}`).join("");
   const csp = [
     "default-src 'self'",
     `script-src 'self' 'unsafe-inline'${dev ? " 'unsafe-eval' https://va.vercel-scripts.com" : ""}${extra(origins.script)}`,
     `style-src 'self' 'unsafe-inline'${extra(origins.style)}`,
-    `img-src 'self' data: blob:${extra(origins.img)}`,
+    `img-src 'self' data: blob:${mediaOrigin === undefined ? "" : ` ${mediaOrigin}`}${extra(origins.img)}`,
     `font-src 'self'${extra(origins.font)}`,
     `connect-src 'self'${extra(origins.connect)}`,
     ...(origins.frame.length > 0 ? [`frame-src${extra(origins.frame)}`] : []),

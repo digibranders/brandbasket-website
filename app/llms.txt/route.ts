@@ -34,6 +34,9 @@ ${packages}
 
 ## Pages
 ${pages}
+
+## Blog
+- [Guides for local businesses](${routeUrl("/blog")}), with an RSS feed at ${routeUrl("/blog/feed.xml")}
 `;
   return new Response(body, { headers: { "Content-Type": "text/plain; charset=utf-8" } });
 }

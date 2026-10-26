@@ -11,6 +11,7 @@ export interface NavLink {
 export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -19,6 +20,7 @@ export const FOOTER_NAV: readonly NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
+  { label: "Blog", href: "/blog" },
   { label: "About us", href: "/about" },
   { label: "Contact us", href: "/contact" },
 ];

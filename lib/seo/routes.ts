@@ -45,6 +45,13 @@ export const ROUTES = {
     updated: UPDATED,
     priority: 0.7,
   },
+  blog: {
+    path: "/blog",
+    title: `Blog: guides for local businesses | ${tradeName}`,
+    description: `Guides on websites, Google, social and AI search for local businesses, written by the team that runs them for our clients.`,
+    updated: UPDATED,
+    priority: 0.8,
+  },
   about: {
     path: "/about",
     title: `About ${tradeName}, a brand of Digibranders`,

@@ -1,0 +1,23 @@
+{
+  "slug": "website-cost-india",
+  "title": "What does a website cost in India?",
+  "excerpt": "What a small business in India pays for a website, from the build to the monthly running costs.",
+  "cover": {
+    "src": "https://media.brandbasket.in/blog/cover-960x540.webp",
+    "srcSet": "https://media.brandbasket.in/blog/cover-480x270.webp 480w, https://media.brandbasket.in/blog/cover-960x540.webp 960w, https://media.brandbasket.in/blog/cover-1600x900.webp 1600w",
+    "width": 960,
+    "height": 540,
+    "alt": "A bakery's website open on a laptop"
+  },
+  "category": {
+    "name": "Website basics",
+    "slug": "website-basics"
+  },
+  "author": {
+    "name": "Ananya Kulkarni",
+    "slug": "ananya-kulkarni"
+  },
+  "publishedAt": "2026-10-05T04:30:00.000Z",
+  "modifiedAt": "2026-10-12T06:00:00.000Z",
+  "readingMinutes": 4
+}

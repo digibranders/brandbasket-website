@@ -1,4 +1,5 @@
 // lib/seo/jsonld.ts
+import type { ServicePageContent } from "@/content/services";
 import type { FaqItem } from "@/content/types";
 import type { AuthorProfile, Post } from "@/lib/cms/schema";
 import { PACKAGES, packageTotal, PLAN_IDS, PLANS } from "@/lib/pricing";
@@ -123,6 +124,32 @@ export function planOffersJsonLd({ packages = false }: { readonly packages?: boo
         ...(packages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick))) : []),
       ],
     },
+  };
+}
+
+export interface ServicePageLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "Service";
+  readonly name: string;
+  readonly description: string;
+  readonly url: string;
+  readonly provider: { readonly "@id": string };
+  readonly areaServed: { readonly "@type": "Country"; readonly name: string };
+  readonly offers: ServiceLd["hasOfferCatalog"]["itemListElement"][number];
+}
+
+/** One service page: the plan as a Service with its monthly price, GST included. */
+export function serviceJsonLd(page: ServicePageContent): ServicePageLd {
+  const plan = PLANS[page.id];
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: plan.name,
+    description: page.metaDescription,
+    url: `${siteConfig.url}${page.path}`,
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: { "@type": "Country", name: "India" },
+    offers: { ...monthlyOffer(plan.name, plan.monthly), url: `${siteConfig.url}${page.path}` },
   };
 }
 

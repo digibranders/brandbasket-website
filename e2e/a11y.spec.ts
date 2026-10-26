@@ -2,7 +2,7 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, type Page, test } from "@playwright/test";
 
-const PAGES = ["/", "/pricing", "/about", "/contact", "/privacy", "/terms", "/refund", "/shipping", "/notice", "/blog", "/blog/page/2", "/blog/website-cost-india", "/blog/category/website-basics", "/blog/author/ananya-kulkarni"];
+const PAGES = ["/", "/pricing", "/services/managed-website", "/services/social-media-and-ads", "/services/local-seo-aeo", "/about", "/contact", "/privacy", "/terms", "/refund", "/shipping", "/notice", "/blog", "/blog/page/2", "/blog/website-cost-india", "/blog/category/website-basics", "/blog/author/ananya-kulkarni"];
 
 /** Frames with no finite animation running before axe runs: entrance transitions start after hydration, not at load. */
 const CALM_FRAMES = 30;

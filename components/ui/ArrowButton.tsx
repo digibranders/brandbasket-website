@@ -2,6 +2,7 @@
 import Link from "next/link";
 import type { ReactElement } from "react";
 import { trackAttrs } from "@/lib/analytics";
+import { PhoneLabel } from "./OutlineButton";
 
 type Size = "md" | "sm";
 type Tone = "action" | "inverse";
@@ -13,6 +14,8 @@ interface ArrowButtonProps {
   readonly location: string;
   readonly size?: Size;
   readonly tone?: Tone;
+  /** What to say instead of the children on a phone. */
+  readonly short?: string;
 }
 
 interface ArrowSubmitButtonProps {
@@ -38,10 +41,10 @@ export function Arrow({ size }: { readonly size: Size }): ReactElement {
 }
 
 /** Pill button with the arrow in its own circle, as in the mock. */
-export function ArrowButton({ href, children, location, size = "md", tone = "action" }: ArrowButtonProps): ReactElement {
+export function ArrowButton({ href, children, short, location, size = "md", tone = "action" }: ArrowButtonProps): ReactElement {
   return (
     <Link href={href} className={pillClasses(size, tone)} {...trackAttrs("cta_click", location)}>
-      {children}
+      <PhoneLabel full={children} short={short} />
       <Arrow size={size} />
     </Link>
   );

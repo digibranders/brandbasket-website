@@ -11,6 +11,7 @@ export interface NavLink {
 export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
+  { label: "Blog", href: "/blog" },
   { label: "Contact", href: "/contact" },
 ];
 
@@ -19,6 +20,7 @@ export const FOOTER_NAV: readonly NavLink[] = [
   { label: "Home", href: "/" },
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
+  { label: "Blog", href: "/blog" },
   { label: "About us", href: "/about" },
   { label: "Contact us", href: "/contact" },
 ];
@@ -34,7 +36,7 @@ export const LEGAL_NAV: readonly NavLink[] = [
   ...(TOOLS.length > 0 ? [{ label: "Cookie settings", href: COOKIE_SETTINGS_HREF }] : []),
 ];
 
-export const PRIMARY_CTA: NavLink = { label: "Get my free website", href: signupHref(DEFAULT_BASKET) };
+export const PRIMARY_CTA: NavLink = { label: "Start my plan", href: signupHref(DEFAULT_BASKET) };
 
 /** The nav and menu link for returning customers. It goes to the app's sign-in with no plan chosen. */
 export const LOGIN_LINK: NavLink = { label: "Log in", href: loginHref() };

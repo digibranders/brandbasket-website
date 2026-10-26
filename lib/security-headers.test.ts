@@ -13,6 +13,12 @@ describe("securityHeaders", () => {
     expect(h["Permissions-Policy"]).toContain("camera=()");
   });
 
+  it("lets pictures load from the media bucket when one is named, and from nowhere else", () => {
+    const csp = (mediaOrigin?: string): string => securityHeaders({ dev: false, tools: [], mediaOrigin }).find((h) => h.key === "Content-Security-Policy")?.value ?? "";
+    expect(csp("https://media.brandbasket.in")).toContain("img-src 'self' data: blob: https://media.brandbasket.in;");
+    expect(csp()).toContain("img-src 'self' data: blob:;");
+  });
+
   it("allows eval only in development", () => {
     expect(byKey(false)["Content-Security-Policy"]).not.toContain("unsafe-eval");
     expect(byKey(true)["Content-Security-Policy"]).toContain("unsafe-eval");

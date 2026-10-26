@@ -30,7 +30,7 @@ export function MobileMenu(): ReactElement {
         {open ? <X aria-hidden="true" className="size-5" /> : <List aria-hidden="true" className="size-5" />}
       </button>
       {open && (
-        <div id={sheetId} className="absolute inset-x-3 top-[76px] z-20 grid gap-1 rounded-[26px] border border-line bg-surface p-2.5 shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
+        <div id={sheetId} className="absolute inset-x-3 top-[calc(100%+8px)] z-20 grid gap-1 rounded-[26px] border border-line bg-surface p-2.5 shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
           {PRIMARY_NAV.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{link.label}</Link>
           ))}

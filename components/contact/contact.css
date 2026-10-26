@@ -1,0 +1,63 @@
+/* components/contact/contact.css
+   The contact form in the site's own style: the glass tray and white core of the basket card, a woven header like the
+   Woven basket's, and soft fields instead of grey boxes with dark outlines. Colours come from the tokens in globals.css. */
+
+.ct-tray {
+  padding: 6px; border-radius: 32px; background: var(--shell); -webkit-backdrop-filter: blur(24px) saturate(1.5); backdrop-filter: blur(24px) saturate(1.5);
+  box-shadow: 0 0 0 1px var(--shell-ring), var(--shadow-float);
+}
+.ct-core {
+  overflow: hidden; border-radius: 26px; background: linear-gradient(180deg, var(--surface), color-mix(in srgb, var(--surface) 97%, var(--bg)));
+  box-shadow: inset 0 1px 0 var(--surface), inset 0 0 0 1px rgba(21, 22, 26, 0.035);
+}
+
+/* The head wears the weave, so the form belongs with the basket and the Basket Card. */
+.ct-head {
+  position: relative; display: grid; gap: 6px; padding: clamp(24px, 3vw, 32px) clamp(22px, 3vw, 34px) clamp(22px, 2.6vw, 28px);
+  background:
+    radial-gradient(90% 120% at 20% 0%, rgba(255, 255, 255, 0.5), transparent 60%),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--rattan-text) 13%, transparent) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--rattan-text) 10%, transparent) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, var(--weave-light), #ecd6b6);
+}
+.ct-head::after { content: ""; position: absolute; inset: auto 0 0; height: 5px; background: linear-gradient(180deg, var(--rim-light), var(--rim-deep)); }
+.ct-head h2 { font-family: var(--font-display); font-size: clamp(26px, 2.6vw, 32px); font-weight: 400; line-height: 1.1; letter-spacing: -0.03em; }
+.ct-head p { font-size: 14px; color: var(--rattan-ink); }
+
+.ct-body { display: grid; gap: 22px; padding: clamp(22px, 3vw, 34px); }
+.ct-fields { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px 16px; }
+@media (min-width: 640px) { .ct-fields { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.ct-label { font-size: 13.5px; font-weight: 600; letter-spacing: -0.005em; }
+.ct-label small { margin-left: 6px; font-size: 12.5px; font-weight: 400; color: var(--ink-2); }
+.ct-input {
+  width: 100%; padding: 14px 16px; border-radius: 14px; border: 1px solid rgba(21, 22, 26, 0.14); background: var(--surface); color: var(--ink); font-size: 16px; line-height: 1.4;
+  box-shadow: inset 0 1px 2px rgba(21, 22, 26, 0.04); transition: border-color 250ms var(--ease), box-shadow 250ms var(--ease);
+}
+.ct-input:hover { border-color: rgba(21, 22, 26, 0.3); }
+.ct-input:focus { border-color: var(--ink); outline: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--rattan) 28%, transparent); }
+.ct-input[aria-invalid="true"] { border-color: var(--error); box-shadow: 0 0 0 4px color-mix(in srgb, var(--error) 10%, transparent); }
+.ct-input::placeholder { color: color-mix(in srgb, var(--ink-2) 80%, var(--surface)); }
+textarea.ct-input { min-height: 148px; resize: vertical; }
+
+/* The privacy checkbox: a native input (keyboard and screen reader behave as usual) drawn as a soft square that fills with ink. */
+.ct-consent { position: relative; display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: start; gap: 12px; cursor: pointer; font-size: 14.5px; line-height: 1.5; }
+.ct-consent input { position: absolute; z-index: 1; left: 0; top: 0; width: 22px; height: 22px; margin: 0; opacity: 0; cursor: pointer; }
+.ct-box {
+  display: grid; place-items: center; width: 22px; height: 22px; margin-top: 1px; border-radius: 7px; border: 1.5px solid rgba(21, 22, 26, 0.3); background: var(--surface); color: transparent;
+  transition: background-color 250ms var(--ease), border-color 250ms var(--ease), color 250ms var(--ease), box-shadow 250ms var(--ease), transform 250ms var(--ease);
+}
+.ct-consent:hover .ct-box { border-color: var(--ink); }
+.ct-consent input:checked + .ct-box { background: var(--action); border-color: var(--action); color: var(--action-ink); }
+.ct-consent input:active + .ct-box { transform: scale(0.92); }
+.ct-consent input:focus-visible + .ct-box { box-shadow: 0 0 0 4px color-mix(in srgb, var(--rattan) 35%, transparent); }
+.ct-consent input[aria-invalid="true"] + .ct-box { border-color: var(--error); box-shadow: 0 0 0 4px color-mix(in srgb, var(--error) 10%, transparent); }
+
+.ct-foot { display: grid; gap: 16px; padding-top: 22px; box-shadow: inset 0 1px 0 rgba(21, 22, 26, 0.06); }
+
+/* The three ways to reach us: soft cards that lift a little on hover. */
+.ct-way {
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 14px; padding: 14px 18px 14px 14px; border-radius: 22px; background: var(--surface);
+  box-shadow: 0 0 0 1px rgba(21, 22, 26, 0.06), 0 18px 30px -26px rgba(40, 28, 14, 0.4); transition: transform 400ms var(--ease), box-shadow 400ms var(--ease);
+}
+.ct-way:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px rgba(21, 22, 26, 0.1), 0 26px 36px -26px rgba(40, 28, 14, 0.5); }

@@ -30,11 +30,13 @@ export const BASKET_COPY = {
   basketPrefix: "Your basket:",
   /** Read before the struck list price. */
   was: "Usually",
-  plusGst: "a month + GST",
-  withGstBilled: "a month with GST, billed monthly",
+  /** Every price includes GST (owner, 2026-10-26), so the total is the one figure and the note says so. */
+  inclGst: "a month, incl. GST",
   compare: "Compare all plans",
-  totalLabel: "You pay each month, with GST",
-  phoneBarCaption: "a month, with GST",
+  /** On a phone, where two buttons share one row. */
+  compareShort: "Compare plans",
+  totalLabel: "You pay each month, incl. GST",
+  phoneBarCaption: "a month, incl. GST",
   /** The pricing page's two main buttons, beside the basket total. They work for any plan, so they do not say "free website" (owner's pick, 2026-10-23). */
   startPlan: "Start my plan",
   /** The floating basket at the foot of the screen. */
@@ -49,6 +51,11 @@ export const BASKET_COPY = {
   planOne: "plan",
   planMany: "plans",
 } as const;
+
+/** The basket card's count beside its title, e.g. "2 of 3 plans" (docs/design/nav-cart-options.html). */
+export function planCount(pick: BasketPick): string {
+  return `${basketPlans(pick).length} of ${PLAN_IDS.length} plans`;
+}
 
 /** The strip under the plan rows (mock: offerText()): the invitation for one plan, or what the package earns. */
 export function offerNote(pick: BasketPick): string {

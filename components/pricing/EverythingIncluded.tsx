@@ -1,4 +1,4 @@
-import { CaretDown, Check, ChartLineUp, FileText, Headset, LockKey, Minus, PencilSimpleLine, PlugsConnected, Phone, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
+import { CaretDown, Check, ChartLineUp, FileText, Headset, LockKey, Minus, PlugsConnected, Phone, ShieldCheck } from "@phosphor-icons/react/dist/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
@@ -6,7 +6,7 @@ import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { type DetailColumn, INCLUDED, type IncludedGroup, type IncludedIconKey, type IncludedPart } from "@/content/pricing";
 
-const ICONS: Readonly<Record<IncludedIconKey, Icon>> = { FileText, Phone, PencilSimpleLine, PlugsConnected, ShieldCheck, LockKey, ChartLineUp, Headset };
+const ICONS: Readonly<Record<IncludedIconKey, Icon>> = { FileText, Phone, PlugsConnected, ShieldCheck, LockKey, ChartLineUp, Headset };
 const COLOUR: Readonly<Record<IncludedGroup["colour"], string>> = { site: "var(--c-site)", growth: "var(--c-growth)", search: "var(--c-search)", care: "var(--c-care)" };
 
 function Column({ column }: { readonly column: DetailColumn }): ReactElement {
@@ -53,10 +53,6 @@ function Group({ group }: { readonly group: IncludedGroup }): ReactElement {
 function Part({ part }: { readonly part: IncludedPart }): ReactElement {
   return (
     <div className="mt-10 first:mt-0">
-      <h3 className="mb-3.5 flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display text-[22px] font-medium tracking-[-0.03em]">
-        {part.label}
-        <small className="font-sans text-sm font-normal tracking-normal text-ink-2">{part.note}</small>
-      </h3>
       <div>
         {part.groups.map((group) => <Group key={group.id} group={group} />)}
       </div>

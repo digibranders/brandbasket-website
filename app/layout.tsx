@@ -6,6 +6,7 @@ import type { ReactElement, ReactNode } from "react";
 import { JsonLd } from "@/components/JsonLd";
 import { BasketDock } from "@/components/basket/BasketDock";
 import { BasketPopover } from "@/components/basket/BasketPopover";
+import { BasketWall } from "@/components/basket/BasketWall";
 import { ConversionTracking } from "@/components/analytics/ConversionTracking";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
 import { Closing } from "@/components/shell/Closing";
@@ -41,6 +42,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
         <Footer />
         <WhatsAppChat />
         <BasketDock />
+        <BasketWall />
         <BasketPopover />
         {TOOLS.length > 0 && <ConsentBanner />}
         <JsonLd data={organizationJsonLd()} />

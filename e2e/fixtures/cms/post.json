@@ -1,0 +1,92 @@
+{
+  "slug": "website-cost-india",
+  "title": "What does a website cost in India?",
+  "excerpt": "What a small business in India pays for a website, from the build to the monthly running costs.",
+  "cover": {
+    "src": "https://media.brandbasket.in/blog/cover-960x540.webp",
+    "srcSet": "https://media.brandbasket.in/blog/cover-480x270.webp 480w, https://media.brandbasket.in/blog/cover-960x540.webp 960w, https://media.brandbasket.in/blog/cover-1600x900.webp 1600w",
+    "width": 960,
+    "height": 540,
+    "alt": "A bakery's website open on a laptop"
+  },
+  "category": {
+    "name": "Website basics",
+    "slug": "website-basics"
+  },
+  "author": {
+    "name": "Ananya Kulkarni",
+    "slug": "ananya-kulkarni",
+    "jobTitle": "Local SEO lead",
+    "bio": "Helps neighbourhood shops get found on Google.",
+    "photo": {
+      "src": "https://media.brandbasket.in/blog/ananya.webp",
+      "srcSet": "https://media.brandbasket.in/blog/ananya.webp 600w",
+      "width": 600,
+      "height": 600,
+      "alt": "Ananya Kulkarni at her desk"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/ananya-kulkarni"
+    ]
+  },
+  "publishedAt": "2026-10-05T04:30:00.000Z",
+  "modifiedAt": "2026-10-12T06:00:00.000Z",
+  "readingMinutes": 4,
+  "html": "<p>A website has a build cost and a running cost. <strong>Most owners only ask about the first.</strong></p><h2 id=\"what-is-in-the-build\">What is in the build?</h2><p>Pages, copy and photos. See the <a href=\"/pricing\">pricing page</a>.</p><figure><img src=\"https://media.brandbasket.in/blog/profile-960x549.webp\" srcset=\"https://media.brandbasket.in/blog/profile-960x549.webp 960w\" sizes=\"(min-width: 760px) 720px, 100vw\" width=\"960\" height=\"549\" alt=\"The Google Business Profile editor\" loading=\"lazy\" decoding=\"async\" /><figcaption>Editing a profile</figcaption></figure><h3 id=\"what-is-in-the-running-cost\">What is in the running cost?</h3><p>Hosting, updates &amp; support.</p>",
+  "toc": [
+    {
+      "id": "what-is-in-the-build",
+      "text": "What is in the build?",
+      "level": 2
+    },
+    {
+      "id": "what-is-in-the-running-cost",
+      "text": "What is in the running cost?",
+      "level": 3
+    }
+  ],
+  "faqs": [
+    {
+      "question": "Is GST extra?",
+      "answer": "Yes. Prices are before 18% GST."
+    }
+  ],
+  "seo": {
+    "title": "Website cost in India | Brandbasket",
+    "description": "What a small business in India pays for a website, from the build to the monthly running costs.",
+    "noindex": false
+  },
+  "ogImage": {
+    "src": "https://media.brandbasket.in/blog/cover-1200x630.jpg",
+    "srcSet": "https://media.brandbasket.in/blog/cover-1200x630.jpg 1200w",
+    "width": 1200,
+    "height": 630,
+    "alt": "A bakery's website open on a laptop"
+  },
+  "wordCount": 40,
+  "related": [
+    {
+      "slug": "pick-a-domain-name",
+      "title": "How to pick a domain name",
+      "excerpt": "Short, easy to say and easy to spell.",
+      "cover": {
+        "src": "https://media.brandbasket.in/blog/cover-960x540.webp",
+        "srcSet": "https://media.brandbasket.in/blog/cover-480x270.webp 480w, https://media.brandbasket.in/blog/cover-960x540.webp 960w, https://media.brandbasket.in/blog/cover-1600x900.webp 1600w",
+        "width": 960,
+        "height": 540,
+        "alt": "A bakery's website open on a laptop"
+      },
+      "category": {
+        "name": "Website basics",
+        "slug": "website-basics"
+      },
+      "author": {
+        "name": "Ananya Kulkarni",
+        "slug": "ananya-kulkarni"
+      },
+      "publishedAt": "2026-10-08T04:30:00.000Z",
+      "modifiedAt": "2026-10-08T04:30:00.000Z",
+      "readingMinutes": 2
+    }
+  ]
+}

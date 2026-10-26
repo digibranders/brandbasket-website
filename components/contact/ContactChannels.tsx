@@ -1,6 +1,6 @@
 // components/contact/ContactChannels.tsx
 import type { Icon } from "@phosphor-icons/react";
-import { ArrowRight, EnvelopeSimple, Phone, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, EnvelopeSimple, MapPin, Phone, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { CONTACT_PAGE } from "@/content/contact";
 import { trackAttrs } from "@/lib/analytics";
@@ -27,29 +27,33 @@ const OFFICE = `${legalName}, ${postalAddress.street}, ${postalAddress.locality}
 export function ContactChannels(): ReactElement {
   return (
     <>
-      <ul className="mt-8 grid">
+      <ul className="mt-8 grid gap-3">
         {CHANNELS.map(({ label, detail, href, icon: ChannelIcon, whatsapp }) => (
-          <li key={label} className="[&:last-child>a]:border-b">
+          <li key={label}>
             <a
               href={href}
               {...(whatsapp ? { target: "_blank", rel: "noopener", ...trackAttrs("whatsapp_click", "contact") } : {})}
-              className="group grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-3.5 border-t border-line py-4"
+              className="ct-way group"
             >
-              <span aria-hidden="true" className={`grid size-[42px] place-items-center rounded-[13px] bg-sunken ${whatsapp ? "text-[var(--whatsapp)]" : "text-ink"}`}>
-                <ChannelIcon weight={whatsapp ? "regular" : "fill"} className="size-[21px]" />
+              <span aria-hidden="true" className={`grid size-[46px] place-items-center rounded-2xl ${whatsapp ? "bg-[color-mix(in_srgb,var(--whatsapp)_12%,var(--surface))] text-[var(--whatsapp)]" : "bg-rattan-wash text-rattan-ink"}`}>
+                <ChannelIcon weight={whatsapp ? "fill" : "duotone"} className="size-[23px]" />
               </span>
               <span>
                 <b className="block font-display text-lg font-medium tracking-[-0.02em]">{label}</b>
                 <span className="text-sm text-ink-2">{detail}</span>
               </span>
-              <ArrowRight aria-hidden="true" className="size-4 text-ink-2 transition-[transform,color] duration-[400ms] ease-[var(--ease)] group-hover:translate-x-[3px] group-hover:text-ink" />
+              <ArrowRight aria-hidden="true" className="size-[18px] text-ink-2 transition-[transform,color] duration-[400ms] ease-[var(--ease)] group-hover:translate-x-[3px] group-hover:text-ink" />
             </a>
           </li>
         ))}
       </ul>
-      <dl className="mt-7 grid gap-4 text-[14.5px]">
-        <div><dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.officeLabel}</dt><dd className="mt-2 max-w-[46ch] text-ink-2 leading-relaxed">{OFFICE}</dd></div>
-      </dl>
+      <div className="mt-8 grid grid-cols-[auto_minmax(0,1fr)] items-start gap-3.5 px-1">
+        <span aria-hidden="true" className="grid size-[46px] place-items-center rounded-2xl bg-sunken text-ink-2"><MapPin weight="duotone" className="size-[23px]" /></span>
+        <dl className="text-[14.5px]">
+          <dt className="text-[13px] font-semibold text-ink-2">{CONTACT_PAGE.officeLabel}</dt>
+          <dd className="mt-1.5 max-w-[46ch] leading-relaxed text-ink-2">{OFFICE}</dd>
+        </dl>
+      </div>
     </>
   );
 }

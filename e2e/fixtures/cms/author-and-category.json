@@ -1,0 +1,25 @@
+{
+  "author": {
+    "name": "Ananya Kulkarni",
+    "slug": "ananya-kulkarni",
+    "jobTitle": "Local SEO lead",
+    "bio": "Helps neighbourhood shops get found on Google.",
+    "photo": {
+      "src": "https://media.brandbasket.in/blog/ananya.webp",
+      "srcSet": "https://media.brandbasket.in/blog/ananya.webp 600w",
+      "width": 600,
+      "height": 600,
+      "alt": "Ananya Kulkarni at her desk"
+    },
+    "sameAs": [
+      "https://www.linkedin.com/in/ananya-kulkarni"
+    ]
+  },
+  "category": {
+    "name": "Website basics",
+    "slug": "website-basics",
+    "description": "What a small business needs from its website.",
+    "metaTitle": "Website basics for small businesses",
+    "metaDescription": "Plain answers on what a small business needs from its website, from the first page to the monthly running costs."
+  }
+}

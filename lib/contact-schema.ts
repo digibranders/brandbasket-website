@@ -15,15 +15,10 @@ const optionalText = (max: number, oneLine = false) => {
   return z.union([oneLine ? text.regex(NO_CONTROL, CONTACT_ERRORS.form) : text, z.literal("")]).optional();
 };
 
-/** The four answers to "What can we help with?" on the contact form. Labels live in content/contact.ts. */
-export const CONTACT_TOPICS = ["website", "plans", "help", "other"] as const;
-export type ContactTopic = (typeof CONTACT_TOPICS)[number];
-
 /** Field length caps, shared with the inputs' maxLength so the browser never lets a visitor exceed them. */
 export const CONTACT_MAX = { name: 80, phone: 16, email: 120, business: 120, city: 60, message: 1500 } as const;
 
 export const contactSchema = z.object({
-  topic: z.enum(CONTACT_TOPICS),
   name: z.string().trim().min(2, CONTACT_ERRORS.name).max(CONTACT_MAX.name).regex(NO_CONTROL, CONTACT_ERRORS.name),
   phone: z.union([z.string().trim().regex(/^\+?[0-9][0-9 ]{9,14}$/, CONTACT_ERRORS.phone), z.literal("")]).optional(),
   email: z.email(CONTACT_ERRORS.email).max(CONTACT_MAX.email),
@@ -31,7 +26,10 @@ export const contactSchema = z.object({
   city: optionalText(CONTACT_MAX.city, true),
   // Present when the visitor arrived from a basket (?plan=); an empty list is a general enquiry.
   plans: z.array(z.enum(PLAN_IDS)),
-  message: optionalText(CONTACT_MAX.message),
+  // Required since 2026-10-26. A line break is fine, an empty or blank message is not.
+  message: z.string().trim().min(1, CONTACT_ERRORS.message).max(CONTACT_MAX.message),
+  // Ticked on the form: the server refuses a lead that did not agree to the privacy policy.
+  consent: z.literal(true, { error: CONTACT_ERRORS.consent }),
   noticeVersion: z.string().min(1).max(40),
 });
 
@@ -41,9 +39,4 @@ export type ContactInput = z.infer<typeof contactSchema>;
 export function parsePlanParam(value: string | null): PlanId[] {
   const picked = value?.split(",") ?? [];
   return PLAN_IDS.filter((id) => picked.includes(id));
-}
-
-/** Reads `?topic=`; anything that is not one of the four topics is ignored. */
-export function parseTopicParam(value: string | null): ContactTopic | null {
-  return CONTACT_TOPICS.find((topic) => topic === value) ?? null;
 }

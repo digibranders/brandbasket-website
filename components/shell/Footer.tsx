@@ -28,7 +28,6 @@ export function Footer(): ReactElement {
           </div>
           <div className="site-footer-colophon">
             <p>&copy; {new Date().getFullYear()} {businessDetails.tradeName}</p>
-            <p>{businessDetails.legalName}</p>
           </div>
         </div>
       </div>

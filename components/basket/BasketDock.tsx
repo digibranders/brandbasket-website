@@ -5,8 +5,8 @@ import { type CSSProperties, type ReactElement, useEffect, useRef, useState } fr
 import { BASKET_COPY, saveLine } from "@/content/basket";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, firstPayment, formatInr, PLAN_IDS, packageTotal } from "@/lib/pricing";
-import { PLAN_INK } from "./basket-view";
+import { basketPlans, formatInr, PLAN_IDS, packageTotal } from "@/lib/pricing";
+import { dockLabel, PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { showsDock } from "./dock-paths";
 import { FLY_MS, flyDot } from "./fly";
@@ -26,8 +26,10 @@ interface Pulse {
 const CLICK_WINDOW_MS = 600;
 
 /**
- * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month with GST, and the
- * way to start. A pill at the foot of the screen on phones and a centred pill on desktop.
+ * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month (GST included), and the
+ * way to start. The ink island (owner's pick, 2026-10-26; docs/design/phone-dock-options.html) at the foot of the screen on
+ * phones and tablets: a rattan basket with its count, the total and one bar per plan in its colour, and a white button.
+ * From 1000px up the Woven basket (BasketWall) does this job.
  * It stays out of the way: hidden while the hero is on screen, while any [data-basket-total] is on screen (the totals
  * already say it) and once #closing has been reached. Inert while hidden, so its link leaves the tab order.
  *
@@ -113,13 +115,14 @@ export function BasketDock(): ReactElement | null {
   const delay = pulse?.delay ?? 0;
   const delayStyle = { "--d": `${delay}ms` } as CSSProperties;
   const saving = saveLine(pick);
+  const total = formatInr(packageTotal(pick));
   return (
     <div
       data-basket-dock
       role="region"
       aria-label={BASKET_COPY.dockLabel}
       inert={hidden}
-      className={`fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 mx-auto flex items-center gap-3 rounded-full border border-line bg-surface py-[7px] pl-[9px] pr-[7px] shadow-[var(--shadow-bar)] transition-[transform,opacity] duration-[450ms] min-[1000px]:inset-x-0 min-[1000px]:bottom-6 min-[1000px]:w-[min(640px,calc(100vw-200px))] ${hidden ? "pointer-events-none translate-y-[150%] opacity-0 ease-[var(--ease)]" : "ease-[cubic-bezier(0.34,1.4,0.64,1)]"}`}
+      className={`dock-isle fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 mx-auto flex max-w-[480px] items-center gap-3 rounded-full py-2 pl-2.5 pr-2 transition-[transform,opacity] duration-[450ms] min-[1000px]:hidden ${hidden ? "pointer-events-none translate-y-[150%] opacity-0 ease-[var(--ease)]" : "ease-[cubic-bezier(0.34,1.4,0.64,1)]"}`}
     >
       {pulse ? <span key={`ring${pulse.id}`} aria-hidden="true" style={delayStyle} className="dock-ring" /> : null}
       {saving ? (
@@ -130,26 +133,28 @@ export function BasketDock(): ReactElement | null {
         data-basket-trigger
         aria-haspopup="dialog"
         aria-expanded={panel.open && panel.anchor === "dock"}
-        aria-label={BASKET_COPY.reviewBasket}
+        aria-label={dockLabel(count, total)}
         {...(panel.open && panel.anchor === "dock" ? {} : trackAttrs("basket_open", "dock"))}
         onClick={(event) => basketPanel.toggle("dock", event.currentTarget)}
         className="flex min-w-0 flex-auto cursor-pointer items-center gap-3 rounded-full text-left"
       >
-      <span ref={iconRef} aria-hidden="true" className="relative grid size-11 flex-none place-items-center rounded-full bg-rattan-wash text-rattan-ink">
+      <span ref={iconRef} aria-hidden="true" className="relative grid size-[46px] flex-none place-items-center rounded-full bg-rattan text-ink shadow-[inset_0_1px_0_rgba(255,255,255,0.4)]">
         <span key={`icon${pulse?.id ?? 0}`} style={delayStyle} className={`grid place-items-center ${pulse ? (dir > 0 ? "dock-bump" : "dock-shrink") : ""}`}>
           <Basket weight="fill" className="size-6" />
         </span>
-        <span key={`badge${pulse?.id ?? 0}`} style={delayStyle} className={`num absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-action px-1 text-[11px] font-semibold leading-none text-action-ink ${pulse ? (dir > 0 ? "dock-badge-add" : "dock-badge-drop") : ""}`}>{count}</span>
+        <span key={`badge${pulse?.id ?? 0}`} style={delayStyle} className={`num absolute -right-1.5 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-action-ink px-1 text-[11px] font-semibold leading-none text-action shadow-[0_0_0_2px_var(--action)] ${pulse ? (dir > 0 ? "dock-badge-add" : "dock-badge-drop") : ""}`}>{count}</span>
       </span>
-      <div className="grid min-w-0 flex-auto leading-[1.25]">
-        <b className="num whitespace-nowrap font-display text-lg font-medium tracking-[-0.02em]">
-          <Roll value={formatInr(firstPayment(packageTotal(pick)).total)} dir={dir} delay={delay} />
+      <div className="grid min-w-0 flex-auto gap-1 leading-[1.15]">
+        <b className="num whitespace-nowrap font-display text-xl font-medium tracking-[-0.025em] text-action-ink">
+          <Roll value={total} dir={dir} delay={delay} />
         </b>
-        <span className="truncate text-xs text-ink-2">{count} {count === 1 ? BASKET_COPY.planOne : BASKET_COPY.planMany} · {BASKET_COPY.phoneBarCaption}</span>
+        <span aria-hidden="true" className="flex gap-1">
+          {PLAN_IDS.map((id) => <i key={id} style={{ "--c": PLAN_INK[id] } as CSSProperties} className={`dock-seg ${pick[id] ? "is-on" : ""}`} />)}
+        </span>
       </div>
       </button>
       <div className="flex-none">
-        <BasketCta location="dock" size="sm" label={BASKET_COPY.startPlan} />
+        <BasketCta location="dock" size="sm" tone="inverse" label={BASKET_COPY.startPlan} anchor="dock" />
       </div>
     </div>
   );

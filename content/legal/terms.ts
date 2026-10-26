@@ -24,7 +24,7 @@ export const termsOfService: LegalDocument = {
       heading: "2. Services",
       paragraphs: [
         `We build your website free of charge. You can take ${website.name} at ${formatInr(website.monthly)} a month, ${growth.name} at ${formatInr(growth.monthly)} a month and ${search.name} at ${formatInr(search.monthly)} a month; each plan can be bought on its own.`,
-        `The ${website.name} plan includes 2 small edits a month of up to 30 minutes each. We quote any other work before we start it, at ${formatInr(EXTRA_HOURLY_RATE)} an hour, and do it only once you agree.`,
+        `The ${website.name} plan includes 2 edits a month of up to 30 minutes each. We quote any other work before we start it, at ${formatInr(EXTRA_HOURLY_RATE)} an hour, and do it only once you agree.`,
         `${growth.name} manages Facebook and Instagram ad budgets of up to ${formatInr(AD_BUDGET_CAP)} a month of your own money, plus any ad credit from us. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
         "What each plan includes is shown on our Pricing page when you sign up. If we agree a written proposal with you, it governs that engagement where it differs from these terms.",
       ],
@@ -45,7 +45,7 @@ export const termsOfService: LegalDocument = {
     {
       heading: "5. Fees and payment",
       paragraphs: [
-        `Plans are billed monthly, in advance, at the prices above plus ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel. ${RENEWAL_REMINDER}`,
+        `Plans are billed monthly, in advance, at the prices above, which include ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel. ${RENEWAL_REMINDER}`,
         PACKAGE_TERMS,
         AD_CREDIT_TERMS,
         PAYMENT_FAILURE,

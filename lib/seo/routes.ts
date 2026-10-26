@@ -6,7 +6,7 @@ import { privacyPolicy } from "@/content/legal/privacy";
 import { refundPolicy } from "@/content/legal/refund";
 import { shippingPolicy } from "@/content/legal/shipping";
 import { termsOfService } from "@/content/legal/terms";
-import { formatInr, GST_LABEL, PACKAGES, PLANS } from "@/lib/pricing";
+import { formatInr, PACKAGES, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 export interface RouteMeta {
@@ -34,7 +34,7 @@ export const ROUTES = {
   pricing: {
     path: "/pricing",
     title: `Pricing: free website, plans from ${MANAGED} a month`,
-    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off, before ${GST_LABEL} GST.`,
+    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off, GST included.`,
     updated: UPDATED,
     priority: 0.9,
   },
@@ -44,6 +44,13 @@ export const ROUTES = {
     description: `Talk to ${tradeName} about a free website for your local business, a monthly plan or the site you already have. WhatsApp, call, email or send a message.`,
     updated: UPDATED,
     priority: 0.7,
+  },
+  blog: {
+    path: "/blog",
+    title: `Blog: guides for local businesses | ${tradeName}`,
+    description: `Guides on websites, Google, social and AI search for local businesses, written by the team that runs them for our clients.`,
+    updated: UPDATED,
+    priority: 0.8,
   },
   about: {
     path: "/about",

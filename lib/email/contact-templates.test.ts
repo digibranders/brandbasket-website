@@ -3,7 +3,6 @@ import type { ContactInput } from "@/lib/contact-schema";
 import { buildConfirmationEmail, buildLeadEmail, escapeHtml } from "./contact-templates";
 
 const lead: ContactInput = {
-  topic: "website",
   name: "Asha Rao",
   phone: "+91 98200 12345",
   email: "asha@example.in",
@@ -11,6 +10,7 @@ const lead: ContactInput = {
   city: "Thane",
   plans: ["website", "growth"],
   message: "Call after 5 & before 8",
+  consent: true,
   noticeVersion: "2026-10-19.1",
 };
 
@@ -29,31 +29,43 @@ describe("buildLeadEmail", () => {
     expect(mail.html).toContain("Call after 5 &amp; before 8");
   });
 
-  it("puts the topic, business and basket in the subject", () => {
-    expect(mail.subject).toBe("New enquiry, A free website: <script>alert(1)</script> Dental (Managed Website + Social Media and Ads)");
+  it("puts the business and basket in the subject", () => {
+    expect(mail.subject).toBe("New enquiry: <script>alert(1)</script> Dental (Managed Website + Social Media and Ads)");
   });
 
   it("leaves the basket out of the subject for a general enquiry", () => {
-    expect(buildLeadEmail({ ...lead, topic: "other", plans: [] }).subject).toBe("New enquiry, Something else: <script>alert(1)</script> Dental");
+    expect(buildLeadEmail({ ...lead, plans: [] }).subject).toBe("New enquiry: <script>alert(1)</script> Dental");
   });
 
-  it("lists the phone and the notice version in the text version", () => {
+  it("has no topic row", () => {
+    expect(mail.text).not.toContain("Topic");
+    expect(mail.html).not.toContain("Topic");
+  });
+
+  it("lists the phone, the agreement to the privacy policy and its version in the text version", () => {
     expect(mail.text).toContain("+91 98200 12345");
-    expect(mail.text).toContain("2026-10-19.1");
+    expect(mail.text).toContain("Privacy policy: agreed, notice version 2026-10-19.1");
   });
 
   it("marks empty optional fields instead of printing nothing", () => {
-    expect(buildLeadEmail({ ...lead, phone: "", city: "", message: undefined }).text).toContain("Phone: not given");
+    expect(buildLeadEmail({ ...lead, phone: "", city: "" }).text).toContain("Phone: not given");
   });
 });
 
 describe("buildConfirmationEmail", () => {
-  it("greets by first name and names the topic and plans from fixed lists", () => {
+  it("greets by first name and names the plans from the fixed list", () => {
     const mail = buildConfirmationEmail(lead);
+    expect(mail.text).toContain("You asked about: Managed Website + Social Media and Ads.");
     expect(mail.subject).toBe("We have your message. Brandbasket");
     expect(mail.text).toContain("Hi Asha,");
     expect(mail.text).toContain("within one working day");
     expect(mail.html).toContain("https://brandbasket.in/email/brandbasket-logo.png");
+  });
+
+  it("leaves the plans line out for a general enquiry", () => {
+    const mail = buildConfirmationEmail({ ...lead, plans: [] });
+    expect(mail.text).not.toContain("You asked about");
+    expect(mail.html).not.toContain("You asked about");
   });
 
   it("repeats nothing else the visitor typed", () => {

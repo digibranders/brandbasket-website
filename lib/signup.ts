@@ -7,7 +7,7 @@ export function loginHref(): string {
 }
 
 /**
- * Where every "Get my free website" button goes: the app's sign-in, with the picked plans. The plan list format must match
+ * Where every "Start my plan" button goes: the app's sign-in, with the picked plans. The plan list format must match
  * what brandbasket-platform reads from `?plan=` (docs/plans/16, Task P2.4); change it here only.
  */
 export function signupHref(pick: BasketPick): string {

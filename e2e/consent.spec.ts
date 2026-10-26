@@ -44,7 +44,7 @@ test.describe("consent banner", () => {
     await expect(banner(page).getByText(CONSENT.nothing, { exact: true })).toBeVisible();
     await expect(banner(page).getByRole("switch")).toHaveCount(0);
 
-    const hero = await page.locator("#hero").getByRole("link", { name: PRIMARY_CTA.label }).boundingBox();
+    const hero = await page.locator("#hero").getByRole("button", { name: PRIMARY_CTA.label }).boundingBox();
     const card = await banner(page).boundingBox();
     if ((page.viewportSize()?.width ?? 0) >= 1000 && hero && card) {
       expect(hero.x + hero.width <= card.x || hero.y + hero.height <= card.y).toBe(true);
@@ -89,9 +89,9 @@ test.describe("consent banner", () => {
     expect(layer).toContainEqual(["consent", "update", { analytics_storage: "granted", ad_storage: "denied", ad_user_data: "denied", ad_personalization: "denied" }]);
     expect(layer).toContainEqual({ event: "bb_consent", consent_measurement: true, consent_advertising: false });
 
-    // Conversions reach Tag Manager once it has started.
-    await page.locator("#hero").getByRole("link", { name: PRIMARY_CTA.label }).click();
-    await expect.poll(async () => (await dataLayer(page)).some((entry) => (entry as { event?: string }).event === "cta_click")).toBe(true);
+    // Conversions reach Tag Manager once it has started. The main button opens the basket, which is the first step.
+    await page.locator("#hero").getByRole("button", { name: PRIMARY_CTA.label }).click();
+    await expect.poll(async () => (await dataLayer(page)).some((entry) => (entry as { event?: string }).event === "basket_open")).toBe(true);
   });
 
   test("Cookie settings reopens the choices, and withdrawing deletes the cookies", async ({ page, context }) => {

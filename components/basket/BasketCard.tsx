@@ -6,14 +6,15 @@ import type { CSSProperties, ReactElement } from "react";
 import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNote, type Rich, slotLabel } from "@/content/basket-card";
 import { BASKET_COPY } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, type BasketPick, firstPayment, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
+import { basketPlans, type BasketPick, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
+import { signupHref } from "@/lib/signup";
+import { ArrowButton } from "../ui/ArrowButton";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
-import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
 const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: TrendUp, search: MagnifyingGlass };
-const BENEFIT_ICON: Readonly<Record<BenefitKind, Icon>> = { saving: PiggyBank, ads: Megaphone, year: CalendarCheck, build: Globe };
+const BENEFIT_ICON: Readonly<Record<BenefitKind, Icon>> = { saving: PiggyBank, ads: Megaphone, year: CalendarCheck };
 /** Each stamp lands at its own slight angle, as a hand stamp would. */
 const TILT: Readonly<Record<PlanId, string>> = { website: "-8deg", growth: "6deg", search: "-4deg" };
 
@@ -55,7 +56,6 @@ function Slot({ id, pick, onlyOne }: { readonly id: PlanId; readonly pick: Baske
         ) : null}
       </span>
       <b className="mt-2 font-display text-base font-medium tracking-[-0.015em]">{PLANS[id].name}</b>
-      <span className="max-w-[20ch] text-[13px] leading-[1.35] text-ink-2 max-[560px]:hidden">{BASKET_CARD.slots[id]}</span>
       <small className="num text-[13px] text-ink-2">{formatInr(PLANS[id].monthly)} {BASKET_COPY.perMonth}</small>
     </button>
   );
@@ -86,8 +86,8 @@ function StampCard({ pick }: { readonly pick: BasketPick }): ReactElement {
         </div>
       ) : null}
       <div className="cta-pair pt-1">
-        <BasketCta location="plans" label={BASKET_CARD.checkoutCta} />
-        <OutlineButton href="/pricing#compare" location="plans_compare">{BASKET_COPY.compare}</OutlineButton>
+        <ArrowButton href={signupHref(pick)} location="plans" short={BASKET_CARD.checkoutCtaShort}>{BASKET_CARD.checkoutCta}</ArrowButton>
+        <OutlineButton href="/pricing#compare" location="plans_compare" short={BASKET_COPY.compareShort}>{BASKET_COPY.compare}</OutlineButton>
       </div>
     </div>
   );
@@ -130,7 +130,6 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
         <div className="grid w-full gap-1 rounded-2xl bg-rattan-wash px-4 py-3.5 text-[14.5px] text-rattan-ink">
           <p className="text-[13px]">{BASKET_CARD.nextLabel} <b className="font-display text-base font-medium">{next.name}</b></p>
           <p>{next.body}</p>
-          <button type="button" onClick={() => basket.set(next.id, true)} className="cursor-pointer justify-self-start pt-1 font-semibold text-ink underline decoration-rattan decoration-2 underline-offset-[5px]">{next.button}</button>
         </div>
       ) : null}
       <div data-basket-total className="mt-auto grid w-full gap-1 border-t border-line pt-4">
@@ -138,11 +137,7 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">
           {saving ? <s className="text-[22px] tracking-[-0.02em] text-ink-2 decoration-rattan-text/80 decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s> : null}
           <span className="text-[clamp(42px,4.6vw,56px)] font-medium leading-none tracking-[-0.05em]">{formatInr(monthly)}</span>
-          <small className="font-sans text-sm text-ink-2">{BASKET_COPY.plusGst}</small>
-        </p>
-        <p className="num text-[13.5px] text-ink-2">
-          {saving ? <s className="mr-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(firstPayment(monthlyTotal(pick)).total)}</s> : null}
-          {formatInr(firstPayment(monthly).total)} {BASKET_COPY.withGstBilled}
+          <small className="font-sans text-sm text-ink-2">{BASKET_COPY.inclGst}</small>
         </p>
       </div>
     </div>

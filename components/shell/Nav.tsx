@@ -8,25 +8,24 @@ import { MobileMenu } from "./MobileMenu";
 import { Logo } from "./Logo";
 import { NavScrollState } from "./NavScrollState";
 
+/** The Quiet nav (owner's pick, 2026-10-26): logo left; the links, Log in and the basket button together on the right. Styles in nav.css. */
 export function Nav(): ReactElement {
   return (
-    <>
+    <header className="site-nav fixed inset-x-0 top-0 z-30">
       <NavScrollState />
-      <header className="pointer-events-none fixed inset-x-0 top-4 z-30 in-wrap">
-        <nav aria-label="Site" className="pointer-events-auto relative flex w-full items-center gap-3 rounded-full border border-[var(--line-2)] bg-[var(--nav)] py-[7px] pl-[18px] pr-[7px] shadow-[var(--shadow-nav)] backdrop-blur-xl transition-[background-color,box-shadow] duration-500 [html[data-scrolled=true]_&]:bg-surface/95 [html[data-scrolled=true]_&]:shadow-[var(--shadow-nav-scrolled)]">
-          <Link href="/" aria-label="Brandbasket home"><Logo priority /></Link>
-          <ul className="ml-auto hidden gap-1 min-[1000px]:flex">
-            {PRIMARY_NAV.map((link) => (
-              <li key={link.href}><Link href={link.href} className="rounded-full px-3 py-[7px] text-[14.5px] text-ink-2 hover:text-ink">{link.label}</Link></li>
-            ))}
-          </ul>
-          <div className="ml-auto flex items-center gap-1.5 min-[1000px]:ml-0">
-            <a href={LOGIN_LINK.href} className="hidden rounded-full px-3 py-[7px] text-[14.5px] text-ink-2 hover:text-ink sm:inline-flex">{LOGIN_LINK.label}</a>
-            <span className="hidden sm:inline-flex"><BasketTrigger anchor="nav" location="nav" size="sm" label={BASKET_COPY.startPlan} /></span>
-            <MobileMenu />
-          </div>
-        </nav>
-      </header>
-    </>
+      <nav aria-label="Site" className="in-wrap relative flex h-16 items-center gap-3 min-[1000px]:h-[72px] min-[1000px]:gap-6">
+        <Link href="/" aria-label="Brandbasket home"><Logo priority /></Link>
+        <ul className="ml-auto hidden gap-0.5 min-[1000px]:flex">
+          {PRIMARY_NAV.map((link) => (
+            <li key={link.href}><Link href={link.href} className="nav-link block px-3.5 py-2 text-[14.5px] text-ink-2 transition-colors duration-300 hover:text-ink">{link.label}</Link></li>
+          ))}
+        </ul>
+        <div className="ml-auto flex items-center gap-1.5 min-[1000px]:ml-0">
+          <a href={LOGIN_LINK.href} className="hidden px-3.5 py-2 text-[14.5px] text-ink-2 transition-colors duration-300 hover:text-ink sm:inline-flex">{LOGIN_LINK.label}</a>
+          <span className="hidden sm:inline-flex"><BasketTrigger anchor="nav" location="nav" size="sm" label={BASKET_COPY.startPlan} /></span>
+          <MobileMenu />
+        </div>
+      </nav>
+    </header>
   );
 }

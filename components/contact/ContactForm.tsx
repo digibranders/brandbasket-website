@@ -1,6 +1,6 @@
 "use client";
 // components/contact/ContactForm.tsx
-import { CheckCircle } from "@phosphor-icons/react/dist/ssr";
+import { Check, CheckCircle } from "@phosphor-icons/react/dist/ssr";
 import { track } from "@vercel/analytics";
 import Link from "next/link";
 import { useEffect, useRef, useState, type FocusEvent, type FormEvent, type ReactElement } from "react";
@@ -9,20 +9,23 @@ import { ArrowSubmitButton } from "@/components/ui/ArrowButton";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { pushConversion } from "@/components/consent/tags";
 import { submitEvent } from "@/lib/analytics";
-import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_TOPIC_LABELS, CONTACT_TOPIC_LEGEND } from "@/content/contact";
+import { CONTACT_ERRORS, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_PLACEHOLDERS } from "@/content/contact";
 import { basket, DEFAULT_BASKET } from "@/lib/basket-store";
-import { CONTACT_MAX, CONTACT_TOPICS, contactSchema, parsePlanParam, parseTopicParam } from "@/lib/contact-schema";
+import { CONTACT_MAX, contactSchema, parsePlanParam } from "@/lib/contact-schema";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { basketPlans, type PlanId, samePick } from "@/lib/pricing";
 import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS, planTokenUse } from "@/lib/security/form-fields";
 
 type Field = "name" | "phone" | "business" | "city" | "email" | "message";
-type Errors = Partial<Record<Field, string>>;
+/** The text fields plus the privacy checkbox: everything that can show an error. */
+type ErrorField = Field | "consent";
+type Errors = Partial<Record<ErrorField, string>>;
 type Status = { readonly kind: "idle" | "submitting" | "done" } | { readonly kind: "error"; readonly message: string };
 
-/** Fields with a rule beyond their length cap, in page order (the mock's validation script checks the same four). */
-const CHECKED: readonly Field[] = ["name", "phone", "business", "email"];
+/** Fields with a rule beyond their length cap, in page order. The message joined them when it became required (2026-10-26). */
+const CHECKED: readonly Field[] = ["name", "phone", "business", "email", "message"];
 const FIELDS: readonly Field[] = ["name", "phone", "business", "city", "email", "message"];
+const ERROR_FIELDS: readonly ErrorField[] = [...FIELDS, "consent"];
 
 const tokenResponse = z.object({ token: z.string().min(1) });
 const contactResponse = z.union([
@@ -69,9 +72,6 @@ export function ContactForm(): ReactElement {
   const [status, setStatus] = useState<Status>({ kind: "idle" });
 
   useEffect(() => {
-    const topic = parseTopicParam(new URLSearchParams(window.location.search).get("topic"));
-    const radio = topic ? formRef.current?.querySelector<HTMLInputElement>(`input[name="topic"][value="${topic}"]`) : null;
-    if (radio) radio.checked = true;
     tokenRef.current = requestToken();
   }, []);
 
@@ -96,7 +96,7 @@ export function ContactForm(): ReactElement {
     return token.value;
   }
 
-  function focusField(form: HTMLFormElement, name: Field): void {
+  function focusField(form: HTMLFormElement, name: ErrorField): void {
     form.querySelector<HTMLElement>(`[name="${name}"]`)?.focus();
   }
 
@@ -125,8 +125,10 @@ export function ContactForm(): ReactElement {
       const message = fieldError(name, value(name));
       if (message) next[name] = message;
     }
+    const agreed = data.get("consent") === "on";
+    if (!agreed) next.consent = CONTACT_ERRORS.consent;
     setErrors(next);
-    const firstInvalid = CHECKED.find((name) => next[name]);
+    const firstInvalid = ERROR_FIELDS.find((name) => next[name]);
     if (firstInvalid) {
       focusField(form, firstInvalid);
       return;
@@ -140,9 +142,9 @@ export function ContactForm(): ReactElement {
     }
     const plans = pagePlans();
     const body = {
-      topic: value("topic"),
       ...Object.fromEntries(FIELDS.map((name) => [name, value(name)])),
       plans,
+      consent: agreed,
       noticeVersion: LEGAL_TEXT_VERSION,
       [FORM_TOKEN_FIELD]: token,
       ...Object.fromEntries(HONEYPOT_FIELDS.map((name) => [name, value(name)])),
@@ -160,8 +162,8 @@ export function ContactForm(): ReactElement {
       const failure = result.success && "error" in result.data ? result.data : null;
       if (failure?.fields) {
         const fields = failure.fields;
-        setErrors(Object.fromEntries(FIELDS.flatMap((name) => (fields[name]?.[0] ? [[name, fields[name][0]]] : []))));
-        const firstServerError = FIELDS.find((name) => fields[name]?.[0]);
+        setErrors(Object.fromEntries(ERROR_FIELDS.flatMap((name) => (fields[name]?.[0] ? [[name, fields[name][0]]] : []))));
+        const firstServerError = ERROR_FIELDS.find((name) => fields[name]?.[0]);
         if (firstServerError) focusField(form, firstServerError);
       }
       setStatus({ kind: "error", message: failure?.error ?? CONTACT_ERRORS.send });
@@ -172,7 +174,7 @@ export function ContactForm(): ReactElement {
 
   if (status.kind === "done") {
     return (
-      <div ref={doneRef} role="status" tabIndex={-1} className="grid justify-items-start gap-3.5 py-2 outline-none">
+      <div ref={doneRef} role="status" tabIndex={-1} className="grid justify-items-start gap-3.5 p-[clamp(24px,3vw,36px)] outline-none">
         <CheckCircle aria-hidden="true" weight="fill" className="size-10 text-sage" />
         <b className="font-display text-[26px] font-medium tracking-[-0.03em]">{CONTACT_FORM_COPY.doneTitle}</b>
         <p className="max-w-[44ch] text-ink-2">{CONTACT_FORM_COPY.doneBody}</p>
@@ -187,19 +189,20 @@ export function ContactForm(): ReactElement {
       id,
       name,
       autoComplete: rest.autoComplete,
+      placeholder: CONTACT_PLACEHOLDERS[name],
       maxLength: CONTACT_MAX[name],
       required: !rest.optional,
       "aria-invalid": errors[name] ? true : undefined,
       "aria-describedby": `${id}-err`,
       onBlur: (event: FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => onBlur(event, name),
       onInput: (event: FormEvent<HTMLInputElement | HTMLTextAreaElement>) => onInput(event, name),
-      className: `w-full rounded-[10px] border border-[color-mix(in_srgb,var(--ink-2)_70%,var(--surface))] bg-bg px-3.5 py-3 text-base text-ink transition-[border-color,box-shadow,background-color] duration-[250ms] ease-[var(--ease)] focus:border-ink focus:bg-surface focus:shadow-[0_0_0_3px_color-mix(in_srgb,var(--rattan)_35%,transparent)] focus:outline-none aria-invalid:border-error ${rest.multiline ? "min-h-[132px] resize-y" : ""}`,
+      className: "ct-input",
     };
     return (
-      <div className={`grid min-w-0 content-start gap-1.5 ${rest.full ? "col-span-full" : ""}`}>
-        <label htmlFor={id} className="text-sm font-semibold">
+      <div className={`grid min-w-0 content-start gap-2 ${rest.full ? "col-span-full" : ""}`}>
+        <label htmlFor={id} className="ct-label">
           {CONTACT_LABELS[name]}
-          {rest.optional ? <small className="ml-1 text-[13px] font-normal text-ink-2">{CONTACT_LABELS.optional}</small> : null}
+          {rest.optional ? <small>{CONTACT_LABELS.optional}</small> : <span aria-hidden="true" className="ml-1 font-semibold text-error">*</span>}
         </label>
         {rest.multiline ? <textarea {...props} /> : <input {...props} type={rest.type ?? "text"} inputMode={rest.inputMode} />}
         <p id={`${id}-err`} hidden={!errors[name]} className="text-[13px] text-error">{errors[name]}</p>
@@ -209,51 +212,45 @@ export function ContactForm(): ReactElement {
 
   const submitting = status.kind === "submitting";
   return (
-    <form ref={formRef} method="post" noValidate onSubmit={onSubmit} aria-labelledby="ct-form-title" aria-busy={submitting} className="relative grid gap-7">
-      <header className="grid gap-2 border-b border-line pb-6">
-        <h2 id="ct-form-title" className="font-display text-[28px] font-medium leading-tight tracking-[-0.03em]">{CONTACT_FORM_COPY.title}</h2>
-        <p className="text-sm leading-relaxed text-ink-2">{CONTACT_FORM_COPY.guidance}</p>
+    <form ref={formRef} method="post" noValidate onSubmit={onSubmit} aria-labelledby="ct-form-title" aria-busy={submitting} className="relative">
+      <header className="ct-head">
+        <h2 id="ct-form-title">{CONTACT_FORM_COPY.title}</h2>
+        <p>{CONTACT_FORM_COPY.guidance}</p>
       </header>
-      <fieldset className="m-0 min-w-0 border-0 p-0">
-        <legend className="mb-3 p-0 text-sm font-semibold">{CONTACT_TOPIC_LEGEND}</legend>
-        <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
-          {CONTACT_TOPICS.map((topic) => (
-            <label key={topic} className="relative">
-              <input type="radio" name="topic" value={topic} defaultChecked={topic === "website"} className="peer absolute inset-0 m-0 size-full cursor-pointer opacity-0" />
-              <span className="flex min-h-12 h-full items-center gap-2.5 rounded-[12px] border border-line bg-surface px-3.5 py-3 text-sm font-medium transition-colors before:size-4 before:flex-none before:rounded-full before:border before:border-ink-2 before:bg-surface before:shadow-[inset_0_0_0_3px_var(--surface)] before:content-[''] peer-hover:border-ink-2 peer-checked:border-rattan-ink peer-checked:bg-rattan-wash peer-checked:before:border-rattan-ink peer-checked:before:bg-rattan-ink peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-rattan">
-                {CONTACT_TOPIC_LABELS[topic]}
-              </span>
-            </label>
-          ))}
-        </div>
-      </fieldset>
-
-      <fieldset className="m-0 min-w-0 border-0 p-0">
-        <legend className="mb-4 p-0 text-sm font-semibold">{CONTACT_FORM_COPY.detailsLegend}</legend>
-        <div className="grid grid-cols-1 gap-x-4 gap-y-5 sm:grid-cols-2">
+      <div className="ct-body">
+        <div className="ct-fields">
           {field("name", { autoComplete: "name" })}
           {field("phone", { autoComplete: "tel", type: "tel", inputMode: "tel", optional: true })}
           {field("business", { autoComplete: "organization" })}
           {field("city", { autoComplete: "address-level2", optional: true })}
           {field("email", { autoComplete: "email", type: "email", full: true })}
-          {field("message", { autoComplete: "off", optional: true, full: true, multiline: true })}
+          {field("message", { autoComplete: "off", full: true, multiline: true })}
         </div>
-      </fieldset>
 
-      {/* Decoys for bots: off screen, out of the tab order and hidden from assistive tech. */}
-      <div aria-hidden="true" className="absolute -left-[9999px] top-0 size-px overflow-hidden">
-        {HONEYPOT_FIELDS.map((name) => <input key={name} type="text" name={name} tabIndex={-1} autoComplete="off" defaultValue="" />)}
-      </div>
+        {/* Decoys for bots: off screen, out of the tab order and hidden from assistive tech. */}
+        <div aria-hidden="true" className="absolute -left-[9999px] top-0 size-px overflow-hidden">
+          {HONEYPOT_FIELDS.map((name) => <input key={name} type="text" name={name} tabIndex={-1} autoComplete="off" defaultValue="" />)}
+        </div>
 
-      {status.kind === "error" ? <p role="alert" className="rounded-[10px] border border-error/25 bg-error/5 p-4 text-sm text-error">{status.message}</p> : null}
+        {status.kind === "error" ? <p role="alert" className="rounded-[14px] border border-error/25 bg-error/5 p-4 text-sm text-error">{status.message}</p> : null}
 
-      <div className="grid gap-4 border-t border-line pt-5">
-        <p id="ct-notice" className="max-w-[38ch] text-[13px] text-ink-2">
-          {CONTACT_FORM_COPY.notice} <Link href="/privacy" className="text-ink underline">{CONTACT_FORM_COPY.privacyLink}</Link>.
-        </p>
-        <ArrowSubmitButton disabled={submitting} describedBy="ct-notice" className="w-full justify-between">
-          {submitting ? CONTACT_FORM_COPY.submitting : CONTACT_FORM_COPY.submit}
-        </ArrowSubmitButton>
+        <div className="ct-foot">
+          <div className="grid gap-1.5">
+            <label className="ct-consent">
+              <input type="checkbox" name="consent" id="ct-consent" required aria-invalid={errors.consent ? true : undefined} aria-describedby="ct-consent-err ct-notice" onChange={() => { if (errors.consent) setErrors((current) => ({ ...current, consent: "" })); }} />
+              <span aria-hidden="true" className="ct-box"><Check weight="bold" className="size-3.5" /></span>
+              <span>
+                {CONTACT_FORM_COPY.consent} <Link href="/privacy" target="_blank" rel="noopener" className="text-ink underline decoration-rattan decoration-2 underline-offset-4">{CONTACT_FORM_COPY.privacyLink}</Link>.{" "}
+                <span id="ct-notice" className="text-ink-2">{CONTACT_FORM_COPY.notice}</span>{" "}
+                <span aria-hidden="true" className="font-semibold text-error">*</span>
+              </span>
+            </label>
+            <p id="ct-consent-err" hidden={!errors.consent} className="pl-[34px] text-[13px] text-error">{errors.consent}</p>
+          </div>
+          <ArrowSubmitButton disabled={submitting} className="justify-self-start max-[560px]:w-full max-[560px]:justify-center">
+            {submitting ? CONTACT_FORM_COPY.submitting : CONTACT_FORM_COPY.submit}
+          </ArrowSubmitButton>
+        </div>
       </div>
     </form>
   );

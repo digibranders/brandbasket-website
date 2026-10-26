@@ -1,6 +1,9 @@
 // lib/seo/jsonld.test.ts
 import { describe, expect, it } from "vitest";
-import { aboutPageJsonLd, breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, planOffersJsonLd, webSiteJsonLd } from "./jsonld";
+import authorAndCategory from "../../e2e/fixtures/cms/author-and-category.json";
+import post from "../../e2e/fixtures/cms/post.json";
+import { authorSchema, postSchema } from "../cms/schema";
+import { aboutPageJsonLd, blogPostingJsonLd, breadcrumbJsonLd, contactPageJsonLd, faqJsonLd, organizationJsonLd, personJsonLd, planOffersJsonLd, profilePageJsonLd, webSiteJsonLd } from "./jsonld";
 
 describe("organizationJsonLd", () => {
   it("names the legal entity and the brand", () => {
@@ -31,15 +34,15 @@ describe("planOffersJsonLd", () => {
     const prices = service.hasOfferCatalog.itemListElement.map((offer) => offer.priceSpecification.price);
     expect(prices).toEqual([2999, 9999, 24999]);
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
-    expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(false);
+    expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(true);
     expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
   });
   it("adds the four packages after the plans when asked", () => {
     const offers = planOffersJsonLd({ packages: true }).hasOfferCatalog.itemListElement;
-    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([10398, 22398, 27998, 26597]);
+    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([11699, 25199, 31499, 30398]);
     expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + SEO", "Social + SEO", "All three"]);
     expect(offers[3].priceSpecification.unitText).toBe("MONTH");
-    expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(false);
+    expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(true);
   });
 });
 
@@ -77,5 +80,38 @@ describe("aboutPageJsonLd", () => {
     expect(page["@type"]).toBe("AboutPage");
     expect(page.url).toBe("https://brandbasket.in/about");
     expect(page.about["@id"]).toBe("https://brandbasket.in/#organization");
+  });
+});
+
+describe("the blog's structured data", () => {
+  const fixturePost = postSchema.parse(post);
+  const fixtureAuthor = authorSchema.parse(authorAndCategory.author);
+
+  it("describes a post as a BlogPosting dated by its last real change", () => {
+    const ld = blogPostingJsonLd(fixturePost);
+    expect(ld).toMatchObject({
+      "@type": "BlogPosting",
+      url: "https://brandbasket.in/blog/website-cost-india",
+      headline: "What does a website cost in India?",
+      datePublished: "2026-10-05T04:30:00.000Z",
+      dateModified: "2026-10-12T06:00:00.000Z",
+      articleSection: "Website basics",
+      image: "https://media.brandbasket.in/blog/cover-1200x630.jpg",
+      author: { "@id": "https://brandbasket.in/blog/author/ananya-kulkarni", name: "Ananya Kulkarni" },
+      publisher: { "@id": "https://brandbasket.in/#organization" },
+    });
+  });
+
+  it("leaves out what a draft does not have", () => {
+    const ld = blogPostingJsonLd({ ...fixturePost, publishedAt: null, modifiedAt: null, author: null, category: null, ogImage: null, cover: null });
+    for (const key of ["datePublished", "dateModified", "author", "articleSection", "image"]) expect(ld).not.toHaveProperty(key);
+  });
+
+  it("gives an author one id, the author page, that the post and the profile page share", () => {
+    const person = personJsonLd(fixtureAuthor);
+    expect(person["@id"]).toBe("https://brandbasket.in/blog/author/ananya-kulkarni");
+    expect(person).toMatchObject({ jobTitle: "Local SEO lead", sameAs: ["https://www.linkedin.com/in/ananya-kulkarni"], worksFor: { "@id": "https://brandbasket.in/#organization" } });
+    expect(profilePageJsonLd(fixtureAuthor).mainEntity).toEqual({ "@id": person["@id"] });
+    expect(blogPostingJsonLd(fixturePost).author?.["@id"]).toBe(person["@id"]);
   });
 });

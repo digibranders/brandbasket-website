@@ -2,6 +2,7 @@
 import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
 import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
+import { CLOSING_COPY } from "./closing";
 import { CANCEL_ANSWER, PAYMENT_FAILURE } from "./legal/cancellation";
 import { FACTS, HERO, HOME_FAQ, OFFER, PROMISES, REPORT, RESPONSIBILITY, SHARE_IMAGE, STEPS, WHAT_YOU_GET, WORK } from "./home";
 
@@ -25,7 +26,7 @@ describe("home content", () => {
     expect(WORK.cases).toHaveLength(3);
     expect(STEPS).toHaveLength(3);
     expect(REPORT.kpis).toHaveLength(4);
-    expect(WHAT_YOU_GET.build.items).toHaveLength(6);
+    expect(WHAT_YOU_GET.build.items).toHaveLength(5);
     expect(WHAT_YOU_GET.run.items).toHaveLength(6);
     expect(RESPONSIBILITY.worries).toHaveLength(9);
     expect(PROMISES.cards).toHaveLength(2);
@@ -47,9 +48,22 @@ describe("home content", () => {
     expect(HOME_FAQ.find((f) => f.q === "How many pages do I get?")?.a).toContain("Up to 10 pages.");
     expect(WHAT_YOU_GET.build.items[0].text).toContain("Up to 10 pages");
   });
+  it("uses the owner's wording of 2026-10-26", () => {
+    expect(RESPONSIBILITY.body).toBe("You’re not just paying for a website; you’re protecting your online reputation with ongoing security, maintenance, and performance.");
+    expect(PROMISES.body).toBe("When your website goes down or faces a security breach, our dedicated human support team is here to help.");
+    expect(STEPS[0]).toEqual({ when: "Day 1", what: "A 15-minute call" });
+    expect(CLOSING_COPY.body).toBe("A 15-minute call, a clear plan and a price. No obligation.");
+    expect(CLOSING_COPY.whatsappShort).toBe("WhatsApp");
+    expect(WHAT_YOU_GET.run.items.map((i) => i.text)).toContain("2 edits a month, 30 minutes each");
+  });
+  it("no longer claims a dashboard to edit your own site or calls the edits small", () => {
+    const text = JSON.stringify({ WHAT_YOU_GET, HOME_FAQ }).toLowerCase();
+    expect(text).not.toContain("dashboard");
+    expect(text).not.toContain("small edits");
+  });
   it("builds the FAQ prices from lib/pricing", () => {
-    expect(HOME_FAQ[0]?.a).toContain(`${formatInr(PLANS.website.monthly)} a month + GST`);
-    expect(HOME_FAQ[2]?.a).toBe(`Just your first month, plus ${GST_LABEL} GST. After that you pay monthly.`);
+    expect(HOME_FAQ[0]?.a).toContain(`${formatInr(PLANS.website.monthly)} a month, GST included`);
+    expect(HOME_FAQ[2]?.a).toBe(`Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`);
   });
   it("answers cancel and failed payment with the shared policy and says only the domain stays the customer's", () => {
     const answer = (q: string): string | undefined => HOME_FAQ.find((f) => f.q === q)?.a;

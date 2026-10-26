@@ -1,5 +1,6 @@
 // lib/seo/jsonld.ts
 import type { FaqItem } from "@/content/types";
+import type { AuthorProfile, Post } from "@/lib/cms/schema";
 import { PACKAGES, packageTotal, PLAN_IDS, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
@@ -102,7 +103,7 @@ function monthlyOffer(name: string, price: number): ServiceLd["hasOfferCatalog"]
     "@type": "Offer",
     name,
     url: `${siteConfig.url}/pricing`,
-    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: "INR", unitText: "MONTH", valueAddedTaxIncluded: false },
+    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: "INR", unitText: "MONTH", valueAddedTaxIncluded: true },
   };
 }
 
@@ -214,5 +215,90 @@ export function aboutPageJsonLd({ name, description }: { readonly name: string; 
     url: `${siteConfig.url}/about`,
     inLanguage: "en-IN",
     about: { "@id": ORGANIZATION_ID },
+  };
+}
+
+export const blogUrl = (path = ""): string => `${siteConfig.url}/blog${path}`;
+/** The author page's address is also the author's id, so a post and the author page point at one entity. */
+export const authorUrl = (slug: string): string => blogUrl(`/author/${slug}`);
+
+export interface PersonLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "Person";
+  readonly "@id": string;
+  readonly name: string;
+  readonly url: string;
+  readonly jobTitle?: string;
+  readonly description?: string;
+  readonly image?: string;
+  readonly sameAs?: readonly string[];
+  readonly worksFor: { readonly "@id": string };
+}
+
+export function personJsonLd(author: AuthorProfile): PersonLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "@id": authorUrl(author.slug),
+    name: author.name,
+    url: authorUrl(author.slug),
+    ...(author.jobTitle === "" ? {} : { jobTitle: author.jobTitle }),
+    ...(author.bio === "" ? {} : { description: author.bio }),
+    ...(author.photo === null ? {} : { image: author.photo.src }),
+    ...(author.sameAs.length === 0 ? {} : { sameAs: author.sameAs }),
+    worksFor: { "@id": ORGANIZATION_ID },
+  };
+}
+
+export interface ProfilePageLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "ProfilePage";
+  readonly url: string;
+  readonly inLanguage: "en-IN";
+  readonly mainEntity: { readonly "@id": string };
+}
+
+export function profilePageJsonLd(author: AuthorProfile): ProfilePageLd {
+  return { "@context": "https://schema.org", "@type": "ProfilePage", url: authorUrl(author.slug), inLanguage: "en-IN", mainEntity: { "@id": authorUrl(author.slug) } };
+}
+
+export interface BlogPostingLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "BlogPosting";
+  readonly "@id": string;
+  readonly mainEntityOfPage: string;
+  readonly url: string;
+  readonly headline: string;
+  readonly description: string;
+  readonly inLanguage: "en-IN";
+  readonly wordCount: number;
+  readonly image?: string;
+  readonly datePublished?: string;
+  readonly dateModified?: string;
+  readonly articleSection?: string;
+  readonly author?: { readonly "@type": "Person"; readonly "@id": string; readonly name: string };
+  readonly publisher: { readonly "@id": string };
+}
+
+/** dateModified is the CMS's modifiedAt, the last time readers saw different words, never a settings change. */
+export function blogPostingJsonLd(post: Post): BlogPostingLd {
+  const url = blogUrl(`/${post.slug}`);
+  const image = post.ogImage?.src ?? post.cover?.src;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    "@id": `${url}#article`,
+    mainEntityOfPage: url,
+    url,
+    headline: post.title,
+    description: post.seo.description,
+    inLanguage: "en-IN",
+    wordCount: post.wordCount,
+    ...(image === undefined ? {} : { image }),
+    ...(post.publishedAt === null ? {} : { datePublished: post.publishedAt }),
+    ...(post.modifiedAt === null ? {} : { dateModified: post.modifiedAt }),
+    ...(post.category === null ? {} : { articleSection: post.category.name }),
+    ...(post.author === null ? {} : { author: { "@type": "Person" as const, "@id": authorUrl(post.author.slug), name: post.author.name } }),
+    publisher: { "@id": ORGANIZATION_ID },
   };
 }

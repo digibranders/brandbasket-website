@@ -25,17 +25,14 @@ export const BASKET_CARD = {
   title: "Basket Card",
   intro: "Pick the plans you need. Each one you add saves you more.",
   tapHint: "Tap to add",
-  slots: {
-    website: "Built free, kept running",
-    growth: "Posts and Meta ads, run for you",
-    search: "Found on Google and in AI answers",
-  } satisfies Readonly<Record<PlanId, string>>,
   inBasket: "In your basket",
   totalLabel: "Your total",
   oneTimeTag: "One-time offer",
   nextLabel: "Add next:",
-  /** The Basket Card button once sign-up leads to checkout (owner's pick, 2026-10-22). Until then it keeps "Get my free website". */
+  /** The Basket Card button once sign-up leads to checkout (owner's pick, 2026-10-22). Until then it keeps "Start my plan". */
   checkoutCta: "Continue to checkout",
+  /** The same button on a phone, where two buttons share one row (owner, 2026-10-26; wording still to be approved). */
+  checkoutCtaShort: "Checkout",
 } as const;
 
 /** Accessible name of a plan slot. */
@@ -55,7 +52,7 @@ export function headline(pick: BasketPick): string {
   return `${pkg === fullCard ? "Full basket. " : ""}${pkg.percent}% off${ads}`;
 }
 
-export type BenefitKind = "saving" | "ads" | "year" | "build";
+export type BenefitKind = "saving" | "ads" | "year";
 
 export interface Benefit extends Rich {
   readonly kind: BenefitKind;
@@ -64,7 +61,7 @@ export interface Benefit extends Rich {
 /** The ticked lines under the summary price. */
 export function benefits(pick: BasketPick): Benefit[] {
   const saving = packageSaving(pick);
-  if (saving === 0) return pick.website ? [{ kind: "build", ...rich("Your website is ", "built free", "") }] : [];
+  if (saving === 0) return [];
   const credit = adCreditFor(pick);
   const list: Benefit[] = [{ kind: "saving", ...rich("You save ", formatInr(saving), " every month") }];
   if (credit > 0) list.push({ kind: "ads", ...rich("We add ", formatInr(credit), " a month to your ads") });
@@ -79,7 +76,7 @@ export function oneTimeNote(pick: BasketPick): Rich | null {
     return rich("The ", `${formatInr(credit)} a month for your ads`, " comes only when you start these plans together, here at this checkout. Add a plan later and you get the package price, but no ad money.");
   }
   if (basketPlans(pick).length === 1) {
-    return rich("Start two or three plans together at this checkout and we add up to ", `${formatInr(MAX_AD_CREDIT)} a month to your ads`, ". Add a plan later and the ad money is gone.");
+    return rich("Start two or three plans together at this checkout and we add up to ", `${formatInr(MAX_AD_CREDIT)} a month to your ads`, ".");
   }
   return null;
 }
@@ -88,7 +85,6 @@ export interface NextStampCopy {
   readonly id: PlanId;
   readonly name: string;
   readonly body: string;
-  readonly button: string;
 }
 
 /** The "Add next" nudge: the plan worth adding most, what it costs and what it gains. */
@@ -111,5 +107,5 @@ export function nextStamp(pick: BasketPick): NextStampCopy | null {
       : creditNow > 0
         ? `, and your ad money from ${formatInr(creditNow)} to ${formatInr(next.adCredit)}.`
         : `, and we add ${formatInr(next.adCredit)} a month to your ads.`;
-  return { id: next.id, name: PLANS[next.id].name, body: `${cost} ${saving}${credit}`, button: `Add ${PLANS[next.id].short}` };
+  return { id: next.id, name: PLANS[next.id].name, body: `${cost} ${saving}${credit}` };
 }

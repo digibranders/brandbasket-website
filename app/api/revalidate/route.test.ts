@@ -15,10 +15,10 @@ beforeEach(() => {
 });
 
 describe("POST /api/revalidate", () => {
-  it("purges the blog tag with the max profile", async () => {
+  it("purges the blog tag at once, serving nothing stale", async () => {
     const response = await call({ Authorization: `Bearer ${SECRET}` }, { tags: ["blog"] });
     expect(response.status).toBe(200);
-    expect(revalidateTag).toHaveBeenCalledExactlyOnceWith("blog", "max");
+    expect(revalidateTag).toHaveBeenCalledExactlyOnceWith("blog", { expire: 0 });
   });
 
   it("refuses a missing or wrong secret", async () => {

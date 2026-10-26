@@ -18,7 +18,9 @@ export async function POST(request: Request): Promise<Response> {
   if (!authorized(request.headers.get("authorization"), parseRevalidateSecret(process.env))) return Response.json({ error: "Unauthorized" }, { status: 401 });
   const parsed = body.safeParse(await request.json().catch(() => null));
   if (!parsed.success) return Response.json({ error: `Only the tag "${BLOG_TAG}" can be purged.` }, { status: 400 });
-  // "max": visitors keep getting the old page while the new one is built, so a purge never makes a page slow.
-  revalidateTag(BLOG_TAG, "max");
+  // expire 0, not the "max" profile: with "max" the first visitors after a purge still get the old data while it refreshes (an
+  // unpublished post stayed up for two requests when this was tried), and an editor who just published expects to see it.
+  // Purges are rare and the blog's reads are cheap, so a visitor waiting for one fresh read costs nothing.
+  revalidateTag(BLOG_TAG, { expire: 0 });
   return Response.json({ revalidated: [BLOG_TAG] });
 }

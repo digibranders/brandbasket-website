@@ -1,6 +1,6 @@
 // content/basket-card.ts
 // Copy for the homepage Basket Card (docs/design/mock.html: .ox-card, .bsum; owner's pick, 2026-10-21). Percents and rupees come from lib/pricing.ts.
-import { adCreditFor, type BasketPick, basketPlans, formatInr, nextPlanToAdd, type Package, PACKAGES, PLAN_IDS, PLANS, packageFor, packageSaving, packageTotal, type PlanId } from "@/lib/pricing";
+import { adCreditFor, type BasketPick, basketPlans, formatInr, nextPlanToAdd, type Package, PACKAGES, PLAN_IDS, PLANS, packageFor, packageSaving, type PlanId } from "@/lib/pricing";
 
 /** A line with one bold run, rendered as before<b>strong</b>after. */
 export interface Rich {
@@ -40,13 +40,20 @@ export function slotLabel(id: PlanId, added: boolean): string {
   return added ? `Remove ${PLANS[id].name}` : `Add ${PLANS[id].name}`;
 }
 
+const ALL_PICK: BasketPick = { website: true, growth: true, search: true };
+
+/** The owner's nudge line (docs/plans/24, 2026-10-26): "Add one more plan to get 10% off, save ₹1,299/month." */
+function nudge(percent: number, saving: number, plansToAdd: number): string {
+  return `Add ${plansToAdd === 1 ? "one more plan" : "two more plans"} to get ${percent}% off, save ${formatInr(saving)}/month.`;
+}
+
 /** The summary's headline (mock: card() head). */
 export function headline(pick: BasketPick): string {
   const pkg = packageFor(pick);
   if (!pkg) {
     const next = nextPlanToAdd(pick);
     const percent = next ? (packageFor(next.pick)?.percent ?? TWO_PLAN_PERCENT) : TWO_PLAN_PERCENT;
-    return `Add one more plan for ${percent}% off.`;
+    return next ? nudge(percent, next.saving, 1) : `Add one more plan for ${percent}% off.`;
   }
   const ads = pkg.adCredit > 0 ? ` and ${formatInr(pkg.adCredit)} a month for your ads.` : " on both plans.";
   return `${pkg === fullCard ? "Full basket. " : ""}${pkg.percent}% off${ads}`;
@@ -73,7 +80,7 @@ export function benefits(pick: BasketPick): Benefit[] {
 export function oneTimeNote(pick: BasketPick): Rich | null {
   const credit = adCreditFor(pick);
   if (credit > 0) {
-    return rich("The ", `${formatInr(credit)} a month for your ads`, " comes only when you start these plans together, here at this checkout. Add a plan later and you get the package price, but no ad money.");
+    return rich("The ", `${formatInr(credit)} a month for your ads`, " comes only when you start these plans together, here at this checkout.");
   }
   if (basketPlans(pick).length === 1) {
     return rich("Start two or three plans together at this checkout and we add up to ", `${formatInr(MAX_AD_CREDIT)} a month to your ads`, ".");
@@ -87,25 +94,10 @@ export interface NextStampCopy {
   readonly body: string;
 }
 
-/** The "Add next" nudge: the plan worth adding most, what it costs and what it gains. */
+/** The "Add next" nudge: the plan worth adding most, and the full basket it leads to, in the owner's words. */
 export function nextStamp(pick: BasketPick): NextStampCopy | null {
   const next = nextPlanToAdd(pick);
   if (!next) return null;
-  // Name the new total, not the difference: "₹7,399 more" next to a plan priced ₹9,999 read as a wrong price.
-  const now = formatInr(packageTotal(pick));
-  const after = formatInr(packageTotal(next.pick));
-  const change = next.extra > 0 ? `goes from ${now} to ${after}` : next.extra < 0 ? `drops from ${now} to ${after}` : `stays at ${now}`;
-  const pkg = packageFor(next.pick);
-  const plans = basketPlans(next.pick).length === PLAN_IDS.length ? "all three plans" : "both plans";
-  const cost = pkg ? `With ${pkg.percent}% off ${plans}, your total ${change} a month.` : `Your total ${change} a month.`;
-  const savingNow = packageSaving(pick);
-  const creditNow = adCreditFor(pick);
-  const saving = savingNow > 0 ? `Your saving goes from ${formatInr(savingNow)} to ${formatInr(next.saving)} a month` : `You save ${formatInr(next.saving)} a month`;
-  const credit =
-    next.adCredit <= creditNow
-      ? "."
-      : creditNow > 0
-        ? `, and your ad money from ${formatInr(creditNow)} to ${formatInr(next.adCredit)}.`
-        : `, and we add ${formatInr(next.adCredit)} a month to your ads.`;
-  return { id: next.id, name: PLANS[next.id].name, body: `${cost} ${saving}${credit}` };
+  const left = PLAN_IDS.length - basketPlans(pick).length;
+  return { id: next.id, name: PLANS[next.id].name, body: nudge(fullCard.percent, packageSaving(ALL_PICK), left) };
 }

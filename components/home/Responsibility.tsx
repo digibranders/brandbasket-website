@@ -73,7 +73,7 @@ export function Responsibility(): ReactElement {
   const total = RESPONSIBILITY.worries.length;
   return (
     <Band tone="ink">
-    <section id="responsibility" aria-labelledby="h-resp" className="in-wrap py-[clamp(56px,8vw,112px)]">
+    <section id="responsibility" data-dock-hide aria-labelledby="h-resp" className="in-wrap py-[clamp(56px,8vw,112px)]">
       <div className="grid grid-cols-[minmax(0,1fr)] items-center gap-[clamp(20px,5vw,72px)] min-[1000px]:grid-cols-[1.15fr_0.85fr]">
         <div className="min-[1000px]:order-2">
           <TwoTierHead id="h-resp" small={RESPONSIBILITY.small} large={RESPONSIBILITY.large} onDark />

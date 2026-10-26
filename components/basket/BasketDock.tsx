@@ -30,8 +30,9 @@ const CLICK_WINDOW_MS = 600;
  * way to start. The ink island (owner's pick, 2026-10-26; docs/design/phone-dock-options.html) at the foot of the screen on
  * phones and tablets: a rattan basket with its count, the total and one bar per plan in its colour, and a white button.
  * From 1000px up the Woven basket (BasketWall) does this job.
- * It stays out of the way: hidden while the hero is on screen, while any [data-basket-total] is on screen (the totals
- * already say it) and once #closing has been reached. Inert while hidden, so its link leaves the tab order.
+ * It is always there below the top of the page (owner, 2026-10-26): hidden only while the hero or a [data-dock-hide] dark
+ * section (the homepage's "We Take Responsibility", the pricing page's basket band) is on screen, which already say it. It stays over the
+ * Basket Card, the closing band and everything else. Inert while hidden, so its link leaves the tab order.
  *
  * It also answers every change. Adding a plan sends a dot in that plan's colour from the control you clicked into the
  * basket; the basket then squashes, the count pops, a ring leaves the pill and the total rolls to its new value. Removing
@@ -56,23 +57,16 @@ export function BasketDock(): ReactElement | null {
   useEffect(() => {
     if (!active) return;
     const seen = new Set<Element>();
-    let closePassed = false;
-    const update = (): void => setHidden(seen.size > 0 || closePassed);
+    const update = (): void => setHidden(seen.size > 0);
     const watched = new IntersectionObserver((entries) => {
       entries.forEach((e) => { if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
       update();
     });
-    const els = document.querySelectorAll("#hero, [data-basket-total]");
+    const els = document.querySelectorAll("#hero, [data-dock-hide]");
     els.forEach((el) => watched.observe(el));
-    const closing = new IntersectionObserver(([e]) => {
-      closePassed = Boolean(e && (e.isIntersecting || e.boundingClientRect.top < 0));
-      update();
-    });
-    const closingEl = document.getElementById("closing");
-    if (closingEl) closing.observe(closingEl);
     // Otherwise the first observer callback sets the state; updating now would flash the dock before it runs.
-    if (els.length === 0 && !closingEl) update();
-    return () => { watched.disconnect(); closing.disconnect(); setHidden(true); };
+    if (els.length === 0) update();
+    return () => { watched.disconnect(); setHidden(true); };
   }, [active, pathname]);
 
   // React to real changes only (not the first paint, not a restored basket): fly, then pulse.

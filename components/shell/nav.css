@@ -14,6 +14,9 @@ html[data-scrolled="true"] .site-nav {
   border-color: var(--line-2);
   box-shadow: var(--shadow-nav-scrolled);
 }
+/* While the phone menu is open the bar and the menu read as one full-width sheet, with no gap and no rounded corners. */
+.site-nav:has([aria-controls][aria-expanded="true"]) { background: var(--surface); border-color: var(--line-2); }
+
 /* Stays put while someone is using it: keyboard focus inside, or the menu or basket it opened is showing. */
 html[data-nav="hidden"] .site-nav:not(:focus-within):not(:has([aria-expanded="true"])) { transform: translateY(-101%); }
 

@@ -54,7 +54,7 @@ describe("home content", () => {
     expect(STEPS[0]).toEqual({ when: "Day 1", what: "A 15-minute call" });
     expect(CLOSING_COPY.body).toBe("A 15-minute call, a clear plan and a price. No obligation.");
     expect(CLOSING_COPY.whatsappShort).toBe("WhatsApp");
-    expect(WHAT_YOU_GET.run.items.map((i) => i.text)).toContain("2 edits a month, 30 minutes each");
+    expect(WHAT_YOU_GET.run.items.map((i) => i.text)).toContain("2 edits a month, 15 minutes each");
   });
   it("no longer claims a dashboard to edit your own site or calls the edits small", () => {
     const text = JSON.stringify({ WHAT_YOU_GET, HOME_FAQ }).toLowerCase();

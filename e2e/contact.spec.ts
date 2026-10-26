@@ -1,6 +1,7 @@
 // e2e/contact.spec.ts
 import { expect, type Page, test } from "@playwright/test";
 import { BASKET_COPY } from "@/content/basket";
+import { BASKET_CARD } from "@/content/basket-card";
 import { CONTACT_ERRORS, CONTACT_PAGE, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_PLACEHOLDERS } from "@/content/contact";
 import { PRIMARY_CTA } from "@/content/navigation";
 
@@ -104,6 +105,14 @@ for (const path of ["/", "/pricing"]) {
     }
   });
 }
+
+test("the Basket Card's checkout button opens the basket, and the basket leads to the app's sign-in", async ({ page }) => {
+  await page.goto("/");
+  await page.locator("#basket-card").getByRole("button", { name: new RegExp(`^(${BASKET_CARD.checkoutCta}|${BASKET_CARD.checkoutCtaShort})$`) }).click();
+  const basket = page.getByRole("dialog", { name: BASKET_COPY.dockLabel });
+  await expect(basket).toBeVisible();
+  await expect(basket.getByRole("link", { name: BASKET_COPY.proceed })).toHaveAttribute("href", /^https:\/\/app\.brandbasket\.in\/login\?plan=/);
+});
 
 test.describe("on a 390 px phone", () => {
   test.use({ viewport: { width: 390, height: 844 } });

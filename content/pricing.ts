@@ -62,7 +62,7 @@ export const PLAN_COLUMNS: readonly PlanColumn[] = [
       "Security updates and uptime monitoring",
       "Privacy and DPDP readiness support",
       "Human support when you need it",
-      "2 edits a month, 30 minutes each",
+      "2 edits a month, 15 minutes each",
       "A monthly website health report",
     ],
     excludes: ["Domain registration or renewal", "Extra pages or a redesign, quoted first", "Content writing, SEO or ads", "E-commerce or new features"],
@@ -224,7 +224,7 @@ export const INCLUDED = {
         title: "Support and maintenance",
         summary: "Real people, every month",
         columns: [
-          { heading: "Support", kind: "included", items: ["A clear way to reach us", "Change requests, 2 edits a month, 30 minutes each", "Help if you cancel or move"] },
+          { heading: "Support", kind: "included", items: ["A clear way to reach us", "Change requests, 2 edits a month, 15 minutes each", "Help if you cancel or move"] },
           { heading: "Monthly checks", kind: "included", items: ["Forms and links tested", "Performance checks", "SEO and indexing checks", "Domain and SSL renewal monitoring", "Integration checks, where used"] },
         ],
       },

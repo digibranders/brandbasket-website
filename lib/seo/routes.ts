@@ -3,6 +3,7 @@
 // titles, so the layout's "%s | Brandbasket" template never runs). Prices are built from lib/pricing.ts.
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
+import { SERVICE_PAGES, type ServicePageContent } from "@/content/services";
 import { refundPolicy } from "@/content/legal/refund";
 import { shippingPolicy } from "@/content/legal/shipping";
 import { termsOfService } from "@/content/legal/terms";
@@ -22,6 +23,7 @@ export interface RouteMeta {
 const { legalName, tradeName, postalAddress } = businessDetails;
 const MANAGED = formatInr(PLANS.website.monthly);
 const UPDATED = "2026-10-21";
+const SERVICES_UPDATED = "2026-10-26";
 
 export const ROUTES = {
   home: {
@@ -97,9 +99,14 @@ export const ROUTES = {
   },
 } as const satisfies Record<string, RouteMeta>;
 
-/** Every page search engines may index: the registry without noindex pages. */
+/** The registry entry of one service page (content/services.ts holds its title and description). */
+export function serviceRoute(page: ServicePageContent): RouteMeta {
+  return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: SERVICES_UPDATED, priority: 0.8 };
+}
+
+/** Every page search engines may index: the registry and the service pages, without noindex pages. */
 export function indexableRoutes(): RouteMeta[] {
-  const routes: readonly RouteMeta[] = Object.values(ROUTES);
+  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map(serviceRoute)];
   return routes.filter((r) => !r.noindex);
 }
 

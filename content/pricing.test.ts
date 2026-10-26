@@ -29,7 +29,7 @@ describe("pricing content", () => {
   it("says up to 10 pages and the 2 edits on the website plan, and the 5 optimised pages on the search plan", () => {
     const [website, , search] = PLAN_COLUMNS;
     expect(website?.does).toContain("Up to 10 pages, built for you");
-    expect(website?.does).toContain("2 edits a month, 30 minutes each");
+    expect(website?.does).toContain("2 edits a month, 15 minutes each");
     expect(search?.does.join(" ")).toContain("5 pages optimised a month");
   });
   it("builds the ad cap and the per-reel price into the social plan", () => {
@@ -48,7 +48,7 @@ describe("pricing content", () => {
   it("states the 10 pages and the 2 edits in Everything included", () => {
     const text = JSON.stringify(INCLUDED);
     expect(text).toContain("Up to 10 pages, built for you");
-    expect(text).toContain("2 edits a month, 30 minutes each");
+    expect(text).toContain("2 edits a month, 15 minutes each");
     expect(text).not.toContain("small edits");
   });
   it("no longer claims a dashboard to edit your own site", () => {

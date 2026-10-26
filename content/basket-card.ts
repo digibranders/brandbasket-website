@@ -29,7 +29,7 @@ export const BASKET_CARD = {
   totalLabel: "Your total",
   oneTimeTag: "One-time offer",
   nextLabel: "Add next:",
-  /** The Basket Card button once sign-up leads to checkout (owner's pick, 2026-10-22). Until then it keeps "Start my plan". */
+  /** The Basket Card button (owner's pick, 2026-10-22). It opens the basket pop-up, like every main button (owner, 2026-10-26). */
   checkoutCta: "Continue to checkout",
   /** The same button on a phone, where two buttons share one row (owner, 2026-10-26; wording still to be approved). */
   checkoutCtaShort: "Checkout",

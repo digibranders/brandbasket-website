@@ -1,10 +1,12 @@
 import type { Icon } from "@phosphor-icons/react";
-import { Check, Globe, Megaphone, MagnifyingGlass, Minus } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, Check, Globe, Megaphone, MagnifyingGlass, Minus } from "@phosphor-icons/react/dist/ssr";
+import Link from "next/link";
 import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { COMPARE, EVERY_PLAN, PLAN_COLUMNS, type PlanColumn } from "@/content/pricing";
+import { SERVICE_COPY, servicePageFor } from "@/content/services";
 import type { PlanId } from "@/lib/pricing";
 import { PlanBasketButton } from "./PlanBasketButton";
 
@@ -33,6 +35,10 @@ function Plan({ plan }: { readonly plan: PlanColumn }): ReactElement {
           {plan.price}<small className="ml-1 font-sans text-sm font-medium tracking-normal text-ink-2">{plan.priceNote}</small>
         </p>
         <p className="col-span-full mt-2 max-w-[34ch] text-[15px] leading-normal text-ink-2">{plan.audience}</p>
+        <Link href={servicePageFor(plan.id).path} className="group col-span-full mt-3 inline-flex w-fit items-center gap-1.5 text-[15px] font-semibold underline decoration-[var(--c)] decoration-2 underline-offset-4">
+          {SERVICE_COPY.exploreMore}<span className="sr-only"> about {plan.name}</span>
+          <ArrowRight aria-hidden="true" weight="bold" className="size-4 text-[var(--c)] transition-transform duration-300 ease-[var(--ease)] group-hover:translate-x-[3px]" />
+        </Link>
       </header>
       <div className="border-t border-line px-[26px] py-5">
         <h4 className={LABEL}>{COMPARE.doesLabel}</h4>

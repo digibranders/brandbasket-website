@@ -48,7 +48,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 - **How much does a website for a clinic cost?** ₹0 to build. Managed Website is ₹2,999 a month. With Local SEO + AEO, the total is ₹27,999 a month, plus 18% GST. Add Local SEO + AEO as you start and it is 5% off.
 - **Can patients call the clinic from the website?** Yes. Every site has click to call and an enquiry form, and it works on every phone.
-- **Can you change our timings when a doctor is on leave?** Yes. Send us the change and we make it. The plan includes 2 small edits a month, up to 30 minutes each.
+- **Can you change our timings when a doctor is on leave?** Yes. Send us the change and we make it. The plan includes 2 small edits a month, up to 15 minutes each.
 - **Can you guarantee we show up first on Google?** No. No one honestly can promise rankings, AI answers or leads. You see the work and the numbers in a report every month.
 
 ## Salons (/industries/salons)
@@ -115,7 +115,7 @@ Every price below comes from the pricing module, so it changes if a price change
 **FAQ**
 
 - **How much does a website for a restaurant cost?** ₹0 to build. Managed Website is ₹2,999 a month. With Digital Growth, the total is ₹9,999 a month, plus 18% GST. Add Digital Growth as you start and it is 5% off.
-- **Can you update the menu when prices change?** Yes. The plan includes 2 small edits a month, up to 30 minutes each. Bigger changes cost ₹500 an hour, quoted before we start.
+- **Can you update the menu when prices change?** Yes. The plan includes 2 small edits a month, up to 15 minutes each. Bigger changes cost ₹500 an hour, quoted before we start.
 - **Can people buy or order online through the website?** No. E-commerce and online ordering are not part of the plans. Your site shows what you offer and lets people call or send an enquiry.
 - **Is ad spend included?** No. You pay Meta directly for ads. Digital Growth manages budgets up to ₹10,000 a month.
 
@@ -183,7 +183,7 @@ Every price below comes from the pricing module, so it changes if a price change
 **FAQ**
 
 - **How much does a website for a coaching class cost?** ₹0 to build. Managed Website is ₹2,999 a month. With Local SEO + AEO, the total is ₹27,999 a month, plus 18% GST. Add Local SEO + AEO as you start and it is 5% off.
-- **Can we update batch timings every term?** Yes. The plan includes 2 small edits a month, up to 30 minutes each.
+- **Can we update batch timings every term?** Yes. The plan includes 2 small edits a month, up to 15 minutes each.
 - **Can you promise we will appear in ChatGPT answers?** No. No one can promise AI citations. We shape your pages into direct answers, add FAQ structured data and track AI visibility where it can be measured.
 - **Can you guarantee we show up first on Google?** No. No one honestly can promise rankings, AI answers or leads. You see the work and the numbers in a report every month.
 
@@ -218,7 +218,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 - **How much does a website for a shop cost?** ₹0 to build. Managed Website is ₹2,999 a month. With Digital Growth, the total is ₹9,999 a month, plus 18% GST. Add Digital Growth as you start and it is 5% off.
 - **Can people buy or order online through the website?** No. E-commerce and online ordering are not part of the plans. Your site shows what you offer and lets people call or send an enquiry.
-- **Can you add new arrivals to the site?** Yes. The plan includes 2 small edits a month, up to 30 minutes each.
+- **Can you add new arrivals to the site?** Yes. The plan includes 2 small edits a month, up to 15 minutes each.
 - **Is ad spend included?** No. You pay Meta directly for ads. Digital Growth manages budgets up to ₹10,000 a month.
 
 ## Home services (/industries/home-services)

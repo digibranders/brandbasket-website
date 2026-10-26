@@ -56,7 +56,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 
 - "Live in about a week" (facts strip) and "Week 1: We set everything up" (steps).
 - "A free 15-minute call" (steps and closing).
-- Scope: up to 5 pages, 2 small edits a month of up to 30 minutes, Local SEO "5 pages improved every month", "AI visibility tracking where measurable", "A/B tests where budget allows".
+- Scope: up to 5 pages, 2 small edits a month of up to 15 minutes, Local SEO "5 pages improved every month", "AI visibility tracking where measurable", "A/B tests where budget allows".
 - The example report (marked "Example report"): Pune dental clinic, KPIs and chart are sample data.
 - "Do you guarantee rankings? No one honestly can." and the ad budget cap of ₹10,000 a month.
 - Home FAQ "Send any change from your dashboard" assumes the platform dashboard is live at launch.

@@ -16,9 +16,10 @@
  *               Analytics and Microsoft Clarity), loaded only with consent. With no container configured the text
  *               is unchanged. Not yet published, so the label was kept when Google Ads and Meta Pixel were dropped.
  * 2026-10-22.1  Terms: Social + SEO is 20% off, like the other two-plan packages (was 30%).
+ * 2026-10-26.3  Terms: the website plan's 2 edits a month are up to 15 minutes each (was 30).
  * 2026-10-26.2  Terms and refund policy: every price includes GST (it is no longer added on top).
  * 2026-10-26.1  Terms: the website plan includes 2 edits a month of up to 30 minutes each (was worded "small edits").
  *               Privacy: the contact form no longer asks for a topic, so only the plans picked are collected, and it records
  *               that the person agreed to the policy.
  */
-export const LEGAL_TEXT_VERSION = "2026-10-26.2";
+export const LEGAL_TEXT_VERSION = "2026-10-26.3";

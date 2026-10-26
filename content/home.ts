@@ -106,7 +106,7 @@ export const WHAT_YOU_GET = {
       { icon: "ShieldCheck", text: "Security updates and uptime monitoring" },
       { icon: "LockKey", text: "Privacy and DPDP readiness support" },
       { icon: "Headset", text: "Human support when you need it" },
-      { icon: "PencilSimple", text: "2 edits a month, 30 minutes each" },
+      { icon: "PencilSimple", text: "2 edits a month, 15 minutes each" },
       { icon: "ChartBar", text: "Monthly health report" },
     ],
   },
@@ -267,7 +267,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "What do I pay for every month?",
-    a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 30 minutes each and a monthly health report. The build itself is free.",
+    a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 15 minutes each and a monthly health report. The build itself is free.",
   },
   {
     q: "Is there anything to pay up front?",

@@ -24,9 +24,10 @@ describe("Basket Card copy", () => {
 });
 
 describe("headline", () => {
-  it("asks a single plan to add one more at the next package's percent", () => {
-    expect(headline(pick(true, false, false))).toBe("Add one more plan for 10% off.");
-    expect(headline(pick(false, false, true))).toBe("Add one more plan for 10% off.");
+  it("asks a single plan to add one more, with the saving that brings", () => {
+    // Website + Social saves 1,299 a month and Website + SEO saves 2,799 (docs/plans/25): the plan worth adding most is named.
+    expect(headline(pick(true, false, false))).toBe("Add one more plan to get 10% off, save ₹1,299/month.");
+    expect(headline(pick(false, false, true))).toBe("Add one more plan to get 10% off, save ₹2,799/month.");
   });
   it("names the package offer and its ad money", () => {
     expect(headline(pick(true, true, false))).toBe("10% off and ₹1,500 a month for your ads.");
@@ -53,7 +54,7 @@ describe("benefits", () => {
 describe("oneTimeNote", () => {
   it("says the ad money is only for plans started together at this checkout", () => {
     expect(text(oneTimeNote(pick(true, true, false)))).toBe(
-      "The ₹1,500 a month for your ads comes only when you start these plans together, here at this checkout. Add a plan later and you get the package price, but no ad money.",
+      "The ₹1,500 a month for your ads comes only when you start these plans together, here at this checkout.",
     );
   });
   it("tells a single plan what starting together earns", () => {
@@ -67,23 +68,16 @@ describe("oneTimeNote", () => {
 });
 
 describe("nextStamp", () => {
-  it("prices the next plan and what it gains", () => {
+  it("names the next plan and the full basket it leads to, in the owner's words", () => {
+    // All three save 7,599 a month at 20% (docs/plans/25).
     expect(nextStamp(pick(true, false, false))).toEqual({
       id: "growth",
       name: "Social Media and Ads",
-      body: "With 10% off both plans, your total goes from ₹2,999 to ₹11,699 a month. You save ₹1,299 a month, and we add ₹1,500 a month to your ads.",
+      body: "Add two more plans to get 20% off, save ₹7,599/month.",
     });
-    expect(nextStamp(pick(true, true, false))?.body).toBe(
-      "With 20% off all three plans, your total goes from ₹11,699 to ₹30,398 a month. Your saving goes from ₹1,299 to ₹7,599 a month, and your ad money from ₹1,500 to ₹3,000.",
-    );
-    expect(nextStamp(pick(true, false, true))?.body).toBe(
-      "With 20% off all three plans, your total goes from ₹25,199 to ₹30,398 a month. Your saving goes from ₹2,799 to ₹7,599 a month, and we add ₹3,000 a month to your ads.",
-    );
-  });
-  it("says what the next plan costs when it is only a little more than the basket now", () => {
-    expect(nextStamp(pick(false, false, true))?.body).toBe(
-      "With 10% off both plans, your total goes from ₹24,999 to ₹25,199 a month. You save ₹2,799 a month.",
-    );
+    expect(nextStamp(pick(true, true, false))?.body).toBe("Add one more plan to get 20% off, save ₹7,599/month.");
+    expect(nextStamp(pick(true, false, true))?.body).toBe("Add one more plan to get 20% off, save ₹7,599/month.");
+    expect(nextStamp(pick(false, false, true))?.body).toBe("Add two more plans to get 20% off, save ₹7,599/month.");
   });
   it("is null on a full card", () => {
     expect(nextStamp(pick(true, true, true))).toBeNull();

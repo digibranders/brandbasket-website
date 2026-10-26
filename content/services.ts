@@ -184,7 +184,7 @@ export const SERVICE_PAGES: readonly ServicePageContent[] = [
       heading: "Start together and we add ad money.",
       body: [
         `Take two or three plans together at your first checkout and we add ad money to your account every month: ${LOWEST_AD_MONEY} with Website + Social or Social + SEO, and ${HIGHEST_AD_MONEY} with all three.`,
-        "The ad money comes only when you start the plans together. Add a plan later and you get the package price, but no ad money.",
+        "The ad money comes only when you start the plans together, at your first checkout.",
       ],
     },
     how: {

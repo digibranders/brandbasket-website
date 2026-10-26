@@ -6,7 +6,7 @@ import { useBasket } from "./useBasket";
 
 /**
  * The monthly total (GST included) and, for a package, the plans' own price struck through beside it and the monthly
- * saving (mock: .phc-total p, .pay-row, .was-line). `data-basket-total` hides the basket dock while it is on screen.
+ * saving (mock: .phc-total p, .pay-row, .was-line). `data-basket-total` marks the total for tests.
  */
 export function BasketTotal({ label = BASKET_COPY.totalLabel }: { readonly label?: string }): ReactElement {
   const pick = useBasket();

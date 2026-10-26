@@ -30,18 +30,18 @@ export function MobileMenu(): ReactElement {
         {open ? <X aria-hidden="true" className="size-5" /> : <List aria-hidden="true" className="size-5" />}
       </button>
       {open && (
-        <div id={sheetId} className="absolute inset-x-3 top-[calc(100%+8px)] z-20 grid gap-1 rounded-[26px] border border-line bg-surface p-2.5 shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
+        <div id={sheetId} className="fixed inset-x-0 top-16 z-20 grid max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-surface shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
           {PRIMARY_NAV.map((link) => (
-            <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{link.label}</Link>
+            <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block border-b border-line px-[clamp(18px,4vw,56px)] py-4 font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken">{link.label}</Link>
           ))}
-          <a href={LOGIN_LINK.href} className="rounded-2xl px-4 py-3.5 font-display text-[22px] tracking-tight hover:bg-sunken">{LOGIN_LINK.label}</a>
+          <a href={LOGIN_LINK.href} className="block border-b border-line px-[clamp(18px,4vw,56px)] py-4 font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken">{LOGIN_LINK.label}</a>
           <button
             type="button"
             data-basket-trigger
             aria-haspopup="dialog"
             onClick={() => { setOpen(false); basketPanel.open("nav", null); }}
             {...trackAttrs("basket_open", "menu")}
-            className="m-1.5 cursor-pointer rounded-full bg-action px-5 py-3 text-center font-semibold text-action-ink"
+            className="mx-[clamp(18px,4vw,56px)] my-5 cursor-pointer rounded-full bg-action px-5 py-3.5 text-center font-semibold text-action-ink"
           >{BASKET_COPY.startPlan}</button>
         </div>
       )}

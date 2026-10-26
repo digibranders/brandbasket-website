@@ -11,9 +11,11 @@ interface BasketCtaProps {
   readonly tone?: "action" | "inverse";
   /** Overrides the approved label; only the Basket Card does, and only once sign-up is live. */
   readonly label?: string;
+  /** What to say instead of the label on a phone. */
+  readonly short?: string;
 }
 
 /** The main button inside basket-aware islands: the picked plans travel with the click. */
-export function BasketCta({ location, size = "md", tone = "action", label = PRIMARY_CTA.label }: BasketCtaProps): ReactElement {
-  return <ArrowButton href={signupHref(useBasket())} location={location} size={size} tone={tone}>{label}</ArrowButton>;
+export function BasketCta({ location, size = "md", tone = "action", label = PRIMARY_CTA.label, short }: BasketCtaProps): ReactElement {
+  return <ArrowButton href={signupHref(useBasket())} location={location} size={size} tone={tone} short={short}>{label}</ArrowButton>;
 }

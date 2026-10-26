@@ -3,6 +3,20 @@
    --d is a delay, so the dock can wait for a flying dot to land before it reacts. Reduced motion is handled by the
    global rule in globals.css, which cuts animation time to nothing. */
 
+/* The ink island: a dark pill with a soft lift. Colours come from the action tokens, so nothing is a raw colour. */
+.dock-isle {
+  background: linear-gradient(180deg, color-mix(in srgb, var(--action) 90%, var(--action-ink)), var(--action));
+  color: var(--action-ink);
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--action-ink) 8%, transparent),
+    inset 0 1px 0 color-mix(in srgb, var(--action-ink) 14%, transparent),
+    0 30px 50px -22px color-mix(in srgb, var(--action) 70%, transparent),
+    0 10px 20px -12px color-mix(in srgb, var(--action) 50%, transparent);
+}
+/* One bar per plan: dim until the plan is in the basket, then it fills with the plan's colour and lengthens. */
+.dock-seg { display: block; width: 14px; height: 4px; border-radius: 4px; background: color-mix(in srgb, var(--action-ink) 18%, transparent); transition: background-color 400ms var(--ease), width 400ms cubic-bezier(0.34, 1.4, 0.64, 1); }
+.dock-seg.is-on { width: 20px; background: var(--c); }
+
 /* Numbers roll: the new value slides in from below when the total goes up, from above when it goes down. */
 .dock-roll { position: relative; display: inline-block; overflow: clip; vertical-align: top; }
 .dock-roll-in-up, .dock-roll-in-down, .dock-roll-out-up, .dock-roll-out-down { display: inline-block; }

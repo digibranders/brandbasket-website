@@ -109,7 +109,8 @@ test("the last switch on cannot be turned off", async ({ page }) => {
 test("the basket carries from home to pricing", async ({ page }) => {
   await page.goto("/");
   await page.locator("#basket-card").getByRole("button", { name: "Add Social Media and Ads", exact: true }).click();
-  await page.getByRole("link", { name: "Compare all plans" }).click();
+  // Phones show the shorter "Compare plans"; both say the same thing.
+  await page.getByRole("link", { name: /^Compare (all )?plans$/ }).click();
   await expect(page).toHaveURL(/\/pricing/);
   await expect(page.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).first()).toHaveAttribute("aria-checked", "true");
 });
@@ -121,8 +122,7 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await expect(card.getByText("20% off and ₹2,000 a month for your ads.", { exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: "Remove Social Media and Ads" })).toHaveAttribute("aria-pressed", "true");
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Managed Website", "Social Media and Ads"]);
-  // The "Add next" nudge adds the plan worth adding most.
-  await card.getByRole("button", { name: "Add SEO", exact: true }).click();
+  await card.getByRole("button", { name: "Add Local SEO + AEO", exact: true }).click();
   await expect(card.getByText("Full basket. 30% off and ₹5,000 a month for your ads.", { exact: true })).toBeVisible();
   await expect(card.getByText(formatInr(firstPayment(packageTotal({ website: true, growth: true, search: true })).total), { exact: false }).first()).toBeVisible();
 });

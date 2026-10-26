@@ -47,7 +47,7 @@ export const privacyPolicy: LegalDocument = {
       heading: "Information we collect",
       requiredBy: ["DPDP Act s.5 and Rule 3(1)(a)"],
       paragraphs: [
-        "When you send the form on our Contact page, we collect your name, phone number, business name, and, if you add them, your city, email address and message, with the topic and plans you picked. We also record which version of this policy the form showed you.",
+        "When you send the form on our Contact page, we collect your name, phone number, business name, and, if you add them, your city, email address and message, with the plans you picked. We also record which version of this policy the form showed you and that you agreed to it.",
         "To stop spam, we briefly use your IP address to limit how often a form can be sent from one place. We don't store it with your message.",
         "If you message us on WhatsApp, call us or email us, we receive your name, number or address and whatever you send. WhatsApp is run by Meta, so a WhatsApp conversation is also covered by WhatsApp's own terms and privacy policy.",
         "When you become a client, we hold your account and billing details, your GSTIN if you give one, and what we need to run your services: your website content, and access to your Google Business Profile, domain and ad accounts.",

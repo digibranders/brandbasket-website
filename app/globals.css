@@ -6,6 +6,7 @@
 @import "../components/basket/dock.css";
 @import "../components/basket/wall.css";
 @import "../components/shell/nav.css";
+@import "../components/contact/contact.css";
 
 :root {
   --bg: #f6f5f2; --surface: #ffffff; --sunken: #eeece7;
@@ -63,9 +64,17 @@ h1, h2, h3, h4 { text-wrap: balance; }
 .num { font-variant-numeric: tabular-nums; }
 .pivot { font-style: normal; font-weight: 300; color: var(--rattan-text); }
 
-/* Every button pair: one row with the same gap, full width and stacked on a phone. */
+/* Every button pair: one row with the same gap. On a phone the buttons shrink to a small size and sit side by side; a
+   pair whose labels do not fit on one line wraps and fills the width (owner's ask, 2026-10-26). */
 .cta-pair { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 16px; }
-@media (max-width: 560px) { .cta-pair > * { flex: 1 1 100%; } }
+@media (max-width: 560px) {
+  .cta-pair { gap: 8px; }
+  .cta-pair > * { flex: 1 1 auto; height: 46px; gap: 8px; font-size: 14px; }
+  /* The arrow pill (bg-action) keeps its arrow circle at the right edge; the outline pills (border) are plain. */
+  .cta-pair > [class*="bg-action"] { padding: 0 5px 0 14px; }
+  .cta-pair > [class*="border-"] { padding: 0 14px; }
+  .cta-pair > * > span[aria-hidden="true"] { width: 34px; height: 34px; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }

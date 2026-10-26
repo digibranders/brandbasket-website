@@ -33,6 +33,8 @@ export const GST_LABEL = `${Math.round(GST_RATE * 100)}%`;
 /** Billed monthly: the first payment covers one month (owner decision, 2026-10-19). */
 export const UPFRONT_MONTHS = 1;
 export const EXTRA_HOURLY_RATE = 500;
+/** What Social Media and Ads charges to edit one reel (the doc of 2026-10-26: "500 per reel"). */
+export const REEL_RATE = 500;
 /** The client's own Meta ad budget that Social Media and Ads manages each month. Ad credit comes on top of it. */
 export const AD_BUDGET_CAP = 10000;
 

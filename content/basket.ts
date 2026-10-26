@@ -33,6 +33,8 @@ export const BASKET_COPY = {
   plusGst: "a month + GST",
   withGstBilled: "a month with GST, billed monthly",
   compare: "Compare all plans",
+  /** On a phone, where two buttons share one row. */
+  compareShort: "Compare plans",
   totalLabel: "You pay each month, with GST",
   phoneBarCaption: "a month, with GST",
   /** The pricing page's two main buttons, beside the basket total. They work for any plan, so they do not say "free website" (owner's pick, 2026-10-23). */

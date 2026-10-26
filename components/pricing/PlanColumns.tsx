@@ -4,7 +4,7 @@ import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { BUNDLES, COMPARE, EVERY_PLAN, PLAN_COLUMNS, type PlanColumn } from "@/content/pricing";
+import { COMPARE, EVERY_PLAN, PLAN_COLUMNS, type PlanColumn } from "@/content/pricing";
 import type { PlanId } from "@/lib/pricing";
 import { PlanBasketButton } from "./PlanBasketButton";
 
@@ -66,7 +66,7 @@ function Plan({ plan }: { readonly plan: PlanColumn }): ReactElement {
 /**
  * The three plans side by side (docs/design/homepage-v2.html, #cmp-new): price, who it is for, what we do and what is
  * left out, with the rows lined up across plans. Then what every plan shares, and the packages that bundle them.
- * Plans, prices and bundle totals are built from lib/pricing, so nothing here repeats a number.
+ * Plans and prices are built from lib/pricing, so nothing here repeats a number.
  */
 export function PlanColumns(): ReactElement {
   return (
@@ -85,25 +85,6 @@ export function PlanColumns(): ReactElement {
               <li key={item} className="inline-flex items-center gap-2 text-[14.5px]">
                 <Check aria-hidden="true" className="size-[18px] text-sage" />
                 {item}
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="mt-[22px] grid gap-[22px] rounded-[28px] bg-[linear-gradient(180deg,color-mix(in_srgb,var(--rattan-wash)_55%,var(--surface)),var(--rattan-wash))] p-[clamp(22px,3vw,34px)] min-[1100px]:grid-cols-[0.7fr_1.6fr] min-[1100px]:items-center min-[1100px]:gap-9">
-          <div>
-            <h3 className="font-display text-[clamp(22px,2.2vw,28px)] font-semibold leading-[1.1] tracking-[-0.035em]">{BUNDLES.heading}</h3>
-            <p className="mt-2.5 max-w-[36ch] text-[15px] leading-[1.55] text-ink-2">{BUNDLES.lede}</p>
-          </div>
-          <ul className="grid grid-cols-2 gap-3 min-[760px]:grid-cols-4">
-            {BUNDLES.tiles.map((tile) => (
-              <li key={tile.id} className={`relative grid content-start gap-1 rounded-[20px] p-4 ${tile.biggest ? "bg-action pt-[30px] text-action-ink" : "bg-surface shadow-[0_0_0_1px_rgba(21,22,26,0.06)]"}`}>
-                {tile.biggest ? <em className="absolute left-4 top-2.5 text-[11.5px] font-semibold not-italic text-rattan">{BUNDLES.biggestFlag}</em> : null}
-                <b className="font-display text-[14.5px] font-semibold tracking-[-0.01em]">{tile.name}</b>
-                <strong className="num font-display text-2xl font-medium leading-[1.1] tracking-[-0.03em]">
-                  {tile.price}<small className={`mt-0.5 block font-sans text-xs font-normal tracking-normal ${tile.biggest ? "text-action-ink/72" : "text-ink-2"}`}>{BUNDLES.priceSuffix}</small>
-                </strong>
-                <span className={`text-[13px] leading-[1.4] ${tile.biggest ? "text-action-ink/72" : "text-ink-2"}`}>{tile.offer}</span>
-                <span className={`text-[13px] leading-[1.4] ${tile.biggest ? "text-action-ink/72" : "text-ink-2"}`}>{tile.adMoney ?? " "}</span>
               </li>
             ))}
           </ul>

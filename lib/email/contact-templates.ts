@@ -1,4 +1,4 @@
-import { CONTACT_LABELS, CONTACT_TOPIC_LABELS } from "@/content/contact";
+import { CONTACT_LABELS } from "@/content/contact";
 import type { ContactInput } from "@/lib/contact-schema";
 import { PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
@@ -19,21 +19,19 @@ const NOT_GIVEN = "not given";
 
 /** The lead notification sent to the Brandbasket inbox, with every field the visitor gave. */
 export function buildLeadEmail(input: ContactInput): LeadEmail {
-  const topic = CONTACT_TOPIC_LABELS[input.topic];
   const basket = input.plans.map((id) => PLANS[id].name).join(" + ");
   // A subject is one line: collapse any whitespace the visitor typed.
-  const subject = `New enquiry, ${topic}: ${input.business}${basket ? ` (${basket})` : ""}`.replace(/\s+/g, " ");
+  const subject = `New enquiry: ${input.business}${basket ? ` (${basket})` : ""}`.replace(/\s+/g, " ");
 
   const rows: readonly (readonly [string, string])[] = [
-    ["Topic", topic],
     [CONTACT_LABELS.name, input.name],
     [CONTACT_LABELS.email, input.email],
     [CONTACT_LABELS.phone, input.phone || NOT_GIVEN],
     [CONTACT_LABELS.business, input.business],
     [CONTACT_LABELS.city, input.city || NOT_GIVEN],
     ["Basket", basket || "none, general enquiry"],
-    [CONTACT_LABELS.message, input.message || NOT_GIVEN],
-    ["Privacy notice version", input.noticeVersion],
+    [CONTACT_LABELS.message, input.message],
+    ["Privacy policy", `agreed, notice version ${input.noticeVersion}`],
   ];
 
   const text = rows.map(([label, value]) => `${label}: ${value}`).join("\n");
@@ -49,19 +47,18 @@ const PERSON_NAME = /^\p{L}[\p{L}'-]{0,39}$/u;
 
 /**
  * The confirmation sent to the address on the form. Anyone can type someone else's address, so it repeats nothing the
- * visitor wrote except a plain first name: the topic and plans come from fixed lists, and the rest is our own wording.
+ * visitor wrote except a plain first name: the plans come from a fixed list, and the rest is our own wording.
  */
 export function buildConfirmationEmail(input: ContactInput): LeadEmail {
   const firstName = input.name.trim().split(/\s+/)[0] ?? "";
   const greeting = PERSON_NAME.test(firstName) ? `Hi ${firstName},` : "Hello,";
-  const topic = CONTACT_TOPIC_LABELS[input.topic];
   const basket = input.plans.map((id) => PLANS[id].name).join(" + ");
   const { phone, whatsappHref, email, legalName, address, hours } = businessDetails;
   const subject = "We have your message. Brandbasket";
 
   const paragraphs = [
     "Thanks for getting in touch with Brandbasket. Your message has reached our team, and we will reply within one working day.",
-    `You asked about: ${topic}${basket ? ` (${basket})` : ""}.`,
+    ...(basket ? [`You asked about: ${basket}.`] : []),
     `For anything urgent, WhatsApp or call us on ${phone}, ${hours}.`,
   ];
   const ignore = `You are getting this email because this address was entered on the contact form at ${siteConfig.url.replace("https://", "")}. If that was not you, you can ignore it and we will not write again.`;
@@ -79,7 +76,7 @@ export function buildConfirmationEmail(input: ContactInput): LeadEmail {
 <tr><td style="background:#ffffff;border:1px solid #e3e0d9;border-radius:12px;padding:32px">
 ${p(escapeHtml(greeting))}
 ${p(escapeHtml(paragraphs[0] ?? ""))}
-${p(`You asked about: <strong>${escapeHtml(topic)}</strong>${basket ? ` (${escapeHtml(basket)})` : ""}.`)}
+${basket ? p(`You asked about: <strong>${escapeHtml(basket)}</strong>.`) : ""}
 ${p(`For anything urgent, <a href="${whatsappHref}" style="color:#a46c2f">WhatsApp</a> or call us on <a href="tel:${businessDetails.phoneHref}" style="color:#a46c2f">${escapeHtml(phone)}</a>, ${escapeHtml(hours)}.`)}
 ${p(`The Brandbasket team<br><a href="mailto:${email}" style="color:#a46c2f">${email}</a>`, "margin-bottom:0")}
 </td></tr>

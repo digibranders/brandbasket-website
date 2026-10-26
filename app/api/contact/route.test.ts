@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const ENV = { BREVO_API_KEY: "xkeysib-test", FORM_SECRET: "s".repeat(32), CONTACT_INBOX: "hello@brandbasket.in", MAIL_SENDER: "hello@brandbasket.in" };
-const LEAD = { topic: "website", name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", plans: ["website"], message: "", noticeVersion: "2026-10-19.1" };
+const LEAD = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", plans: ["website"], message: "Please call me this week", consent: true, noticeVersion: "2026-10-19.1" };
 const T0 = new Date("2026-10-19T10:00:00Z");
 
 const post = (body: unknown): Request =>
@@ -86,6 +86,16 @@ describe("POST /api/contact", () => {
     expect((await res.json()).fields.phone).toEqual(["Please check the phone number"]);
   });
 
+  it("rejects a lead that did not agree to the privacy policy", async () => {
+    const { POST, token } = await load(ENV);
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    const res = await POST(post({ ...LEAD, formToken, consent: false }));
+    expect(res.status).toBe(422);
+    expect((await res.json()).fields.consent).toEqual(["Please agree to the privacy policy to send your message."]);
+    expect(fetchMock).not.toHaveBeenCalled();
+  });
+
   it("mails a valid lead to the inbox", async () => {
     fetchMock.mockResolvedValue(new Response("{}", { status: 201 }));
     const { POST, token } = await load(ENV);
@@ -97,7 +107,7 @@ describe("POST /api/contact", () => {
     const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
     expect(sent.to).toEqual([{ email: "hello@brandbasket.in", name: "Brandbasket" }]);
     expect(sent.replyTo).toEqual({ email: "asha@example.in", name: "Asha Rao" });
-    expect(sent.subject).toBe("New enquiry, A free website: Rao Dental Care (Managed Website)");
+    expect(sent.subject).toBe("New enquiry: Rao Dental Care (Managed Website)");
     const confirmation = JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body));
     expect(confirmation.to).toEqual([{ email: "asha@example.in", name: "Asha Rao" }]);
     expect(confirmation.subject).toBe("We have your message. Brandbasket");

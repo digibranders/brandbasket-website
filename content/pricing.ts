@@ -2,15 +2,13 @@
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero plan rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_LABEL, PACKAGES, packageSaving, packageTotal, PLANS, type Package, type PlanId } from "@/lib/pricing";
+import { AD_BUDGET_CAP, formatInr, GST_LABEL, PACKAGES, PLANS, REEL_RATE, type Package, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
-export type PricingIconKey = "CalendarCheck" | "SignOut" | "Clock" | "Wallet";
-
 const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 const AD_CAP = formatInr(AD_BUDGET_CAP);
-const HOURLY = formatInr(EXTRA_HOURLY_RATE);
+const PER_REEL = formatInr(REEL_RATE);
 
 function packageById(id: Package["id"]): Package {
   const pkg = PACKAGES.find((p) => p.id === id);
@@ -60,12 +58,11 @@ export const PLAN_COLUMNS: readonly PlanColumn[] = [
     does: [
       "Up to 10 pages, built for you",
       "Enquiry forms, click to call and WhatsApp",
-      "A dashboard to edit your own site",
       "Hosting, SSL and backups",
       "Security updates and uptime monitoring",
       "Privacy and DPDP readiness support",
       "Human support when you need it",
-      "2 small edits a month, 30 minutes each",
+      "2 edits a month, 30 minutes each",
       "A monthly website health report",
     ],
     excludes: ["Domain registration or renewal", "Extra pages or a redesign, quoted first", "Content writing, SEO or ads", "E-commerce or new features"],
@@ -86,7 +83,7 @@ export const PLAN_COLUMNS: readonly PlanColumn[] = [
       "Human support when you need it",
       "A monthly posts, profile and ads report",
     ],
-    excludes: ["Ad spend, paid to Meta by you", `Reels and video editing, ${HOURLY} an hour`, "Guaranteed leads or sales"],
+    excludes: ["Ad spend, paid to Meta by you", `Reels and video editing, ${PER_REEL} per reel`, "Guaranteed leads or sales"],
   },
   {
     id: "search",
@@ -114,33 +111,6 @@ export const EVERY_PLAN = {
   items: ["Cancel anytime, no notice period", `Billed monthly, plus ${GST_LABEL} GST`, "A real person to ask", "A monthly report in plain words"],
 } as const;
 
-export interface BundleTile {
-  readonly id: Package["id"];
-  readonly name: string;
-  readonly price: string;
-  readonly offer: string;
-  /** Null when the package adds no ad money. */
-  readonly adMoney: string | null;
-  readonly biggest: boolean;
-}
-
-export const BUNDLES = {
-  heading: "Add plans together and save.",
-  lede: "Two plans are 20% off. All three are 30% off, with ad money from us when you start together.",
-  priceSuffix: "a month",
-  biggestFlag: "Biggest saving",
-  tiles: PACKAGES.map(
-    (pkg): BundleTile => ({
-      id: pkg.id,
-      name: pkg.name,
-      price: formatInr(packageTotal(pkg.pick)),
-      offer: `${pkg.percent}% off, you save ${formatInr(packageSaving(pkg.pick))}`,
-      adMoney: pkg.adCredit > 0 ? `plus ${formatInr(pkg.adCredit)} ad money` : null,
-      biggest: pkg.id === "everything",
-    }),
-  ),
-} as const;
-
 /** One list in an Everything included group: ticked lines, or lines that are quoted or added with other plans. */
 export interface DetailColumn {
   readonly heading: string;
@@ -149,7 +119,7 @@ export interface DetailColumn {
   readonly items: readonly string[];
 }
 
-export type IncludedIconKey = "FileText" | "Phone" | "PencilSimpleLine" | "PlugsConnected" | "ShieldCheck" | "LockKey" | "ChartLineUp" | "Headset";
+export type IncludedIconKey = "FileText" | "Phone" | "PlugsConnected" | "ShieldCheck" | "LockKey" | "ChartLineUp" | "Headset";
 
 export interface IncludedGroup {
   readonly id: string;
@@ -162,8 +132,6 @@ export interface IncludedGroup {
 }
 
 export interface IncludedPart {
-  readonly label: string;
-  readonly note: string;
   readonly groups: readonly IncludedGroup[];
 }
 
@@ -178,8 +146,6 @@ export const INCLUDED = {
   lede: "What you get with the free website, and what the monthly plan keeps doing for you.",
   toggle: "Details",
   build: {
-    label: "We build it",
-    note: "₹0 development fee",
     groups: [
       {
         id: "pages",
@@ -204,17 +170,6 @@ export const INCLUDED = {
         ],
       },
       {
-        id: "dashboard",
-        icon: "PencilSimpleLine",
-        colour: "search",
-        title: "An easy dashboard",
-        summary: "Edit your own website, safely",
-        columns: [
-          { heading: "Edit and publish", kind: "included", items: ["Edit pages, text and images", "Secure login", "Publish blog posts"] },
-          { heading: "Stay in control", kind: "included", items: ["Edit your SEO titles and descriptions", "A training video that shows you how"] },
-        ],
-      },
-      {
         id: "tools",
         icon: "PlugsConnected",
         colour: "site",
@@ -228,8 +183,6 @@ export const INCLUDED = {
     ],
   },
   run: {
-    label: "We keep it running",
-    note: `${MANAGED_MONTHLY} a month + GST`,
     groups: [
       {
         id: "security",
@@ -271,7 +224,7 @@ export const INCLUDED = {
         title: "Support and maintenance",
         summary: "Real people, every month",
         columns: [
-          { heading: "Support", kind: "included", items: ["A clear way to reach us", "Change requests, 2 small edits a month", "Help if you cancel or move"] },
+          { heading: "Support", kind: "included", items: ["A clear way to reach us", "Change requests, 2 edits a month, 30 minutes each", "Help if you cancel or move"] },
           { heading: "Monthly checks", kind: "included", items: ["Forms and links tested", "Performance checks", "SEO and indexing checks", "Domain and SSL renewal monitoring", "Integration checks, where used"] },
         ],
       },
@@ -287,37 +240,6 @@ export const INCLUDED = {
   readonly run: IncludedPart;
   readonly privacyNote: string;
 };
-
-export interface GoodToKnowItem {
-  readonly icon: PricingIconKey;
-  readonly title: string;
-  readonly body: string;
-}
-
-export const GOOD_TO_KNOW_HEADING = { text: "Good to know", accent: "before you start." } as const;
-
-export const GOOD_TO_KNOW: readonly GoodToKnowItem[] = [
-  {
-    icon: "CalendarCheck",
-    title: "Billed monthly, plus GST",
-    body: `Pay one month at a time, plus ${GST_LABEL} GST. Your invoice shows both.`,
-  },
-  {
-    icon: "SignOut",
-    title: "Cancel anytime",
-    body: "No notice period. Your plans keep running until the end of the month you have paid for, and your domain stays yours.",
-  },
-  {
-    icon: "Clock",
-    title: `${HOURLY} an hour for extras`,
-    body: "New pages, extra edits and video editing. Always quoted before we start.",
-  },
-  {
-    icon: "Wallet",
-    title: "Ads and tools are paid by you",
-    body: "Domain fees, your own ad spend and paid tools are billed to you directly.",
-  },
-];
 
 export const PRICING_FAQ_HEADING = "Questions about pricing.";
 

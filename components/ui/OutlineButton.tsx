@@ -11,19 +11,32 @@ export function outlineClasses(tone: Tone): string {
   return `group inline-flex h-[52px] items-center justify-center gap-2.5 whitespace-nowrap rounded-full border-[1.5px] bg-transparent px-6 font-display text-[15.5px] font-semibold tracking-[-0.01em] transition-colors duration-300 ease-[var(--ease)] ${colours}`;
 }
 
+/** A label with a shorter form for phones. Only the visible one counts toward the button's accessible name. */
+export function PhoneLabel({ full, short }: { readonly full: string; readonly short?: string }): ReactElement {
+  if (!short) return <>{full}</>;
+  return (
+    <>
+      <span className="max-[560px]:hidden">{full}</span>
+      <span className="hidden max-[560px]:inline">{short}</span>
+    </>
+  );
+}
+
 interface OutlineButtonProps {
   readonly href: string;
   readonly children: string;
+  /** What to say instead of the children on a phone. */
+  readonly short?: string;
   /** Where the button sits, reported with its cta_click event (lib/analytics.ts). */
   readonly location: string;
   readonly tone?: Tone;
 }
 
 /** The secondary action beside a main ArrowButton (mock: .btn-s). */
-export function OutlineButton({ href, children, location, tone = "default" }: OutlineButtonProps): ReactElement {
+export function OutlineButton({ href, children, short, location, tone = "default" }: OutlineButtonProps): ReactElement {
   return (
     <Link href={href} className={`${outlineClasses(tone)} max-[560px]:justify-between`} {...trackAttrs("cta_click", location)}>
-      {children}
+      <PhoneLabel full={children} short={short} />
       <ArrowRight aria-hidden="true" className="size-5 transition-transform duration-300 ease-[var(--ease)] group-hover:translate-x-[3px]" />
     </Link>
   );

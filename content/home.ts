@@ -65,7 +65,7 @@ export const FACTS: readonly Fact[] = [
 export const RESPONSIBILITY = {
   small: "More Than a Website.",
   large: "We Take Responsibility.",
-  body: "You’re not just paying for a website; you’re paying for the responsibility of keeping it running, secure, and up to date. We take care of the technical side so you can focus on growing your business.",
+  body: "You’re not just paying for a website; you’re protecting your online reputation with ongoing security, maintenance, and performance.",
   worries: ["Hosting", "Security", "Backups", "Updates", "Domain renewal", "Contact form", "Slow pages", "Hackers", "Bug fixes"],
   phoneWorries: ["Hosting", "Security", "Backups", "Updates", "Contact form", "Bug fixes"],
   onYourMind: "On your mind",
@@ -95,7 +95,6 @@ export const WHAT_YOU_GET = {
       { icon: "DeviceMobile", text: "Works on every phone" },
       { icon: "Phone", text: "Enquiry forms, click to call and WhatsApp" },
       { icon: "Prohibit", text: "Spam and bot protection" },
-      { icon: "PencilSimpleLine", text: "A dashboard to edit your own site" },
       { icon: "Scroll", text: "Privacy policy and terms included" },
     ],
   },
@@ -107,7 +106,7 @@ export const WHAT_YOU_GET = {
       { icon: "ShieldCheck", text: "Security updates and uptime monitoring" },
       { icon: "LockKey", text: "Privacy and DPDP readiness support" },
       { icon: "Headset", text: "Human support when you need it" },
-      { icon: "PencilSimple", text: "2 small edits a month" },
+      { icon: "PencilSimple", text: "2 edits a month, 30 minutes each" },
       { icon: "ChartBar", text: "Monthly health report" },
     ],
   },
@@ -129,7 +128,7 @@ const PROMISE_CARDS: readonly PromiseCard[] = [
 export const PROMISES = {
   small: "Human Support",
   large: "When It Matters Most",
-  body: "When your website goes down or faces a security breach, our dedicated human support team is here to help. Get real assistance when you need it most.",
+  body: "When your website goes down or faces a security breach, our dedicated human support team is here to help.",
   photoAlt: "A Brandbasket support team member wearing a headset at her desk",
   chat: {
     customer: "Our website is showing an error.",
@@ -253,7 +252,7 @@ export interface Step {
 }
 
 export const STEPS: readonly Step[] = [
-  { when: "Day 1", what: "A free 15-minute call" },
+  { when: "Day 1", what: "A 15-minute call" },
   { when: "Week 1", what: "We set everything up" },
   { when: "Every month", what: "We run it and send a report" },
 ];
@@ -268,7 +267,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "What do I pay for every month?",
-    a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 small edits a month and a monthly health report. The build itself is free.",
+    a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 30 minutes each and a monthly health report. The build itself is free.",
   },
   {
     q: "Is there anything to pay up front?",
@@ -292,7 +291,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Can I make changes later?",
-    a: "Yes. Send any change from your dashboard. We always tell you the cost before we start anything that costs extra.",
+    a: "Yes. Send us any change. We always tell you the cost before we start anything that costs extra.",
   },
   { q: "Can I cancel?", a: CANCEL_ANSWER },
   { q: "What happens if a payment fails?", a: PAYMENT_FAILURE },

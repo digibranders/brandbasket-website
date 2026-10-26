@@ -14,9 +14,11 @@ export const metadata: Metadata = pageMetadata(ROUTES.contact);
 /** Mock view "Contact". Phones stack head, form, info so a visitor who tapped a main button lands on the form. */
 export default function ContactPage(): ReactElement {
   return (
+    // The warm glow sits on a full-width layer that fades out at the bottom, so it has no hard edge under the form.
+    <div className="relative isolate overflow-x-clip before:absolute before:inset-0 before:-z-10 before:[background:var(--hero)] before:[mask-image:linear-gradient(to_bottom,#000_55%,transparent)]">
     <section
       aria-labelledby="h-contact"
-      className="mx-auto grid w-full max-w-[1280px] grid-cols-[minmax(0,1fr)] items-start gap-8 px-[clamp(18px,4vw,56px)] pb-20 pt-32 [background:var(--hero)] [grid-template-areas:'head'_'form'_'info'] min-[1000px]:grid-cols-[0.85fr_1.15fr] min-[1000px]:grid-rows-[auto_1fr] min-[1000px]:gap-x-16 min-[1000px]:gap-y-0 min-[1000px]:[grid-template-areas:'head_form'_'info_form']"
+      className="mx-auto grid w-full max-w-[1280px] grid-cols-[minmax(0,1fr)] items-start gap-8 px-[clamp(18px,4vw,56px)] pb-24 pt-32 [grid-template-areas:'head'_'form'_'info'] min-[1000px]:grid-cols-[0.85fr_1.15fr] min-[1000px]:grid-rows-[auto_1fr] min-[1000px]:gap-x-16 min-[1000px]:gap-y-0 min-[1000px]:[grid-template-areas:'head_form'_'info_form']"
     >
       <div className="min-w-0 [grid-area:head]">
         <h1 id="h-contact" className="font-display text-[clamp(40px,5.2vw,72px)] font-normal leading-none tracking-[-0.05em]">{CONTACT_PAGE.title}</h1>
@@ -26,12 +28,15 @@ export default function ContactPage(): ReactElement {
         <ContactChannels />
       </div>
       <div id="start" className="min-w-0 scroll-mt-28 [grid-area:form]">
-        <div className="rounded-[24px] border border-line bg-surface p-[24px] shadow-[var(--shadow)] sm:p-[36px]">
-          <ContactForm />
+        <div className="ct-tray">
+          <div className="ct-core">
+            <ContactForm />
+          </div>
         </div>
       </div>
       <JsonLd data={contactPageJsonLd()} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])} />
     </section>
+    </div>
   );
 }

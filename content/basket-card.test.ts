@@ -1,14 +1,18 @@
 // content/basket-card.test.ts
 import { describe, expect, it } from "vitest";
-import { type BasketPick, PLAN_IDS } from "@/lib/pricing";
+import type { BasketPick } from "@/lib/pricing";
 import { BASKET_CARD, benefits, headline, nextStamp, oneTimeNote, type Rich } from "./basket-card";
 
 const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
 const text = (rich: Rich | null): string | null => (rich ? `${rich.before}${rich.strong}${rich.after}` : null);
 
 describe("Basket Card copy", () => {
-  it("has a line for every plan", () => {
-    expect(Object.keys(BASKET_CARD.slots).sort()).toEqual([...PLAN_IDS].sort());
+  it("has no line under each plan name", () => {
+    expect(BASKET_CARD).not.toHaveProperty("slots");
+  });
+  it("has a one-word phone label for the checkout button", () => {
+    expect(BASKET_CARD.checkoutCta).toBe("Continue to checkout");
+    expect(BASKET_CARD.checkoutCtaShort).toBe("Checkout");
   });
   it("has no em or en dashes", () => {
     const all: unknown[] = [BASKET_CARD];
@@ -40,8 +44,8 @@ describe("benefits", () => {
     ]);
     expect(benefits(pick(true, false, true)).map((b) => b.kind)).toEqual(["saving", "year"]);
   });
-  it("promises the free build only when the website is in the basket", () => {
-    expect(benefits(pick(true, false, false)).map(text)).toEqual(["Your website is built free"]);
+  it("lists nothing for a single plan, so the card does not repeat that the website is built free", () => {
+    expect(benefits(pick(true, false, false))).toEqual([]);
     expect(benefits(pick(false, true, false))).toEqual([]);
   });
 });
@@ -54,7 +58,7 @@ describe("oneTimeNote", () => {
   });
   it("tells a single plan what starting together earns", () => {
     expect(text(oneTimeNote(pick(true, false, false)))).toBe(
-      "Start two or three plans together at this checkout and we add up to ₹5,000 a month to your ads. Add a plan later and the ad money is gone.",
+      "Start two or three plans together at this checkout and we add up to ₹5,000 a month to your ads.",
     );
   });
   it("says nothing for a package without ad money", () => {
@@ -68,7 +72,6 @@ describe("nextStamp", () => {
       id: "growth",
       name: "Social Media and Ads",
       body: "With 20% off both plans, your total goes from ₹2,999 to ₹10,398 a month. You save ₹2,600 a month, and we add ₹2,000 a month to your ads.",
-      button: "Add Social",
     });
     expect(nextStamp(pick(true, true, false))?.body).toBe(
       "With 30% off all three plans, your total goes from ₹10,398 to ₹26,597 a month. Your saving goes from ₹2,600 to ₹11,400 a month, and your ad money from ₹2,000 to ₹5,000.",

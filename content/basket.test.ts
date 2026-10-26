@@ -25,6 +25,13 @@ describe("basket copy", () => {
   });
 });
 
+describe("phone labels", () => {
+  it("keeps the full wording and adds a shorter one for phones", () => {
+    expect(BASKET_COPY.compare).toBe("Compare all plans");
+    expect(BASKET_COPY.compareShort).toBe("Compare plans");
+  });
+});
+
 describe("planCount", () => {
   it("counts the basket out of every plan", () => {
     expect(planCount(pick(true, false, false))).toBe("1 of 3 plans");

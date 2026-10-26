@@ -47,5 +47,7 @@ test("contact presents a named form without published hours", async ({ page }) =
   await expect(page.getByText("Mon to Sat, 10 am to 7 pm IST", { exact: true })).toHaveCount(0);
   await expect(page.getByRole("form", { name: "Send us a message" })).toBeVisible();
   await expect(page.getByText("Fields marked optional can be left blank.")).toBeVisible();
+  // The "Your details" heading was dropped (owner, 2026-10-26): the fields speak for themselves.
+  await expect(page.getByText("Your details", { exact: true })).toHaveCount(0);
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
 });

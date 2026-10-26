@@ -29,9 +29,9 @@ const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
 
 /** The "₹0 + monthly" offer line. Shared by the homepage hero and the pricing hero. */
 export const OFFER = {
-  ariaLabel: `₹0 to build your website, plus ${MANAGED_MONTHLY} a month plus GST to keep it running`,
+  ariaLabel: `₹0 to build your website, plus ${MANAGED_MONTHLY} a month, GST included, to keep it running`,
   build: { price: "₹0", label: "to build your website" },
-  run: { price: MANAGED_MONTHLY, unit: "/month", label: "to keep it running, + GST" },
+  run: { price: MANAGED_MONTHLY, unit: "/month", label: "to keep it running, incl. GST" },
 } as const;
 
 /** The default share image (app/opengraph-image.tsx): a café letterboard, then an italic line under it. Chosen by the owner, 2026-10-21. */
@@ -263,7 +263,7 @@ export const HOME_FAQ_HEADING = "Questions, answered.";
 export const HOME_FAQ: readonly FaqItem[] = [
   {
     q: "Is the website really free?",
-    a: `Yes. There is no design or build fee: you pay nothing for us to build your website. You pay the monthly plan, ${MANAGED_MONTHLY} a month + GST, which keeps it hosted, secure and up to date.`,
+    a: `Yes. There is no design or build fee: you pay nothing for us to build your website. You pay the monthly plan, ${MANAGED_MONTHLY} a month, GST included, which keeps it hosted, secure and up to date.`,
   },
   {
     q: "What do I pay for every month?",
@@ -271,7 +271,7 @@ export const HOME_FAQ: readonly FaqItem[] = [
   },
   {
     q: "Is there anything to pay up front?",
-    a: `Just your first month, plus ${GST_LABEL} GST. After that you pay monthly.`,
+    a: `Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`,
   },
   {
     q: "How long does it take to build my website?",

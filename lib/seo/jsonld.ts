@@ -103,7 +103,7 @@ function monthlyOffer(name: string, price: number): ServiceLd["hasOfferCatalog"]
     "@type": "Offer",
     name,
     url: `${siteConfig.url}/pricing`,
-    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: "INR", unitText: "MONTH", valueAddedTaxIncluded: false },
+    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: "INR", unitText: "MONTH", valueAddedTaxIncluded: true },
   };
 }
 

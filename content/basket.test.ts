@@ -13,7 +13,7 @@ describe("basket copy", () => {
     for (const id of PLAN_IDS) expect(PRICING_PLANS[id].name).toBe(PLANS[id].name);
   });
   it("states the package offers as the mock does", () => {
-    expect(BASKET_COPY.heroIntro).toBe("Build your basket. Two plans are 20% off, all three are 30% off.");
+    expect(BASKET_COPY.heroIntro).toBe("Build your basket. Two plans are 10% off, all three are 20% off.");
     expect(BASKET_COPY.startPlan).toBe("Start my plan");
     expect(BASKET_COPY.proceed).toBe("Proceed to checkout");
   });
@@ -41,19 +41,19 @@ describe("planCount", () => {
 
 describe("offerNote", () => {
   it.each([pick(true, false, false), pick(false, true, false), pick(false, false, true)])("invites a single plan to take a package", (one) => {
-    expect(offerNote(one)).toBe("Take two plans and save 20%. Take all three and save 30%.");
+    expect(offerNote(one)).toBe("Take two plans and save 10%. Take all three and save 20%.");
   });
   it("prices Website + Social with its ad money for both", () => {
-    expect(offerNote(pick(true, true, false))).toBe("Website + Social: 20% off, so you save ₹2,600 a month. Start with both and we add ₹2,000 a month to your ads.");
+    expect(offerNote(pick(true, true, false))).toBe("Website + Social: 10% off, so you save ₹1,299 a month. Start with both and we add ₹1,500 a month to your ads.");
   });
   it("prices Website + SEO without ad money", () => {
-    expect(offerNote(pick(true, false, true))).toBe("Website + SEO: 20% off, so you save ₹5,600 a month.");
+    expect(offerNote(pick(true, false, true))).toBe("Website + SEO: 10% off, so you save ₹2,799 a month.");
   });
   it("prices Social + SEO with its ad money for both", () => {
-    expect(offerNote(pick(false, true, true))).toBe("Social + SEO: 20% off, so you save ₹7,000 a month. Start with both and we add ₹2,000 a month to your ads.");
+    expect(offerNote(pick(false, true, true))).toBe("Social + SEO: 10% off, so you save ₹3,499 a month. Start with both and we add ₹1,500 a month to your ads.");
   });
   it("says all three for the full basket", () => {
-    expect(offerNote(pick(true, true, true))).toBe("All three: 30% off, so you save ₹11,400 a month. Start with all three and we add ₹5,000 a month to your ads.");
+    expect(offerNote(pick(true, true, true))).toBe("All three: 20% off, so you save ₹7,599 a month. Start with all three and we add ₹3,000 a month to your ads.");
   });
 });
 
@@ -62,6 +62,6 @@ describe("saveLine", () => {
     expect(saveLine(pick(true, false, false))).toBe("");
   });
   it("prints the monthly saving of a package", () => {
-    expect(saveLine(pick(true, true, true))).toBe("You save ₹11,400 a month");
+    expect(saveLine(pick(true, true, true))).toBe("You save ₹7,599 a month");
   });
 });

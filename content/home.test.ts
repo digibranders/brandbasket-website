@@ -62,8 +62,8 @@ describe("home content", () => {
     expect(text).not.toContain("small edits");
   });
   it("builds the FAQ prices from lib/pricing", () => {
-    expect(HOME_FAQ[0]?.a).toContain(`${formatInr(PLANS.website.monthly)} a month + GST`);
-    expect(HOME_FAQ[2]?.a).toBe(`Just your first month, plus ${GST_LABEL} GST. After that you pay monthly.`);
+    expect(HOME_FAQ[0]?.a).toContain(`${formatInr(PLANS.website.monthly)} a month, GST included`);
+    expect(HOME_FAQ[2]?.a).toBe(`Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`);
   });
   it("answers cancel and failed payment with the shared policy and says only the domain stays the customer's", () => {
     const answer = (q: string): string | undefined => HOME_FAQ.find((f) => f.q === q)?.a;

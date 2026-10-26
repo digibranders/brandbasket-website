@@ -1,7 +1,7 @@
 // e2e/basket.spec.ts
 import { expect, test } from "@playwright/test";
 import { PRICING_PLANS } from "@/content/basket";
-import { type BasketPick, firstPayment, formatInr, packageTotal, PLAN_IDS } from "@/lib/pricing";
+import { type BasketPick, formatInr, packageTotal, PLAN_IDS } from "@/lib/pricing";
 
 test("the basket renders cast shadows as well as its main scene", async ({ page }) => {
   await page.addInitScript(() => {
@@ -63,7 +63,7 @@ const PICKS: readonly BasketPick[] = [
   { website: true, growth: true, search: true },
 ];
 
-const pickTotal = (pick: BasketPick): string => formatInr(firstPayment(packageTotal(pick)).total);
+const pickTotal = (pick: BasketPick): string => formatInr(packageTotal(pick));
 
 for (const pick of PICKS) {
   const total = pickTotal(pick);
@@ -74,13 +74,13 @@ for (const pick of PICKS) {
       // The website starts on; flip every plan that differs from the pick.
       if (pick[id] !== (id === "website")) await hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel }).click();
     }
-    await expect(hero.getByText(total, { exact: true })).toBeVisible();
+    await expect(hero.locator("[data-basket-total]").getByText(total, { exact: true })).toBeVisible();
   });
 }
 
 test("the expected totals match the owner's figures", () => {
   // Guards the formula itself: if these move, prices changed and the owner signs off on the new figures.
-  expect(PICKS.map(pickTotal)).toEqual(["₹3,538.82", "₹12,269.64", "₹26,429.64", "₹31,384.46"]);
+  expect(PICKS.map(pickTotal)).toEqual(["₹2,999", "₹11,699", "₹25,199", "₹30,398"]);
 });
 
 test("Social and SEO without the website is the 20% package", async ({ page }) => {
@@ -89,7 +89,7 @@ test("Social and SEO without the website is the 20% package", async ({ page }) =
   await hero.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.search.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
-  await expect(hero.getByText("₹33,037.64", { exact: true })).toBeVisible();
+  await expect(hero.locator("[data-basket-total]").getByText("₹31,499", { exact: true })).toBeVisible();
 });
 
 test("the last switch on cannot be turned off", async ({ page }) => {
@@ -102,7 +102,7 @@ test("the last switch on cannot be turned off", async ({ page }) => {
   await website.focus();
   await page.keyboard.press("Space");
   await expect(website).toHaveAttribute("aria-checked", "true");
-  await expect(hero.getByText(total, { exact: true })).toBeVisible();
+  await expect(hero.locator("[data-basket-total]").getByText(total, { exact: true })).toBeVisible();
   await expect(website).toBeFocused();
 });
 
@@ -119,12 +119,12 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await page.goto("/");
   const card = page.locator("#basket-card");
   await card.getByRole("button", { name: "Add Social Media and Ads", exact: true }).click();
-  await expect(card.getByText("20% off and ₹2,000 a month for your ads.", { exact: true })).toBeVisible();
+  await expect(card.getByText("10% off and ₹1,500 a month for your ads.", { exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: "Remove Social Media and Ads" })).toHaveAttribute("aria-pressed", "true");
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Managed Website", "Social Media and Ads"]);
   await card.getByRole("button", { name: "Add Local SEO + AEO", exact: true }).click();
-  await expect(card.getByText("Full basket. 30% off and ₹5,000 a month for your ads.", { exact: true })).toBeVisible();
-  await expect(card.getByText(formatInr(firstPayment(packageTotal({ website: true, growth: true, search: true })).total), { exact: false }).first()).toBeVisible();
+  await expect(card.getByText("Full basket. 20% off and ₹3,000 a month for your ads.", { exact: true })).toBeVisible();
+  await expect(card.getByText(formatInr(packageTotal({ website: true, growth: true, search: true })), { exact: false }).first()).toBeVisible();
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {

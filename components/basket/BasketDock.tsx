@@ -5,7 +5,7 @@ import { type CSSProperties, type ReactElement, useEffect, useRef, useState } fr
 import { BASKET_COPY, saveLine } from "@/content/basket";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, firstPayment, formatInr, PLAN_IDS, packageTotal } from "@/lib/pricing";
+import { basketPlans, formatInr, PLAN_IDS, packageTotal } from "@/lib/pricing";
 import { dockLabel, PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { showsDock } from "./dock-paths";
@@ -26,7 +26,7 @@ interface Pulse {
 const CLICK_WINDOW_MS = 600;
 
 /**
- * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month with GST, and the
+ * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month (GST included), and the
  * way to start. The ink island (owner's pick, 2026-10-26; docs/design/phone-dock-options.html) at the foot of the screen on
  * phones and tablets: a rattan basket with its count, the total and one bar per plan in its colour, and a white button.
  * From 1000px up the Woven basket (BasketWall) does this job.
@@ -115,7 +115,7 @@ export function BasketDock(): ReactElement | null {
   const delay = pulse?.delay ?? 0;
   const delayStyle = { "--d": `${delay}ms` } as CSSProperties;
   const saving = saveLine(pick);
-  const total = formatInr(firstPayment(packageTotal(pick)).total);
+  const total = formatInr(packageTotal(pick));
   return (
     <div
       data-basket-dock

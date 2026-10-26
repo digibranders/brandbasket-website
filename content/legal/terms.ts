@@ -45,7 +45,7 @@ export const termsOfService: LegalDocument = {
     {
       heading: "5. Fees and payment",
       paragraphs: [
-        `Plans are billed monthly, in advance, at the prices above plus ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel. ${RENEWAL_REMINDER}`,
+        `Plans are billed monthly, in advance, at the prices above, which include ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel. ${RENEWAL_REMINDER}`,
         PACKAGE_TERMS,
         AD_CREDIT_TERMS,
         PAYMENT_FAILURE,

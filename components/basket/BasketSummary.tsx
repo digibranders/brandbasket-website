@@ -8,7 +8,7 @@ import { BASKET_COPY, offerNote, planCount, saveLine } from "@/content/basket";
 import { slotLabel } from "@/content/basket-card";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, firstPayment, formatInr, PLAN_IDS, packageTotal, PLANS, type PlanId, samePick } from "@/lib/pricing";
+import { basketPlans, formatInr, PLAN_IDS, packageTotal, PLANS, type PlanId, samePick } from "@/lib/pricing";
 import { signupHref } from "@/lib/signup";
 import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
@@ -32,7 +32,7 @@ interface Change {
 
 /**
  * The basket card (docs/design/nav-cart-options.html, Woven): what is in the basket on a three-part meter, the package
- * offer, every plan with add and remove, the monthly total with GST and the checkout button. The white core of a glass
+ * offer, every plan with add and remove, the monthly total (GST included) and the checkout button. The white core of a glass
  * tray; the tray (.bc-shell) belongs to whoever shows the card. Styles in wall.css. Its parts rise in turn whenever an
  * ancestor carries data-open="true".
  */
@@ -97,7 +97,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
       </ul>
       <div className="bc-total bc-rise" style={{ "--i": 4 } as CSSProperties}>
         <div>
-          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatInr(firstPayment(packageTotal(pick)).total)} dir={change.dir} /></p>
+          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatInr(packageTotal(pick))} dir={change.dir} /></p>
           <small>{BASKET_COPY.phoneBarCaption}</small>
         </div>
         {saving ? <span className="bc-chip">{saving}</span> : null}

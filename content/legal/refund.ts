@@ -12,7 +12,7 @@ export const refundPolicy: LegalDocument = {
   title: "Refund and cancellation policy",
   updated: "October 2026",
   version: LEGAL_TEXT_VERSION,
-  intro: `How billing, cancellation and refunds work for everything you buy from ${tradeName}, a brand of ${legalName}. This policy forms part of our Terms and conditions. Prices are in Indian rupees, and GST at ${gstPercent}% is added to every price.`,
+  intro: `How billing, cancellation and refunds work for everything you buy from ${tradeName}, a brand of ${legalName}. This policy forms part of our Terms and conditions. Prices are in Indian rupees, and every price includes GST at ${gstPercent}%.`,
   sections: [
     {
       heading: "How billing works",

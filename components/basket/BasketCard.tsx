@@ -6,7 +6,7 @@ import type { CSSProperties, ReactElement } from "react";
 import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNote, type Rich, slotLabel } from "@/content/basket-card";
 import { BASKET_COPY } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, type BasketPick, firstPayment, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
+import { basketPlans, type BasketPick, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
@@ -136,11 +136,7 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">
           {saving ? <s className="text-[22px] tracking-[-0.02em] text-ink-2 decoration-rattan-text/80 decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s> : null}
           <span className="text-[clamp(42px,4.6vw,56px)] font-medium leading-none tracking-[-0.05em]">{formatInr(monthly)}</span>
-          <small className="font-sans text-sm text-ink-2">{BASKET_COPY.plusGst}</small>
-        </p>
-        <p className="num text-[13.5px] text-ink-2">
-          {saving ? <s className="mr-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(firstPayment(monthlyTotal(pick)).total)}</s> : null}
-          {formatInr(firstPayment(monthly).total)} {BASKET_COPY.withGstBilled}
+          <small className="font-sans text-sm text-ink-2">{BASKET_COPY.inclGst}</small>
         </p>
       </div>
     </div>

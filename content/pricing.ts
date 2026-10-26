@@ -2,7 +2,7 @@
 // Copy for /pricing, word for word from the approved mock (docs/design/mock.html, #view-pricing).
 // Every price, total, GST figure and cap is built from lib/pricing.ts. The hero plan rows and basket labels live in
 // content/basket.ts. Cancellation wording reuses content/legal/cancellation.ts so pricing and legal agree.
-import { AD_BUDGET_CAP, formatInr, GST_LABEL, PACKAGES, PLANS, REEL_RATE, type Package, type PlanId } from "@/lib/pricing";
+import { AD_BUDGET_CAP, formatInr, PACKAGES, PLANS, REEL_RATE, type Package, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -39,12 +39,12 @@ export interface PlanColumn {
 
 export const COMPARE = {
   heading: "Which plan fits you?",
-  lede: "Three plans, each on its own. Prices are monthly, before GST. Add more than one and the prices drop.",
+  lede: "Three plans, each on its own. Prices are monthly, GST included. Add more than one and the prices drop.",
   doesLabel: "What we do",
   excludesLabel: "Not included",
 } as const;
 
-const PRICE_NOTE = "a month + GST";
+const PRICE_NOTE = "a month, incl. GST";
 
 /** Order is the order on the page: Website, Social, Search. Numbers are built from lib/pricing, so a price change shows here. */
 export const PLAN_COLUMNS: readonly PlanColumn[] = [
@@ -108,7 +108,7 @@ export const PLAN_COLUMNS: readonly PlanColumn[] = [
 /** What every plan has in common, shown once under the columns. */
 export const EVERY_PLAN = {
   label: "Every plan",
-  items: ["Cancel anytime, no notice period", `Billed monthly, plus ${GST_LABEL} GST`, "A real person to ask", "A monthly report in plain words"],
+  items: ["Cancel anytime, no notice period", "Billed monthly, GST included", "A real person to ask", "A monthly report in plain words"],
 } as const;
 
 /** One list in an Everything included group: ticked lines, or lines that are quoted or added with other plans. */

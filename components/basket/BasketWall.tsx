@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation";
 import { type CSSProperties, type FocusEvent, type PointerEvent, type ReactElement, useCallback, useEffect, useId, useRef, useState } from "react";
 import { BASKET_COPY } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, firstPayment, formatInr, packageFor, packageTotal, PLAN_IDS, type PlanId } from "@/lib/pricing";
+import { basketPlans, formatInr, packageFor, packageTotal, PLAN_IDS, type PlanId } from "@/lib/pricing";
 import { PLAN_INK } from "./basket-view";
 import { basketPanel } from "./basket-panel";
 import { BasketSummary, PLAN_ICON } from "./BasketSummary";
@@ -30,7 +30,7 @@ const CLOSE_AFTER_MS = 320;
 /**
  * The Woven basket (owner's pick, 2026-10-26; docs/design/nav-cart-options.html): from 1000px up, a small rattan basket
  * hangs on the right wall of the pages that sell the plans, at every scroll position. The plans in the basket sit in
- * it in their colours and the monthly total with GST hangs below on a tag. Hover, focus or a click opens the basket card
+ * it in their colours and the monthly total (GST included) hangs below on a tag. Hover, focus or a click opens the basket card
  * (BasketSummary). A plan added anywhere on the page flies into it as a dot; the basket swings and its tag swings after.
  * Phones and tablets keep BasketDock. Styles in wall.css.
  */
@@ -115,7 +115,7 @@ export function BasketWall(): ReactElement | null {
   if (!active) return null;
 
   const count = basketPlans(pick).length;
-  const total = formatInr(firstPayment(packageTotal(pick)).total);
+  const total = formatInr(packageTotal(pick));
   const percent = packageFor(pick)?.percent;
   const swung = landing !== null && landing.added.length > 0;
   const delayStyle = { "--d": `${landing?.delay ?? 0}ms` } as CSSProperties;

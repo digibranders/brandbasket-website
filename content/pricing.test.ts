@@ -79,7 +79,7 @@ describe("pricing content", () => {
       "Is ad spend included?",
       "Do you guarantee rankings or leads?",
     ]);
-    expect(PRICING_FAQ[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + SEO is 20% off.");
+    expect(PRICING_FAQ[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + SEO is 10% off.");
   });
   it("keeps the Social ad money equal across the two-plan packages that include it", () => {
     // One amount covers both two-plan packages with Social, so they must stay equal.

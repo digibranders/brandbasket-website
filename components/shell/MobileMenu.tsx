@@ -13,6 +13,7 @@ export function MobileMenu(): ReactElement {
   const [open, setOpen] = useState(false);
   const sheetId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
+  const sheetRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!open) return;
@@ -20,8 +21,18 @@ export function MobileMenu(): ReactElement {
       setOpen(false);
       toggleRef.current?.focus();
     };
+    // A press anywhere outside the menu and its button closes it. The button toggles by itself.
+    const onPress = (event: PointerEvent): void => {
+      const target = event.target;
+      if (!(target instanceof Node) || sheetRef.current?.contains(target) || toggleRef.current?.contains(target)) return;
+      setOpen(false);
+    };
     window.addEventListener("keydown", onKey);
-    return () => window.removeEventListener("keydown", onKey);
+    document.addEventListener("pointerdown", onPress, true);
+    return () => {
+      window.removeEventListener("keydown", onKey);
+      document.removeEventListener("pointerdown", onPress, true);
+    };
   }, [open]);
 
   return (
@@ -30,7 +41,7 @@ export function MobileMenu(): ReactElement {
         {open ? <X aria-hidden="true" className="size-5" /> : <List aria-hidden="true" className="size-5" />}
       </button>
       {open && (
-        <div id={sheetId} className="fixed inset-x-0 top-16 z-20 grid max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-surface shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
+        <div id={sheetId} ref={sheetRef} className="fixed inset-x-0 top-16 z-20 grid max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-surface shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
           {PRIMARY_NAV.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block border-b border-line px-[clamp(18px,4vw,56px)] py-4 font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken">{link.label}</Link>
           ))}

@@ -31,6 +31,17 @@ test.describe("phone menu", () => {
     await expect(pricing).toBeHidden();
     await expect(open).toBeFocused();
   });
+
+  test("closes when the page outside it is pressed", async ({ page }) => {
+    await page.goto("/");
+    const pricing = page.locator("header nav").getByRole("link", { name: "Pricing", exact: true });
+
+    await page.getByRole("button", { name: "Open menu" }).click();
+    await expect(pricing).toBeVisible();
+    // Below the sheet, on the page behind it.
+    await page.mouse.click(60, 790);
+    await expect(pricing).toBeHidden();
+  });
 });
 
 test("an unknown path returns 404", async ({ page }) => {

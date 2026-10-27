@@ -1,14 +1,13 @@
 // lib/seo/routes.ts
 // One place for every page's title, description and sitemap entry. Titles are complete (they are set as absolute
-// titles, so the layout's "%s | Brandbasket" template never runs). Prices are built from lib/pricing.ts.
+// titles, so the layout's "%s | Brandbasket" template never runs). No title or description carries a price.
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
 import { SERVICE_PAGES, type ServicePageContent, servicePageFor } from "@/content/services";
 import { refundPolicy } from "@/content/legal/refund";
 import { shippingPolicy } from "@/content/legal/shipping";
 import { termsOfService } from "@/content/legal/terms";
-import { type Currency, formatMoney } from "@/lib/currency";
-import { PACKAGES, planPrice, PLANS } from "@/lib/pricing";
+import { PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 export interface RouteMeta {
@@ -25,35 +24,28 @@ const { legalName, tradeName, postalAddress } = businessDetails;
 const UPDATED = "2026-10-21";
 const SERVICES_UPDATED = "2026-10-26";
 
-/** The home page's entry in a currency: the price in its description is the visitor's own. */
-export function homeRoute(currency: Currency): RouteMeta {
-  const gst = currency === "INR" ? ", GST included" : "";
-  return {
-    path: "/",
-    title: `Get your business website free | ${tradeName}`,
-    description: `A professional website for your local business, built free and live in about a week. Hosting, security and upkeep for ${formatMoney(planPrice("website", currency), currency)} a month${gst}.`,
-    updated: UPDATED,
-    priority: 1,
-  };
-}
+/** The home page's entry. Titles and descriptions never carry a price, so one entry serves both currencies. */
+export const HOME_ROUTE: RouteMeta = {
+  path: "/",
+  title: `Get your business website free | ${tradeName}`,
+  description: "A professional website for your local business, built free and live in about a week. We host, secure and update it for you every month.",
+  updated: UPDATED,
+  priority: 1,
+};
 
-/** The pricing page's entry in a currency. Only rupee prices have GST inside them, so only the rupee description says so. */
-export function pricingRoute(currency: Currency): RouteMeta {
-  const price = (id: keyof typeof PLANS): string => formatMoney(planPrice(id, currency), currency);
-  const gst = currency === "INR" ? ", GST included" : "";
-  return {
-    path: "/pricing",
-    title: `Pricing: free website, plans from ${price("website")} a month`,
-    description: `Your website is built free. ${PLANS.website.name} ${price("website")} a month, ${PLANS.growth.name} ${price("growth")}, Local SEO ${price("search")}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off${gst}.`,
-    updated: UPDATED,
-    priority: 0.9,
-  };
-}
+/** The pricing page's entry. No price here either: a shared link or a search result shows the words, not the amounts. */
+export const PRICING_ROUTE: RouteMeta = {
+  path: "/pricing",
+  title: `Pricing: a free website and monthly plans | ${tradeName}`,
+  description: `Your website is built free. Choose ${PLANS.website.name}, ${PLANS.growth.name} or ${PLANS.search.name}, on their own or together, and pay month to month.`,
+  updated: UPDATED,
+  priority: 0.9,
+};
 
-/** The registry. The home and pricing entries here are the rupee ones: the sitemap, llms.txt and search engines use these. */
+/** The registry: the sitemap, llms.txt and search engines use these. */
 export const ROUTES = {
-  home: homeRoute("INR"),
-  pricing: pricingRoute("INR"),
+  home: HOME_ROUTE,
+  pricing: PRICING_ROUTE,
   contact: {
     path: "/contact",
     title: `Contact ${tradeName}: free websites for local business`,

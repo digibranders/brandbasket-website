@@ -86,8 +86,6 @@ function gstNote(currency: Currency): string {
 
 function buildServicePages(currency: Currency): readonly ServicePageContent[] {
   const WEBSITE_PRICE = formatMoney(planPrice("website", currency), currency);
-  const GROWTH_PRICE = formatMoney(planPrice("growth", currency), currency);
-  const SEARCH_PRICE = formatMoney(planPrice("search", currency), currency);
   const FREE = formatMoney(0, currency);
   const GST_NOTE = gstNote(currency);
   const extras = extrasFor(currency);
@@ -100,8 +98,8 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       id: "website",
       slug: "managed-website",
       path: "/services/managed-website",
-      metaTitle: `Managed Website, free build, ${WEBSITE_PRICE} a month | Brandbasket`,
-      metaDescription: `We build up to 10 pages for your business for free, then host, secure and update them for ${WEBSITE_PRICE} a month${GST_NOTE}.`,
+      metaTitle: "Managed Website: a free build, run for you | Brandbasket",
+      metaDescription: "We build up to 10 pages for your business free and put them live in about a week. Then we host, secure and update it every month, with 2 edits included.",
       h1: "A free website for your business, looked after every month.",
       lede: `We design up to 10 pages for ${FREE} and put them online. Then we keep them hosted, secure and up to date, so you never deal with the technical side.`,
       glance: ["Up to 10 pages, built for you", "Live in about a week", "2 edits a month, 15 minutes each", "A monthly website health report"],
@@ -166,8 +164,8 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       id: "growth",
       slug: "social-media-and-ads",
       path: "/services/social-media-and-ads",
-      metaTitle: `Social Media and Ads, ${GROWTH_PRICE} a month | Brandbasket`,
-      metaDescription: `We plan your Instagram and Facebook posts, reply to reviews and run your ads for ${GROWTH_PRICE} a month${GST_NOTE}. Ad money with packages.`,
+      metaTitle: "Social Media and Ads for local business | Brandbasket",
+      metaDescription: "2 Instagram and Facebook posts a week, your Google Business Profile kept current, review replies drafted and your ads run. A monthly report in plain words.",
       h1: "Posts, reviews and ads, handled for you.",
       lede: `We plan your Instagram and Facebook posts with you, keep your Google Business Profile current and run your Facebook and Instagram ads. You get a report every month.`,
       glance: ["Posts planned with you and scheduled", "Google Business Profile kept current", `Ads managed, up to ${adCap} a month of your budget`, "A monthly posts, profile and ads report"],
@@ -227,8 +225,8 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       id: "search",
       slug: "local-seo-aeo",
       path: "/services/local-seo-aeo",
-      metaTitle: `Local SEO + AEO, ${SEARCH_PRICE} a month | Brandbasket`,
-      metaDescription: `We improve how your business shows up on Google and in AI answers: local research, 5 pages a month and a monthly report. ${SEARCH_PRICE} a month${GST_NOTE}.`,
+      metaTitle: "Local SEO + AEO for local business | Brandbasket",
+      metaDescription: "Local keyword research, 5 pages optimised a month and answers shaped for Google and AI tools like ChatGPT. A monthly report on rankings and enquiries.",
       h1: "Be the answer when customers search near you.",
       lede: "We improve how your business shows up on Google and in AI answers, with local research, 5 optimised pages a month and a report you can read.",
       glance: ["Local keyword and competitor research", "5 pages optimised a month", "Your questions shaped into direct answers", "A monthly report on rankings, traffic and enquiries"],

@@ -1,6 +1,4 @@
 // lib/site-config.ts
-import { formatMoney } from "@/lib/currency";
-import { planPrice } from "@/lib/pricing";
 
 /**
  * Registered business facts. Static on purpose: they identify the legal entity on every page, invoice and JSON-LD
@@ -97,7 +95,7 @@ export const siteConfig: SiteConfig = {
   name: businessDetails.tradeName,
   url: "https://brandbasket.in",
   appUrl: "https://app.brandbasket.in",
-  description: `Website, Google profile, ads and local search for local businesses in India, run for you every month. From ${formatMoney(planPrice("website", "INR"), "INR")} a month.`,
+  description: "Website, Google profile, ads and local search for local businesses in India, run for you every month.",
 };
 
 export { isProductionSite } from "./indexing";

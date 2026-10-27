@@ -40,8 +40,8 @@ describe("businessDetails", () => {
     }
   });
 
-  it("quotes the entry price from the pricing module", () => {
-    expect(siteConfig.description).toContain("From ₹2,999 a month");
+  it("carries no price in the default description", () => {
+    expect(siteConfig.description).not.toMatch(/[₹$]/);
   });
 
   it("serves the site from brandbasket.in", () => {

@@ -7,6 +7,7 @@ import { buildConfirmationEmail, buildLeadEmail } from "@/lib/email/contact-temp
 import { serverEnv, type ServerEnv } from "@/lib/env";
 import { screenSubmission } from "@/lib/security/honeypot";
 import { clientKey, rateLimit } from "@/lib/security/rateLimit";
+import { postEnquiryToTeams } from "@/lib/teams-alert";
 
 export const runtime = "nodejs";
 
@@ -76,5 +77,6 @@ export async function POST(request: Request): Promise<Response> {
   } catch (error) {
     logFailure("confirmation send", error);
   }
+  await postEnquiryToTeams(parsed.data);
   return Response.json({ ok: true });
 }

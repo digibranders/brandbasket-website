@@ -8,7 +8,6 @@ const lead: ContactInput = {
   email: "asha@example.in",
   business: "<script>alert(1)</script> Dental",
   city: "Thane",
-  plans: ["website", "growth"],
   message: "Call after 5 & before 8",
   consent: true,
   noticeVersion: "2026-10-19.1",
@@ -45,12 +44,13 @@ describe("buildLeadEmail", () => {
     expect(mail.html).toContain("Call after 5 &amp; before 8");
   });
 
-  it("puts the business and basket in the subject", () => {
-    expect(mail.subject).toBe("New enquiry: <script>alert(1)</script> Dental (Managed Website + Social Media and Ads)");
+  it("puts the business in the subject", () => {
+    expect(mail.subject).toBe("New enquiry: <script>alert(1)</script> Dental");
   });
 
-  it("leaves the basket out of the subject for a general enquiry", () => {
-    expect(buildLeadEmail({ ...lead, plans: [] }).subject).toBe("New enquiry: <script>alert(1)</script> Dental");
+  it("has no basket row", () => {
+    expect(mail.text).not.toContain("Basket");
+    expect(mail.html).not.toContain("Basket");
   });
 
   it("ends with Reply, Call and WhatsApp links when a phone number was given", () => {
@@ -84,9 +84,8 @@ describe("buildLeadEmail", () => {
 });
 
 describe("buildConfirmationEmail", () => {
-  it("greets by first name and names the plans from the fixed list", () => {
+  it("greets by first name", () => {
     const mail = buildConfirmationEmail(lead);
-    expect(mail.text).toContain("You asked about: Managed Website + Social Media and Ads.");
     expect(mail.subject).toBe("We have your message. Brandbasket");
     expect(mail.text).toContain("Hi Asha,");
     expect(mail.text).toContain("within one working day");
@@ -100,8 +99,8 @@ describe("buildConfirmationEmail", () => {
     expect(mail.html).toContain("Hi Asha, we have your message.");
   });
 
-  it("leaves the plans line out for a general enquiry", () => {
-    const mail = buildConfirmationEmail({ ...lead, plans: [] });
+  it("does not say what the visitor asked about", () => {
+    const mail = buildConfirmationEmail(lead);
     expect(mail.text).not.toContain("You asked about");
     expect(mail.html).not.toContain("You asked about");
   });

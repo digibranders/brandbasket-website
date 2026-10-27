@@ -1,6 +1,5 @@
 import { CONTACT_LABELS } from "@/content/contact";
 import type { ContactInput } from "@/lib/contact-schema";
-import { PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 export interface LeadEmail {
@@ -90,9 +89,8 @@ function receipt({ title, kicker, heading, intro, body, footer }: Receipt): stri
 
 /** The lead notification sent to the Brandbasket inbox, with every field the visitor gave. */
 export function buildLeadEmail(input: ContactInput): LeadEmail {
-  const basket = input.plans.map((id) => PLANS[id].name).join(" + ");
   // A subject is one line: collapse any whitespace the visitor typed.
-  const subject = `New enquiry: ${input.business}${basket ? ` (${basket})` : ""}`.replace(/\s+/g, " ");
+  const subject = `New enquiry: ${input.business}`.replace(/\s+/g, " ");
 
   const rows: readonly (readonly [string, string])[] = [
     [CONTACT_LABELS.name, input.name],
@@ -100,7 +98,6 @@ export function buildLeadEmail(input: ContactInput): LeadEmail {
     [CONTACT_LABELS.phone, input.phone || NOT_GIVEN],
     [CONTACT_LABELS.business, input.business],
     [CONTACT_LABELS.city, input.city || NOT_GIVEN],
-    ["Basket", basket || "none, general enquiry"],
     [CONTACT_LABELS.message, input.message],
     ["Privacy policy", `agreed, notice version ${input.noticeVersion}`],
   ];
@@ -117,7 +114,6 @@ export function buildLeadEmail(input: ContactInput): LeadEmail {
     row(CONTACT_LABELS.email, `<a href="mailto:${escapeHtml(input.email)}" style="${linkStyle}">${escapeHtml(input.email)}</a>`),
     row(CONTACT_LABELS.phone, dial ? `<a href="tel:+${dial}" style="${linkStyle}">${escapeHtml(phoneGiven)}</a>` : escapeHtml(phoneGiven || NOT_GIVEN)),
     row(CONTACT_LABELS.city, escapeHtml(cityGiven || NOT_GIVEN)),
-    row("Basket", escapeHtml(basket || "none, general enquiry")),
     row(CONTACT_LABELS.message, message),
     row("Privacy policy", escapeHtml(`agreed, notice version ${input.noticeVersion}`)),
     `<tr><td colspan="2" style="padding:22px 0 0;border-top:1px solid ${LINE}">${button(`mailto:${input.email}`, PERSON_NAME.test(firstName) ? `Reply to ${firstName}` : "Reply", true)}${dial ? `${button(`tel:+${dial}`, "Call", false)}${button(`https://wa.me/${dial}`, "WhatsApp", false)}` : ""}</td></tr>`,
@@ -139,18 +135,16 @@ const PERSON_NAME = /^\p{L}[\p{L}'-]{0,39}$/u;
 
 /**
  * The confirmation sent to the address on the form. Anyone can type someone else's address, so it repeats nothing the
- * visitor wrote except a plain first name: the plans come from a fixed list, and the rest is our own wording.
+ * visitor wrote except a plain first name, and the rest is our own wording.
  */
 export function buildConfirmationEmail(input: ContactInput): LeadEmail {
   const firstName = input.name.trim().split(/\s+/)[0] ?? "";
   const greeting = PERSON_NAME.test(firstName) ? `Hi ${firstName},` : "Hello,";
-  const basket = input.plans.map((id) => PLANS[id].name).join(" + ");
   const { phone, whatsappHref, email, legalName, address, hours } = businessDetails;
   const subject = "We have your message. Brandbasket";
 
   const paragraphs = [
     "Thanks for getting in touch with Brandbasket. Your message has reached our team, and we will reply within one working day.",
-    ...(basket ? [`You asked about: ${basket}.`] : []),
     `For anything urgent, WhatsApp or call us on ${phone}, ${hours}.`,
   ];
   const ignore = `You are getting this email because this address was entered on the contact form at ${siteConfig.url.replace("https://", "")}. If that was not you, you can ignore it and we will not write again.`;
@@ -159,7 +153,6 @@ export function buildConfirmationEmail(input: ContactInput): LeadEmail {
 
   const heading = PERSON_NAME.test(firstName) ? `Hi ${firstName}, we have your message.` : "We have your message.";
   const body = [
-    ...(basket ? [row("You asked about", escapeHtml(basket))] : []),
     row("In a hurry?", `WhatsApp or call <a href="tel:${businessDetails.phoneHref}" style="${linkStyle}">${escapeHtml(phone)}</a>, ${escapeHtml(hours)}.`),
     `<tr><td colspan="2" style="padding:22px 0 0;border-top:1px solid ${LINE}">${button(whatsappHref, "Chat on WhatsApp", true)}</td></tr>`,
     `<tr><td colspan="2" style="padding:14px 0 0;font-family:${FONT};font-size:14.5px;line-height:1.6;color:${INK_2}">The Brandbasket team<br><a href="mailto:${email}" style="${linkStyle}">${email}</a></td></tr>`,

@@ -73,7 +73,7 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
           <h4 className="font-display text-[28px] font-medium leading-none tracking-[-0.035em] text-rattan-ink">{BASKET_CARD.title}</h4>
           <p className="max-w-[40ch] text-[15px] text-ink-2">{BASKET_CARD.intro}</p>
         </div>
-        <Image src="/brand/brandbasket-mark-small-rattan.svg" alt="" width={40} height={40} className="size-10 flex-none opacity-85" />
+        <Image src="/brand/brandbasket-mark.svg" alt="" width={40} height={40} className="size-10 flex-none" />
       </div>
       <div className="grid grid-cols-3 gap-3 max-[560px]:gap-1.5">
         {PLAN_IDS.map((id) => <Slot key={id} id={id} pick={pick} onlyOne={count === 1} currency={currency} />)}

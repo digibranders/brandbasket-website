@@ -44,6 +44,48 @@ test.describe("phone menu", () => {
   });
 });
 
+test.describe("Services menu", () => {
+  test.use({ viewport: { width: 1280, height: 800 } });
+
+  test("opens on a press, lists the three service pages and closes with Escape", async ({ page }) => {
+    await page.goto("/");
+    const nav = page.getByRole("navigation", { name: "Site", exact: true });
+    const toggle = nav.getByRole("button", { name: "Services", exact: true });
+    const names = ["Managed Website", "Social Media and Ads", "Local SEO + AEO"];
+
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    for (const name of names) await expect(nav.getByRole("link", { name, exact: true })).toBeHidden();
+    await toggle.click();
+    await expect(toggle).toHaveAttribute("aria-expanded", "true");
+    for (const name of names) await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
+    await expect(nav.getByRole("link", { name: "Social Media and Ads", exact: true })).toHaveAttribute("href", "/services/social-media-and-ads");
+
+    await page.keyboard.press("Escape");
+    await expect(toggle).toHaveAttribute("aria-expanded", "false");
+    await expect(toggle).toBeFocused();
+  });
+
+  test("opens on hover and a link goes to its page", async ({ page }) => {
+    await page.goto("/");
+    const nav = page.getByRole("navigation", { name: "Site", exact: true });
+    await nav.getByRole("button", { name: "Services", exact: true }).hover();
+    await nav.getByRole("link", { name: "Local SEO + AEO", exact: true }).click();
+    await expect(page).toHaveURL(/\/services\/local-seo-aeo$/);
+  });
+});
+
+test("the phone menu lists the three service pages under Services", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await page.getByRole("button", { name: "Open menu" }).click();
+  const link = page.getByRole("link", { name: "Managed Website", exact: true });
+  await expect(link).toBeHidden();
+  await page.getByRole("button", { name: "Services", exact: true }).click();
+  await expect(link).toBeVisible();
+  await link.click();
+  await expect(page).toHaveURL(/\/services\/managed-website$/);
+});
+
 test("an unknown path returns 404", async ({ page }) => {
   const res = await page.goto("/no-such-page");
   expect(res?.status()).toBe(404);

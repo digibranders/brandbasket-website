@@ -1,17 +1,20 @@
 // components/shell/MobileMenu.tsx
 "use client";
 
-import { List, X } from "@phosphor-icons/react";
+import { CaretDown, List, UserCircle, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type ReactElement, useEffect, useId, useRef, useState } from "react";
 import { basketPanel } from "@/components/basket/basket-panel";
 import { BASKET_COPY } from "@/content/basket";
-import { LOGIN_LINK, PRIMARY_NAV } from "@/content/navigation";
+import { LOGIN_LINK, PRIMARY_NAV, SERVICES_LABEL, SERVICES_NAV } from "@/content/navigation";
 import { trackAttrs } from "@/lib/analytics";
+import { SERVICE_ICONS } from "./ServicesMenu";
 
 export function MobileMenu(): ReactElement {
   const [open, setOpen] = useState(false);
+  const [servicesOpen, setServicesOpen] = useState(false);
   const sheetId = useId();
+  const servicesId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
   const sheetRef = useRef<HTMLDivElement>(null);
 
@@ -42,10 +45,25 @@ export function MobileMenu(): ReactElement {
       </button>
       {open && (
         <div id={sheetId} ref={sheetRef} className="fixed inset-x-0 top-16 z-20 grid max-h-[calc(100dvh-4rem)] overflow-y-auto border-b border-line bg-surface shadow-[var(--shadow-sheet)] min-[1000px]:hidden">
+          <button type="button" aria-expanded={servicesOpen} aria-controls={servicesId} onClick={() => setServicesOpen((value) => !value)} className="flex w-full cursor-pointer items-center justify-between border-b border-line px-[clamp(18px,4vw,56px)] py-4 text-left font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken">
+            {SERVICES_LABEL}
+            <CaretDown aria-hidden="true" className={`size-[18px] transition-transform duration-300 ease-[var(--ease)] ${servicesOpen ? "rotate-180" : ""}`} />
+          </button>
+          <div id={servicesId} hidden={!servicesOpen} className="border-b border-line bg-bg">
+            {SERVICES_NAV.map((link) => {
+              const Glyph = SERVICE_ICONS[link.id];
+              return (
+                <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="flex items-center gap-3 px-[clamp(18px,4vw,56px)] py-3 font-display text-[18px] font-medium tracking-tight transition-colors duration-300 hover:bg-sunken">
+                  <Glyph aria-hidden="true" className="size-5 flex-none" />
+                  {link.label}
+                </Link>
+              );
+            })}
+          </div>
           {PRIMARY_NAV.map((link) => (
             <Link key={link.href} href={link.href} onClick={() => setOpen(false)} className="block border-b border-line px-[clamp(18px,4vw,56px)] py-4 font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken">{link.label}</Link>
           ))}
-          <a href={LOGIN_LINK.href} className="block border-b border-line px-[clamp(18px,4vw,56px)] py-4 font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken">{LOGIN_LINK.label}</a>
+          <a href={LOGIN_LINK.href} className="flex items-center gap-2.5 border-b border-line px-[clamp(18px,4vw,56px)] py-4 font-display text-[22px] tracking-tight transition-colors duration-300 hover:bg-sunken"><UserCircle aria-hidden="true" className="size-6" />{LOGIN_LINK.label}</a>
           <button
             type="button"
             data-basket-trigger

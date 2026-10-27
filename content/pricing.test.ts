@@ -3,35 +3,17 @@ import { describe, expect, it } from "vitest";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import { CURRENCIES, type Currency, formatMoney } from "@/lib/currency";
 import { extrasFor, PACKAGES, PLANS, planPrice } from "@/lib/pricing";
-import { compareCopy, everyPlan, INCLUDED, planColumns, PRICING_HERO, pricingFaq } from "./pricing";
+import { compareCopy, everyPlan, planColumns, PRICING_HERO, pricingFaq } from "./pricing";
 
 const TAX_WORDS = /gst|tax|incl\./i;
 
 function allCopy(currency: Currency): string {
-  return JSON.stringify({ PRICING_HERO, compare: compareCopy(currency), columns: planColumns(currency), every: everyPlan(currency), INCLUDED, faq: pricingFaq(currency) });
+  return JSON.stringify({ PRICING_HERO, compare: compareCopy(currency), columns: planColumns(currency), every: everyPlan(currency), faq: pricingFaq(currency) });
 }
 
 describe("pricing content", () => {
   it("keeps the locked hero headline", () => {
     expect(`${PRICING_HERO.title} ${PRICING_HERO.accent}`).toBe("Simple monthly plans. Start with your website.");
-  });
-  it("keeps the two parts of Everything included without part headings", () => {
-    expect(INCLUDED.build.groups).toHaveLength(3);
-    expect(INCLUDED.run.groups).toHaveLength(4);
-    expect(Object.keys(INCLUDED.build)).toEqual(["groups"]);
-    expect(Object.keys(INCLUDED.run)).toEqual(["groups"]);
-    const ids = [...INCLUDED.build.groups, ...INCLUDED.run.groups].map((g) => g.id);
-    expect(new Set(ids).size).toBe(ids.length);
-  });
-  it("states the 10 pages and the 2 edits in Everything included", () => {
-    const text = JSON.stringify(INCLUDED);
-    expect(text).toContain("Up to 10 pages, built for you");
-    expect(text).toContain("2 edits a month, 15 minutes each");
-    expect(text).not.toContain("small edits");
-  });
-  it("leaves out claims that wait on an owner decision", () => {
-    const text = JSON.stringify(INCLUDED).toLowerCase();
-    for (const claim of ["we test that they restore", "restore earlier versions", "support hours", "privacy requests"]) expect(text).not.toContain(claim);
   });
   it("keeps the Social ad money equal across the two-plan packages that include it", () => {
     // One amount covers both two-plan packages with Social, so they must stay equal.

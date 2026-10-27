@@ -59,7 +59,7 @@ export function WhatYouGet(): ReactElement {
             <Panel panel={WHAT_YOU_GET.run} mark={ShieldCheck} warm />
           </div>
           <div className="cta-pair mt-[clamp(36px,4.5vw,52px)] justify-center">
-            <OutlineButton href="/pricing#included" location="included_more">{WHAT_YOU_GET.more}</OutlineButton>
+            <OutlineButton href="/pricing#compare" location="included_more">{WHAT_YOU_GET.more}</OutlineButton>
           </div>
         </Reveal>
       </section>

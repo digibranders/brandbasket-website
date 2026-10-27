@@ -122,7 +122,7 @@ export const WHAT_YOU_GET = {
       { icon: "ChartBar", text: "Monthly health report" },
     ],
   },
-  more: "See everything included",
+  more: "See the plans",
 } as const satisfies { readonly small: string; readonly heading: string; readonly build: IncludedPanel; readonly run: IncludedPanel; readonly more: string };
 
 export interface PromiseCard {

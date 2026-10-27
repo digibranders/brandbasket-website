@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const ENV = { BREVO_API_KEY: "xkeysib-test", FORM_SECRET: "s".repeat(32), CONTACT_INBOX: "hello@brandbasket.in", MAIL_SENDER: "hello@brandbasket.in" };
-const LEAD = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", plans: ["website"], message: "Please call me this week", consent: true, noticeVersion: "2026-10-19.1" };
+const LEAD = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", message: "Please call me this week", consent: true, noticeVersion: "2026-10-19.1" };
 const T0 = new Date("2026-10-19T10:00:00Z");
 
 const post = (body: unknown): Request =>
@@ -107,10 +107,32 @@ describe("POST /api/contact", () => {
     const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
     expect(sent.to).toEqual([{ email: "hello@brandbasket.in", name: "Brandbasket" }]);
     expect(sent.replyTo).toEqual({ email: "asha@example.in", name: "Asha Rao" });
-    expect(sent.subject).toBe("New enquiry: Rao Dental Care (Managed Website)");
+    expect(sent.subject).toBe("New enquiry: Rao Dental Care");
     const confirmation = JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body));
     expect(confirmation.to).toEqual([{ email: "asha@example.in", name: "Asha Rao" }]);
     expect(confirmation.subject).toBe("We have your message. Brandbasket");
+  });
+
+  it("also posts the enquiry to Teams when an address is set, and not otherwise", async () => {
+    const teams = "https://prod-12.centralindia.logic.azure.com/workflows/abc/triggers/manual/paths/invoke?sig=secret";
+    fetchMock.mockResolvedValue(new Response("{}", { status: 202 }));
+    const { POST, token } = await load({ ...ENV, TEAMS_ENQUIRIES_WEBHOOK_URL: teams });
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    expect(await (await POST(post({ ...LEAD, formToken }))).json()).toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock.mock.calls[2]?.[0]).toBe(teams);
+    expect(String(fetchMock.mock.calls[2]?.[1]?.body)).toContain("New website enquiry: Rao Dental Care");
+  });
+
+  it("still says the message arrived when Teams is down", async () => {
+    fetchMock.mockResolvedValueOnce(new Response("{}", { status: 201 })).mockResolvedValueOnce(new Response("{}", { status: 201 })).mockRejectedValueOnce(new Error("offline"));
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const { POST, token } = await load({ ...ENV, TEAMS_ENQUIRIES_WEBHOOK_URL: "https://prod-12.centralindia.logic.azure.com/workflows/abc" });
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    const res = await POST(post({ ...LEAD, formToken }));
+    expect(res.status).toBe(200);
   });
 
   it("still says the message arrived when only the confirmation fails", async () => {

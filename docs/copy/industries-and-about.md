@@ -35,7 +35,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: services, doctors, timings and how to reach you
+- A free website of up to 10 pages: services, doctors, timings and how to reach you
 - Click to call and an enquiry form for appointment requests
 - Hosting, SSL, backups and security checks every month
 - 2 small edits a month for new timings or a holiday notice
@@ -69,7 +69,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: services, prices, photos and how to reach you
+- A free website of up to 10 pages: services, prices, photos and how to reach you
 - Click to call and an enquiry form, on a site that works on every phone
 - Up to 8 Google Business Profile posts a month for offers and services
 - Photo updates on your Google profile from your own pictures
@@ -103,7 +103,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: menu, timings, location and photos
+- A free website of up to 10 pages: menu, timings, location and photos
 - Click to call and an enquiry form for group and party bookings
 - 2 small edits a month for menu and price changes
 - Up to 8 Google Business Profile posts a month for specials and offers
@@ -137,7 +137,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: memberships, timings, trainers and location
+- A free website of up to 10 pages: memberships, timings, trainers and location
 - An enquiry form for trial classes, and click to call
 - Facebook and Instagram ads for new batches and offers, set up and watched for you
 - Up to 8 Google Business Profile posts a month
@@ -171,7 +171,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: courses, batches, faculty and contact
+- A free website of up to 10 pages: courses, batches, faculty and contact
 - An enquiry form for admissions, and click to call
 - Research into the courses parents search for in your area
 - Titles, descriptions and headings improved on up to 5 pages a month
@@ -205,7 +205,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: what you stock, brands, timings and location
+- A free website of up to 10 pages: what you stock, brands, timings and location
 - Click to call and an enquiry form for stock questions
 - Up to 8 Google Business Profile posts a month for offers and new arrivals
 - Hours, contact and website link checks on your Google profile
@@ -239,7 +239,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: services, areas covered and contact
+- A free website of up to 10 pages: services, areas covered and contact
 - Click to call and an enquiry form, on a site that works on every phone
 - Service area pages optimised for the localities you cover
 - Name, address and phone checked for consistency across listings
@@ -273,7 +273,7 @@ Every price below comes from the pricing module, so it changes if a price change
 
 **What you get**
 
-- A free website of up to 5 pages: projects, localities, services and contact
+- A free website of up to 10 pages: projects, localities, services and contact
 - An enquiry form for site visits, and click to call
 - Local keyword and competitor research for the localities you sell in
 - Titles, descriptions and headings improved on up to 5 pages a month

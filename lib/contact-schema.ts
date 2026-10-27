@@ -24,8 +24,6 @@ export const contactSchema = z.object({
   email: z.email(CONTACT_ERRORS.email).max(CONTACT_MAX.email),
   business: z.string().trim().min(2, CONTACT_ERRORS.business).max(CONTACT_MAX.business).regex(NO_CONTROL, CONTACT_ERRORS.business),
   city: optionalText(CONTACT_MAX.city, true),
-  // Present when the visitor arrived from a basket (?plan=); an empty list is a general enquiry.
-  plans: z.array(z.enum(PLAN_IDS)),
   // Required since 2026-10-26. A line break is fine, an empty or blank message is not.
   message: z.string().trim().min(1, CONTACT_ERRORS.message).max(CONTACT_MAX.message),
   // Ticked on the form: the server refuses a lead that did not agree to the privacy policy.

@@ -76,7 +76,7 @@ test("a valid submission shows the thank-you message and focuses it", async ({ p
   await expect(done).toBeFocused();
 });
 
-test("?plan=website,search posts the plans and no topic", async ({ page }) => {
+test("?plan=website,search posts no plans and no topic", async ({ page }) => {
   const posted = await mockContactApi(page);
   await page.goto("/contact?plan=website,search#start");
   await expect(page.getByRole("radio")).toHaveCount(0);
@@ -84,7 +84,8 @@ test("?plan=website,search posts the plans and no topic", async ({ page }) => {
   await fillRequired(page);
   await page.getByRole("button", { name: CONTACT_FORM_COPY.submit }).click();
   await expect(page.getByRole("status").filter({ hasText: CONTACT_FORM_COPY.doneTitle })).toBeVisible();
-  expect(posted()).toMatchObject({ plans: ["website", "search"], message: "Please call me this week", consent: true });
+  expect(posted()).toMatchObject({ message: "Please call me this week", consent: true });
+  expect(posted()).not.toHaveProperty("plans");
   expect(posted()).not.toHaveProperty("topic");
 });
 

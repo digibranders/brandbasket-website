@@ -1,7 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 const ENV = { BREVO_API_KEY: "xkeysib-test", FORM_SECRET: "s".repeat(32), CONTACT_INBOX: "hello@brandbasket.in", MAIL_SENDER: "hello@brandbasket.in" };
-const LEAD = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", plans: ["website"], message: "Please call me this week", consent: true, noticeVersion: "2026-10-19.1" };
+const LEAD = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "", message: "Please call me this week", consent: true, noticeVersion: "2026-10-19.1" };
 const T0 = new Date("2026-10-19T10:00:00Z");
 
 const post = (body: unknown): Request =>
@@ -107,7 +107,7 @@ describe("POST /api/contact", () => {
     const sent = JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body));
     expect(sent.to).toEqual([{ email: "hello@brandbasket.in", name: "Brandbasket" }]);
     expect(sent.replyTo).toEqual({ email: "asha@example.in", name: "Asha Rao" });
-    expect(sent.subject).toBe("New enquiry: Rao Dental Care (Managed Website)");
+    expect(sent.subject).toBe("New enquiry: Rao Dental Care");
     const confirmation = JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body));
     expect(confirmation.to).toEqual([{ email: "asha@example.in", name: "Asha Rao" }]);
     expect(confirmation.subject).toBe("We have your message. Brandbasket");
@@ -148,7 +148,7 @@ describe("POST /api/contact", () => {
     expect(await res.json()).toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledTimes(3);
     expect(fetchMock.mock.calls[2]?.[0]).toBe("https://app.example.test/api/leads");
-    expect(JSON.parse(String(fetchMock.mock.calls[2]?.[1]?.body))).toMatchObject({ kind: "contact", contact: { business: "Rao Dental Care", plans: ["website"] } });
+    expect(JSON.parse(String(fetchMock.mock.calls[2]?.[1]?.body))).toMatchObject({ kind: "contact", contact: { business: "Rao Dental Care", plans: [] } });
   });
 
   it("still says the message arrived when the platform copy fails", async () => {

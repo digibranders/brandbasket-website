@@ -4,7 +4,7 @@ import { z } from "zod";
 import { CONTACT_ERRORS } from "@/content/contact";
 import { contactSchema, parsePlanParam } from "./contact-schema";
 
-const valid = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "Thane", plans: ["website"], message: "Please call me this week", consent: true, noticeVersion: "2026-10-20.1" };
+const valid = { name: "Asha Rao", phone: "", email: "asha@example.in", business: "Rao Dental Care", city: "Thane", message: "Please call me this week", consent: true, noticeVersion: "2026-10-20.1" };
 
 describe("contactSchema", () => {
   it("runs zod without code generation, which a CSP without unsafe-eval would report", () => expect(z.config().jitless).toBe(true));
@@ -12,14 +12,13 @@ describe("contactSchema", () => {
   it("accepts a phone number when given", () => expect(contactSchema.safeParse({ ...valid, phone: "+91 98200 12345" }).success).toBe(true));
   it("rejects a short phone number", () => expect(contactSchema.safeParse({ ...valid, phone: "12345" }).success).toBe(false));
   it("requires an email", () => expect(contactSchema.safeParse({ ...valid, email: "" }).success).toBe(false));
-  it("accepts any basket of known plans", () => {
-    expect(contactSchema.safeParse({ ...valid, plans: ["growth"] }).success).toBe(true);
-    expect(contactSchema.safeParse({ ...valid, plans: ["growth", "search"] }).success).toBe(true);
-    expect(contactSchema.safeParse({ ...valid, plans: ["nope"] }).success).toBe(false);
+  it("no longer takes a basket: a plans field from an old page is dropped, not kept", () => {
+    expect(Object.keys(contactSchema.shape)).not.toContain("plans");
+    const parsed = contactSchema.safeParse({ ...valid, plans: ["growth"] });
+    expect(parsed.success).toBe(true);
+    expect(parsed.success && "plans" in parsed.data).toBe(false);
   });
-  it("rejects an unknown plan", () => expect(contactSchema.safeParse({ ...valid, plans: ["website", "seo"] }).success).toBe(false));
   it("requires the notice version", () => expect(contactSchema.safeParse({ ...valid, noticeVersion: "" }).success).toBe(false));
-  it("accepts a general question with no basket", () => expect(contactSchema.safeParse({ ...valid, plans: [] }).success).toBe(true));
   it("no longer has a topic", () => expect(Object.keys(contactSchema.shape)).not.toContain("topic"));
   it("requires agreement to the privacy policy", () => {
     for (const consent of [false, undefined, "on", "true"]) expect(contactSchema.safeParse({ ...valid, consent }).success).toBe(false);

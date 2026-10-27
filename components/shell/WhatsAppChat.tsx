@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowUpRight, WhatsappLogo, X } from "@phosphor-icons/react";
-import { usePathname } from "next/navigation";
+import { usePagePath } from "@/components/currency/usePagePath";
 import { useEffect, useId, useRef, useState, type ReactElement } from "react";
 import { WHATSAPP_CHAT } from "@/content/whatsapp";
 import { trackAttrs } from "@/lib/analytics";
@@ -9,7 +9,7 @@ import { businessDetails } from "@/lib/site-config";
 
 /** A new page starts with the launcher closed, including client-side navigation. */
 export function WhatsAppChat(): ReactElement {
-  const pathname = usePathname();
+  const pathname = usePagePath();
   return <ChatPanel key={pathname} />;
 }
 

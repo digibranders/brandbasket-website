@@ -1,13 +1,13 @@
 // lib/seo/routes.ts
 // One place for every page's title, description and sitemap entry. Titles are complete (they are set as absolute
-// titles, so the layout's "%s | Brandbasket" template never runs). Prices are built from lib/pricing.ts.
+// titles, so the layout's "%s | Brandbasket" template never runs). No title or description carries a price.
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
-import { SERVICE_PAGES, type ServicePageContent } from "@/content/services";
+import { SERVICE_PAGES, type ServicePageContent, servicePageFor } from "@/content/services";
 import { refundPolicy } from "@/content/legal/refund";
 import { shippingPolicy } from "@/content/legal/shipping";
 import { termsOfService } from "@/content/legal/terms";
-import { formatInr, PACKAGES, PLANS } from "@/lib/pricing";
+import { PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 export interface RouteMeta {
@@ -21,25 +21,31 @@ export interface RouteMeta {
 }
 
 const { legalName, tradeName, postalAddress } = businessDetails;
-const MANAGED = formatInr(PLANS.website.monthly);
 const UPDATED = "2026-10-21";
 const SERVICES_UPDATED = "2026-10-26";
 
+/** The home page's entry. Titles and descriptions never carry a price, so one entry serves both currencies. */
+export const HOME_ROUTE: RouteMeta = {
+  path: "/",
+  title: `Get your business website free | ${tradeName}`,
+  description: "A professional website for your local business, built free and live in about a week. We host, secure and update it for you every month.",
+  updated: UPDATED,
+  priority: 1,
+};
+
+/** The pricing page's entry. No price here either: a shared link or a search result shows the words, not the amounts. */
+export const PRICING_ROUTE: RouteMeta = {
+  path: "/pricing",
+  title: `Pricing: a free website and monthly plans | ${tradeName}`,
+  description: `Your website is built free. Choose ${PLANS.website.name}, ${PLANS.growth.name} or ${PLANS.search.name}, on their own or together, and pay month to month.`,
+  updated: UPDATED,
+  priority: 0.9,
+};
+
+/** The registry: the sitemap, llms.txt and search engines use these. */
 export const ROUTES = {
-  home: {
-    path: "/",
-    title: `Free business website, run for you monthly | ${tradeName}`,
-    description: `Get a professional website built free for your local business. We host, secure and update it for ${MANAGED} a month. Add social, ads and local search any time.`,
-    updated: UPDATED,
-    priority: 1,
-  },
-  pricing: {
-    path: "/pricing",
-    title: `Pricing: free website, plans from ${MANAGED} a month`,
-    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off, GST included.`,
-    updated: UPDATED,
-    priority: 0.9,
-  },
+  home: HOME_ROUTE,
+  pricing: PRICING_ROUTE,
   contact: {
     path: "/contact",
     title: `Contact ${tradeName}: free websites for local business`,
@@ -104,9 +110,9 @@ export function serviceRoute(page: ServicePageContent): RouteMeta {
   return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: SERVICES_UPDATED, priority: 0.8 };
 }
 
-/** Every page search engines may index: the registry and the service pages, without noindex pages. */
+/** Every page search engines may index: the registry and the service pages (the rupee copies, the ones crawlers are served), without noindex pages. */
 export function indexableRoutes(): RouteMeta[] {
-  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map(serviceRoute)];
+  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map((ref) => serviceRoute(servicePageFor(ref.id, "INR")))];
   return routes.filter((r) => !r.noindex);
 }
 

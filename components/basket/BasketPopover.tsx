@@ -1,5 +1,5 @@
 "use client";
-import { usePathname } from "next/navigation";
+import { usePagePath } from "@/components/currency/usePagePath";
 import { type ReactElement, useEffect, useRef } from "react";
 import { BASKET_COPY } from "@/content/basket";
 import { basketPanel, type PanelAnchor } from "./basket-panel";
@@ -19,7 +19,7 @@ const PLACE: Readonly<Record<PanelAnchor, string>> = {
  */
 export function BasketPopover(): ReactElement | null {
   const { open, anchor } = useBasketPanel();
-  const pathname = usePathname();
+  const pathname = usePagePath();
   const panelRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

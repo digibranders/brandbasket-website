@@ -25,7 +25,7 @@ describe("pageMetadata", () => {
   });
 
   it("names the default share image unless the route has its own", () => {
-    const image = { url: "/opengraph-image", width: 1200, height: 630, alt: "Brandbasket logo and the page headline", type: "image/png" };
+    const image = { url: "/opengraph-image", width: 1200, height: 630, alt: "Get your business website for FREE. Built for you. Live in about a week. Brandbasket.", type: "image/png" };
     expect(pageMetadata(base).openGraph).toMatchObject({ images: [image] });
     expect(pageMetadata(base).twitter).toMatchObject({ images: [image] });
     expect("images" in (pageMetadata(base, { ownShareImage: true }).openGraph ?? {})).toBe(false);

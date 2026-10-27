@@ -1,6 +1,7 @@
 // content/legal/terms.ts
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, GST_RATE, PLANS } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { extrasFor, GST_RATE, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
@@ -8,6 +9,9 @@ import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, cin, gstNumber, email, courts } = businessDetails;
 const { website, growth, search } = PLANS;
+/** The terms are an Indian contract: they always quote rupees with GST inside, on dollar pages too. */
+const rupees = (id: keyof typeof PLANS): string => formatMoney(planPrice(id, "INR"), "INR");
+const { hour, adBudgetCap } = extrasFor("INR");
 const gstPercent = Math.round(GST_RATE * 100);
 
 export const termsOfService: LegalDocument = {
@@ -23,9 +27,9 @@ export const termsOfService: LegalDocument = {
     {
       heading: "2. Services",
       paragraphs: [
-        `We build your website free of charge. You can take ${website.name} at ${formatInr(website.monthly)} a month, ${growth.name} at ${formatInr(growth.monthly)} a month and ${search.name} at ${formatInr(search.monthly)} a month; each plan can be bought on its own.`,
-        `The ${website.name} plan includes 2 edits a month of up to 15 minutes each. We quote any other work before we start it, at ${formatInr(EXTRA_HOURLY_RATE)} an hour, and do it only once you agree.`,
-        `${growth.name} manages Facebook and Instagram ad budgets of up to ${formatInr(AD_BUDGET_CAP)} a month of your own money, plus any ad credit from us. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
+        `We build your website free of charge. You can take ${website.name} at ${rupees("website")} a month, ${growth.name} at ${rupees("growth")} a month and ${search.name} at ${rupees("search")} a month; each plan can be bought on its own.`,
+        `The ${website.name} plan includes 2 edits a month of up to 15 minutes each. We quote any other work before we start it, at ${formatMoney(hour, "INR")} an hour, and do it only once you agree.`,
+        `${growth.name} manages Facebook and Instagram ad budgets of up to ${formatMoney(adBudgetCap, "INR")} a month of your own money, plus any ad credit from us. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
         "What each plan includes is shown on our Pricing page when you sign up. If we agree a written proposal with you, it governs that engagement where it differs from these terms.",
       ],
     },

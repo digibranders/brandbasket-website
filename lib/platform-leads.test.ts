@@ -2,7 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ContactInput } from "@/lib/contact-schema";
 import { forwardEnquiry, pageOf } from "./platform-leads";
 
-const LEAD: ContactInput = { name: "Asha Rao", phone: "98200 11111", email: "asha@example.in", business: "Rao Dental Care", city: "Thane", plans: ["website"], message: "Please call me", consent: true, noticeVersion: "2026-10-19.1" };
+const LEAD: ContactInput = { name: "Asha Rao", phone: "98200 11111", email: "asha@example.in", business: "Rao Dental Care", city: "Thane", message: "Please call me", consent: true, noticeVersion: "2026-10-19.1" };
 const ENV = { url: "https://app.example.test", token: "t".repeat(32) };
 const fetchMock = vi.fn<typeof fetch>();
 
@@ -32,7 +32,7 @@ describe("forwardEnquiry", () => {
     expect(new Headers(init?.headers).get("authorization")).toBe(`Bearer ${"t".repeat(32)}`);
     expect(JSON.parse(String(init?.body))).toEqual({
       kind: "contact",
-      contact: { name: "Asha Rao", business: "Rao Dental Care", email: "asha@example.in", phone: "98200 11111", city: "Thane", plans: ["website"], message: "Please call me", page: "/contact" },
+      contact: { name: "Asha Rao", business: "Rao Dental Care", email: "asha@example.in", phone: "98200 11111", city: "Thane", plans: [], message: "Please call me", page: "/contact" },
       clientIp: "203.0.113.9",
       noticeVersion: "2026-10-19.1",
     });

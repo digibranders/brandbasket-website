@@ -1,8 +1,10 @@
 "use client";
 import type { ReactElement } from "react";
+import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, PRICING_PLANS } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, formatInr, PLAN_IDS, PLANS } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { basketPlans, PLAN_IDS, planPrice } from "@/lib/pricing";
 import { Switch } from "../ui/Switch";
 import { PLAN_COLOUR } from "./basket-view";
 import { useBasket } from "./useBasket";
@@ -13,6 +15,7 @@ import { useBasket } from "./useBasket";
  */
 export function AddonRows(): ReactElement {
   const pick = useBasket();
+  const currency = useCurrency();
   const onlyOne = basketPlans(pick).length === 1;
   return (
     <div>
@@ -30,7 +33,7 @@ export function AddonRows(): ReactElement {
               <b className="block font-display text-[19px] font-medium tracking-[-0.02em]">{copy.name}</b>
               <span className="text-[13.5px] text-ink-2">{copy.summary}</span>
             </span>
-            <span className="num whitespace-nowrap font-display text-lg">{formatInr(PLANS[id].monthly)}</span>
+            <span className="num whitespace-nowrap font-display text-lg">{formatMoney(planPrice(id, currency), currency)}</span>
             <Switch checked={pick[id]} label={copy.switchLabel} locked={pick[id] && onlyOne} onChange={() => basket.set(id, !basket.get()[id])} />
           </div>
         );

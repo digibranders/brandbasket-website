@@ -1,11 +1,13 @@
 "use client";
 import { Basket } from "@phosphor-icons/react/dist/ssr";
-import { usePathname } from "next/navigation";
+import { usePagePath } from "@/components/currency/usePagePath";
 import { type CSSProperties, type ReactElement, useEffect, useRef, useState } from "react";
+import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, saveLine } from "@/content/basket";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, formatInr, PLAN_IDS, packageTotal } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { basketPlans, PLAN_IDS, packageTotal } from "@/lib/pricing";
 import { dockLabel, PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { showsDock } from "./dock-paths";
@@ -26,7 +28,7 @@ interface Pulse {
 const CLICK_WINDOW_MS = 600;
 
 /**
- * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month (GST included), and the
+ * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month (GST included on rupee pages), and the
  * way to start. The ink island (owner's pick, 2026-10-26; docs/design/phone-dock-options.html) at the foot of the screen on
  * phones and tablets: a rattan basket with its count, the total and one bar per plan in its colour, and a white button.
  * From 1000px up the Woven basket (BasketWall) does this job.
@@ -40,8 +42,9 @@ const CLICK_WINDOW_MS = 600;
  * when a saved basket is restored, and reduced motion gets no flight.
  */
 export function BasketDock(): ReactElement | null {
-  const pathname = usePathname();
+  const pathname = usePagePath();
   const pick = useBasket();
+  const currency = useCurrency();
   const panel = useBasketPanel();
   const [hidden, setHidden] = useState(true);
   const [pulse, setPulse] = useState<Pulse | null>(null);
@@ -108,8 +111,8 @@ export function BasketDock(): ReactElement | null {
   const dir = pulse?.dir ?? 1;
   const delay = pulse?.delay ?? 0;
   const delayStyle = { "--d": `${delay}ms` } as CSSProperties;
-  const saving = saveLine(pick);
-  const total = formatInr(packageTotal(pick));
+  const saving = saveLine(pick, currency);
+  const total = formatMoney(packageTotal(pick, currency), currency);
   return (
     <div
       data-basket-dock
@@ -127,7 +130,7 @@ export function BasketDock(): ReactElement | null {
         data-basket-trigger
         aria-haspopup="dialog"
         aria-expanded={panel.open && panel.anchor === "dock"}
-        aria-label={dockLabel(count, total)}
+        aria-label={dockLabel(count, total, currency)}
         {...(panel.open && panel.anchor === "dock" ? {} : trackAttrs("basket_open", "dock"))}
         onClick={(event) => basketPanel.toggle("dock", event.currentTarget)}
         className="flex min-w-0 flex-auto cursor-pointer items-center gap-3 rounded-full text-left"

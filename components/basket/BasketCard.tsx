@@ -4,9 +4,11 @@ import { CalendarCheck, Check, Globe, Lightning, MagnifyingGlass, Megaphone, Pig
 import Image from "next/image";
 import type { CSSProperties, ReactElement } from "react";
 import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNote, type Rich, slotLabel } from "@/content/basket-card";
-import { BASKET_COPY } from "@/content/basket";
+import { useCurrency } from "@/components/currency/CurrencyProvider";
+import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, type BasketPick, formatInr, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal } from "@/lib/pricing";
+import { type Currency, formatMoney } from "@/lib/currency";
+import { basketPlans, type BasketPick, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal, planPrice } from "@/lib/pricing";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
@@ -27,7 +29,7 @@ export function RichText({ line }: { readonly line: Rich }): ReactElement {
 }
 
 /** One plan slot: tapping it adds or removes the plan. */
-function Slot({ id, pick, onlyOne }: { readonly id: PlanId; readonly pick: BasketPick; readonly onlyOne: boolean }): ReactElement {
+function Slot({ id, pick, onlyOne, currency }: { readonly id: PlanId; readonly pick: BasketPick; readonly onlyOne: boolean; readonly currency: Currency }): ReactElement {
   const on = pick[id];
   const SlotIcon = ICON[id];
   return (
@@ -55,15 +57,15 @@ function Slot({ id, pick, onlyOne }: { readonly id: PlanId; readonly pick: Baske
         ) : null}
       </span>
       <b className="mt-2 font-display text-base font-medium tracking-[-0.015em]">{PLANS[id].name}</b>
-      <small className="num text-[13px] text-ink-2">{formatInr(PLANS[id].monthly)} {BASKET_COPY.perMonth}</small>
+      <small className="num text-[13px] text-ink-2">{formatMoney(planPrice(id, currency), currency)} {BASKET_COPY.perMonth}</small>
     </button>
   );
 }
 
 /** The loyalty card: a stamp per plan, the one-time offer, then the basket actions (mock: .bcard). The reward track and fine print were removed at the owner's request, 2026-10-22. */
-function StampCard({ pick }: { readonly pick: BasketPick }): ReactElement {
+function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
   const count = basketPlans(pick).length;
-  const once = oneTimeNote(pick);
+  const once = oneTimeNote(pick, currency);
   return (
     <div className="basket-weave relative grid gap-[22px] self-start overflow-hidden rounded-3xl border border-rattan/30 px-[26px] py-[26px] max-[560px]:px-4 max-[560px]:py-[22px]">
       <div className="flex items-start justify-between gap-4">
@@ -71,10 +73,10 @@ function StampCard({ pick }: { readonly pick: BasketPick }): ReactElement {
           <h4 className="font-display text-[28px] font-medium leading-none tracking-[-0.035em] text-rattan-ink">{BASKET_CARD.title}</h4>
           <p className="max-w-[40ch] text-[15px] text-ink-2">{BASKET_CARD.intro}</p>
         </div>
-        <Image src="/brand/brandbasket-mark-small-rattan.svg" alt="" width={40} height={40} className="size-10 flex-none opacity-85" />
+        <Image src="/brand/brandbasket-mark.svg" alt="" width={40} height={40} className="size-10 flex-none" />
       </div>
       <div className="grid grid-cols-3 gap-3 max-[560px]:gap-1.5">
-        {PLAN_IDS.map((id) => <Slot key={id} id={id} pick={pick} onlyOne={count === 1} />)}
+        {PLAN_IDS.map((id) => <Slot key={id} id={id} pick={pick} onlyOne={count === 1} currency={currency} />)}
       </div>
       {once ? (
         <div className="grid w-full gap-1.5 rounded-2xl border-[1.5px] border-dashed border-rattan-text/55 bg-surface px-4 py-3.5 text-[14.5px] leading-[1.45] [&_b]:text-rattan-ink">
@@ -93,11 +95,11 @@ function StampCard({ pick }: { readonly pick: BasketPick }): ReactElement {
 }
 
 /** A receipt: the plans, what they earn and the next plan worth adding, then the total at the foot, level with the Basket Card's actions (mock: .bsum; owner picked the receipt layout, 2026-10-22). */
-function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
-  const monthly = packageTotal(pick);
-  const saving = packageSaving(pick) > 0;
-  const next = nextStamp(pick);
-  const gains = benefits(pick);
+function Summary({ pick, currency }: { readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
+  const monthly = packageTotal(pick, currency);
+  const saving = packageSaving(pick, currency) > 0;
+  const next = nextStamp(pick, currency);
+  const gains = benefits(pick, currency);
   return (
     <div className="flex flex-col items-start gap-3.5 rounded-3xl border border-line bg-surface p-[26px] max-[560px]:px-[18px] max-[560px]:py-[22px]">
       <div className="grid gap-2">
@@ -111,7 +113,7 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
           ))}
         </ul>
       </div>
-      <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick)}</p>
+      <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick, currency)}</p>
       {gains.length > 0 ? (
         <ul className="grid w-full gap-[9px]">
           {gains.map((benefit) => {
@@ -134,9 +136,9 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
       <div data-basket-total className="mt-auto grid w-full gap-1 border-t border-line pt-4">
         <span className="text-[13px] text-ink-2">{BASKET_CARD.totalLabel}</span>
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">
-          {saving ? <s className="text-[22px] tracking-[-0.02em] text-ink-2 decoration-rattan-text/80 decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatInr(monthlyTotal(pick))}</s> : null}
-          <span className="text-[clamp(42px,4.6vw,56px)] font-medium leading-none tracking-[-0.05em]">{formatInr(monthly)}</span>
-          <small className="font-sans text-sm text-ink-2">{BASKET_COPY.inclGst}</small>
+          {saving ? <s className="text-[22px] tracking-[-0.02em] text-ink-2 decoration-rattan-text/80 decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(monthlyTotal(pick, currency), currency)}</s> : null}
+          <span className="text-[clamp(42px,4.6vw,56px)] font-medium leading-none tracking-[-0.05em]">{formatMoney(monthly, currency)}</span>
+          <small className="font-sans text-sm text-ink-2">{moneyCopy(currency).inclGst}</small>
         </p>
       </div>
     </div>
@@ -146,10 +148,11 @@ function Summary({ pick }: { readonly pick: BasketPick }): ReactElement {
 /** The homepage receipt and Basket Card, side by side (mock: .ox-card; owner's pick, 2026-10-21). */
 export function BasketCard(): ReactElement {
   const pick = useBasket();
+  const currency = useCurrency();
   return (
     <div id={BASKET_CARD.id} className="grid scroll-mt-28 gap-7 min-[1000px]:grid-cols-[1fr_1.4fr] min-[1000px]:gap-12">
-      <Summary pick={pick} />
-      <StampCard pick={pick} />
+      <Summary pick={pick} currency={currency} />
+      <StampCard pick={pick} currency={currency} />
     </div>
   );
 }

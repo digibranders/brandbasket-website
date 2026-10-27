@@ -11,9 +11,14 @@ Stack: Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS v4, Vite
 - Prices live in `lib/pricing.ts` only. Business facts live in `lib/site-config.ts` only. Copy lives in `content/`.
 - Pages are Server Components. Client islands only for the basket, plan switches, showcase, menu and theme.
 - No em or en dashes anywhere (`lib/copy-check.test.ts` fails the build).
-- Every page sets metadata through `pageMetadata()` and any FAQ through `faqJsonLd()`.
+- Every page sets metadata through `pageMetadata()` and any FAQ through `faqJsonLd()`. No title, description or share image text carries a price or a discount (`lib/seo/routes.test.ts` checks it); the owner wants shared links without amounts.
 - The site is noindex until launch. Turning indexing on is a launch step: set SITE_INDEXING=on in Vercel production only after the owner approves, then submit the sitemap in Search Console.
 - The site is light only. Tokens are in `app/globals.css`. Use the tokens, never raw colours.
+
+## Currency (rupees or dollars)
+- Every page is built twice, under `app/[currency]/` (`/inr` and `/usd`). `proxy.ts` serves the right copy at the plain address: the footer switch (cookie `bb_currency`, set by a `?currency=` link) first, then `x-vercel-ip-country` (India or unknown is rupees, anything else dollars), and search engines and other bots always get rupees. `/inr/...` and `/usd/...` redirect to the plain address.
+- `lib/currency.ts` holds the currency helpers and `formatMoney`; prices, extras and ad money for both currencies are in `lib/pricing.ts`. Every total takes a `currency`. Client components read it with `useCurrency()`, server components get it from the page `params` (`currencyParam`).
+- Dollar pages never print GST, tax or "incl."; `e2e/currency.spec.ts` checks it. The legal pages and llms.txt stay in rupees with GST. Read the path with `usePagePath()`, never `usePathname()`: a prebuilt page is rendered at `/inr/...` on the server.
 
 ## The blog
 - Content comes from the CMS (`../brandbasket-cms`, plan `../docs/plans/22-cms.md`). Blog pages are Server Components that read `lib/cms/` (`client.ts` sends the bearer token, caches under the tag `blog` for an hour, retries 5xx, checks the JSON with Zod, and throws on failure) and render per request, so a build never needs the CMS.

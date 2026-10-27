@@ -2,7 +2,8 @@ import { expect, test } from "@playwright/test";
 import { BASKET_COPY } from "@/content/basket";
 import { PRIMARY_CTA } from "@/content/navigation";
 import { SERVICE_PAGES } from "@/content/services";
-import { formatInr, PLANS } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { planPrice, PLANS } from "@/lib/pricing";
 
 for (const page of SERVICE_PAGES) {
   const plan = PLANS[page.id];
@@ -10,7 +11,7 @@ for (const page of SERVICE_PAGES) {
   test(`${page.path} has one heading and its price`, async ({ page: browser }) => {
     await browser.goto(page.path);
     await expect(browser.getByRole("heading", { level: 1 })).toHaveCount(1);
-    await expect(browser.locator("main").getByText(formatInr(plan.monthly)).first()).toBeVisible();
+    await expect(browser.locator("main").getByText(formatMoney(planPrice(page.id, "INR"), "INR")).first()).toBeVisible();
   });
 
   test(`the pricing card for ${plan.name} links to ${page.path}`, async ({ page: browser }) => {

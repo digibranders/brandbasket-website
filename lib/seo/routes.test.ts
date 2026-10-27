@@ -1,6 +1,5 @@
 // lib/seo/routes.test.ts
 import { describe, expect, it } from "vitest";
-import { PACKAGES } from "@/lib/pricing";
 import { indexableRoutes, ROUTES } from "./routes";
 
 describe("route registry", () => {
@@ -19,9 +18,9 @@ describe("route registry", () => {
   it("keeps noindex pages out of the sitemap", () => {
     expect(indexableRoutes().some((r) => r.path === "/notice")).toBe(false);
   });
-  it("builds prices from the pricing module", () => {
-    expect(ROUTES.pricing.title).toBe("Pricing: free website, plans from ₹2,999 a month");
-    expect(ROUTES.home.description).toContain("₹2,999 a month");
-    expect(ROUTES.pricing.description).toContain(`Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}%`);
+  it("shows no price or discount in any page's title or description", () => {
+    for (const r of indexableRoutes()) {
+      expect(`${r.title} ${r.description}`, r.path).not.toMatch(/[₹$]|\d+% off|\bfrom \d/i);
+    }
   });
 });

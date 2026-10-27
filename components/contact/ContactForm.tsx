@@ -143,7 +143,6 @@ export function ContactForm(): ReactElement {
     const plans = pagePlans();
     const body = {
       ...Object.fromEntries(FIELDS.map((name) => [name, value(name)])),
-      plans,
       consent: agreed,
       noticeVersion: LEGAL_TEXT_VERSION,
       [FORM_TOKEN_FIELD]: token,

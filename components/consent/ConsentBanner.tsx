@@ -81,7 +81,7 @@ export function ConsentBanner(): ReactElement | null {
     <section role="region" aria-labelledby={headingId} className="consent fixed z-30">
       <div className="consent-receipt grid gap-3.5 bg-surface px-[22px] pb-[30px] pt-[22px]">
         <div className="flex items-center justify-between gap-3">
-          <Image src="/brand/brandbasket-lockup-horizontal-light.svg" alt="" width={125} height={22} className="h-[22px] w-auto" />
+          <Image src="/brand/brandbasket-logo-horizontal-light.svg" alt="" width={130} height={22} className="h-[22px] w-auto" />
           <span className="font-mono text-[11.5px] text-ink-2">{CONSENT.stamp}</span>
         </div>
         <h2 id={headingId} ref={headingRef} tabIndex={-1} className="font-display text-[19px] font-semibold leading-tight tracking-[-0.01em]">

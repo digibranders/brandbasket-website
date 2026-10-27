@@ -1,10 +1,16 @@
 // content/home.test.ts
 import * as Phosphor from "@phosphor-icons/react";
 import { describe, expect, it } from "vitest";
-import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
+import { type Currency, formatMoney } from "@/lib/currency";
+import { GST_LABEL, planPrice } from "@/lib/pricing";
 import { CLOSING_COPY } from "./closing";
 import { CANCEL_ANSWER, PAYMENT_FAILURE } from "./legal/cancellation";
-import { FACTS, HERO, HOME_FAQ, OFFER, PROMISES, REPORT, RESPONSIBILITY, SHARE_IMAGE, STEPS, WHAT_YOU_GET, WORK } from "./home";
+import { factsFor, HERO, homeFaqFor, offerFor, PROMISES, REPORT, reportFor, RESPONSIBILITY, SHARE_IMAGE, STEPS, WHAT_YOU_GET, WORK } from "./home";
+
+const CURRENCIES: readonly Currency[] = ["INR", "USD"];
+const TAX_WORDS = /gst|tax|incl\./i;
+const HOME_FAQ = homeFaqFor("INR");
+const FACTS = factsFor("INR");
 
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
@@ -12,20 +18,38 @@ describe("home content", () => {
     // The owner removed the subhead line, 2026-10-21.
     expect(HERO).not.toHaveProperty("subhead");
   });
-  it("puts the owner's letterboard copy on the default share image", () => {
-    expect(SHARE_IMAGE.board).toEqual({ kicker: "Today's special", headline: "Free website", note: "+ hosting and care, monthly" });
-    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Live in about a week. Just ask.");
+  it("puts the owner's split-flap copy on the default share image", () => {
+    expect(`${SHARE_IMAGE.lead} ${SHARE_IMAGE.word}`).toBe("Get your business website for FREE");
+    expect(SHARE_IMAGE.word).toHaveLength(4);
+    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Built for you. Live in about a week.");
   });
-  it("builds the offer line from the managed website price", () => {
-    expect(OFFER.build.price).toBe("₹0");
-    expect(OFFER.run.price).toBe(formatInr(PLANS.website.monthly));
-    expect(OFFER.ariaLabel).toContain(OFFER.run.price);
+  it("builds the offer line from the managed website price in each currency", () => {
+    for (const currency of CURRENCIES) {
+      const offer = offerFor(currency);
+      expect(offer.build.price).toBe(formatMoney(0, currency));
+      expect(offer.run.price).toBe(formatMoney(planPrice("website", currency), currency));
+      expect(offer.ariaLabel).toContain(offer.run.price);
+    }
+  });
+  it("keeps the rupee offer line word for word", () => {
+    expect(offerFor("INR")).toEqual({
+      ariaLabel: "₹0 to build your website, plus ₹2,999 a month, GST included, to keep it running",
+      build: { price: "₹0", label: "to build your website" },
+      run: { price: "₹2,999", unit: "/month", label: "to keep it running, incl. GST" },
+    });
+  });
+  it("prints the dollar offer line without any tax wording", () => {
+    expect(offerFor("USD")).toEqual({
+      ariaLabel: "$0 to build your website, plus $65 a month to keep it running",
+      build: { price: "$0", label: "to build your website" },
+      run: { price: "$65", unit: "/month", label: "to keep it running" },
+    });
   });
   it("has the section counts of the mock", () => {
     expect(FACTS).toHaveLength(4);
     expect(WORK.cases).toHaveLength(3);
     expect(STEPS).toHaveLength(3);
-    expect(REPORT.kpis).toHaveLength(4);
+    for (const currency of CURRENCIES) expect(reportFor(currency).kpis).toHaveLength(4);
     expect(WHAT_YOU_GET.build.items).toHaveLength(5);
     expect(WHAT_YOU_GET.run.items).toHaveLength(6);
     expect(RESPONSIBILITY.worries).toHaveLength(9);
@@ -62,8 +86,19 @@ describe("home content", () => {
     expect(text).not.toContain("small edits");
   });
   it("builds the FAQ prices from lib/pricing", () => {
-    expect(HOME_FAQ[0]?.a).toContain(`${formatInr(PLANS.website.monthly)} a month, GST included`);
+    expect(HOME_FAQ[0]?.a).toContain(`${formatMoney(planPrice("website", "INR"), "INR")} a month, GST included, which keeps`);
     expect(HOME_FAQ[2]?.a).toBe(`Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`);
+    expect(homeFaqFor("USD")[0]?.a).toContain("$65 a month, which keeps it hosted");
+    expect(homeFaqFor("USD")[2]?.a).toBe("Just your first month. After that you pay monthly.");
+  });
+  it("shows the facts and the sample report in dollars for USD", () => {
+    expect(factsFor("INR")[0]).toEqual({ icon: "CurrencyInr", text: "₹0 to build" });
+    expect(factsFor("USD")[0]).toEqual({ icon: "CurrencyDollar", text: "$0 to build" });
+    expect(reportFor("INR").kpis[2]?.delta).toBe("₹214 a lead");
+    expect(reportFor("USD").kpis[2]?.delta).toBe("$5 a lead");
+  });
+  it("never mentions tax in the dollar copy", () => {
+    expect(JSON.stringify({ offer: offerFor("USD"), facts: factsFor("USD"), report: reportFor("USD"), faq: homeFaqFor("USD") })).not.toMatch(TAX_WORDS);
   });
   it("answers cancel and failed payment with the shared policy and says only the domain stays the customer's", () => {
     const answer = (q: string): string | undefined => HOME_FAQ.find((f) => f.q === q)?.a;
@@ -76,6 +111,7 @@ describe("home content", () => {
     for (const key of keys) expect(Phosphor).toHaveProperty(key);
   });
   it("has no em or en dashes", () => {
-    expect(JSON.stringify({ HERO, FACTS, RESPONSIBILITY, WHAT_YOU_GET, PROMISES, WORK, REPORT, STEPS, HOME_FAQ })).not.toMatch(/[\u2013\u2014]/);
+    const text = CURRENCIES.map((c) => JSON.stringify({ HERO, offer: offerFor(c), facts: factsFor(c), RESPONSIBILITY, WHAT_YOU_GET, PROMISES, WORK, report: reportFor(c), STEPS, faq: homeFaqFor(c) }));
+    for (const t of text) expect(t).not.toMatch(/[\u2013\u2014]/);
   });
 });

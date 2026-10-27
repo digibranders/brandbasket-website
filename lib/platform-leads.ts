@@ -39,7 +39,8 @@ export async function forwardEnquiry(lead: ContactInput, request: Request, env: 
           email: lead.email,
           phone: lead.phone ?? "",
           city: lead.city ?? "",
-          plans: lead.plans,
+          // The form no longer takes a basket; the platform's intake still wants the list.
+          plans: [],
           message: lead.message,
           page: pageOf(request),
         },

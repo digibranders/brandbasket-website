@@ -42,7 +42,7 @@ describe("plans", () => {
 
   it("charges extras in each currency (owner, 2026-10-27 for dollars)", () => {
     expect(extrasFor("INR")).toEqual({ hour: 500, reel: 500, adBudgetCap: 10000 });
-    expect(extrasFor("USD")).toEqual({ hour: 8, reel: 8, adBudgetCap: 120 });
+    expect(extrasFor("USD")).toEqual({ hour: 10, reel: 10, adBudgetCap: 120 });
   });
 });
 

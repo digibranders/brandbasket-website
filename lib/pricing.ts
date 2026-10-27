@@ -58,7 +58,7 @@ export interface Extras {
 
 const EXTRAS: Readonly<Record<Currency, Extras>> = {
   INR: { hour: 500, reel: 500, adBudgetCap: 10000 },
-  USD: { hour: 8, reel: 8, adBudgetCap: 120 },
+  USD: { hour: 10, reel: 10, adBudgetCap: 120 },
 };
 
 export function extrasFor(currency: Currency): Extras {

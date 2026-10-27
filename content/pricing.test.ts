@@ -113,7 +113,7 @@ describe("pricing content", () => {
       expect(compareCopy("USD").lede).toBe("Three plans, each on its own. Prices are monthly. Add more than one and the prices drop.");
       expect(pricingFaq("USD")[0]?.a).toBe("Yes. We design and build it for $0. The $65 monthly plan keeps it hosted, secure and up to date.");
       expect(pricingFaq("USD")[4]?.a).toContain("up to $120 a month");
-      expect(planColumns("USD")[1]?.excludes).toContain("Reels and video editing, $8 per reel");
+      expect(planColumns("USD")[1]?.excludes).toContain("Reels and video editing, $10 per reel");
     });
     it("never mentions GST, tax or inclusive prices, and prints no rupee", () => {
       const text = allCopy("USD");

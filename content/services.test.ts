@@ -101,8 +101,8 @@ describe("service pages", () => {
     expect(text).not.toMatch(NO_TAX);
     expect(text).not.toContain("₹");
     expect(text).not.toContain("DPDP");
-    for (const price of ["$65", "$150", "$350", "$120", "$8 an hour", "$30", "$60"]) expect(text).toContain(price);
-    expect(servicePageFor("growth", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$8");
+    for (const price of ["$65", "$150", "$350", "$120", "$10 an hour", "$30", "$60"]) expect(text).toContain(price);
+    expect(servicePageFor("growth", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month", packagesLede: "Any two plans are 10% off and all three are 20% off." });
     expect(Object.values(PLANS).map((plan) => plan.name).every((name) => !NO_TAX.test(name))).toBe(true);

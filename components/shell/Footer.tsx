@@ -1,6 +1,7 @@
 // components/shell/Footer.tsx
 import Link from "next/link";
 import type { ReactElement } from "react";
+import { CurrencySwitch } from "@/components/currency/CurrencySwitch";
 import { FOOTER_NAV, LEGAL_NAV } from "@/content/navigation";
 import { businessDetails } from "@/lib/site-config";
 import { Logo } from "./Logo";
@@ -28,6 +29,7 @@ export function Footer(): ReactElement {
           </div>
           <div className="site-footer-colophon">
             <p>&copy; {new Date().getFullYear()} {businessDetails.tradeName}</p>
+            <CurrencySwitch />
           </div>
         </div>
       </div>

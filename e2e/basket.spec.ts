@@ -1,7 +1,8 @@
 // e2e/basket.spec.ts
 import { expect, test } from "@playwright/test";
 import { PRICING_PLANS } from "@/content/basket";
-import { type BasketPick, formatInr, packageTotal, PLAN_IDS } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { type BasketPick, packageTotal, PLAN_IDS } from "@/lib/pricing";
 
 test("the basket renders cast shadows as well as its main scene", async ({ page }) => {
   await page.addInitScript(() => {
@@ -63,7 +64,7 @@ const PICKS: readonly BasketPick[] = [
   { website: true, growth: true, search: true },
 ];
 
-const pickTotal = (pick: BasketPick): string => formatInr(packageTotal(pick));
+const pickTotal = (pick: BasketPick): string => formatMoney(packageTotal(pick, "INR"), "INR");
 
 for (const pick of PICKS) {
   const total = pickTotal(pick);
@@ -124,7 +125,7 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Managed Website", "Social Media and Ads"]);
   await card.getByRole("button", { name: "Add Local SEO + AEO", exact: true }).click();
   await expect(card.getByText("Full basket. 20% off and ₹3,000 a month for your ads.", { exact: true })).toBeVisible();
-  await expect(card.getByText(formatInr(packageTotal({ website: true, growth: true, search: true })), { exact: false }).first()).toBeVisible();
+  await expect(card.getByText(formatMoney(packageTotal({ website: true, growth: true, search: true }, "INR"), "INR"), { exact: false }).first()).toBeVisible();
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {

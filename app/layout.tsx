@@ -4,16 +4,8 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 import type { Metadata, Viewport } from "next";
 import type { ReactElement, ReactNode } from "react";
 import { JsonLd } from "@/components/JsonLd";
-import { BasketDock } from "@/components/basket/BasketDock";
-import { BasketPopover } from "@/components/basket/BasketPopover";
-import { BasketWall } from "@/components/basket/BasketWall";
 import { ConversionTracking } from "@/components/analytics/ConversionTracking";
 import { ConsentBanner } from "@/components/consent/ConsentBanner";
-import { Closing } from "@/components/shell/Closing";
-import { ClosingGate } from "@/components/shell/ClosingGate";
-import { Footer } from "@/components/shell/Footer";
-import { WhatsAppChat } from "@/components/shell/WhatsAppChat";
-import { Nav } from "@/components/shell/Nav";
 import { TOOLS } from "@/lib/consent";
 import { fontVariables } from "@/lib/fonts";
 import { organizationJsonLd } from "@/lib/seo/jsonld";
@@ -34,16 +26,7 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
   return (
     <html lang="en-IN" className={fontVariables}>
       <body>
-        <Nav />
-        <main id="main">
-          {children}
-          <ClosingGate><Closing /></ClosingGate>
-        </main>
-        <Footer />
-        <WhatsAppChat />
-        <BasketDock />
-        <BasketWall />
-        <BasketPopover />
+        {children}
         {TOOLS.length > 0 && <ConsentBanner />}
         <JsonLd data={organizationJsonLd()} />
         <ConversionTracking />

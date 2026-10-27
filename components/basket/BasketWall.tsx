@@ -1,10 +1,12 @@
 "use client";
 import { Plus } from "@phosphor-icons/react/dist/ssr";
-import { usePathname } from "next/navigation";
+import { usePagePath } from "@/components/currency/usePagePath";
 import { type CSSProperties, type FocusEvent, type PointerEvent, type ReactElement, useCallback, useEffect, useId, useRef, useState } from "react";
-import { BASKET_COPY } from "@/content/basket";
+import { useCurrency } from "@/components/currency/CurrencyProvider";
+import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, formatInr, packageFor, packageTotal, PLAN_IDS, type PlanId } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { basketPlans, packageFor, packageTotal, PLAN_IDS, type PlanId } from "@/lib/pricing";
 import { PLAN_INK } from "./basket-view";
 import { basketPanel } from "./basket-panel";
 import { BasketSummary, PLAN_ICON } from "./BasketSummary";
@@ -30,13 +32,14 @@ const CLOSE_AFTER_MS = 320;
 /**
  * The Woven basket (owner's pick, 2026-10-26; docs/design/nav-cart-options.html): from 1000px up, a small rattan basket
  * hangs on the right wall of the pages that sell the plans, at every scroll position. The plans in the basket sit in
- * it in their colours and the monthly total (GST included) hangs below on a tag. Hover, focus or a click opens the basket card
+ * it in their colours and the monthly total (GST included on rupee pages) hangs below on a tag. Hover, focus or a click opens the basket card
  * (BasketSummary). A plan added anywhere on the page flies into it as a dot; the basket swings and its tag swings after.
  * Phones and tablets keep BasketDock. Styles in wall.css.
  */
 export function BasketWall(): ReactElement | null {
-  const pathname = usePathname();
+  const pathname = usePagePath();
   const pick = useBasket();
+  const currency = useCurrency();
   const cardId = useId();
   const [open, setOpen] = useState(false);
   const [landing, setLanding] = useState<Landing | null>(null);
@@ -115,7 +118,7 @@ export function BasketWall(): ReactElement | null {
   if (!active) return null;
 
   const count = basketPlans(pick).length;
-  const total = formatInr(packageTotal(pick));
+  const total = formatMoney(packageTotal(pick, currency), currency);
   const percent = packageFor(pick)?.percent;
   const swung = landing !== null && landing.added.length > 0;
   const delayStyle = { "--d": `${landing?.delay ?? 0}ms` } as CSSProperties;
@@ -137,7 +140,7 @@ export function BasketWall(): ReactElement | null {
         type="button"
         aria-expanded={open}
         aria-controls={cardId}
-        aria-label={`${BASKET_COPY.reviewBasket}: ${count} ${count === 1 ? BASKET_COPY.planOne : BASKET_COPY.planMany}, ${total} ${BASKET_COPY.phoneBarCaption}`}
+        aria-label={`${BASKET_COPY.reviewBasket}: ${count} ${count === 1 ? BASKET_COPY.planOne : BASKET_COPY.planMany}, ${total} ${moneyCopy(currency).phoneBarCaption}`}
         onClick={onFaceClick}
         className="bw-face"
       >
@@ -160,7 +163,7 @@ export function BasketWall(): ReactElement | null {
           <span className="bw-tag">
             {percent ? <span key={`chip${landing?.n ?? 0}`} style={delayStyle} className={`bc-chip ${landing ? "bw-chip-in" : ""}`}>{percent}% off</span> : null}
             <b className="num"><Roll value={total} dir={landing?.dir ?? 1} delay={landing?.delay ?? 0} /></b>
-            <span className="bw-tag-note">{BASKET_COPY.phoneBarCaption}</span>
+            <span className="bw-tag-note">{moneyCopy(currency).phoneBarCaption}</span>
           </span>
         </span>
       </button>

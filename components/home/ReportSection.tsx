@@ -3,7 +3,8 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { StepsList } from "@/components/ui/StepsList";
-import { REPORT, type ReportTone, STEPS } from "@/content/home";
+import { REPORT, reportFor, type ReportTone, STEPS } from "@/content/home";
+import type { Currency } from "@/lib/currency";
 
 const TONE: Readonly<Record<ReportTone, string>> = {
   site: "bg-[var(--c-site)]",
@@ -38,7 +39,7 @@ function ReportChart(): ReactElement {
 }
 
 /** Steps and the example monthly report (mock: #h-report, .steps-mini, .report). The "Example report" chip stays. */
-export function ReportSection(): ReactElement {
+export function ReportSection({ currency }: { readonly currency: Currency }): ReactElement {
   return (
     <Section labelledBy="h-report" tight>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-9">
@@ -56,7 +57,7 @@ export function ReportSection(): ReactElement {
               <span className="whitespace-nowrap rounded-full bg-rattan-wash px-2.5 py-1 font-mono text-[11.5px] text-rattan-ink">{REPORT.chip}</span>
             </div>
             <dl className="grid grid-cols-2 gap-2.5 min-[640px]:grid-cols-4 min-[900px]:grid-cols-2">
-              {REPORT.kpis.map((kpi) => (
+              {reportFor(currency).kpis.map((kpi) => (
                 <div key={kpi.label} className="grid min-w-0 gap-1 rounded-2xl bg-bg p-3.5">
                   <dt className="flex items-center gap-1.5 text-xs text-ink-2"><i aria-hidden="true" className={`size-2 rounded-[2px] ${TONE[kpi.tone]}`} />{kpi.label}</dt>
                   <dd className="num font-display text-[26px] font-medium tracking-[-0.03em]">{kpi.value}</dd>

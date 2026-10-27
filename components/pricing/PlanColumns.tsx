@@ -5,8 +5,9 @@ import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { COMPARE, EVERY_PLAN, PLAN_COLUMNS, type PlanColumn } from "@/content/pricing";
+import { compareCopy, everyPlan, type PlanColumn, planColumns } from "@/content/pricing";
 import { SERVICE_COPY, servicePageFor } from "@/content/services";
+import type { Currency } from "@/lib/currency";
 import type { PlanId } from "@/lib/pricing";
 import { PlanBasketButton } from "./PlanBasketButton";
 
@@ -16,7 +17,7 @@ const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)"
 
 const LABEL = "mb-3 text-[13px] font-semibold leading-none text-ink-2";
 
-function Plan({ plan }: { readonly plan: PlanColumn }): ReactElement {
+function Plan({ plan, currency, doesLabel, excludesLabel }: { readonly plan: PlanColumn; readonly currency: Currency; readonly doesLabel: string; readonly excludesLabel: string }): ReactElement {
   const PlanIcon = PLAN_ICON[plan.id];
   const headingId = `plan-${plan.id}`;
   return (
@@ -35,13 +36,13 @@ function Plan({ plan }: { readonly plan: PlanColumn }): ReactElement {
           {plan.price}<small className="ml-1 font-sans text-sm font-medium tracking-normal text-ink-2">{plan.priceNote}</small>
         </p>
         <p className="col-span-full mt-2 max-w-[34ch] text-[15px] leading-normal text-ink-2">{plan.audience}</p>
-        <Link href={servicePageFor(plan.id).path} className="group col-span-full mt-3 inline-flex w-fit items-center gap-1.5 text-[15px] font-semibold underline decoration-[var(--c)] decoration-2 underline-offset-4">
+        <Link href={servicePageFor(plan.id, currency).path} className="group col-span-full mt-3 inline-flex w-fit items-center gap-1.5 text-[15px] font-semibold underline decoration-[var(--c)] decoration-2 underline-offset-4">
           {SERVICE_COPY.exploreMore}<span className="sr-only"> about {plan.name}</span>
           <ArrowRight aria-hidden="true" weight="bold" className="size-4 text-[var(--c)] transition-transform duration-300 ease-[var(--ease)] group-hover:translate-x-[3px]" />
         </Link>
       </header>
       <div className="border-t border-line px-[26px] py-5">
-        <h4 className={LABEL}>{COMPARE.doesLabel}</h4>
+        <h4 className={LABEL}>{doesLabel}</h4>
         <ul className="grid gap-2.5">
           {plan.does.map((line) => (
             <li key={line} className="grid grid-cols-[20px_1fr] items-start gap-2.5 text-[15px] leading-[1.4]">
@@ -52,7 +53,7 @@ function Plan({ plan }: { readonly plan: PlanColumn }): ReactElement {
         </ul>
       </div>
       <div className="border-t border-line bg-sunken px-[26px] py-5">
-        <h4 className={LABEL}>{COMPARE.excludesLabel}</h4>
+        <h4 className={LABEL}>{excludesLabel}</h4>
         <ul className="grid gap-2.5">
           {plan.excludes.map((line) => (
             <li key={line} className="grid grid-cols-[20px_1fr] items-start gap-2.5 text-[15px] leading-[1.4] text-ink-2">
@@ -74,20 +75,22 @@ function Plan({ plan }: { readonly plan: PlanColumn }): ReactElement {
  * left out, with the rows lined up across plans. Then what every plan shares, and the packages that bundle them.
  * Plans and prices are built from lib/pricing, so nothing here repeats a number.
  */
-export function PlanColumns(): ReactElement {
+export function PlanColumns({ currency }: { readonly currency: Currency }): ReactElement {
+  const compare = compareCopy(currency);
+  const every = everyPlan(currency);
   return (
     <Section id="compare" labelledBy="h-compare" tight className="scroll-mt-24 pt-16!">
       <Reveal>
-        <SectionHead id="h-compare" title={COMPARE.heading} lede={COMPARE.lede} />
+        <SectionHead id="h-compare" title={compare.heading} lede={compare.lede} />
       </Reveal>
       <Reveal>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-5 min-[980px]:grid-cols-3 min-[980px]:grid-rows-[repeat(4,auto)] min-[980px]:gap-x-[22px] min-[980px]:gap-y-0">
-          {PLAN_COLUMNS.map((plan) => <Plan key={plan.id} plan={plan} />)}
+          {planColumns(currency).map((plan) => <Plan key={plan.id} plan={plan} currency={currency} doesLabel={compare.doesLabel} excludesLabel={compare.excludesLabel} />)}
         </div>
         <div className="mt-[22px] flex flex-wrap items-center gap-x-7 gap-y-3 rounded-[22px] bg-[color-mix(in_srgb,var(--sage)_9%,var(--surface))] px-[26px] py-[18px]">
-          <b className="font-display text-base font-semibold tracking-[-0.02em]">{EVERY_PLAN.label}</b>
+          <b className="font-display text-base font-semibold tracking-[-0.02em]">{every.label}</b>
           <ul className="flex flex-wrap gap-x-6 gap-y-2">
-            {EVERY_PLAN.items.map((item) => (
+            {every.items.map((item) => (
               <li key={item} className="inline-flex items-center gap-2 text-[14.5px]">
                 <Check aria-hidden="true" className="size-[18px] text-sage" />
                 {item}

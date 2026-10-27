@@ -29,8 +29,9 @@ import { OutlineButton } from "@/components/ui/OutlineButton";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { StepsList } from "@/components/ui/StepsList";
-import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent } from "@/content/services";
-import { formatInr, packageSaving, PACKAGES, packageTotal, PLANS, type PlanId } from "@/lib/pricing";
+import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent, serviceMoneyCopy } from "@/content/services";
+import { type Currency, formatMoney } from "@/lib/currency";
+import { packageSaving, PACKAGES, packageTotal, PLANS, planPrice, type PlanId } from "@/lib/pricing";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/jsonld";
 import { ServiceStartButton } from "./ServiceStartButton";
 
@@ -60,7 +61,7 @@ function colourOf(id: PlanId): CSSProperties {
   return { "--c": PLAN_COLOUR[id] } as CSSProperties;
 }
 
-function Hero({ page }: { readonly page: ServicePageContent }): ReactElement {
+function Hero({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
   const PlanIcon = PLAN_ICON[page.id];
   const plan = PLANS[page.id];
   return (
@@ -92,7 +93,7 @@ function Hero({ page }: { readonly page: ServicePageContent }): ReactElement {
               {page.id === "website" ? <span className="mt-1 inline-block rounded-full bg-rattan-wash px-2.5 py-[3px] text-xs font-semibold leading-[1.4] text-rattan-ink">{SERVICE_COPY.freeBuild}</span> : null}
             </div>
             <p className="num col-span-full mt-3.5 font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
-              {formatInr(plan.monthly)}<small className="ml-1 font-sans text-sm font-medium tracking-normal text-ink-2">{SERVICE_COPY.perMonth}</small>
+              {formatMoney(planPrice(page.id, currency), currency)}<small className="ml-1 font-sans text-sm font-medium tracking-normal text-ink-2">{serviceMoneyCopy(currency).perMonth}</small>
             </p>
           </div>
           <ul className="grid gap-2.5 border-t border-line px-[26px] py-5">
@@ -163,9 +164,9 @@ function Does({ page }: { readonly page: ServicePageContent }): ReactElement {
   );
 }
 
-function Spotlight({ page }: { readonly page: ServicePageContent }): ReactElement {
+function Spotlight({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
   const { spotlight } = page;
-  const adMoney = PACKAGES.filter((pkg) => pkg.adCredit > 0);
+  const adMoney = PACKAGES.filter((pkg) => pkg.adCredit[currency] > 0);
   const body = spotlight.body.map((paragraph) => <p key={paragraph} className="max-w-[54ch] text-[17px] text-ink-2">{paragraph}</p>);
   return (
     <Section labelledBy="h-spotlight" tight>
@@ -177,14 +178,14 @@ function Spotlight({ page }: { readonly page: ServicePageContent }): ReactElemen
           </div>
           {spotlight.kind === "explainer" ? <div className="grid gap-4">{body}</div> : null}
           {spotlight.kind === "offer" ? (
-            <div className="grid justify-items-start min-[980px]:justify-items-end"><OfferLine /></div>
+            <div className="grid justify-items-start min-[980px]:justify-items-end"><OfferLine currency={currency} /></div>
           ) : null}
           {spotlight.kind === "ad-money" ? (
             <ul className="grid gap-2.5">
               {adMoney.map((pkg) => (
                 <li key={pkg.id} className="flex items-baseline justify-between gap-4 rounded-2xl bg-surface px-5 py-4">
                   <span className="font-display text-[18px] font-medium tracking-[-0.02em]">{pkg.name}</span>
-                  <span className="num font-display text-[22px] font-medium tracking-[-0.03em]">{formatInr(pkg.adCredit)}<small className="ml-1 font-sans text-[13px] font-medium tracking-normal text-ink-2">a month</small></span>
+                  <span className="num font-display text-[22px] font-medium tracking-[-0.03em]">{formatMoney(pkg.adCredit[currency], currency)}<small className="ml-1 font-sans text-[13px] font-medium tracking-normal text-ink-2">a month</small></span>
                 </li>
               ))}
             </ul>
@@ -224,13 +225,13 @@ function Limits({ page }: { readonly page: ServicePageContent }): ReactElement {
   );
 }
 
-function Packages({ page }: { readonly page: ServicePageContent }): ReactElement {
+function Packages({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
   const plan = PLANS[page.id];
   const rows = PACKAGES.filter((pkg) => pkg.pick[page.id]);
   const copy = SERVICE_COPY.packages;
   return (
     <Section labelledBy="h-packages" tight>
-      <Reveal><SectionHead id="h-packages" title={copy.heading} lede={copy.lede} /></Reveal>
+      <Reveal><SectionHead id="h-packages" title={copy.heading} lede={serviceMoneyCopy(currency).packagesLede} /></Reveal>
       <Reveal>
         <div role="region" aria-label={copy.heading} tabIndex={0} className="overflow-x-auto rounded-[24px] bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rattan-ink">
           <table className={`w-full min-w-[560px] border-collapse text-left ${RING}`}>
@@ -246,16 +247,16 @@ function Packages({ page }: { readonly page: ServicePageContent }): ReactElement
             <tbody>
               <tr className="border-t border-line">
                 <th scope="row" className="px-6 py-4 font-display text-[18px] font-medium tracking-[-0.02em]">{plan.name}<span className="ml-2 text-sm font-normal text-ink-2">{copy.aloneLabel}</span></th>
-                <td className="num px-6 py-4">{formatInr(plan.monthly)}</td>
+                <td className="num px-6 py-4">{formatMoney(planPrice(page.id, currency), currency)}</td>
                 <td className="px-6 py-4 text-ink-2">{copy.none}</td>
                 <td className="px-6 py-4 text-ink-2">{copy.none}</td>
               </tr>
               {rows.map((pkg) => (
                 <tr key={pkg.id} className="border-t border-line">
                   <th scope="row" className="px-6 py-4 font-display text-[18px] font-medium tracking-[-0.02em]">{pkg.name}<span className="ml-2 text-sm font-normal text-ink-2">{pkg.percent}% off</span></th>
-                  <td className="num px-6 py-4 font-semibold">{formatInr(packageTotal(pkg.pick))}</td>
-                  <td className="num px-6 py-4">{formatInr(packageSaving(pkg.pick))}</td>
-                  <td className="num px-6 py-4">{pkg.adCredit > 0 ? formatInr(pkg.adCredit) : copy.none}</td>
+                  <td className="num px-6 py-4 font-semibold">{formatMoney(packageTotal(pkg.pick, currency), currency)}</td>
+                  <td className="num px-6 py-4">{formatMoney(packageSaving(pkg.pick, currency), currency)}</td>
+                  <td className="num px-6 py-4">{pkg.adCredit[currency] > 0 ? formatMoney(pkg.adCredit[currency], currency) : copy.none}</td>
                 </tr>
               ))}
             </tbody>
@@ -282,21 +283,21 @@ function ServiceFaq({ page }: { readonly page: ServicePageContent }): ReactEleme
 
 /**
  * One service page: who it is for, what we do, what sets it apart, how it works, what is left out, the packages it joins
- * and its questions. The closing section comes from the root layout. Prices come from lib/pricing, the lists from the
- * pricing cards, so a page never repeats a number it could drift from.
+ * and its questions. The closing section comes from the root layout. Prices come from lib/pricing in the page's currency,
+ * the lists from the pricing cards, so a page never repeats a number it could drift from.
  */
-export function ServicePage({ page }: { readonly page: ServicePageContent }): ReactElement {
+export function ServicePage({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
   return (
     <>
-      <Hero page={page} />
+      <Hero page={page} currency={currency} />
       <Who page={page} />
       <Does page={page} />
-      <Spotlight page={page} />
+      <Spotlight page={page} currency={currency} />
       <How page={page} />
       <Limits page={page} />
-      <Packages page={page} />
+      <Packages page={page} currency={currency} />
       <ServiceFaq page={page} />
-      <JsonLd data={serviceJsonLd(page)} />
+      <JsonLd data={serviceJsonLd(page, currency)} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }, { name: PLANS[page.id].name, path: page.path }])} />
     </>
   );

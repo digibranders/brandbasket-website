@@ -1,8 +1,9 @@
 // content/legal/fees.ts
-import { formatInr, PACKAGES } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { PACKAGES } from "@/lib/pricing";
 
 const offers = PACKAGES.map((p) => `${p.name} ${p.percent}% off`).join(", ");
-const credits = PACKAGES.filter((p) => p.adCredit > 0).map((p) => `${p.name} ${formatInr(p.adCredit)}`).join(", ");
+const credits = PACKAGES.filter((p) => p.adCredit.INR > 0).map((p) => `${p.name} ${formatMoney(p.adCredit.INR, "INR")}`).join(", ");
 
 /** Owner decisions 2026-10-21: the platform checkout bills exactly this. Shared by the terms and /llms.txt. */
 export const PACKAGE_TERMS =

@@ -3,29 +3,33 @@ import { notFound } from "next/navigation";
 import type { ReactElement } from "react";
 import { ServicePage } from "@/components/services/ServicePage";
 import { SERVICE_PAGES, servicePageBySlug } from "@/content/services";
+import { currencyParam } from "@/lib/currency";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { serviceRoute } from "@/lib/seo/routes";
 
 interface ServicePageParams {
-  readonly params: Promise<{ readonly slug: string }>;
+  readonly params: Promise<{ readonly currency: string; readonly slug: string }>;
 }
 
 /** The three service pages are known at build time; any other address is a 404. */
 export const dynamicParams = false;
 
+/** The layout above supplies the currency; this lists the slugs. */
 export function generateStaticParams(): { slug: string }[] {
   return SERVICE_PAGES.map((page) => ({ slug: page.slug }));
 }
 
 export async function generateMetadata({ params }: ServicePageParams): Promise<Metadata> {
-  const page = servicePageBySlug((await params).slug);
+  const currency = await currencyParam(params);
+  const page = servicePageBySlug((await params).slug, currency);
   if (page === undefined) notFound();
   return pageMetadata(serviceRoute(page));
 }
 
-/** /services/managed-website, /services/social-media-and-ads and /services/local-seo-aeo. */
+/** /services/managed-website, /services/social-media-and-ads and /services/local-seo-aeo, in rupees or dollars. */
 export default async function ServiceRoute({ params }: ServicePageParams): Promise<ReactElement> {
-  const page = servicePageBySlug((await params).slug);
+  const currency = await currencyParam(params);
+  const page = servicePageBySlug((await params).slug, currency);
   if (page === undefined) notFound();
-  return <ServicePage page={page} />;
+  return <ServicePage page={page} currency={currency} />;
 }

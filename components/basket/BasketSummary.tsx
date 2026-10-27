@@ -3,12 +3,14 @@ import { Check, Globe, Megaphone, MagnifyingGlass, Minus, Plus, X } from "@phosp
 import type { Icon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type CSSProperties, type ReactElement, useId, useState } from "react";
+import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
-import { BASKET_COPY, offerNote, planCount, saveLine } from "@/content/basket";
+import { BASKET_COPY, moneyCopy, offerNote, planCount, saveLine } from "@/content/basket";
 import { slotLabel } from "@/content/basket-card";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
-import { basketPlans, formatInr, PLAN_IDS, packageTotal, PLANS, type PlanId, samePick } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { basketPlans, PLAN_IDS, packageTotal, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
 import { signupHref } from "@/lib/signup";
 import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
@@ -38,6 +40,7 @@ interface Change {
  */
 export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactElement {
   const pick = useBasket();
+  const currency = useCurrency();
   const titleId = useId();
   const [seen, setSeen] = useState(pick);
   const [change, setChange] = useState<Change>({ n: 0, added: null, dir: 1 });
@@ -48,7 +51,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
     setSeen(pick);
   }
   const onlyOne = basketPlans(pick).length === 1;
-  const saving = saveLine(pick);
+  const saving = saveLine(pick, currency);
   return (
     <section aria-labelledby={titleId} className="bc-core">
       <div className="bc-head bc-rise" style={{ "--i": 0 } as CSSProperties}>
@@ -65,7 +68,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
       <div aria-hidden="true" className="bc-meter bc-rise" style={{ "--i": 1 } as CSSProperties}>
         {PLAN_IDS.map((id) => <i key={id} className={pick[id] ? "is-on" : undefined} style={{ "--c": PLAN_INK[id] } as CSSProperties} />)}
       </div>
-      <p className="bc-nudge bc-rise" style={{ "--i": 2 } as CSSProperties}>{offerNote(pick)}</p>
+      <p className="bc-nudge bc-rise" style={{ "--i": 2 } as CSSProperties}>{offerNote(pick, currency)}</p>
       <ul className="bc-rows bc-rise" style={{ "--i": 3 } as CSSProperties}>
         {PLAN_IDS.map((id) => {
           const on = pick[id];
@@ -79,7 +82,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
               </span>
               <div className="min-w-0">
                 <b>{PLANS[id].name}</b>
-                <small className="num">{formatInr(PLANS[id].monthly)} {BASKET_COPY.perMonth}</small>
+                <small className="num">{formatMoney(planPrice(id, currency), currency)} {BASKET_COPY.perMonth}</small>
               </div>
               <button
                 type="button"
@@ -97,8 +100,8 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
       </ul>
       <div className="bc-total bc-rise" style={{ "--i": 4 } as CSSProperties}>
         <div>
-          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatInr(packageTotal(pick))} dir={change.dir} /></p>
-          <small>{BASKET_COPY.phoneBarCaption}</small>
+          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(packageTotal(pick, currency), currency)} dir={change.dir} /></p>
+          <small>{moneyCopy(currency).phoneBarCaption}</small>
         </div>
         {saving ? <span className="bc-chip">{saving}</span> : null}
       </div>

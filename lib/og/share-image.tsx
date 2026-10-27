@@ -23,7 +23,7 @@ const BOARD_LETTER = "#f4f1ea";
 
 const root = process.cwd();
 const [lockup, redHatDisplay, redHatDisplaySemiBold, redHatDisplayLightItalic, rupeeFallback] = await Promise.all([
-  readFile(join(root, "public/brand/brandbasket-lockup-horizontal-light.svg"), "base64"),
+  readFile(join(root, "public/brand/brandbasket-logo-horizontal-light.svg"), "base64"),
   // Static instances of the variable font (the parser in next/og cannot read variable fonts).
   readFile(join(root, "assets/fonts/RedHatDisplay-Regular.ttf")),
   readFile(join(root, "assets/fonts/RedHatDisplay-SemiBold.ttf")),
@@ -70,7 +70,7 @@ export function letterboardShareImage({ board, line, lineAccent }: LetterboardCo
         </div>
         <div style={{ position: "absolute", left: 64, right: 64, bottom: 50, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src={lockupSrc} width={193} height={34} alt="" />
+          <img src={lockupSrc} width={202} height={34} alt="" />
           <div style={{ display: "flex", fontSize: 18, fontWeight: 600, letterSpacing: "0.16em", color: INK_2 }}>{domain}</div>
         </div>
       </div>

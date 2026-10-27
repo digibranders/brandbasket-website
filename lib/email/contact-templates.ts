@@ -72,7 +72,7 @@ export function buildConfirmationEmail(input: ContactInput): LeadEmail {
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f6f5f2;padding:32px 16px">
 <tr><td align="center">
 <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;font-family:Arial,Helvetica,sans-serif">
-<tr><td style="padding:0 0 24px"><img src="${siteConfig.url}/email/brandbasket-logo.png" width="180" height="32" alt="Brandbasket" style="display:block;border:0"></td></tr>
+<tr><td style="padding:0 0 24px"><img src="${siteConfig.url}/email/brandbasket-logo.png" width="180" height="30" alt="Brandbasket" style="display:block;border:0"></td></tr>
 <tr><td style="background:#ffffff;border:1px solid #e3e0d9;border-radius:12px;padding:32px">
 ${p(escapeHtml(greeting))}
 ${p(escapeHtml(paragraphs[0] ?? ""))}

@@ -136,9 +136,9 @@
 
 .site-footer-wordmark {
   width: 100%;
-  aspect-ratio: 312.66 / 55;
+  aspect-ratio: 355.8 / 60;
   background: color-mix(in srgb, var(--rattan) 25%, var(--sunken));
-  mask: url("/brand/brandbasket-lockup-horizontal-light.svg") center / contain no-repeat;
+  mask: url("/brand/brandbasket-logo-horizontal-light.svg") center / contain no-repeat;
 }
 
 @media (width < 1100px) {

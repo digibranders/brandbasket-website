@@ -17,11 +17,9 @@ import { WorkShowcase } from "@/components/home/WorkShowcase";
 import { currencyParam } from "@/lib/currency";
 import { planOffersJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { homeRoute } from "@/lib/seo/routes";
+import { HOME_ROUTE } from "@/lib/seo/routes";
 
-export async function generateMetadata({ params }: { readonly params: Promise<{ readonly currency: string }> }): Promise<Metadata> {
-  return pageMetadata(homeRoute(await currencyParam(params)));
-}
+export const metadata: Metadata = pageMetadata(HOME_ROUTE);
 
 /**
  * Sections in the polished order (docs/design/homepage-v2.html, docs/plans/20-homepage-polish.md): value before price,

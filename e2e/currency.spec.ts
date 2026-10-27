@@ -28,7 +28,8 @@ test.describe("a visitor in the United States", () => {
     await expect(page).toHaveURL(/\/pricing$/);
     const main = page.locator("main");
     for (const price of ["$65", "$150", "$350"]) await expect(main.getByText(price).first()).toBeVisible();
-    await expect(page).toHaveTitle(/plans from \$65 a month/);
+    await expect(page).toHaveTitle(/^Pricing: a free website and monthly plans/);
+    await expect(page).not.toHaveTitle(/[₹$]/);
   });
 
   test("the basket opens in dollars", async ({ page }) => {

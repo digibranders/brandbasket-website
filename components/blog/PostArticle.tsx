@@ -36,8 +36,8 @@ export function PostArticle({ post }: { readonly post: Post }): ReactElement {
       </header>
 
       {post.cover === null ? null : (
-        <div className="mt-10 rounded-[28px] shadow-[var(--shadow)]">
-          <Thumb image={post.cover} alt={post.cover.alt} sizes="(min-width: 1280px) 1168px, 100vw" priority className="rounded-[28px]" />
+        <div className="mt-10 max-w-[860px] rounded-[28px] shadow-[var(--shadow)]">
+          <Thumb image={post.cover} alt={post.cover.alt} sizes="(min-width: 900px) 860px, 100vw" priority className="rounded-[28px]" />
         </div>
       )}
 

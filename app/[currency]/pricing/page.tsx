@@ -9,11 +9,9 @@ import { PricingHero } from "@/components/pricing/PricingHero";
 import { currencyParam } from "@/lib/currency";
 import { breadcrumbJsonLd, planOffersJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
-import { pricingRoute } from "@/lib/seo/routes";
+import { PRICING_ROUTE } from "@/lib/seo/routes";
 
-export async function generateMetadata({ params }: { readonly params: Promise<{ readonly currency: string }> }): Promise<Metadata> {
-  return pageMetadata(pricingRoute(await currencyParam(params)));
-}
+export const metadata: Metadata = pageMetadata(PRICING_ROUTE);
 
 /** Sections: the plan columns, the basket band and the FAQ (docs/design/homepage-v2.html, Pricing view). The closing section comes from the layout. */
 export default async function PricingPage({ params }: { readonly params: Promise<{ readonly currency: string }> }): Promise<ReactElement> {

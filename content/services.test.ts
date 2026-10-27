@@ -36,16 +36,17 @@ describe("service pages", () => {
       it("gives every page a search title and description of a sensible length", () => {
         for (const page of pages) {
           const route = serviceRoute(page);
-          expect(route.title.length, route.title).toBeLessThanOrEqual(65);
-          expect(route.description.length, route.description).toBeGreaterThanOrEqual(50);
-          expect(route.description.length, route.description).toBeLessThanOrEqual(160);
-          expect(route.title).toContain(formatMoney(planPrice(page.id, currency), currency));
+          expect(route.title.length, route.title).toBeLessThanOrEqual(60);
+          expect(route.description.length, route.description).toBeGreaterThanOrEqual(120);
+          expect(route.description.length, route.description).toBeLessThanOrEqual(155);
+          // A shared link shows the title and description, so neither carries a price.
+          expect(`${route.title} ${route.description}`, route.title).not.toMatch(/[₹$]|\bgst\b/i);
         }
       });
 
       it("builds every price from the pricing module", () => {
         const text = JSON.stringify(pages);
-        for (const id of PLAN_IDS) expect(text).toContain(formatMoney(planPrice(id, currency), currency));
+        expect(text).toContain(formatMoney(planPrice("website", currency), currency));
         expect(text).not.toMatch(/plus (18% )?GST|\+ ?GST|before GST/i);
       });
 
@@ -88,7 +89,7 @@ describe("service pages", () => {
 
   it("prints rupees with GST included on the rupee pages", () => {
     const text = JSON.stringify(servicePages("INR"));
-    expect(text).toContain("₹2,999 a month, GST included");
+    expect(text).toContain("₹2,999 a month covers everything below, GST included");
     expect(text).toContain("₹10,000");
     expect(text).toContain("₹500 an hour");
     expect(text).toContain("₹500");
@@ -105,7 +106,7 @@ describe("service pages", () => {
     expect(text).not.toMatch(NO_TAX);
     expect(text).not.toContain("₹");
     expect(text).not.toContain("DPDP");
-    for (const price of ["$65", "$150", "$350", "$120", "$10 an hour"]) expect(text).toContain(price);
+    for (const price of ["$65", "$120", "$10 an hour"]) expect(text).toContain(price);
     expect(servicePageFor("growth", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month", packagesLede: "Any two plans are 10% off and all three are 20% off." });

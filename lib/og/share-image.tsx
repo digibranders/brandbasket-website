@@ -1,8 +1,9 @@
 // lib/og/share-image.tsx
-// The share-image design (1200x630). letterboardShareImage: the site's default card, a café letterboard with an italic line and the logo underneath.
+// The share-image design (1200x630). flapShareImage: the site's default card, a headline over four split-flap tiles with an italic line and the logo underneath.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import type { ReactElement } from "react";
 import { SHARE_IMAGE_META } from "@/lib/seo/metadata";
 import { siteConfig } from "@/lib/site-config";
 
@@ -15,11 +16,12 @@ const INK = "#15161a";
 const INK_2 = "#4e5057";
 const RATTAN_TEXT = "#a46c2f";
 
-// The letterboard itself is an illustration, not page UI: an oak frame, ribbed black felt and white peg letters.
-const BOARD_FRAME = "#b98a52";
-const BOARD_FELT = "#232327";
-const BOARD_GROOVE = "#121215";
-const BOARD_LETTER = "#f4f1ea";
+const RATTAN = "#c48a47";
+
+// The tiles are an illustration, not page UI: dark flaps with a hinge across the middle, in the Fynix split-flap style.
+const FLAP_TOP = "#2b2c33";
+const FLAP_BOTTOM = "#1d1e23";
+const FLAP_HINGE = "#0d0e11";
 
 const root = process.cwd();
 const [lockup, redHatDisplay, redHatDisplaySemiBold, redHatDisplayLightItalic, rupeeFallback] = await Promise.all([
@@ -41,37 +43,53 @@ const FONTS = [
 
 const lockupSrc = `data:image/svg+xml;base64,${lockup}`;
 
-export interface LetterboardCopy {
-  readonly board: { readonly kicker: string; readonly headline: string; readonly note: string };
+export interface FlapCopy {
+  readonly lead: string;
+  /** Four letters, one per tile. */
+  readonly word: string;
   readonly line: string;
   readonly lineAccent: string;
 }
 
-export function letterboardShareImage({ board, line, lineAccent }: LetterboardCopy): ImageResponse {
-  const domain = new URL(siteConfig.url).hostname.toUpperCase();
+/** One split-flap tile: two halves, a hinge line with a notch at each end, and the letter centred over both. */
+function Flap({ letter }: { readonly letter: string }): ReactElement {
+  return (
+    <div
+      style={{
+        position: "relative", width: 190, height: 250, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 18,
+        backgroundImage: `linear-gradient(180deg, ${FLAP_TOP} 0%, ${FLAP_TOP} 50%, ${FLAP_BOTTOM} 50%, ${FLAP_BOTTOM} 100%)`,
+        boxShadow: "0 30px 40px -24px rgba(21, 22, 26, 0.55)", color: RATTAN, fontSize: 214, fontWeight: 600, lineHeight: 1, letterSpacing: "-0.02em",
+      }}
+    >
+      <div style={{ display: "flex", transform: "translateY(-6px)", textShadow: "0 6px 0 rgba(0, 0, 0, 0.25)" }}>{letter}</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: 122, height: 5, background: FLAP_HINGE }} />
+      <div style={{ position: "absolute", left: -6, top: 119, width: 12, height: 12, borderRadius: 6, background: FLAP_HINGE }} />
+      <div style={{ position: "absolute", right: -6, top: 119, width: 12, height: 12, borderRadius: 6, background: FLAP_HINGE }} />
+    </div>
+  );
+}
+
+export function flapShareImage({ lead, word, line, lineAccent }: FlapCopy): ImageResponse {
+  const domain = new URL(siteConfig.url).hostname;
   return new ImageResponse(
     (
-      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", background: `radial-gradient(ellipse 60% 70% at 50% 40%, #ffffff, ${BONE} 75%)`, color: INK, fontFamily: "Red Hat Display" }}>
-        <div
-          style={{
-            marginTop: 48, width: 880, height: 380, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
-            border: `20px solid ${BOARD_FRAME}`, borderRadius: 10, boxShadow: "0 34px 50px -26px rgba(40, 28, 14, 0.6)",
-            backgroundImage: `repeating-linear-gradient(180deg, ${BOARD_FELT} 0px, ${BOARD_FELT} 13px, ${BOARD_GROOVE} 13px, ${BOARD_GROOVE} 15px)`,
-            color: BOARD_LETTER, fontWeight: 600, textTransform: "uppercase", textShadow: "0 3px 2px rgba(0, 0, 0, 0.55)",
-          }}
-        >
-          <div style={{ display: "flex", fontSize: 54, letterSpacing: "0.14em", lineHeight: 1.2 }}>{board.kicker}</div>
-          <div style={{ display: "flex", fontSize: 88, letterSpacing: "0.08em", lineHeight: 1, margin: "6px 0 10px" }}>{board.headline}</div>
-          <div style={{ display: "flex", fontSize: 32, letterSpacing: "0.14em", lineHeight: 1.2 }}>{board.note}</div>
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", background: `radial-gradient(ellipse 60% 70% at 50% 42%, #ffffff, ${BONE} 75%)`, color: INK, fontFamily: "Red Hat Display" }}>
+        <div style={{ display: "flex", marginTop: 58, fontSize: 60, fontWeight: 600, letterSpacing: "-0.035em", lineHeight: 1.05 }}>{lead}</div>
+        <div style={{ display: "flex", marginTop: 30 }}>
+          {[...word].map((letter, i) => (
+            <div key={i} style={{ display: "flex", marginLeft: i === 0 ? 0 : 22 }}>
+              <Flap letter={letter} />
+            </div>
+          ))}
         </div>
-        <div style={{ display: "flex", marginTop: 30, fontSize: 36, fontStyle: "italic", fontWeight: 300, letterSpacing: "-0.02em" }}>
+        <div style={{ display: "flex", marginTop: 30, fontSize: 40, fontStyle: "italic", fontWeight: 300, letterSpacing: "-0.02em" }}>
           {line}
-          <span style={{ marginLeft: 9, color: RATTAN_TEXT }}>{lineAccent}</span>
+          <span style={{ marginLeft: 10, color: RATTAN_TEXT }}>{lineAccent}</span>
         </div>
-        <div style={{ position: "absolute", left: 64, right: 64, bottom: 50, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div style={{ position: "absolute", left: 64, right: 64, bottom: 44, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={lockupSrc} width={202} height={34} alt="" />
-          <div style={{ display: "flex", fontSize: 18, fontWeight: 600, letterSpacing: "0.16em", color: INK_2 }}>{domain}</div>
+          <div style={{ display: "flex", fontSize: 24, fontWeight: 600, letterSpacing: "-0.01em", color: INK_2 }}>{domain}</div>
         </div>
       </div>
     ),

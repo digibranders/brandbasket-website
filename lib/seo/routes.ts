@@ -27,10 +27,11 @@ const SERVICES_UPDATED = "2026-10-26";
 
 /** The home page's entry in a currency: the price in its description is the visitor's own. */
 export function homeRoute(currency: Currency): RouteMeta {
+  const gst = currency === "INR" ? ", GST included" : "";
   return {
     path: "/",
-    title: `Free business website, run for you monthly | ${tradeName}`,
-    description: `Get a professional website built free for your local business. We host, secure and update it for ${formatMoney(planPrice("website", currency), currency)} a month. Add social, ads and local search any time.`,
+    title: `Get your business website free | ${tradeName}`,
+    description: `A professional website for your local business, built free and live in about a week. Hosting, security and upkeep for ${formatMoney(planPrice("website", currency), currency)} a month${gst}.`,
     updated: UPDATED,
     priority: 1,
   };

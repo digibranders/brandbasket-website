@@ -45,11 +45,12 @@ export function offerFor(currency: Currency): OfferLineContent {
   };
 }
 
-/** The default share image (app/opengraph-image.tsx): a café letterboard, then an italic line under it. Chosen by the owner, 2026-10-21. */
+/** The default share image (app/opengraph-image.tsx): a headline over four split-flap tiles that spell FREE, then an italic line. Owner approved the words, 2026-10-27. */
 export const SHARE_IMAGE = {
-  board: { kicker: "Today's special", headline: "Free website", note: "+ hosting and care, monthly" },
-  line: "Live in about a week.",
-  lineAccent: "Just ask.",
+  lead: "Get your business website for",
+  word: "FREE",
+  line: "Built for you.",
+  lineAccent: "Live in about a week.",
 } as const;
 
 /** Locked copy: change only with the owner's yes. */

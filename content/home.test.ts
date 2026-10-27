@@ -18,9 +18,10 @@ describe("home content", () => {
     // The owner removed the subhead line, 2026-10-21.
     expect(HERO).not.toHaveProperty("subhead");
   });
-  it("puts the owner's letterboard copy on the default share image", () => {
-    expect(SHARE_IMAGE.board).toEqual({ kicker: "Today's special", headline: "Free website", note: "+ hosting and care, monthly" });
-    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Live in about a week. Just ask.");
+  it("puts the owner's split-flap copy on the default share image", () => {
+    expect(`${SHARE_IMAGE.lead} ${SHARE_IMAGE.word}`).toBe("Get your business website for FREE");
+    expect(SHARE_IMAGE.word).toHaveLength(4);
+    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Built for you. Live in about a week.");
   });
   it("builds the offer line from the managed website price in each currency", () => {
     for (const currency of CURRENCIES) {

@@ -1,10 +1,11 @@
 // app/api/contact/route.ts
 import { z } from "zod";
 import { CONTACT_ERRORS } from "@/content/contact";
-import { contactSchema } from "@/lib/contact-schema";
+import { contactSchema, type ContactInput } from "@/lib/contact-schema";
 import { BrevoSendError, sendTransactionalEmail } from "@/lib/email/brevo";
 import { buildConfirmationEmail, buildLeadEmail } from "@/lib/email/contact-templates";
-import { serverEnv, type ServerEnv } from "@/lib/env";
+import { platformLeadsEnv, serverEnv, type ServerEnv } from "@/lib/env";
+import { forwardEnquiry, type PlatformLeadsEnv } from "@/lib/platform-leads";
 import { screenSubmission } from "@/lib/security/honeypot";
 import { clientKey, rateLimit } from "@/lib/security/rateLimit";
 import { postEnquiryToTeams } from "@/lib/teams-alert";
@@ -22,6 +23,18 @@ const sendFailed = (): Response => Response.json({ error: CONTACT_ERRORS.send },
 function logFailure(stage: string, error: unknown): void {
   const reason = error instanceof BrevoSendError ? `Brevo status ${error.status}` : error instanceof Error ? error.message : "unknown";
   console.error(`contact: ${stage} failed`, reason);
+}
+
+/** Copies the enquiry into the staff console. A broken platform setting is logged and skipped: the team inbox has it. */
+async function copyToPlatform(lead: ContactInput, request: Request): Promise<void> {
+  let env: PlatformLeadsEnv | null;
+  try {
+    env = platformLeadsEnv();
+  } catch (error) {
+    logFailure("platform settings", error);
+    return;
+  }
+  if (env !== null) await forwardEnquiry(lead, request, env);
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -77,6 +90,7 @@ export async function POST(request: Request): Promise<Response> {
   } catch (error) {
     logFailure("confirmation send", error);
   }
+  await copyToPlatform(parsed.data, request);
   await postEnquiryToTeams(parsed.data);
   return Response.json({ ok: true });
 }

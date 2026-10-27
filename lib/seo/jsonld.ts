@@ -1,8 +1,9 @@
 // lib/seo/jsonld.ts
 import type { ServicePageContent } from "@/content/services";
+import type { Currency } from "@/lib/currency";
 import type { FaqItem } from "@/content/types";
 import type { AuthorProfile, Post } from "@/lib/cms/schema";
-import { PACKAGES, packageTotal, PLAN_IDS, PLANS } from "@/lib/pricing";
+import { PACKAGES, packageTotal, PLAN_IDS, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 /** One node id for the organization, so other entities can point at it instead of repeating it. */
@@ -91,25 +92,26 @@ export interface ServiceLd {
       readonly priceSpecification: {
         readonly "@type": "UnitPriceSpecification";
         readonly price: number;
-        readonly priceCurrency: "INR";
+        readonly priceCurrency: Currency;
         readonly unitText: "MONTH";
-        readonly valueAddedTaxIncluded: boolean;
+        /** Present only on rupee prices, which have GST inside them. Dollar prices carry no tax talk. */
+        readonly valueAddedTaxIncluded?: true;
       };
     }[];
   };
 }
 
-function monthlyOffer(name: string, price: number): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
+function monthlyOffer(name: string, price: number, currency: Currency): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
   return {
     "@type": "Offer",
     name,
     url: `${siteConfig.url}/pricing`,
-    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: "INR", unitText: "MONTH", valueAddedTaxIncluded: true },
+    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: currency, unitText: "MONTH", ...(currency === "INR" ? { valueAddedTaxIncluded: true as const } : {}) },
   };
 }
 
-/** One Offer per plan at list price; the pricing page also lists one per package at its package price. */
-export function planOffersJsonLd({ packages = false }: { readonly packages?: boolean } = {}): ServiceLd {
+/** One Offer per plan at list price in the page's currency; the pricing page also lists one per package at its package price. */
+export function planOffersJsonLd(currency: Currency, { packages = false }: { readonly packages?: boolean } = {}): ServiceLd {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -120,8 +122,8 @@ export function planOffersJsonLd({ packages = false }: { readonly packages?: boo
       "@type": "OfferCatalog",
       name: "Brandbasket plans",
       itemListElement: [
-        ...PLAN_IDS.map((id) => monthlyOffer(PLANS[id].name, PLANS[id].monthly)),
-        ...(packages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick))) : []),
+        ...PLAN_IDS.map((id) => monthlyOffer(PLANS[id].name, planPrice(id, currency), currency)),
+        ...(packages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick, currency), currency)) : []),
       ],
     },
   };
@@ -138,8 +140,8 @@ export interface ServicePageLd {
   readonly offers: ServiceLd["hasOfferCatalog"]["itemListElement"][number];
 }
 
-/** One service page: the plan as a Service with its monthly price, GST included. */
-export function serviceJsonLd(page: ServicePageContent): ServicePageLd {
+/** One service page: the plan as a Service with its monthly price in the page's currency (GST inside the rupee price). */
+export function serviceJsonLd(page: ServicePageContent, currency: Currency): ServicePageLd {
   const plan = PLANS[page.id];
   return {
     "@context": "https://schema.org",
@@ -149,7 +151,7 @@ export function serviceJsonLd(page: ServicePageContent): ServicePageLd {
     url: `${siteConfig.url}${page.path}`,
     provider: { "@id": ORGANIZATION_ID },
     areaServed: { "@type": "Country", name: "India" },
-    offers: { ...monthlyOffer(plan.name, plan.monthly), url: `${siteConfig.url}${page.path}` },
+    offers: { ...monthlyOffer(plan.name, planPrice(page.id, currency), currency), url: `${siteConfig.url}${page.path}` },
   };
 }
 

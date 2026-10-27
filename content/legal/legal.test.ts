@@ -1,7 +1,8 @@
 // content/legal/legal.test.ts
 import { describe, expect, it } from "vitest";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
-import { AD_BUDGET_CAP, EXTRA_HOURLY_RATE, formatInr, PLANS } from "@/lib/pricing";
+import { formatMoney } from "@/lib/currency";
+import { extrasFor, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { CANCEL_ANSWER, PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
@@ -47,10 +48,10 @@ describe("legal documents", () => {
     const text = JSON.stringify(termsOfService);
     for (const plan of Object.values(PLANS)) {
       expect(text).toContain(plan.name);
-      expect(text).toContain(formatInr(plan.monthly));
+      expect(text).toContain(formatMoney(planPrice(plan.id, "INR"), "INR"));
     }
-    expect(text).toContain(formatInr(EXTRA_HOURLY_RATE));
-    expect(text).toContain(formatInr(AD_BUDGET_CAP));
+    expect(text).toContain(formatMoney(extrasFor("INR").hour, "INR"));
+    expect(text).toContain(formatMoney(extrasFor("INR").adBudgetCap, "INR"));
     expect(text).toContain(businessDetails.courts);
   });
   it("state the package price and ad credit terms in the fees section", () => {

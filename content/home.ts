@@ -1,14 +1,16 @@
 // content/home.ts
 // Copy for the homepage, word for word from the approved mock (docs/design/mock.html, #view-home).
-// Prices and rates are built from lib/pricing.ts. The basket panel and button labels live in content/basket.ts and
+// Prices and rates are built from lib/pricing.ts, per currency: rupees keep their GST wording, dollars never mention tax. The basket panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
-import { formatInr, GST_LABEL, PLANS } from "@/lib/pricing";
+import { type Currency, formatMoney } from "@/lib/currency";
+import { GST_LABEL, planPrice } from "@/lib/pricing";
 import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
 /** Phosphor icon component names (replace the mock's Material Symbols). */
 export type HomeIconKey =
   | "CurrencyInr"
+  | "CurrencyDollar"
   | "RocketLaunch"
   | "Wrench"
   | "FileText"
@@ -25,14 +27,23 @@ export type HomeIconKey =
   | "ChartBar"
   | "LockOpen";
 
-const MANAGED_MONTHLY = formatInr(PLANS.website.monthly);
+export interface OfferLineContent {
+  readonly ariaLabel: string;
+  readonly build: { readonly price: string; readonly label: string };
+  readonly run: { readonly price: string; readonly unit: string; readonly label: string };
+}
 
-/** The "₹0 + monthly" offer line. Shared by the homepage hero and the pricing hero. */
-export const OFFER = {
-  ariaLabel: `₹0 to build your website, plus ${MANAGED_MONTHLY} a month, GST included, to keep it running`,
-  build: { price: "₹0", label: "to build your website" },
-  run: { price: MANAGED_MONTHLY, unit: "/month", label: "to keep it running, incl. GST" },
-} as const;
+/** The "0 + monthly" offer line. Shared by the homepage hero and the pricing hero. Rupees end with ", incl. GST"; dollars drop it. */
+export function offerFor(currency: Currency): OfferLineContent {
+  const zero = formatMoney(0, currency);
+  const monthly = formatMoney(planPrice("website", currency), currency);
+  const inr = currency === "INR";
+  return {
+    ariaLabel: `${zero} to build your website, plus ${monthly} a month${inr ? ", GST included," : ""} to keep it running`,
+    build: { price: zero, label: "to build your website" },
+    run: { price: monthly, unit: "/month", label: inr ? "to keep it running, incl. GST" : "to keep it running" },
+  };
+}
 
 /** The default share image (app/opengraph-image.tsx): a café letterboard, then an italic line under it. Chosen by the owner, 2026-10-21. */
 export const SHARE_IMAGE = {
@@ -45,7 +56,6 @@ export const SHARE_IMAGE = {
 export const HERO = {
   headline: "Before They Visit You, They Visit",
   headlineAccent: "Your Website.",
-  offer: OFFER,
   stageLabel: "A woven 3D basket holding the services in your plan",
 } as const;
 
@@ -54,12 +64,14 @@ export interface Fact {
   readonly text: string;
 }
 
-export const FACTS: readonly Fact[] = [
-  { icon: "CurrencyInr", text: "₹0 to build" },
-  { icon: "RocketLaunch", text: "Live in about a week" },
-  { icon: "Wrench", text: "No technical work" },
-  { icon: "FileText", text: "One report a month" },
-];
+export function factsFor(currency: Currency): readonly Fact[] {
+  return [
+    { icon: currency === "INR" ? "CurrencyInr" : "CurrencyDollar", text: `${formatMoney(0, currency)} to build` },
+    { icon: "RocketLaunch", text: "Live in about a week" },
+    { icon: "Wrench", text: "No technical work" },
+    { icon: "FileText", text: "One report a month" },
+  ];
+}
 
 /** The responsibility section (docs/design/homepage-final.html, #s-resp). The six on a phone are the ones owners ask about most. */
 export const RESPONSIBILITY = {
@@ -227,12 +239,6 @@ export const REPORT = {
   chip: "Example report",
   title: "October report",
   subtitle: "A dental clinic in Pune · Website, Social, SEO",
-  kpis: [
-    { tone: "site", label: "Uptime", value: "99.97%", delta: "0 incidents" },
-    { tone: "growth", label: "Profile views", value: "2,184", delta: "+18% on Sept" },
-    { tone: "growth2", label: "Ad leads", value: "37", delta: "₹214 a lead" },
-    { tone: "search", label: "Calls from search", value: "62", delta: "+9 on Sept" },
-  ] satisfies readonly ReportKpi[],
   chart: {
     title: "Enquiries a week",
     range: "Sep to Oct",
@@ -245,6 +251,22 @@ export const REPORT = {
     baselineY: 104,
   },
 } as const;
+
+/** What one sample ad lead cost, in whole units of each currency. */
+const SAMPLE_LEAD_COST: Readonly<Record<Currency, number>> = { INR: 214, USD: 5 };
+
+/** The example report with its sample figures in the visitor's currency. */
+export function reportFor(currency: Currency): typeof REPORT & { readonly kpis: readonly ReportKpi[] } {
+  return {
+    ...REPORT,
+    kpis: [
+      { tone: "site", label: "Uptime", value: "99.97%", delta: "0 incidents" },
+      { tone: "growth", label: "Profile views", value: "2,184", delta: "+18% on Sept" },
+      { tone: "growth2", label: "Ad leads", value: "37", delta: `${formatMoney(SAMPLE_LEAD_COST[currency], currency)} a lead` },
+      { tone: "search", label: "Calls from search", value: "62", delta: "+9 on Sept" },
+    ],
+  };
+}
 
 export interface Step {
   readonly when: string;
@@ -260,43 +282,46 @@ export const STEPS: readonly Step[] = [
 export const HOME_FAQ_HEADING = "Questions, answered.";
 
 /** The owner's approved FAQ (replaces the mock's four questions). The cancel, payment and ownership answers come from content/legal/cancellation.ts. */
-export const HOME_FAQ: readonly FaqItem[] = [
-  {
-    q: "Is the website really free?",
-    a: `Yes. There is no design or build fee: you pay nothing for us to build your website. You pay the monthly plan, ${MANAGED_MONTHLY} a month, GST included, which keeps it hosted, secure and up to date.`,
-  },
-  {
-    q: "What do I pay for every month?",
-    a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 15 minutes each and a monthly health report. The build itself is free.",
-  },
-  {
-    q: "Is there anything to pay up front?",
-    a: `Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`,
-  },
-  {
-    q: "How long does it take to build my website?",
-    a: "Once you have sent your details and made your first payment, your website goes live within 7 working days. It can take a little longer if we are waiting on feedback or content from you, or on your domain being connected.",
-  },
-  {
-    q: "How many pages do I get?",
-    a: "Up to 10 pages. More pages or bigger features can be added for an extra fee, and we always confirm the price before doing anything.",
-  },
-  {
-    q: "Do I pay for hosting separately?",
-    a: "No. Hosting is included in the monthly plan.",
-  },
-  {
-    q: "Who owns the domain and the content?",
-    a: `You register and pay for your own domain, so it is always in your name. No domain yet? We will set your website up on a temporary domain for free until you have one. ${HOSTED_SERVICE}`,
-  },
-  {
-    q: "Can I make changes later?",
-    a: "Yes. Send us any change. We always tell you the cost before we start anything that costs extra.",
-  },
-  { q: "Can I cancel?", a: CANCEL_ANSWER },
-  { q: "What happens if a payment fails?", a: PAYMENT_FAILURE },
-  {
-    q: "What technology is my website built on?",
-    a: "Next.js: a modern, fast and scalable foundation.",
-  },
-];
+export function homeFaqFor(currency: Currency): readonly FaqItem[] {
+  const inr = currency === "INR";
+  return [
+    {
+      q: "Is the website really free?",
+      a: `Yes. There is no design or build fee: you pay nothing for us to build your website. You pay the monthly plan, ${formatMoney(planPrice("website", currency), currency)} a month${inr ? ", GST included" : ""}, which keeps it hosted, secure and up to date.`,
+    },
+    {
+      q: "What do I pay for every month?",
+      a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 15 minutes each and a monthly health report. The build itself is free.",
+    },
+    {
+      q: "Is there anything to pay up front?",
+      a: inr ? `Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.` : "Just your first month. After that you pay monthly.",
+    },
+    {
+      q: "How long does it take to build my website?",
+      a: "Once you have sent your details and made your first payment, your website goes live within 7 working days. It can take a little longer if we are waiting on feedback or content from you, or on your domain being connected.",
+    },
+    {
+      q: "How many pages do I get?",
+      a: "Up to 10 pages. More pages or bigger features can be added for an extra fee, and we always confirm the price before doing anything.",
+    },
+    {
+      q: "Do I pay for hosting separately?",
+      a: "No. Hosting is included in the monthly plan.",
+    },
+    {
+      q: "Who owns the domain and the content?",
+      a: `You register and pay for your own domain, so it is always in your name. No domain yet? We will set your website up on a temporary domain for free until you have one. ${HOSTED_SERVICE}`,
+    },
+    {
+      q: "Can I make changes later?",
+      a: "Yes. Send us any change. We always tell you the cost before we start anything that costs extra.",
+    },
+    { q: "Can I cancel?", a: CANCEL_ANSWER },
+    { q: "What happens if a payment fails?", a: PAYMENT_FAILURE },
+    {
+      q: "What technology is my website built on?",
+      a: "Next.js: a modern, fast and scalable foundation.",
+    },
+  ];
+}

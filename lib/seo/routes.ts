@@ -3,11 +3,12 @@
 // titles, so the layout's "%s | Brandbasket" template never runs). Prices are built from lib/pricing.ts.
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
-import { SERVICE_PAGES, type ServicePageContent } from "@/content/services";
+import { SERVICE_PAGES, type ServicePageContent, servicePageFor } from "@/content/services";
 import { refundPolicy } from "@/content/legal/refund";
 import { shippingPolicy } from "@/content/legal/shipping";
 import { termsOfService } from "@/content/legal/terms";
-import { formatInr, PACKAGES, PLANS } from "@/lib/pricing";
+import { type Currency, formatMoney } from "@/lib/currency";
+import { PACKAGES, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
 export interface RouteMeta {
@@ -21,25 +22,37 @@ export interface RouteMeta {
 }
 
 const { legalName, tradeName, postalAddress } = businessDetails;
-const MANAGED = formatInr(PLANS.website.monthly);
 const UPDATED = "2026-10-21";
 const SERVICES_UPDATED = "2026-10-26";
 
-export const ROUTES = {
-  home: {
+/** The home page's entry in a currency: the price in its description is the visitor's own. */
+export function homeRoute(currency: Currency): RouteMeta {
+  return {
     path: "/",
     title: `Free business website, run for you monthly | ${tradeName}`,
-    description: `Get a professional website built free for your local business. We host, secure and update it for ${MANAGED} a month. Add social, ads and local search any time.`,
+    description: `Get a professional website built free for your local business. We host, secure and update it for ${formatMoney(planPrice("website", currency), currency)} a month. Add social, ads and local search any time.`,
     updated: UPDATED,
     priority: 1,
-  },
-  pricing: {
+  };
+}
+
+/** The pricing page's entry in a currency. Only rupee prices have GST inside them, so only the rupee description says so. */
+export function pricingRoute(currency: Currency): RouteMeta {
+  const price = (id: keyof typeof PLANS): string => formatMoney(planPrice(id, currency), currency);
+  const gst = currency === "INR" ? ", GST included" : "";
+  return {
     path: "/pricing",
-    title: `Pricing: free website, plans from ${MANAGED} a month`,
-    description: `Your website is built free. ${PLANS.website.name} ${MANAGED} a month, ${PLANS.growth.name} ${formatInr(PLANS.growth.monthly)}, Local SEO ${formatInr(PLANS.search.monthly)}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off, GST included.`,
+    title: `Pricing: free website, plans from ${price("website")} a month`,
+    description: `Your website is built free. ${PLANS.website.name} ${price("website")} a month, ${PLANS.growth.name} ${price("growth")}, Local SEO ${price("search")}. Packages up to ${Math.max(...PACKAGES.map((p) => p.percent))}% off${gst}.`,
     updated: UPDATED,
     priority: 0.9,
-  },
+  };
+}
+
+/** The registry. The home and pricing entries here are the rupee ones: the sitemap, llms.txt and search engines use these. */
+export const ROUTES = {
+  home: homeRoute("INR"),
+  pricing: pricingRoute("INR"),
   contact: {
     path: "/contact",
     title: `Contact ${tradeName}: free websites for local business`,
@@ -104,9 +117,9 @@ export function serviceRoute(page: ServicePageContent): RouteMeta {
   return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: SERVICES_UPDATED, priority: 0.8 };
 }
 
-/** Every page search engines may index: the registry and the service pages, without noindex pages. */
+/** Every page search engines may index: the registry and the service pages (the rupee copies, the ones crawlers are served), without noindex pages. */
 export function indexableRoutes(): RouteMeta[] {
-  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map(serviceRoute)];
+  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map((ref) => serviceRoute(servicePageFor(ref.id, "INR")))];
   return routes.filter((r) => !r.noindex);
 }
 

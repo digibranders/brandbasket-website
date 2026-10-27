@@ -91,6 +91,40 @@
   line-height: 1.7;
 }
 
+.site-footer-currency {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.site-footer-currency > span {
+  margin-right: 4px;
+}
+
+.site-footer-currency-option {
+  display: inline-flex;
+  align-items: center;
+  min-height: 32px;
+  padding-inline: 10px;
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--ink-2);
+  font-family: var(--font-mono), monospace;
+  letter-spacing: 0.04em;
+  text-decoration: none;
+  transition: color 200ms var(--ease), border-color 200ms var(--ease);
+}
+
+.site-footer-currency-option:hover {
+  color: var(--rattan-ink);
+}
+
+.site-footer-currency-option[aria-current="true"] {
+  border-color: var(--line);
+  background: var(--surface);
+  color: var(--ink);
+}
+
 /* Native sticky positioning reveals the brand beneath the opaque content. */
 .site-footer-signature {
   position: sticky;

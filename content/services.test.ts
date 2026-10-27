@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { CURRENCIES, formatMoney } from "@/lib/currency";
-import { PACKAGES, PLAN_IDS, PLANS, planPrice } from "@/lib/pricing";
+import { PLAN_IDS, PLANS, planPrice } from "@/lib/pricing";
 import { serviceRoute } from "@/lib/seo/routes";
 import { SERVICE_COPY, SERVICE_PAGES, servicePageBySlug, servicePageFor, servicePageRefFor, servicePages, serviceMoneyCopy } from "./services";
 
@@ -55,11 +55,17 @@ describe("service pages", () => {
         expect(text).not.toContain("30 minutes");
       });
 
-      it("says what ad money a package earns from the packages themselves", () => {
-        const social = JSON.stringify(servicePageFor("growth", currency).spotlight);
-        const credits = PACKAGES.filter((pkg) => pkg.adCredit[currency] > 0).map((pkg) => formatMoney(pkg.adCredit[currency], currency));
-        expect(credits.length).toBeGreaterThan(0);
-        for (const credit of credits) expect(social).toContain(credit);
+      it("has no spotlight card on Social and Ads, and keeps one on the other two pages", () => {
+        expect(servicePageFor("growth", currency).spotlight).toBeUndefined();
+        expect(servicePageFor("website", currency).spotlight?.kind).toBe("offer");
+        expect(servicePageFor("search", currency).spotlight?.kind).toBe("explainer");
+      });
+
+      it("promises 2 posts per week on the Instagram and Facebook card and on the Google Business Profile card", () => {
+        const groups = servicePageFor("growth", currency).does.groups;
+        for (const title of ["Posts that go out on time", "A Google Business Profile that is current"]) {
+          expect(groups.find((group) => group.title === title)?.items).toContain("2 posts per week");
+        }
       });
 
       it("keeps the same Not included lines as the pricing cards", () => {
@@ -86,8 +92,6 @@ describe("service pages", () => {
     expect(text).toContain("₹10,000");
     expect(text).toContain("₹500 an hour");
     expect(text).toContain("₹500");
-    expect(text).toContain("₹1,500");
-    expect(text).toContain("₹3,000");
     expect(text).not.toContain("$");
     expect(serviceMoneyCopy("INR")).toEqual({
       perMonth: "a month, GST included",
@@ -101,7 +105,7 @@ describe("service pages", () => {
     expect(text).not.toMatch(NO_TAX);
     expect(text).not.toContain("₹");
     expect(text).not.toContain("DPDP");
-    for (const price of ["$65", "$150", "$350", "$120", "$10 an hour", "$30", "$60"]) expect(text).toContain(price);
+    for (const price of ["$65", "$150", "$350", "$120", "$10 an hour"]) expect(text).toContain(price);
     expect(servicePageFor("growth", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month", packagesLede: "Any two plans are 10% off and all three are 20% off." });

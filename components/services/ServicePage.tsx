@@ -164,9 +164,9 @@ function Does({ page }: { readonly page: ServicePageContent }): ReactElement {
   );
 }
 
-function Spotlight({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
+function Spotlight({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement | null {
   const { spotlight } = page;
-  const adMoney = PACKAGES.filter((pkg) => pkg.adCredit[currency] > 0);
+  if (spotlight === undefined) return null;
   const body = spotlight.body.map((paragraph) => <p key={paragraph} className="max-w-[54ch] text-[17px] text-ink-2">{paragraph}</p>);
   return (
     <Section labelledBy="h-spotlight" tight>
@@ -179,16 +179,6 @@ function Spotlight({ page, currency }: { readonly page: ServicePageContent; read
           {spotlight.kind === "explainer" ? <div className="grid gap-4">{body}</div> : null}
           {spotlight.kind === "offer" ? (
             <div className="grid justify-items-start min-[980px]:justify-items-end"><OfferLine currency={currency} /></div>
-          ) : null}
-          {spotlight.kind === "ad-money" ? (
-            <ul className="grid gap-2.5">
-              {adMoney.map((pkg) => (
-                <li key={pkg.id} className="flex items-baseline justify-between gap-4 rounded-2xl bg-surface px-5 py-4">
-                  <span className="font-display text-[18px] font-medium tracking-[-0.02em]">{pkg.name}</span>
-                  <span className="num font-display text-[22px] font-medium tracking-[-0.03em]">{formatMoney(pkg.adCredit[currency], currency)}<small className="ml-1 font-sans text-[13px] font-medium tracking-normal text-ink-2">a month</small></span>
-                </li>
-              ))}
-            </ul>
           ) : null}
         </div>
       </Reveal>

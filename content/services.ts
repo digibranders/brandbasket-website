@@ -36,9 +36,9 @@ export interface ServiceSituation {
   readonly body: string;
 }
 
-/** A block that sets one service apart: the free build, the ad money or what AEO is. */
+/** A block that sets one service apart: the free build or what AEO is. */
 export interface ServiceSpotlight {
-  readonly kind: "offer" | "ad-money" | "explainer";
+  readonly kind: "offer" | "explainer";
   readonly heading: string;
   readonly body: readonly string[];
 }
@@ -57,7 +57,8 @@ export interface ServicePageContent {
   readonly glance: readonly string[];
   readonly who: { readonly heading: string; readonly items: readonly ServiceSituation[] };
   readonly does: { readonly heading: string; readonly lede: string; readonly groups: readonly ServiceGroup[] };
-  readonly spotlight: ServiceSpotlight;
+  /** Left out when a service has nothing to set apart (Social and Ads). */
+  readonly spotlight?: ServiceSpotlight;
   readonly how: { readonly heading: string; readonly steps: readonly Step[] };
   readonly limits: { readonly heading: string; readonly lede: string; readonly items: readonly string[] };
   readonly faq: readonly FaqItem[];
@@ -93,10 +94,6 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
   const adCap = formatMoney(extras.adBudgetCap, currency);
   const hour = formatMoney(extras.hour, currency);
   const perReel = formatMoney(extras.reel, currency);
-  /** The ad money a package earns, from the packages themselves, lowest first. */
-  const adMoney = [...new Set(PACKAGES.map((pkg) => pkg.adCredit[currency]).filter((amount) => amount > 0))].sort((a, b) => a - b);
-  const lowestAdMoney = formatMoney(adMoney[0] ?? 0, currency);
-  const highestAdMoney = formatMoney(adMoney.at(-1) ?? 0, currency);
 
   return [
     {
@@ -186,19 +183,11 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         heading: "What we do.",
         lede: "Four jobs every month, so your business keeps showing up where customers look.",
         groups: [
-          { icon: "InstagramLogo", title: "Posts that go out on time", items: ["Instagram and Facebook posts, planned with you", "Captions written for you", "Posts scheduled"] },
-          { icon: "MapPin", title: "A Google Business Profile that is current", items: ["Posts and updates on your profile", "Your details kept consistent with your website"] },
+          { icon: "InstagramLogo", title: "Posts that go out on time", items: ["2 posts per week", "Instagram and Facebook posts, planned with you", "Captions written for you", "Posts scheduled"] },
+          { icon: "MapPin", title: "A Google Business Profile that is current", items: ["2 posts per week", "Posts and updates on your profile", "Your details kept consistent with your website"] },
           { icon: "Star", title: "Reviews, watched", items: ["Review monitoring", "Reply drafts for you to approve"] },
           { icon: "Megaphone", title: "Ads, planned and run", items: ["Facebook and Instagram ads: plan, setup and launch", `Monitoring and budget pacing, up to ${adCap} a month of your budget`] },
           { icon: "ChartLineUp", title: "A report in plain words", items: ["Posts, profile and ads, once a month", "Human support when you need it"] },
-        ],
-      },
-      spotlight: {
-        kind: "ad-money",
-        heading: "Start together and we add ad money.",
-        body: [
-          `Take two or three plans together at your first checkout and we add ad money to your account every month: ${lowestAdMoney} with Website + Social or Social + SEO, and ${highestAdMoney} with all three.`,
-          "The ad money comes only when you start the plans together, at your first checkout.",
         ],
       },
       how: {

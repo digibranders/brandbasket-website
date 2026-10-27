@@ -13,7 +13,7 @@ Status key: **Open** (needs the owner), **Placeholder** (mock wording in use), *
 | D5 | Real proof: client sites for the showcase, Google rating, quotes | Placeholder: Curry Cook, GKR Hospitality and PayWeek sample sites and screenshots; heading "Real websites, live today." | `content/home.ts` `WORK`, `public/work/` |
 | D9 | Grievance Officer name and email | Answered 2026-10-22 (owner): Siddique Ahmed, "Grievance Officer", reached at support@brandbasket.in (a real mailbox; no separate grievance@) | `lib/site-config.ts` `grievanceOfficer` |
 | D10 | Plan parameter format the platform reads from the sign-up link | `?plan=` lists any of `website`, `growth`, `search` (for example `growth,search` without the website). brandbasket-platform reads it from plan 16 Task P3.1, so the website and the platform release together. Main buttons go to `/contact#start` until `NEXT_PUBLIC_SIGNUP_URL` is set | `lib/signup.ts` |
-| D11 | Phone, WhatsApp number and hours | +91 789 789 6607 confirmed 2026-10-22 (owner: answered for Brandbasket); hours Mon to Sat, 10 am to 7 pm IST still to confirm | `lib/site-config.ts` |
+| D11 | Phone, WhatsApp number and hours | +91 866 861 0953 (owner changed the number 2026-10-27); hours Mon to Sat, 10 am to 7 pm IST still to confirm | `lib/site-config.ts` |
 
 ## Owner review of new copy
 

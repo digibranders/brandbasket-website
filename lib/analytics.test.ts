@@ -26,7 +26,7 @@ describe("clickEvent", () => {
   });
 
   it("sends only the location for WhatsApp", () => {
-    expect(clickEvent({ track: "whatsapp_click", location: "nav" }, "https://wa.me/917897896607")).toEqual({ name: "whatsapp_click", properties: { location: "nav" } });
+    expect(clickEvent({ track: "whatsapp_click", location: "nav" }, "https://wa.me/918668610953")).toEqual({ name: "whatsapp_click", properties: { location: "nav" } });
   });
 
   it("reports opening the basket pop-up with its location only", () => {

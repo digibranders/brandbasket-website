@@ -65,9 +65,9 @@ export const businessDetails: BusinessDetails = {
     country: "IN",
   },
   // Confirm before launch (plan of action, defaults table).
-  phone: "+91 789 789 6607",
-  phoneHref: "+917897896607",
-  whatsappHref: "https://wa.me/917897896607",
+  phone: "+91 866 861 0953",
+  phoneHref: "+918668610953",
+  whatsappHref: "https://wa.me/918668610953",
   email: "support@brandbasket.in",
   // D11: the phone and WhatsApp number confirmed by the owner 2026-10-22; the hours are still to confirm.
   hours: "Mon to Sat, 10 am to 7 pm IST",

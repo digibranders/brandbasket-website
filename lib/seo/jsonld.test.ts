@@ -77,7 +77,7 @@ describe("contactPageJsonLd", () => {
   it("points at /contact and carries the site-config phone and email", () => {
     const page = contactPageJsonLd();
     expect(page.url).toBe("https://brandbasket.in/contact");
-    expect(page.about.telephone).toBe("+91 789 789 6607");
+    expect(page.about.telephone).toBe("+91 866 861 0953");
     expect(page.about.email).toBe("support@brandbasket.in");
   });
 });

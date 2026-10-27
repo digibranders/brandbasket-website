@@ -113,6 +113,28 @@ describe("POST /api/contact", () => {
     expect(confirmation.subject).toBe("We have your message. Brandbasket");
   });
 
+  it("also posts the enquiry to Teams when an address is set, and not otherwise", async () => {
+    const teams = "https://prod-12.centralindia.logic.azure.com/workflows/abc/triggers/manual/paths/invoke?sig=secret";
+    fetchMock.mockResolvedValue(new Response("{}", { status: 202 }));
+    const { POST, token } = await load({ ...ENV, TEAMS_ENQUIRIES_WEBHOOK_URL: teams });
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    expect(await (await POST(post({ ...LEAD, formToken }))).json()).toEqual({ ok: true });
+    expect(fetchMock).toHaveBeenCalledTimes(3);
+    expect(fetchMock.mock.calls[2]?.[0]).toBe(teams);
+    expect(String(fetchMock.mock.calls[2]?.[1]?.body)).toContain("New website enquiry: Rao Dental Care");
+  });
+
+  it("still says the message arrived when Teams is down", async () => {
+    fetchMock.mockResolvedValueOnce(new Response("{}", { status: 201 })).mockResolvedValueOnce(new Response("{}", { status: 201 })).mockRejectedValueOnce(new Error("offline"));
+    vi.spyOn(console, "error").mockImplementation(() => undefined);
+    const { POST, token } = await load({ ...ENV, TEAMS_ENQUIRIES_WEBHOOK_URL: "https://prod-12.centralindia.logic.azure.com/workflows/abc" });
+    const formToken = token();
+    vi.setSystemTime(T0.getTime() + 5_000);
+    const res = await POST(post({ ...LEAD, formToken }));
+    expect(res.status).toBe(200);
+  });
+
   it("still says the message arrived when only the confirmation fails", async () => {
     fetchMock.mockResolvedValueOnce(new Response("{}", { status: 201 })).mockResolvedValueOnce(new Response("bad", { status: 400 }));
     vi.spyOn(console, "error").mockImplementation(() => undefined);

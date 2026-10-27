@@ -95,7 +95,7 @@ describe("buildConfirmationEmail", () => {
   it("offers a WhatsApp button and the phone number", () => {
     const mail = buildConfirmationEmail(lead);
     expect(mail.html).toContain(">Chat on WhatsApp<");
-    expect(mail.html).toContain("https://wa.me/917897896607");
+    expect(mail.html).toContain("https://wa.me/918668610953");
     expect(mail.html).toContain("Hi Asha, we have your message.");
   });
 

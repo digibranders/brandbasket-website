@@ -8,6 +8,7 @@ import { platformLeadsEnv, serverEnv, type ServerEnv } from "@/lib/env";
 import { forwardEnquiry, type PlatformLeadsEnv } from "@/lib/platform-leads";
 import { screenSubmission } from "@/lib/security/honeypot";
 import { clientKey, rateLimit } from "@/lib/security/rateLimit";
+import { postEnquiryToTeams } from "@/lib/teams-alert";
 
 export const runtime = "nodejs";
 
@@ -90,5 +91,6 @@ export async function POST(request: Request): Promise<Response> {
     logFailure("confirmation send", error);
   }
   await copyToPlatform(parsed.data, request);
+  await postEnquiryToTeams(parsed.data);
   return Response.json({ ok: true });
 }

@@ -292,14 +292,6 @@ export const GLOSSARY = {
 
 /** Guides shown under a page: the posts and pages worth reading from where the visitor is. */
 export const GUIDE_LINKS = {
-  home: [
-    { label: "Do I need a website if I already have Instagram?", href: "/blog/do-i-need-a-website-if-i-have-instagram" },
-    { label: "WhatsApp Business or a website: which does a small shop need?", href: "/blog/whatsapp-business-or-website" },
-    { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options" },
-    { label: "A website for your clinic or dental practice", href: "/for/clinics-and-dentists" },
-    { label: "A website for your restaurant or cafe", href: "/for/restaurants" },
-    { label: "A website for your salon, gym or coaching institute", href: "/for/salons-gyms-and-coaching" },
-  ],
   pricing: [
     { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india" },
     { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free" },

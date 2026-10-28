@@ -2,7 +2,6 @@
 import { ChartLineUp, CursorClick, Envelope, MapPin, Star } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
-import { GuideLinks } from "@/components/guides/GuideLinks";
 import { JsonLd } from "@/components/JsonLd";
 import { Band } from "@/components/ui/Band";
 import { DecorIcon } from "@/components/ui/DecorIcon";
@@ -15,7 +14,6 @@ import { ReportSection } from "@/components/home/ReportSection";
 import { Responsibility } from "@/components/home/Responsibility";
 import { WhatYouGet } from "@/components/home/WhatYouGet";
 import { WorkShowcase } from "@/components/home/WorkShowcase";
-import { GUIDE_LINKS } from "@/content/guides";
 import { currencyParam } from "@/lib/currency";
 import { planOffersJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -49,7 +47,6 @@ export default async function HomePage({ params }: { readonly params: Promise<{ 
         <DecorIcon icon={Envelope} size={109} rotate={-9} faint className="right-[3%] top-2 max-[760px]:hidden" />
         <ReportSection currency={currency} />
       </Band>
-      <GuideLinks links={GUIDE_LINKS.home} />
       <HomeFaq currency={currency} />
       <JsonLd data={webSiteJsonLd()} />
       <JsonLd data={planOffersJsonLd(currency)} />

@@ -38,7 +38,7 @@ test.describe("a post", () => {
     const cover = page.locator("img[fetchpriority=high]");
     await expect(cover).toHaveAttribute("loading", "eager");
     await expect(cover).toHaveAttribute("alt", "A bakery's website open on a laptop");
-    await expect(page.locator("link[rel=canonical]")).toHaveAttribute("href", `https://brandbasket.in${POST}`);
+    await expect(page.locator("link[rel=canonical]")).toHaveAttribute("href", `https://www.brandbasket.in${POST}`);
     await expect(page.getByRole("heading", { level: 2, name: "What is in the build?" })).toHaveAttribute("id", "what-is-in-the-build");
     await expect(page.getByRole("heading", { name: "Questions people ask" })).toBeVisible();
     await expect(page.getByRole("complementary", { name: "About the author" }).getByRole("link", { name: "Ananya Kulkarni" })).toHaveAttribute("href", "/blog/author/ananya-kulkarni");
@@ -126,7 +126,7 @@ test.describe("preview", () => {
 test("the feed and the sitemap list the blog", async ({ request }) => {
   const feed = await request.get("/blog/feed.xml");
   expect(feed.headers()["content-type"]).toContain("application/rss+xml");
-  expect(await feed.text()).toContain("<link>https://brandbasket.in/blog/website-cost-india</link>");
+  expect(await feed.text()).toContain("<link>https://www.brandbasket.in/blog/website-cost-india</link>");
   const sitemap = await (await request.get("/sitemap.xml")).text();
-  for (const url of ["/blog", "/blog/website-cost-india", "/blog/category/website-basics", "/blog/author/ananya-kulkarni"]) expect(sitemap).toContain(`<loc>https://brandbasket.in${url}</loc>`);
+  for (const url of ["/blog", "/blog/website-cost-india", "/blog/category/website-basics", "/blog/author/ananya-kulkarni"]) expect(sitemap).toContain(`<loc>https://www.brandbasket.in${url}</loc>`);
 });

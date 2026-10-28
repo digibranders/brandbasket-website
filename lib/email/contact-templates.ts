@@ -147,7 +147,7 @@ export function buildConfirmationEmail(input: ContactInput): LeadEmail {
     "Thanks for getting in touch with Brandbasket. Your message has reached our team, and we will reply within one working day.",
     `For anything urgent, WhatsApp or call us on ${phone}, ${hours}.`,
   ];
-  const ignore = `You are getting this email because this address was entered on the contact form at ${siteConfig.url.replace("https://", "")}. If that was not you, you can ignore it and we will not write again.`;
+  const ignore = `You are getting this email because this address was entered on the contact form at ${siteConfig.url.replace(/^https:\/\/(www\.)?/, "")}. If that was not you, you can ignore it and we will not write again.`;
 
   const text = [greeting, "", ...paragraphs.flatMap((line) => [line, ""]), "The Brandbasket team", email, "", ignore, "", `Brandbasket is a brand of ${legalName}. ${address.join(" ")}`].join("\n");
 

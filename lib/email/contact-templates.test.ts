@@ -89,7 +89,7 @@ describe("buildConfirmationEmail", () => {
     expect(mail.subject).toBe("We have your message. Brandbasket");
     expect(mail.text).toContain("Hi Asha,");
     expect(mail.text).toContain("within one working day");
-    expect(mail.html).toContain("https://brandbasket.in/email/brandbasket-logo.png");
+    expect(mail.html).toContain("https://www.brandbasket.in/email/brandbasket-logo.png");
   });
 
   it("offers a WhatsApp button and the phone number", () => {

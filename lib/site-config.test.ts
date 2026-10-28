@@ -45,7 +45,7 @@ describe("businessDetails", () => {
   });
 
   it("serves the site from brandbasket.in", () => {
-    expect(siteConfig.url).toBe("https://brandbasket.in");
+    expect(siteConfig.url).toBe("https://www.brandbasket.in");
   });
 });
 

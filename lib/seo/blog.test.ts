@@ -13,7 +13,7 @@ describe("postMetadata", () => {
     expect(meta.alternates?.canonical).toBe("/blog/website-cost-india");
     expect(meta.openGraph).toMatchObject({
       type: "article",
-      url: "https://brandbasket.in/blog/website-cost-india",
+      url: "https://www.brandbasket.in/blog/website-cost-india",
       publishedTime: "2026-10-05T04:30:00.000Z",
       modifiedTime: "2026-10-12T06:00:00.000Z",
       authors: ["Ananya Kulkarni"],

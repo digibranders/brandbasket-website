@@ -93,7 +93,7 @@ export interface SiteConfig {
 
 export const siteConfig: SiteConfig = {
   name: businessDetails.tradeName,
-  url: "https://brandbasket.in",
+  url: "https://www.brandbasket.in",
   appUrl: "https://app.brandbasket.in",
   description: "Website, Google profile, ads and local search for local businesses in India, run for you every month.",
 };

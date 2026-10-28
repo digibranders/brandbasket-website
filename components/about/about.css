@@ -1,68 +1,201 @@
-/* components/about/about.css: the hero picture and the receipt ("How we earn") on /about. */
+/* components/about/about.css: the woven hero and the hanging service tags on /about. */
 
-.about-receipt-wrap {
-  filter: drop-shadow(var(--shadow-receipt));
-  transform: rotate(-1.2deg);
+/* The hero: the same weave as the contact form head and the basket card, as a wide panel, with the Brandbasket "b" embossed on it. */
+.about-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  align-content: end;
+  gap: 18px;
+  min-height: clamp(300px, 34vw, 400px);
+  padding: clamp(28px, 5vw, 64px) clamp(22px, 5vw, 64px) clamp(34px, 5vw, 60px);
+  border-radius: 36px;
+  background:
+    radial-gradient(80% 110% at 18% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--rattan-text) 13%, transparent) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--rattan-text) 10%, transparent) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, var(--weave-light), #ecd6b6);
+  box-shadow: 0 0 0 1px var(--shell-ring), var(--shadow-float);
 }
 
-/* Paper with a torn zigzag edge at the bottom. */
-.about-receipt {
-  padding: 28px 26px 40px;
-  background: var(--surface);
-  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 20px 100%;
-  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 20px 100%;
+/* The rim along the bottom edge, as on the contact form head. */
+.about-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 7px;
+  background: linear-gradient(180deg, var(--rim-light), var(--rim-deep));
 }
 
-.about-receipt-line {
-  display: flex;
-  align-items: baseline;
-  gap: 10px;
-  padding-block: 9px;
-  font-size: 15.5px;
+/* The mark, large and cut off by the panel edge, pressed into the weave in cream. */
+.about-hero-mark {
+  position: absolute;
+  z-index: -1;
+  right: -4%;
+  bottom: -22%;
+  width: clamp(240px, 42%, 460px);
+  aspect-ratio: 1;
+  background: rgba(255, 250, 240, 0.6);
+  -webkit-mask: url("/brand/brandbasket-mark.svg") center / contain no-repeat;
+  mask: url("/brand/brandbasket-mark.svg") center / contain no-repeat;
 }
 
-.about-receipt-leader {
-  flex: 1;
-  min-width: 12px;
-  border-bottom: 2px dotted var(--line);
-  transform: translateY(-4px);
-}
-
-.about-receipt-value {
-  font-family: var(--font-mono), monospace;
-  font-size: 13.5px;
-  color: var(--rattan-ink);
-  text-align: right;
-}
-
-/* The lines print in one after another when the receipt scrolls into view (motion/Reveal sets data-reveal). */
-@media (prefers-reduced-motion: no-preference) {
-  [data-reveal="done"] .about-receipt-line {
-    animation: about-print 700ms var(--ease) both;
-    animation-delay: calc(var(--i, 0) * 110ms + 250ms);
-  }
-}
-
-@keyframes about-print {
-  from { opacity: 0; transform: translateY(-8px); }
-  to { opacity: 1; transform: none; }
-}
-
-/* The hero picture: tiles drift slowly around the mark. Each tile has its own pace so they never move together. */
-.about-orbit-tile {
-  animation: about-drift 7s ease-in-out infinite alternate;
-  animation-delay: calc(var(--i, 0) * -1.4s);
-}
-
-@keyframes about-drift {
-  from { transform: translateY(-6px) rotate(var(--tilt, 0deg)); }
-  to { transform: translateY(6px) rotate(var(--tilt, 0deg)); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .about-orbit-tile { animation: none; transform: rotate(var(--tilt, 0deg)); }
+/* On phones the text spans the panel, so the mark moves further into the corner and fades. */
+@media (width < 640px) {
+  .about-hero-mark { width: 64%; right: -20%; bottom: -32%; background: rgba(255, 250, 240, 0.45); }
 }
 
 .about-section {
   scroll-margin-top: 96px;
+}
+
+/* What we do. Below 1100px: a rod runs down the left and each service hangs off it on a short string as a name-tag, its text written
+   plainly underneath (no boxes, nothing to swipe). From 1100px: all five hang as tall tags from a rod across the top, and each
+   swings a little when hovered. */
+.about-tags {
+  position: relative;
+  display: grid;
+  gap: 36px;
+  padding-left: 46px;
+}
+
+/* The vertical rod. */
+.about-tags::before {
+  content: "";
+  position: absolute;
+  left: 4px;
+  top: -8px;
+  bottom: -8px;
+  width: 9px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--rim-light), var(--rim-deep));
+  box-shadow: 6px 0 12px -6px rgba(40, 28, 14, 0.4);
+}
+
+.about-tag-slot { position: relative; }
+
+/* The string from the rod to the name-tag, and the eyelet where it ties on. */
+.about-tag-slot::before {
+  content: "";
+  position: absolute;
+  left: -36px;
+  top: 27px;
+  width: 36px;
+  border-top: 1.5px solid color-mix(in srgb, var(--ink) 50%, transparent);
+}
+
+.about-tag-slot::after {
+  content: "";
+  position: absolute;
+  left: -6px;
+  top: 21px;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: var(--bg);
+  box-shadow: inset 0 1px 2px rgba(21, 22, 26, 0.3), 0 0 0 3px color-mix(in srgb, var(--c) 35%, transparent);
+}
+
+.about-tag { display: grid; align-content: start; gap: 14px; }
+
+/* The name-tag: the plan's icon and the service name. */
+.about-tag-head {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  justify-self: start;
+  padding: 7px 22px 7px 7px;
+  border: 1px solid color-mix(in srgb, var(--c) 30%, transparent);
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--c) 13%, var(--surface));
+  box-shadow: 0 14px 22px -16px rgba(40, 28, 14, 0.4);
+  transform: rotate(var(--tilt-small, 0deg));
+  transform-origin: left center;
+}
+
+.about-tag-body { max-width: 52ch; padding-left: 4px; }
+
+@media (width >= 1100px) {
+  .about-tags {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: start;
+    gap: 18px;
+    padding: 22px 0 34px;
+  }
+
+  /* The rod, now across the top. */
+  .about-tags::before {
+    inset: 0 -8px auto;
+    width: auto;
+    height: 8px;
+    background: linear-gradient(180deg, var(--rim-light), var(--rim-deep));
+    box-shadow: 0 6px 12px -6px rgba(40, 28, 14, 0.4);
+  }
+
+  .about-tag-slot { padding-top: var(--drop, 0px); }
+  .about-tag-slot::before,
+  .about-tag-slot::after { display: none; }
+
+  .about-tag {
+    position: relative;
+    gap: 0;
+    padding: 44px 22px 26px;
+    border: 1px solid color-mix(in srgb, var(--c) 26%, transparent);
+    border-radius: 22px;
+    background: linear-gradient(170deg, color-mix(in srgb, var(--c) 16%, var(--surface)), color-mix(in srgb, var(--c) 5%, var(--surface)) 70%);
+    box-shadow: 0 30px 40px -30px rgba(40, 28, 14, 0.45);
+    transform: rotate(var(--tilt, 0deg));
+    transform-origin: 50% calc(-1 * (var(--drop, 0px) + 18px));
+  }
+
+  /* The punched hole, and the string up to the rod. */
+  .about-tag::before {
+    content: "";
+    position: absolute;
+    top: 16px;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    margin-left: -7px;
+    border-radius: 50%;
+    background: var(--bg);
+    box-shadow: inset 0 1px 2px rgba(21, 22, 26, 0.3), 0 0 0 3px color-mix(in srgb, var(--c) 30%, transparent);
+  }
+
+  .about-tag::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% - 22px);
+    height: calc(var(--drop, 0px) + 40px);
+    border-left: 1.5px solid color-mix(in srgb, var(--ink) 55%, transparent);
+  }
+
+  .about-tag-head {
+    display: grid;
+    gap: 14px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: none;
+    box-shadow: none;
+    transform: none;
+  }
+
+  .about-tag-body { padding-left: 0; margin-top: 14px; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  @media (width >= 1100px) {
+    .about-tag:hover { animation: about-swing 1.6s var(--ease); }
+  }
+}
+
+@keyframes about-swing {
+  0% { transform: rotate(var(--tilt, 0deg)); }
+  25% { transform: rotate(calc(var(--tilt, 0deg) + 2.4deg)); }
+  55% { transform: rotate(calc(var(--tilt, 0deg) - 1.6deg)); }
+  80% { transform: rotate(calc(var(--tilt, 0deg) + 0.6deg)); }
+  100% { transform: rotate(var(--tilt, 0deg)); }
 }

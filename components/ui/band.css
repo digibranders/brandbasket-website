@@ -35,7 +35,7 @@
     radial-gradient(36% 50% at 12% 36%, color-mix(in srgb, var(--rattan) 28%, transparent), transparent 70%),
     radial-gradient(34% 46% at 90% 72%, color-mix(in srgb, var(--sage) 14%, transparent), transparent 70%),
     radial-gradient(52% 60% at 58% 8%, color-mix(in srgb, var(--rattan-wash) 90%, transparent), transparent 70%),
-    url("/basket/poster.avif") no-repeat 84% 58% / 46% auto;
+    url("/basket/woven-basket-hero.avif") no-repeat 84% 58% / 46% auto;
 }
 
 .glass-panel {

@@ -92,7 +92,7 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
   return (
     <div ref={host} role="img" aria-label={label} className="relative aspect-[1.12] max-h-[620px] w-full min-[1000px]:aspect-[1.02]">
       <Image
-        src="/basket/poster.avif"
+        src="/basket/woven-basket-hero.avif"
         alt=""
         fill
         unoptimized

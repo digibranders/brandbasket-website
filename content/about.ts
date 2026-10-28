@@ -17,17 +17,10 @@ export interface AboutService extends AboutItem {
   readonly tone: AboutTone;
 }
 
-export interface AboutReceiptLine {
-  readonly label: string;
-  readonly value: string;
-}
-
 /** The page title and description live in lib/seo/routes.ts with every other page's. */
 export interface About {
   readonly h1: string;
   readonly lede: string;
-  /** The five services floating around the mark in the hero picture, in the order the page lists them. */
-  readonly heroTiles: readonly { readonly icon: AboutIconKey; readonly label: string; readonly tone: AboutTone }[];
   readonly who: {
     readonly heading: string;
     readonly lead: string;
@@ -35,17 +28,6 @@ export interface About {
   };
   readonly what: { readonly heading: string; readonly lede: string; readonly items: readonly AboutService[] };
   readonly serve: { readonly heading: string; readonly lede: string; readonly items: readonly AboutItem[] };
-  readonly earn: {
-    readonly heading: string;
-    readonly lede: string;
-    readonly points: readonly { readonly title: string; readonly body: string }[];
-    readonly receipt: {
-      readonly title: string;
-      readonly lines: readonly AboutReceiptLine[];
-      readonly apart: AboutReceiptLine;
-    };
-    readonly pricingLink: string;
-  };
   readonly why: { readonly heading: string; readonly items: readonly AboutItem[] };
   readonly mission: { readonly heading: string; readonly body: string };
   readonly vision: { readonly heading: string; readonly body: string };
@@ -54,13 +36,6 @@ export interface About {
 export const ABOUT: About = {
   h1: "About BrandBasket",
   lede: "BrandBasket helps local businesses and small and medium-sized enterprises (SMEs) in India and the USA build, manage and strengthen their online presence.",
-  heroTiles: [
-    { icon: "Globe", label: "Website", tone: "site" },
-    { icon: "ShareNetwork", label: "Social media", tone: "growth" },
-    { icon: "Wrench", label: "Website care", tone: "site" },
-    { icon: "Megaphone", label: "Ads", tone: "growth" },
-    { icon: "MapPin", label: "Local SEO", tone: "search" },
-  ],
   who: {
     heading: "Who we are",
     lead: "Managing a website, social media, ad campaigns and local search takes time, technical knowledge and ongoing effort. BrandBasket brings these services together.",
@@ -85,27 +60,6 @@ export const ABOUT: About = {
       { icon: "Buildings", title: "Small and medium-sized enterprises", body: "An in-house team for every digital job is not always practical. Fixed packages let you buy defined services instead of coordinating each one yourself." },
       { icon: "Rocket", title: "Businesses building or improving online", body: "Starting out, or tidying up what you already run? We begin by working out which services you need and how they fit your goals." },
     ],
-  },
-  earn: {
-    heading: "How we earn",
-    lede: "BrandBasket runs on a service-based model, with fixed packages and published prices.",
-    points: [
-      { title: "The website is free, the care is monthly", body: "We design and build your website at no charge. We earn from the monthly website management fee, so you get ongoing support, not just a one-off project." },
-      { title: "Social media, ads and local SEO", body: "Each service has its own fee, set by the package you choose. The ad fee pays us to manage your campaigns. The ad budget is a separate amount paid to the advertising platforms, and the billing arrangement is confirmed in your service agreement." },
-      { title: "Fixed packages, published prices", body: "You can compare options and see what each package includes before you buy." },
-    ],
-    receipt: {
-      title: "How a plan adds up",
-      lines: [
-        { label: "Website design and build", value: "Free" },
-        { label: "Website management", value: "Monthly fee" },
-        { label: "Social media management", value: "Monthly fee" },
-        { label: "Ad campaign management", value: "Monthly fee" },
-        { label: "Local SEO", value: "Monthly fee" },
-      ],
-      apart: { label: "Ad budget", value: "Separate from our fee" },
-    },
-    pricingLink: "See the plans and prices",
   },
   why: {
     heading: "Why businesses choose us",

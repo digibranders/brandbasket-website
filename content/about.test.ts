@@ -12,9 +12,6 @@ describe("about content", () => {
       "Local SEO",
     ]);
   });
-  it("floats one hero tile for each of the five services", () => {
-    expect(ABOUT.heroTiles).toHaveLength(ABOUT.what.items.length);
-  });
   it("prints no price, which would drift from lib/pricing.ts", () => {
     expect(JSON.stringify(ABOUT)).not.toMatch(/[\u20B9$]|\d,\d{3}/);
   });

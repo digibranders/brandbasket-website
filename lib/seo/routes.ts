@@ -30,7 +30,7 @@ const GUIDES_UPDATED = "2026-10-28";
 export const HOME_ROUTE: RouteMeta = {
   path: "/",
   title: `Get your business website free | ${tradeName}`,
-  description: "A professional website for your local business, built free and live in about a week. We host, secure and update it for you every month.",
+  description: "A professional website for your local business, built free and live in 7 working days. We host, secure and update it for you every month.",
   updated: UPDATED,
   priority: 1,
 };

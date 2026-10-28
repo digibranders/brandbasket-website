@@ -21,5 +21,6 @@
  * 2026-10-26.1  Terms: the website plan includes 2 edits a month of up to 30 minutes each (was worded "small edits").
  *               Privacy: the contact form no longer asks for a topic, so only the plans picked are collected, and it records
  *               that the person agreed to the policy.
+ * 2026-10-28.2  Shipping policy: a website is usually live within 7 working days (was "about a week").
  */
-export const LEGAL_TEXT_VERSION = "2026-10-26.3";
+export const LEGAL_TEXT_VERSION = "2026-10-28.2";

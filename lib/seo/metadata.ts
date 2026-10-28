@@ -4,7 +4,7 @@ import { isProductionSite, siteConfig } from "@/lib/site-config";
 import type { RouteMeta } from "./routes";
 
 /** Size and alt text shared by every opengraph-image file (lib/og/share-image.tsx). */
-export const SHARE_IMAGE_META = { width: 1200, height: 630, alt: `Get your business website for FREE. Built for you. Live in about a week. ${siteConfig.name}.`, type: "image/png" } as const;
+export const SHARE_IMAGE_META = { width: 1200, height: 630, alt: `Get your business website for FREE. Built for you. Live in 7 working days. ${siteConfig.name}.`, type: "image/png" } as const;
 
 /** The site default share image, served by app/opengraph-image.tsx. */
 const DEFAULT_SHARE_IMAGE = { url: "/opengraph-image", ...SHARE_IMAGE_META };

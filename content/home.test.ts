@@ -21,7 +21,7 @@ describe("home content", () => {
   it("puts the owner's split-flap copy on the default share image", () => {
     expect(`${SHARE_IMAGE.lead} ${SHARE_IMAGE.word}`).toBe("Get your business website for FREE");
     expect(SHARE_IMAGE.word).toHaveLength(4);
-    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Built for you. Live in about a week.");
+    expect(`${SHARE_IMAGE.line} ${SHARE_IMAGE.lineAccent}`).toBe("Built for you. Live in 7 working days.");
   });
   it("builds the offer line from the managed website price in each currency", () => {
     for (const currency of CURRENCIES) {

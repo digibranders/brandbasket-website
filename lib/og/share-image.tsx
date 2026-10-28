@@ -70,7 +70,7 @@ function Flap({ letter }: { readonly letter: string }): ReactElement {
 }
 
 export function flapShareImage({ lead, word, line, lineAccent }: FlapCopy): ImageResponse {
-  const domain = new URL(siteConfig.url).hostname;
+  const domain = new URL(siteConfig.url).hostname.replace(/^www\./, "");
   return new ImageResponse(
     (
       <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", background: `radial-gradient(ellipse 60% 70% at 50% 42%, #ffffff, ${BONE} 75%)`, color: INK, fontFamily: "Red Hat Display" }}>

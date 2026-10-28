@@ -20,7 +20,7 @@ export const shippingPolicy: LegalDocument = {
       heading: "Your website",
       requiredBy: ["Razorpay merchant terms"],
       paragraphs: [
-        "Your website is delivered online, at your domain. It is usually live within about a week of us receiving your content.",
+        "Your website is delivered online, at your domain. It is usually live within 7 working days of us receiving your content.",
       ],
     },
     {

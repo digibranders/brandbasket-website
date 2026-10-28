@@ -131,9 +131,15 @@ export function everyPlan(currency: Currency): EveryPlanCopy {
 
 export const PRICING_FAQ_HEADING = "Questions about pricing.";
 
+/** The answers every page that shows them must word the same way: they are promises, so they come from one place. */
+export function adSpendAnswer(currency: Currency): string {
+  const adCap = formatMoney(extrasFor(currency).adBudgetCap, currency);
+  return `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${adCap} a month of it. Packages started together add our ad money on top.`;
+}
+export const NO_GUARANTEE_ANSWER = "No one honestly can. You see the work and the numbers in a report every month.";
+
 export function pricingFaq(currency: Currency): readonly FaqItem[] {
   const managedMonthly = formatMoney(planPrice("website", currency), currency);
-  const adCap = formatMoney(extrasFor(currency).adBudgetCap, currency);
   return [
     {
       q: "Is the website build really free?",
@@ -153,11 +159,11 @@ export function pricingFaq(currency: Currency): readonly FaqItem[] {
     },
     {
       q: "Is ad spend included?",
-      a: `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${adCap} a month of it. Packages started together add our ad money on top.`,
+      a: adSpendAnswer(currency),
     },
     {
       q: "Do you guarantee rankings or leads?",
-      a: "No one honestly can. You see the work and the numbers in a report every month.",
+      a: NO_GUARANTEE_ANSWER,
     },
   ];
 }

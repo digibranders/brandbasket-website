@@ -85,18 +85,19 @@ textarea.ct-input { min-height: 148px; resize: vertical; }
 
 /* The padding keeps the bubbles' shadows and the avatar ring from being trimmed by the scroll area, and the last bubble clear of its bottom edge. */
 .ct-chat-log { display: grid; align-content: start; gap: 12px; min-height: 190px; max-height: 360px; overflow-y: auto; overscroll-behavior: contain; padding: 4px 6px 14px 4px; margin: -4px -6px -14px -4px; }
-.ct-row { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: end; gap: 8px; }
+.ct-row { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: start; gap: 10px; }
 .ct-row-user { grid-template-columns: minmax(0, 1fr); justify-items: end; }
 .ct-avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--rattan-wash); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rattan) 30%, transparent); }
 .ct-bubble { max-width: 100%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
 .ct-row-user .ct-bubble { max-width: 88%; }
-.ct-bubble > * + * { margin-top: 6px; }
-.ct-bubble ul { display: grid; gap: 4px; padding-left: 1.1em; list-style: disc; }
-.ct-bubble a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rattan); }
-.ct-bubble-bot { justify-self: start; background: var(--surface); border-bottom-left-radius: 6px; box-shadow: 0 0 0 1px rgba(21, 22, 26, 0.07), 0 8px 16px -12px rgba(40, 28, 14, 0.3); }
+/* The assistant's answers are plain text beside its avatar, with no bubble, as in the OyeChats widget. Only the visitor's words sit in a bubble. */
+.ct-reply { min-width: 0; padding-top: 3px; font-size: 15.5px; line-height: 1.6; overflow-wrap: anywhere; }
+.ct-reply > * + * { margin-top: 8px; }
+.ct-reply ul { display: grid; gap: 4px; padding-left: 1.1em; list-style: disc; }
+.ct-reply a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rattan); }
+.ct-reply-error { padding-left: 10px; border-left: 3px solid color-mix(in srgb, var(--error) 55%, transparent); }
 .ct-bubble-user { background: var(--action); color: var(--action-ink); border-bottom-right-radius: 6px; }
-.ct-bubble-error { background: color-mix(in srgb, var(--error) 7%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--error) 30%, transparent); }
-.ct-typing { display: inline-flex; gap: 5px; align-items: center; height: 22px; }
+.ct-typing { display: inline-flex; gap: 5px; align-items: center; height: 28px; }
 .ct-typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--rattan-ink); opacity: 0.45; }
 @media (prefers-reduced-motion: no-preference) {
   .ct-typing i { animation: ct-dot 1.1s ease-in-out infinite; }
@@ -130,10 +131,39 @@ textarea.ct-input { min-height: 148px; resize: vertical; }
 .ct-chat-send:disabled { opacity: 0.35; cursor: not-allowed; }
 .ct-chat-send:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
 
-.ct-chat-foot { display: grid; gap: 4px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+.ct-chat-foot { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 12px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
 .ct-powered { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-weight: 500; }
 .ct-chat-foot a { text-decoration: underline; text-underline-offset: 3px; }
 /* The logo is the link: no underline, a lift on hover and a ring for the keyboard. */
 .ct-chat-foot a.ct-powered-link { display: inline-flex; padding: 2px 4px; margin: -2px -4px; border-radius: 6px; text-decoration: none; transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
 .ct-chat-foot a.ct-powered-link:hover { opacity: 0.7; transform: translateY(-1px); }
 .ct-chat-foot a.ct-powered-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }
+
+/* Phones: roomier touch targets, an input at 16px so iOS does not zoom the page on focus, and a conversation that never outgrows the screen. */
+@media (width < 640px) {
+  .ct-chat-panel { padding: 14px 12px 12px; }
+  .ct-chat-log { min-height: 140px; max-height: min(56dvh, 380px); }
+  .ct-starters { padding-left: 0; }
+  .ct-starter { display: flex; align-items: center; min-height: 44px; padding-block: 6px; }
+  .ct-chat-input { height: 50px; font-size: 16px; }
+  .ct-chat-send { width: 50px; height: 50px; }
+  .ct-bubble { font-size: 15.5px; }
+  .ct-row-user .ct-bubble { max-width: 92%; }
+  .ct-tooltip { padding: 8px 10px; font-size: 12px; }
+}
+
+/* The notice about where the messages go, as a tooltip over the footer. It opens on hover or keyboard focus of any footer link, and on a tap of "Powered by". */
+.ct-powered-label { padding: 0; border: 0; background: none; color: inherit; font: inherit; cursor: help; }
+.ct-powered-label:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; border-radius: 4px; }
+.ct-tooltip {
+  position: absolute; left: 0; bottom: calc(100% + 10px); z-index: 2; width: max-content; max-width: 100%; padding: 9px 12px; border-radius: 12px;
+  background: var(--ink); color: var(--action-ink); font-size: 12.5px; font-weight: 400; line-height: 1.45; text-wrap: balance; box-shadow: 0 14px 28px -12px rgba(21, 22, 26, 0.5);
+  opacity: 0; transform: translateY(4px); visibility: hidden; pointer-events: none;
+}
+.ct-tooltip::after { content: ""; position: absolute; left: 22px; bottom: -4px; width: 10px; height: 10px; background: inherit; transform: rotate(45deg); border-radius: 2px; }
+@media (prefers-reduced-motion: no-preference) {
+  .ct-tooltip { transition: opacity 200ms var(--ease), transform 200ms var(--ease), visibility 200ms; }
+}
+.ct-chat-foot[data-open="true"] .ct-tooltip,
+.ct-chat-foot:has(.ct-tip-trigger:hover) .ct-tooltip,
+.ct-chat-foot:has(.ct-tip-trigger:focus-visible) .ct-tooltip { opacity: 1; transform: none; visibility: visible; }

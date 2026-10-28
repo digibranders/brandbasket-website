@@ -19,11 +19,12 @@ export const CONTACT_CHAT = {
   starters: ["Is the website really free?", "How long does it take to build my website?", "Can I cancel?"],
   startersLabel: "Questions to start with",
   logLabel: "Conversation with the Brandbasket assistant",
-  placeholder: "Ask anything about Brandbasket",
+  placeholder: "Ask us anything",
   send: "Send question",
   typing: "The assistant is typing",
   poweredBy: "Powered by",
   provider: "OyeChats",
+  /** Shown as a tooltip on the footer links (components/contact/ContactChat.tsx), so the footer stays on one line. */
   notice: "Your messages are shared with OyeChats, our chat provider.",
   privacyLink: "Privacy policy",
   errors: {

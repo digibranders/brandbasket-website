@@ -21,6 +21,11 @@ interface Message {
 const SESSION_KEY = "bb_chat_session";
 const MAX_QUESTION = 1000;
 
+/** Moving focus into the box opens the keyboard on a phone, which would cover the conversation, so only a mouse or keyboard visitor gets it. */
+function focusInput(input: HTMLInputElement | null): void {
+  if (window.matchMedia("(pointer: fine)").matches) input?.focus();
+}
+
 function readSession(): string | null {
   try {
     return window.sessionStorage.getItem(SESSION_KEY);
@@ -76,6 +81,7 @@ export function ContactChat(): ReactElement | null {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
   const [sending, setSending] = useState(false);
+  const [tipOpen, setTipOpen] = useState(false);
   const [messages, setMessages] = useState<readonly Message[]>([{ id: 0, role: "bot", text: CONTACT_CHAT.greeting }]);
   const nextId = useRef(1);
   const sessionRef = useRef<string | null>(null);
@@ -84,6 +90,7 @@ export function ContactChat(): ReactElement | null {
   const requestRef = useRef<AbortController | null>(null);
   const panelId = useId();
   const titleId = useId();
+  const noticeId = useId();
 
   // Keep the newest message in view.
   useEffect(() => {
@@ -105,7 +112,7 @@ export function ContactChat(): ReactElement | null {
 
   function toggle(): void {
     setOpen((current) => !current);
-    if (!open) window.requestAnimationFrame(() => inputRef.current?.focus());
+    if (!open) window.requestAnimationFrame(() => focusInput(inputRef.current));
   }
 
   async function ask(question: string): Promise<void> {
@@ -124,7 +131,7 @@ export function ContactChat(): ReactElement | null {
       add("bot", CONTACT_CHAT.errors[error instanceof ChatError ? error.kind : "failed"], true);
     } finally {
       setSending(false);
-      inputRef.current?.focus();
+      focusInput(inputRef.current);
     }
   }
 
@@ -156,7 +163,7 @@ export function ContactChat(): ReactElement | null {
             ) : (
               <div key={message.id} className="ct-row">
                 <Avatar />
-                <div className={`ct-bubble ct-bubble-bot ${message.error === true ? "ct-bubble-error" : ""}`}>
+                <div className={`ct-reply ${message.error === true ? "ct-reply-error" : ""}`}>
                   <BotText blocks={parseChatText(message.text)} />
                 </div>
               </div>
@@ -172,7 +179,7 @@ export function ContactChat(): ReactElement | null {
           {sending ? (
             <div className="ct-row" role="status" aria-label={CONTACT_CHAT.typing}>
               <Avatar />
-              <div className="ct-bubble ct-bubble-bot"><span aria-hidden="true" className="ct-typing"><i /><i /><i /></span></div>
+              <span aria-hidden="true" className="ct-typing"><i /><i /><i /></span>
             </div>
           ) : null}
         </div>
@@ -180,14 +187,16 @@ export function ContactChat(): ReactElement | null {
           <input ref={inputRef} type="text" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={MAX_QUESTION} autoComplete="off" aria-label={CONTACT_CHAT.placeholder} placeholder={CONTACT_CHAT.placeholder} className="ct-chat-input" />
           <button type="submit" disabled={sending || draft.trim() === ""} aria-label={CONTACT_CHAT.send} className="ct-chat-send"><ArrowUp aria-hidden="true" weight="bold" className="size-5" /></button>
         </form>
-        <div className="ct-chat-foot">
+        <div className="ct-chat-foot" data-open={tipOpen}>
           <span className="ct-powered">
-            {CONTACT_CHAT.poweredBy}
-            <a href={OYECHATS_SITE_URL} target="_blank" rel="noopener noreferrer" aria-label={`${CONTACT_CHAT.provider} website`} className="ct-powered-link">
+            {/* A button, so a tap opens the notice on a phone, where there is no hover. */}
+            <button type="button" aria-describedby={noticeId} onClick={() => setTipOpen((current) => !current)} onBlur={() => setTipOpen(false)} onKeyDown={(event) => event.key === "Escape" && setTipOpen(false)} className="ct-tip-trigger ct-powered-label">{CONTACT_CHAT.poweredBy}</button>
+            <a href={OYECHATS_SITE_URL} target="_blank" rel="noopener noreferrer" aria-label={`${CONTACT_CHAT.provider} website`} aria-describedby={noticeId} className="ct-tip-trigger ct-powered-link">
               <Image src="/brand/oyechats-wordmark.png" alt={CONTACT_CHAT.provider} width={1390} height={424} className="h-[17px] w-auto" />
             </a>
           </span>
-          <p>{CONTACT_CHAT.notice} <Link href="/privacy">{CONTACT_CHAT.privacyLink}</Link>.</p>
+          <Link href="/privacy" aria-describedby={noticeId} className="ct-tip-trigger">{CONTACT_CHAT.privacyLink}</Link>
+          <span id={noticeId} role="tooltip" className="ct-tooltip">{CONTACT_CHAT.notice}</span>
         </div>
       </div>
     </section>

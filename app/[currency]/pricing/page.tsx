@@ -2,10 +2,12 @@
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
+import { GuideLinks } from "@/components/guides/GuideLinks";
 import { BasketBand } from "@/components/pricing/BasketBand";
 import { PlanColumns } from "@/components/pricing/PlanColumns";
 import { PricingFaq } from "@/components/pricing/PricingFaq";
 import { PricingHero } from "@/components/pricing/PricingHero";
+import { GUIDE_LINKS } from "@/content/guides";
 import { currencyParam } from "@/lib/currency";
 import { breadcrumbJsonLd, planOffersJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -22,6 +24,7 @@ export default async function PricingPage({ params }: { readonly params: Promise
       <PlanColumns currency={currency} />
       <BasketBand />
       <PricingFaq currency={currency} />
+      <GuideLinks links={GUIDE_LINKS.pricing} />
       <JsonLd data={planOffersJsonLd(currency, { packages: true })} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }])} />
     </>

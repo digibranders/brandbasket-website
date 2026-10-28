@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactElement } from "react";
+import { GuideLinks } from "@/components/guides/GuideLinks";
 import { ServicePage } from "@/components/services/ServicePage";
+import { GUIDE_LINKS } from "@/content/guides";
 import { SERVICE_PAGES, servicePageBySlug } from "@/content/services";
 import { currencyParam } from "@/lib/currency";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -31,5 +33,10 @@ export default async function ServiceRoute({ params }: ServicePageParams): Promi
   const currency = await currencyParam(params);
   const page = servicePageBySlug((await params).slug, currency);
   if (page === undefined) notFound();
-  return <ServicePage page={page} currency={currency} />;
+  return (
+    <>
+      <ServicePage page={page} currency={currency} />
+      <GuideLinks links={GUIDE_LINKS[page.id]} />
+    </>
+  );
 }

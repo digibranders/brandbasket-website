@@ -1,6 +1,7 @@
 // lib/seo/routes.test.ts
 import { describe, expect, it } from "vitest";
-import { indexableRoutes, ROUTES } from "./routes";
+import { GUIDE_PAGES } from "@/content/guides";
+import { guideRoute, indexableRoutes, ROUTES } from "./routes";
 
 describe("route registry", () => {
   it("keeps titles within 60 characters and descriptions between 120 and 155", () => {
@@ -9,6 +10,19 @@ describe("route registry", () => {
       expect(r.description.length, r.path).toBeGreaterThanOrEqual(120);
       expect(r.description.length, r.path).toBeLessThanOrEqual(155);
     }
+  });
+  it("keeps the guide pages within the same title and description limits", () => {
+    for (const page of GUIDE_PAGES) {
+      const r = guideRoute(page);
+      expect(r.title.length, r.path).toBeLessThanOrEqual(60);
+      expect(r.description.length, r.path).toBeGreaterThanOrEqual(120);
+      expect(r.description.length, r.path).toBeLessThanOrEqual(155);
+    }
+  });
+  it("lists every guide page and the glossary as indexable", () => {
+    const paths = indexableRoutes().map((r) => r.path);
+    for (const page of GUIDE_PAGES) expect(paths).toContain(page.path);
+    expect(paths).toContain("/glossary");
   });
   it("has unique titles and paths", () => {
     const all = Object.values(ROUTES);

@@ -249,6 +249,49 @@ export function aboutPageJsonLd({ name, description }: { readonly name: string; 
   };
 }
 
+export interface WebPageLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "WebPage";
+  readonly name: string;
+  readonly description: string;
+  readonly url: string;
+  readonly inLanguage: "en-IN";
+  readonly isPartOf: { readonly "@id": string };
+  readonly publisher: { readonly "@id": string };
+}
+
+/** A plain page (a guide or a comparison): its name, summary and the site it belongs to. */
+export function webPageJsonLd({ name, description, path }: { readonly name: string; readonly description: string; readonly path: string }): WebPageLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    name,
+    description,
+    url: `${siteConfig.url}${path}`,
+    inLanguage: "en-IN",
+    isPartOf: { "@id": `${siteConfig.url}/#website` },
+    publisher: { "@id": ORGANIZATION_ID },
+  };
+}
+
+export interface DefinedTermSetLd {
+  readonly "@context": "https://schema.org";
+  readonly "@type": "DefinedTermSet";
+  readonly name: string;
+  readonly url: string;
+  readonly hasDefinedTerm: readonly { readonly "@type": "DefinedTerm"; readonly name: string; readonly description: string }[];
+}
+
+export function definedTermSetJsonLd({ name, path, terms }: { readonly name: string; readonly path: string; readonly terms: readonly { readonly term: string; readonly definition: string }[] }): DefinedTermSetLd {
+  return {
+    "@context": "https://schema.org",
+    "@type": "DefinedTermSet",
+    name,
+    url: `${siteConfig.url}${path}`,
+    hasDefinedTerm: terms.map((t) => ({ "@type": "DefinedTerm", name: t.term, description: t.definition })),
+  };
+}
+
 export const blogUrl = (path = ""): string => `${siteConfig.url}/blog${path}`;
 /** The author page's address is also the author's id, so a post and the author page point at one entity. */
 export const authorUrl = (slug: string): string => blogUrl(`/author/${slug}`);

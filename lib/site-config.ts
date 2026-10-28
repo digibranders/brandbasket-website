@@ -83,6 +83,24 @@ export const businessDetails: BusinessDetails = {
   ],
 };
 
+export type SocialNetwork = "instagram" | "facebook" | "linkedin" | "youtube" | "x";
+
+export interface SocialLink {
+  readonly network: SocialNetwork;
+  readonly label: string;
+  /** The full profile address, https only. */
+  readonly href: string;
+}
+
+/**
+ * Brandbasket's own profiles, shown as icons in the footer and on /contact, and listed as `sameAs` in the Organization JSON-LD.
+ * Only profiles that exist are listed (Facebook is skipped by the owner, 2026-10-28).
+ */
+export const socialLinks: readonly SocialLink[] = [
+  { network: "instagram", label: "Brandbasket on Instagram", href: "https://www.instagram.com/brandbasket.official/" },
+  { network: "linkedin", label: "Brandbasket on LinkedIn", href: "https://www.linkedin.com/company/brandbasket-in/" },
+];
+
 export interface SiteConfig {
   readonly name: string;
   readonly url: string;

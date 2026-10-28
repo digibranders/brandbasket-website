@@ -4,7 +4,7 @@ import type { Currency } from "@/lib/currency";
 import type { FaqItem } from "@/content/types";
 import type { AuthorProfile, Post } from "@/lib/cms/schema";
 import { PACKAGES, packageTotal, PLAN_IDS, planPrice, PLANS } from "@/lib/pricing";
-import { businessDetails, siteConfig } from "@/lib/site-config";
+import { businessDetails, siteConfig, socialLinks } from "@/lib/site-config";
 
 /** One node id for the organization, so other entities can point at it instead of repeating it. */
 export const ORGANIZATION_ID = `${siteConfig.url}/#organization`;
@@ -29,6 +29,7 @@ export interface OrganizationLd {
     readonly postalCode: string;
     readonly addressCountry: string;
   };
+  readonly sameAs?: readonly string[];
 }
 
 export function organizationJsonLd(): OrganizationLd {
@@ -53,6 +54,7 @@ export function organizationJsonLd(): OrganizationLd {
       postalCode: postalAddress.postalCode,
       addressCountry: postalAddress.country,
     },
+    ...(socialLinks.length === 0 ? {} : { sameAs: socialLinks.map((link) => link.href) }),
   };
 }
 

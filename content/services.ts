@@ -115,11 +115,11 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         heading: "What we do.",
         lede: "What the free build covers, and what the monthly plan keeps doing.",
         groups: [
-          { icon: "FileText", title: "The pages we build", items: ["Homepage and About Us", "Services or Products", "Contact Us and FAQ", "Individual service pages", "Works on every phone"] },
           { icon: "Phone", title: "Ways for customers to reach you", items: ["Contact and enquiry forms", "Click-to-call buttons", "WhatsApp click-to-chat", "Every enquiry emailed to you"] },
           { icon: "ShieldCheck", title: "Kept safe and online", items: ["Hosting and SSL that stays valid", "Regular backups", "Security updates", "Uptime monitoring"] },
           { icon: "LockKey", title: "Privacy done properly", items: ["A privacy policy written for your business", "Privacy notices on your forms", "Consent where the law requires it", ...(currency === "INR" ? ["DPDP Act readiness support"] : [])] },
           { icon: "Headset", title: "A person to ask", items: ["Human support when you need it", "2 edits a month, 15 minutes each", "A monthly website health report"] },
+          { icon: "FileText", title: "10 pages for the website", items: ["Home Page", "About Us", "Services Overview", "Individual Service Pages", "Contact Us", "Pricing", "Case Studies / Portfolio", "Blog / Resources", "Privacy Policy", "Terms and Conditions"] },
         ],
       },
       spotlight: {

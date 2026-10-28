@@ -74,6 +74,35 @@
   overflow-wrap: anywhere;
 }
 
+.site-footer-social {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.site-footer-social-link {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink-2);
+  transition: color 200ms var(--ease), border-color 200ms var(--ease), transform 200ms var(--ease);
+}
+
+.site-footer-social-link:hover,
+.site-footer-social-link:focus-visible {
+  border-color: var(--rattan-ink);
+  color: var(--rattan-ink);
+}
+
+.site-footer-social-link:active {
+  transform: translateY(1px);
+}
+
 .site-footer-contact-links li:first-child .site-footer-link {
   color: var(--ink);
   font-weight: 500;
@@ -134,11 +163,12 @@
   pointer-events: none;
 }
 
+/* The full-colour logo, faded so it sits behind the page like a watermark. */
 .site-footer-wordmark {
+  display: block;
   width: 100%;
-  aspect-ratio: 355.8 / 60;
-  background: color-mix(in srgb, var(--rattan) 25%, var(--sunken));
-  mask: url("/brand/brandbasket-logo-horizontal-light.svg") center / contain no-repeat;
+  height: auto;
+  opacity: 0.2;
 }
 
 @media (width < 1100px) {

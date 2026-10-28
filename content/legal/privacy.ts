@@ -1,10 +1,14 @@
 // content/legal/privacy.ts
 import { PURPOSE_OF, TOOLS, type VendorId } from "@/lib/consent";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
+import { OYECHATS_BOT_KEY } from "@/lib/oyechats";
 import { businessDetails } from "@/lib/site-config";
 import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, cin, grievanceOfficer, processors } = businessDetails;
+
+/** Named in the policy only while the contact page loads the chat (lib/oyechats.ts). */
+const CHAT_PROCESSOR = { name: "OyeChats", purpose: "answers the messages you type into the chat on our contact page", location: "from India" } as const;
 const office = businessDetails.address.join(" ");
 const writeToOfficer = `our ${grievanceOfficer.designation}, ${grievanceOfficer.name}, at ${grievanceOfficer.email}`;
 
@@ -79,7 +83,7 @@ export const privacyPolicy: LegalDocument = {
       requiredBy: ["DPDP Act s.8(2)", "DPDP Rules 2025 r.3(1)(b)"],
       paragraphs: [
         "We share personal data only with the service providers that help us run our business, each for one job. They process it on our behalf and only for that purpose.",
-        ...processors.map((p) => `${p.name} ${p.purpose}, ${p.location}.`),
+        ...[...processors, ...(OYECHATS_BOT_KEY === null ? [] : [CHAT_PROCESSOR])].map((p) => `${p.name} ${p.purpose}, ${p.location}.`),
         ...(tagged ? [`Only if you allow it in Cookie settings, ${companies} receive cookie data from this website, from the United States. They also use it under their own privacy policies.`] : []),
         `We may also disclose information when the law requires it, or to a successor business if ${tradeName} is merged or sold.`,
       ],

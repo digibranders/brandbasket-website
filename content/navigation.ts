@@ -26,6 +26,7 @@ export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Pricing", href: "/pricing" },
   { label: "Our work", href: "/#work" },
   { label: "Blog", href: "/blog" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 

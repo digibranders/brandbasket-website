@@ -1,0 +1,25 @@
+/* A single rendered basket arrives as one object. The static fallback never overlaps the live entrance. */
+.basket-stage > canvas { opacity: 0; }
+.basket-stage > .basket-stage-poster { opacity: 0; visibility: hidden; }
+.basket-stage[data-fallback="true"][data-live="false"] > .basket-stage-poster {
+  opacity: 1;
+  visibility: visible;
+}
+.basket-stage[data-live="true"] > canvas {
+  animation: basket-arrive 650ms var(--ease) both;
+}
+.basket-stage[data-live="true"][data-recovered="true"] > canvas {
+  animation: none;
+  opacity: 1;
+  transform: none;
+}
+@keyframes basket-arrive {
+  from { opacity: 0; transform: translateY(18px); }
+  to { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .basket-stage[data-live="false"] > .basket-stage-poster {
+    opacity: 1;
+    visibility: visible;
+  }
+}

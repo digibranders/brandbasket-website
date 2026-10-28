@@ -25,17 +25,16 @@ interface Token {
 /** Basket body profile as (radius, height) control points, smoothed by Catmull-Rom. */
 const PROFILE = catmull([[0.001, 0], [0.6, 0], [1.12, 0], [1.36, 0.08], [1.56, 0.45], [1.72, 1.05], [1.82, 1.42]], 6);
 const INNER_PROFILE = catmull([[1.74, 1.42], [1.64, 1.02], [1.48, 0.45], [1.26, 0.13], [0.6, 0.09], [0.001, 0.09]], 6);
-const BASE_DROP_DELAY_MS = 250;
-const BASE_DROP_GAP_MS = 260;
 const ADDON_STAGGER_MS = 180;
+const ENTRY_DROP_GAP_MS = 260;
 /** Nothing but the slow idle sway moves between interactions, so it draws at this pace instead of every refresh. */
 const IDLE_FRAME_MS = 1000 / 24;
 const SPIN_DAMPING = Math.log(25);
 const MAX_DPR = 2;
 
 /**
- * The woven 3D basket from the mock. Appends its canvas to `host`, drops the website tiles in, then keeps the add-on
- * tiles in step with `setPick`. Await `loadFaceFonts()` first and pass its result as `labelFamily`, so the faces draw
+ * The woven 3D basket from the mock. First draws an empty basket; `startEntry` drops the selected tiles after the
+ * basket has arrived. Context recovery starts at rest. Await `loadFaceFonts()` and pass its result as `labelFamily`, so faces draw
  * with the right glyphs.
  */
 export function createBasketScene(host: HTMLElement, image: HTMLImageElement | null, options: BasketSceneOptions): BasketScene {
@@ -57,9 +56,9 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
   const gl = renderer.gl;
   gl.clearColor(0, 0, 0, 0);
   const canvas = gl.canvas;
-  // Starts transparent and fades in over the poster, so the two near-identical baskets cross-dissolve rather than overlap.
+  // The stage owns the canvas entrance; the renderer only controls its drawing buffer and size.
   canvas.style.cssText =
-    "position:relative;z-index:1;display:block;width:100%;height:100%;touch-action:pan-y;opacity:0;transition:opacity .3s ease;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent";
+    "position:absolute;inset:0;z-index:1;display:block;width:100%;height:100%;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;-webkit-tap-highlight-color:transparent";
   host.insertBefore(canvas, host.firstChild);
 
   const camera = new Camera(gl, { fov: 30, near: 0.1, far: 100 });
@@ -152,7 +151,7 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
 
   function add(k: TileId): void {
     const t = tokens.get(k);
-    if (!t) return;
+    if (!t || t.phase === "drop" || t.phase === "rest") return;
     // Switched back on while still lifting out: fall from where it is instead of vanishing and reappearing above.
     const resume = t.phase === "lift";
     t.phase = "drop";
@@ -218,7 +217,7 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
       dragV *= decay;
       if (Math.abs(dragV) < 0.005) dragV = 0;
     }
-    group.rotation.y = (reduce ? 0 : Math.sin(time * 0.3) * 0.035) + drag;
+    group.rotation.y = (reduce || !entryStarted ? 0 : Math.sin(time * 0.3) * 0.035) + drag;
     camera.position.set(0, 4.3, 8.6);
     camera.lookAt([0, 1.15, 0]);
   }
@@ -264,6 +263,20 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
 
   // Everything that can throw (first render included) runs before listeners, observers and timers exist.
   let pick: BasketPick = options.initialPick;
+  let entryStarted = reduce || options.animateEntry === false;
+  // Recovery restores settled tiles; first entry holds the basket still and empty until it has arrived.
+  for (const id of entryStarted ? PLAN_IDS : []) {
+    if (!pick[id]) continue;
+    for (const k of GROUPS[id]) {
+      const token = tokens.get(k);
+      if (!token) continue;
+      token.phase = "rest";
+      token.y = token.d.rest[1];
+      token.node.visible = true;
+      token.node.position.set(...token.d.rest);
+      token.node.rotation.set(token.d.rx, token.d.ry, token.d.rz);
+    }
+  }
   resize();
 
   const previousCursor = host.style.cursor;
@@ -329,22 +342,34 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
     options.onContextLost?.();
   };
   canvas.addEventListener("webglcontextlost", onContextLost);
-  requestAnimationFrame(() => {
-    canvas.style.opacity = "1";
-  });
-
-  for (const id of PLAN_IDS) {
-    if (!pick[id]) continue;
-    // Re-check the pick when the timer fires: a plan switched off before its first drop must not land afterwards.
-    GROUPS[id].forEach((k, i) => later(() => { if (pick[id]) add(k); }, reduce ? 0 : id === "website" ? BASE_DROP_DELAY_MS + i * BASE_DROP_GAP_MS : i * ADDON_STAGGER_MS));
-  }
+  const readyFrame = requestAnimationFrame(() => options.onReady?.());
 
   return {
+    startEntry() {
+      if (entryStarted) return;
+      entryStarted = true;
+      time = 0;
+      let order = 0;
+      for (const id of PLAN_IDS) {
+        if (!pick[id]) continue;
+        for (const k of GROUPS[id]) {
+          later(() => { if (pick[id]) add(k); }, 80 + order++ * ENTRY_DROP_GAP_MS);
+        }
+      }
+    },
     setPick(next) {
+      if (!entryStarted) {
+        pick = next;
+        return;
+      }
       for (const id of PLAN_IDS) {
         if (next[id] === pick[id]) continue;
         const on = next[id];
-        GROUPS[id].forEach((k, i) => later(() => (on ? add(k) : remove(k)), reduce ? 0 : i * ADDON_STAGGER_MS));
+        GROUPS[id].forEach((k, i) => later(() => {
+          if (pick[id] !== on) return;
+          if (on) add(k);
+          else remove(k);
+        }, reduce ? 0 : i * ADDON_STAGGER_MS));
       }
       pick = next;
     },
@@ -359,6 +384,7 @@ function mountScene(renderer: Renderer, host: HTMLElement, image: HTMLImageEleme
       visible = false;
       running = false;
       cancelAnimationFrame(frame);
+      cancelAnimationFrame(readyFrame);
       timers.forEach((id) => window.clearTimeout(id));
       timers.clear();
       resizer.disconnect();

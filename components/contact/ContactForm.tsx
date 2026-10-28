@@ -20,7 +20,9 @@ type Field = "name" | "phone" | "business" | "city" | "email" | "message";
 /** The text fields plus the privacy checkbox: everything that can show an error. */
 type ErrorField = Field | "consent";
 type Errors = Partial<Record<ErrorField, string>>;
-type Status = { readonly kind: "idle" | "submitting" | "done" } | { readonly kind: "error"; readonly message: string };
+/** `done` keeps what the visitor typed that the thank-you card repeats back to them. It never goes to analytics. */
+type Sent = { readonly kind: "done"; readonly email: string; readonly phone: string; readonly business: string };
+type Status = { readonly kind: "idle" | "submitting" } | Sent | { readonly kind: "error"; readonly message: string };
 
 /** Fields with a rule beyond their length cap, in page order. The message joined them when it became required (2026-10-26). */
 const CHECKED: readonly Field[] = ["name", "phone", "business", "email", "message"];
@@ -155,7 +157,7 @@ export function ContactForm(): ReactElement {
         const sent = submitEvent(plans);
         track(sent.name, sent.properties);
         pushConversion(sent);
-        setStatus({ kind: "done" });
+        setStatus({ kind: "done", email: value("email"), phone: value("phone"), business: value("business") });
         return;
       }
       const failure = result.success && "error" in result.data ? result.data : null;
@@ -176,8 +178,16 @@ export function ContactForm(): ReactElement {
       <div ref={doneRef} role="status" tabIndex={-1} className="grid justify-items-start gap-3.5 p-[clamp(24px,3vw,36px)] outline-none">
         <CheckCircle aria-hidden="true" weight="fill" className="size-10 text-sage" />
         <b className="font-display text-[26px] font-medium tracking-[-0.03em]">{CONTACT_FORM_COPY.doneTitle}</b>
-        <p className="max-w-[44ch] text-ink-2">{CONTACT_FORM_COPY.doneBody}</p>
-        <WhatsAppButton location="contact_done" />
+        <div className="grid max-w-[44ch] gap-2 text-ink-2">
+          <p>{CONTACT_FORM_COPY.doneSentTo} <b className="break-words font-medium text-ink">{status.email}</b>.</p>
+          <p>
+            {status.phone === ""
+              ? CONTACT_FORM_COPY.doneEmailOnly
+              : <>{CONTACT_FORM_COPY.doneCallPre} <b className="break-words font-medium text-ink">{status.phone}</b> {CONTACT_FORM_COPY.doneCallPost}</>}
+          </p>
+          <p>{CONTACT_FORM_COPY.doneUrgent}</p>
+        </div>
+        <WhatsAppButton location="contact_done" message={`${CONTACT_FORM_COPY.doneWhatsApp} ${status.business}.`} />
       </div>
     );
   }

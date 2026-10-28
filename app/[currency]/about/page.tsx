@@ -1,12 +1,10 @@
 import type { Icon } from "@phosphor-icons/react";
 import { Buildings, Eye, Globe, ListChecks, MapPin, Megaphone, Package, Rocket, ShareNetwork, Stack, Storefront, Target, Wrench } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
-import Image from "next/image";
 import type { CSSProperties, ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
 import "@/components/about/about.css";
 import { Reveal } from "@/components/motion/Reveal";
-import { PageHero } from "@/components/ui/PageHero";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { ABOUT, type AboutIconKey, type AboutItem, type AboutTone } from "@/content/about";
@@ -28,6 +26,19 @@ function IconDisc({ name, className = "" }: { readonly name: AboutIconKey; reado
     <span aria-hidden="true" className={`grid size-11 shrink-0 place-items-center rounded-full bg-rattan-wash text-rattan-ink ${className}`}>
       <ItemIcon weight="duotone" className="size-6" />
     </span>
+  );
+}
+
+/** A wide woven panel with the headline and the intro line on it. The mark pressed into the weave is decoration. */
+function Hero(): ReactElement {
+  return (
+    <section aria-labelledby="h-about" className="in-wrap pb-16 pt-28">
+      <div className="about-hero">
+        <span aria-hidden="true" className="about-hero-mark" />
+        <h1 id="h-about" className="font-display text-[clamp(44px,7vw,92px)] font-normal leading-[0.98] tracking-[-0.05em]">{ABOUT.h1}</h1>
+        <p className="max-w-[44ch] text-[clamp(17px,1.6vw,20px)] leading-[1.5] text-ink/80">{ABOUT.lede}</p>
+      </div>
+    </section>
   );
 }
 
@@ -128,7 +139,7 @@ function Why(): ReactElement {
   );
 }
 
-/** Mission and vision as two panels. The vision carries the Brandbasket mark, large and faint. */
+/** Mission and vision as two panels.  */
 function Purpose(): ReactElement {
   const { mission, vision } = ABOUT;
   return (
@@ -140,7 +151,6 @@ function Purpose(): ReactElement {
           <p className="max-w-[42ch] text-[18px] leading-[1.55] text-ink-2">{mission.body}</p>
         </div>
         <div className={`${PANEL} relative isolate grid content-start gap-5 overflow-clip bg-sunken`}>
-          <Image src="/brand/brandbasket-mark.svg" alt="" width={360} height={360} aria-hidden="true" className="pointer-events-none absolute -bottom-12 -right-10 -z-10 size-[min(70%,340px)] opacity-[0.07]" />
           <span aria-hidden="true" className="grid size-12 place-items-center rounded-full bg-surface text-rattan-ink"><Eye weight="duotone" className="size-6" /></span>
           <h2 className="font-display text-[clamp(28px,3.2vw,40px)] font-normal leading-none tracking-[-0.04em]">{vision.heading}</h2>
           <p className="max-w-[34ch] font-display text-[clamp(22px,2.4vw,30px)] font-normal leading-[1.25] tracking-[-0.03em]">{vision.body}</p>
@@ -154,7 +164,7 @@ function Purpose(): ReactElement {
 export default function AboutPage(): ReactElement {
   return (
     <>
-      <PageHero id="h-about" h1={ABOUT.h1} lede={ABOUT.lede} h1ClassName="max-w-[20ch]" />
+      <Hero />
       <Who />
       <What />
       <Serve />

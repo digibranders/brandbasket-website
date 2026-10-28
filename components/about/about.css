@@ -1,4 +1,50 @@
-/* components/about/about.css: the hanging service tags on /about. */
+/* components/about/about.css: the woven hero and the hanging service tags on /about. */
+
+/* The hero: the same weave as the contact form head and the basket card, as a wide panel, with the Brandbasket "b" embossed on it. */
+.about-hero {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  display: grid;
+  align-content: end;
+  gap: 18px;
+  min-height: clamp(300px, 34vw, 400px);
+  padding: clamp(28px, 5vw, 64px) clamp(22px, 5vw, 64px) clamp(34px, 5vw, 60px);
+  border-radius: 36px;
+  background:
+    radial-gradient(80% 110% at 18% 0%, rgba(255, 255, 255, 0.55), transparent 60%),
+    repeating-linear-gradient(45deg, color-mix(in srgb, var(--rattan-text) 13%, transparent) 0 1px, transparent 1px 5px),
+    repeating-linear-gradient(-45deg, color-mix(in srgb, var(--rattan-text) 10%, transparent) 0 1px, transparent 1px 5px),
+    linear-gradient(180deg, var(--weave-light), #ecd6b6);
+  box-shadow: 0 0 0 1px var(--shell-ring), var(--shadow-float);
+}
+
+/* The rim along the bottom edge, as on the contact form head. */
+.about-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto 0 0;
+  height: 7px;
+  background: linear-gradient(180deg, var(--rim-light), var(--rim-deep));
+}
+
+/* The mark, large and cut off by the panel edge, pressed into the weave in cream. */
+.about-hero-mark {
+  position: absolute;
+  z-index: -1;
+  right: -4%;
+  bottom: -22%;
+  width: clamp(240px, 42%, 460px);
+  aspect-ratio: 1;
+  background: rgba(255, 250, 240, 0.6);
+  -webkit-mask: url("/brand/brandbasket-mark.svg") center / contain no-repeat;
+  mask: url("/brand/brandbasket-mark.svg") center / contain no-repeat;
+}
+
+/* On phones the text spans the panel, so the mark moves further into the corner and fades. */
+@media (width < 640px) {
+  .about-hero-mark { width: 64%; right: -20%; bottom: -32%; background: rgba(255, 250, 240, 0.45); }
+}
 
 .about-section {
   scroll-margin-top: 96px;

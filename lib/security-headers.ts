@@ -82,11 +82,10 @@ const TOOL_ORIGINS: Readonly<Record<VendorId, TagOrigins>> = {
   metaPixel: { ...NONE, script: ["https://connect.facebook.net"], img: ["https://www.facebook.com"], connect: ["https://www.facebook.com", "https://connect.facebook.net"] },
 };
 
-/** The OyeChats widget on the contact page (lib/oyechats.ts). Headers are site wide, so its origins open only when a bot key is configured. */
+/** The chat on the contact page calls the OyeChats API (lib/oyechats.ts). Headers are site wide, so that one address opens only when a bot key is configured. */
 function withChat(origins: TagOrigins, chat: boolean): TagOrigins {
   if (!chat) return origins;
-  const add = (key: "script" | "style" | "img" | "font" | "connect"): string[] => [...new Set([...origins[key], ...OYECHATS_ORIGINS[key]])];
-  return { ...origins, script: add("script"), style: add("style"), img: add("img"), font: add("font"), connect: add("connect") };
+  return { ...origins, connect: [...new Set([...origins.connect, ...OYECHATS_ORIGINS.connect])] };
 }
 
 function tagOrigins(tools: readonly VendorId[]): TagOrigins {

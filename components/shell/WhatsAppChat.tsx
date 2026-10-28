@@ -4,14 +4,12 @@ import { ArrowUpRight, WhatsappLogo, X } from "@phosphor-icons/react";
 import { usePagePath } from "@/components/currency/usePagePath";
 import { useEffect, useId, useRef, useState, type ReactElement } from "react";
 import { WHATSAPP_CHAT } from "@/content/whatsapp";
-import { OYECHATS_BOT_KEY } from "@/lib/oyechats";
 import { trackAttrs } from "@/lib/analytics";
 import { businessDetails } from "@/lib/site-config";
 
-/** A new page starts with the launcher closed, including client-side navigation. The contact page has the OyeChats bubble in this corner and WhatsApp as a channel beside the form, so the launcher steps aside there. */
-export function WhatsAppChat(): ReactElement | null {
+/** A new page starts with the launcher closed, including client-side navigation. */
+export function WhatsAppChat(): ReactElement {
   const pathname = usePagePath();
-  if (OYECHATS_BOT_KEY !== null && pathname === "/contact") return null;
   return <ChatPanel key={pathname} />;
 }
 

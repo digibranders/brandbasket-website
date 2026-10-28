@@ -19,12 +19,12 @@ export const metadata: Metadata = pageMetadata(ROUTES.contact);
 
 /**
  * The section's grid. Phones stack head, form, info so a visitor who tapped a main button lands on the form. With the chat bot set up,
- * its card is one more area: on phones it sits between the head and the form (closed it is one row high, and under a long form
- * nobody would find it), on wide screens it is the first row of the left column.
+ * its card is one more area: on phones it sits under the form, so the form stays first, and on wide screens it is the first row of
+ * the left column.
  */
 const GRID = "mx-auto grid w-full max-w-[1280px] grid-cols-[minmax(0,1fr)] items-start gap-8 px-[clamp(18px,4vw,56px)] pb-24 pt-32 min-[1000px]:grid-cols-[0.85fr_1.15fr] min-[1000px]:gap-x-16 min-[1000px]:gap-y-0";
 const AREAS = "[grid-template-areas:'head'_'form'_'info'] min-[1000px]:grid-rows-[auto_1fr] min-[1000px]:[grid-template-areas:'head_form'_'info_form']";
-const AREAS_WITH_CHAT = "[grid-template-areas:'head'_'chat'_'form'_'info'] min-[1000px]:grid-rows-[auto_auto_1fr] min-[1000px]:[grid-template-areas:'head_form'_'chat_form'_'info_form']";
+const AREAS_WITH_CHAT = "[grid-template-areas:'head'_'form'_'chat'_'info'] min-[1000px]:grid-rows-[auto_auto_1fr] min-[1000px]:[grid-template-areas:'head_form'_'chat_form'_'info_form']";
 export default async function ContactPage({ params }: { readonly params: Promise<{ readonly currency: string }> }): Promise<ReactElement> {
   const currency = await currencyParam(params);
   return (

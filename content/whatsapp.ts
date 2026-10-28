@@ -1,11 +1,7 @@
+/** The floating WhatsApp icon: one tap opens WhatsApp with this message ready to send. */
 export const WHATSAPP_CHAT = {
-  title: "Chat with Brandbasket",
-  subtitle: "Continue the conversation on WhatsApp",
-  greeting: "Hi there. How can we help?",
-  body: "Tell us about your business, ask about a plan, or get help with your website.",
+  openLabel: "Chat on WhatsApp",
+  /** Shown beside the icon on hover, on screens that have a pointer. */
   reply: "We reply within one working day.",
-  continueLabel: "Continue on WhatsApp",
-  openLabel: "Open WhatsApp chat",
-  closeLabel: "Close WhatsApp chat",
-  dismissLabel: "Dismiss chat",
+  message: "Hi Brandbasket, I'd like to know more about your website and plans.",
 } as const;

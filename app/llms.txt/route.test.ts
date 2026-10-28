@@ -1,12 +1,20 @@
 // app/llms.txt/route.test.ts
-import { describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
+
+const getPostsPage = vi.hoisted(() => vi.fn());
+vi.mock("@/lib/cms/blog", () => ({ getPostsPage }));
+
 import { PACKAGE_TERMS } from "@/content/legal/fees";
 import { indexableRoutes } from "@/lib/seo/routes";
 import { GET } from "./route";
 
+beforeEach(() => {
+  getPostsPage.mockReset().mockResolvedValue({ posts: [{ slug: "website-cost-india", title: "What a website costs", excerpt: "A plain answer." }], pages: 1 });
+});
+
 describe("GET /llms.txt", () => {
   it("lists plan prices and the package terms", async () => {
-    const body = await GET().text();
+    const body = await (await GET()).text();
     expect(body).toContain("Managed Website: ₹2,999 a month, GST included");
     expect(body).toContain("Social Media and Ads: ₹9,999 a month, GST included");
     expect(body).toContain("Local SEO + AEO: ₹24,999 a month, GST included");
@@ -15,14 +23,14 @@ describe("GET /llms.txt", () => {
   });
 
   it("states the build fee, GST and billing", async () => {
-    const body = await GET().text();
+    const body = await (await GET()).text();
     expect(body).toContain("- Website build: ₹0\n");
     expect(body).toContain("- GST: 18%, included in every price\n");
-    expect(body).toContain("- Billing: monthly\n");
+    expect(body).toContain("- Billing: monthly, cancel anytime with no notice period\n");
   });
 
   it("lists the four packages with list price, package price, saving and the ad credit", async () => {
-    const body = await GET().text();
+    const body = await (await GET()).text();
     expect(body).toContain("- Website + Social: ₹12,998 a month at list price; ₹11,699 a month as a package (10% off, you save ₹1,299). Bought together as you start: ₹1,500 a month of ad credit.");
     expect(body).toContain("- Website + SEO: ₹27,998 a month at list price; ₹25,199 a month as a package (10% off, you save ₹2,799).\n");
     expect(body).toContain("- Social + SEO: ₹34,998 a month at list price; ₹31,499 a month as a package (10% off, you save ₹3,499). Bought together as you start: ₹1,500 a month of ad credit.");
@@ -30,9 +38,29 @@ describe("GET /llms.txt", () => {
   });
 
   it("links every indexable page and leaves the noindex notice out", async () => {
-    const body = await GET().text();
+    const body = await (await GET()).text();
     expect(body).toContain("(https://www.brandbasket.in/pricing)");
     for (const r of indexableRoutes()) expect(body).toContain(`[${r.title}](`);
     expect(body).not.toContain("/notice");
+  });
+
+  it("states the plan limits an assistant is asked about", async () => {
+    const body = await (await GET()).text();
+    expect(body).toContain("up to 10 pages built for you; live within 7 working days");
+    expect(body).toContain("2 edits a month of 15 minutes each");
+    expect(body).toContain("up to ₹10,000 a month of your ad budget");
+    expect(body).toContain("5 pages optimised a month");
+  });
+
+  it("lists the newest posts with their summaries", async () => {
+    const body = await (await GET()).text();
+    expect(body).toContain("- [What a website costs](https://www.brandbasket.in/blog/website-cost-india): A plain answer.");
+  });
+
+  it("is still served, without posts, when the CMS cannot answer", async () => {
+    getPostsPage.mockRejectedValue(new Error("The CMS could not be reached"));
+    const body = await (await GET()).text();
+    expect(body).toContain("## Pages");
+    expect(body).not.toContain("/blog/website-cost-india");
   });
 });

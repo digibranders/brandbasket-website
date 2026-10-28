@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import { CURRENCIES, formatMoney } from "@/lib/currency";
 import { PLAN_IDS, PLANS, planPrice } from "@/lib/pricing";
 import { serviceRoute } from "@/lib/seo/routes";
+import { NO_GUARANTEE_ANSWER, pricingFaq } from "./pricing";
 import { SERVICE_COPY, SERVICE_PAGES, servicePageBySlug, servicePageFor, servicePageRefFor, servicePages, serviceMoneyCopy } from "./services";
 
 const NO_TAX = /gst|tax|incl\./i;
@@ -111,5 +112,23 @@ describe("service pages", () => {
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month", packagesLede: "Any two plans are 10% off and all three are 20% off." });
     expect(Object.values(PLANS).map((plan) => plan.name).every((name) => !NO_TAX.test(name))).toBe(true);
+  });
+
+  it("lists DPDP readiness on the rupee Managed Website page only, matching the pricing page", () => {
+    const privacy = servicePageFor("website", "INR").does.groups.find((group) => group.title === "Privacy done properly");
+    expect(privacy?.items).toContain("DPDP Act readiness support");
+    expect(servicePageFor("website", "USD").does.groups.find((group) => group.title === "Privacy done properly")?.items.join(" ")).not.toContain("DPDP");
+  });
+
+  it("words the ad spend and no guarantee answers like the pricing page, whichever page they are on", () => {
+    for (const currency of CURRENCIES) {
+      const pricing = pricingFaq(currency);
+      const adSpend = servicePageFor("growth", currency).faq.find((item) => item.q === "Is ad spend included?")?.a;
+      expect(adSpend).toBe(pricing.find((item) => item.q === "Is ad spend included?")?.a);
+      for (const id of PLAN_IDS) {
+        const guarantee = servicePageFor(id, currency).faq.find((item) => item.q.startsWith("Do you guarantee"));
+        if (id !== "website") expect(guarantee?.a).toBe(NO_GUARANTEE_ANSWER);
+      }
+    }
   });
 });

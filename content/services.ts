@@ -5,7 +5,7 @@
 import { type Currency, formatMoney } from "@/lib/currency";
 import { extrasFor, PACKAGES, PLANS, planPrice, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER } from "./legal/cancellation";
-import { planColumns } from "./pricing";
+import { adSpendAnswer, NO_GUARANTEE_ANSWER, planColumns } from "./pricing";
 import type { Step } from "./home";
 import type { FaqItem } from "./types";
 
@@ -99,10 +99,10 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       slug: "managed-website",
       path: "/services/managed-website",
       metaTitle: "Managed Website: a free build, run for you | Brandbasket",
-      metaDescription: "We build up to 10 pages for your business free and put them live in about a week. Then we host, secure and update it every month, with 2 edits included.",
+      metaDescription: "We build up to 10 pages free and put them live within 7 working days. Then we host, secure and update it every month, with 2 edits included.",
       h1: "A free website for your business, looked after every month.",
       lede: `We design up to 10 pages for ${FREE} and put them online. Then we keep them hosted, secure and up to date, so you never deal with the technical side.`,
-      glance: ["Up to 10 pages, built for you", "Live in about a week", "2 edits a month, 15 minutes each", "A monthly website health report"],
+      glance: ["Up to 10 pages, built for you", "Live within 7 working days", "2 edits a month, 15 minutes each", "A monthly website health report"],
       who: {
         heading: "Who it is for.",
         items: [
@@ -118,7 +118,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
           { icon: "FileText", title: "The pages we build", items: ["Homepage and About Us", "Services or Products", "Contact Us and FAQ", "Individual service pages", "Works on every phone"] },
           { icon: "Phone", title: "Ways for customers to reach you", items: ["Contact and enquiry forms", "Click-to-call buttons", "WhatsApp click-to-chat", "Every enquiry emailed to you"] },
           { icon: "ShieldCheck", title: "Kept safe and online", items: ["Hosting and SSL that stays valid", "Regular backups", "Security updates", "Uptime monitoring"] },
-          { icon: "LockKey", title: "Privacy done properly", items: ["A privacy policy written for your business", "Privacy notices on your forms", "Consent where the law requires it"] },
+          { icon: "LockKey", title: "Privacy done properly", items: ["A privacy policy written for your business", "Privacy notices on your forms", "Consent where the law requires it", ...(currency === "INR" ? ["DPDP Act readiness support"] : [])] },
           { icon: "Headset", title: "A person to ask", items: ["Human support when you need it", "2 edits a month, 15 minutes each", "A monthly website health report"] },
         ],
       },
@@ -204,7 +204,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       faq: [
         {
           q: "Is ad spend included?",
-          a: `No. You pay Meta directly for your own ads, and ${GROWTH.name} manages up to ${adCap} a month of it. Packages started together add our ad money on top.`,
+          a: adSpendAnswer(currency),
         },
         {
           q: "What does a reel cost?",
@@ -216,7 +216,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         },
         {
           q: "Do you guarantee leads or sales?",
-          a: "No one honestly can. You see the work and the numbers in a report every month.",
+          a: NO_GUARANTEE_ANSWER,
         },
         { q: "Can I cancel?", a: CANCEL_ANSWER },
       ],
@@ -277,7 +277,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         },
         {
           q: "Do you guarantee rankings or AI citations?",
-          a: "No one honestly can. You see the work and the numbers in a report every month.",
+          a: NO_GUARANTEE_ANSWER,
         },
         {
           q: "Do you write new pages?",

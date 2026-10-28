@@ -1,6 +1,7 @@
 // lib/seo/routes.ts
 // One place for every page's title, description and sitemap entry. Titles are complete (they are set as absolute
 // titles, so the layout's "%s | Brandbasket" template never runs). No title or description carries a price.
+import { GLOSSARY, GUIDE_PAGES, type GuidePageContent } from "@/content/guides";
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
 import { SERVICE_PAGES, type ServicePageContent, servicePageFor } from "@/content/services";
@@ -23,12 +24,13 @@ export interface RouteMeta {
 const { legalName, tradeName, postalAddress } = businessDetails;
 const UPDATED = "2026-10-21";
 const SERVICES_UPDATED = "2026-10-26";
+const GUIDES_UPDATED = "2026-10-28";
 
 /** The home page's entry. Titles and descriptions never carry a price, so one entry serves both currencies. */
 export const HOME_ROUTE: RouteMeta = {
   path: "/",
   title: `Get your business website free | ${tradeName}`,
-  description: "A professional website for your local business, built free and live in about a week. We host, secure and update it for you every month.",
+  description: "A professional website for your local business, built free and live in 7 working days. We host, secure and update it for you every month.",
   updated: UPDATED,
   priority: 1,
 };
@@ -95,6 +97,13 @@ export const ROUTES = {
     updated: UPDATED,
     priority: 0.3,
   },
+  glossary: {
+    path: "/glossary",
+    title: GLOSSARY.metaTitle,
+    description: GLOSSARY.metaDescription,
+    updated: GUIDES_UPDATED,
+    priority: 0.5,
+  },
   notice: {
     path: "/notice",
     title: `${dataNotice.title} | ${tradeName}`,
@@ -110,9 +119,14 @@ export function serviceRoute(page: ServicePageContent): RouteMeta {
   return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: SERVICES_UPDATED, priority: 0.8 };
 }
 
-/** Every page search engines may index: the registry and the service pages (the rupee copies, the ones crawlers are served), without noindex pages. */
+/** The registry entry of one guide or comparison page (content/guides.ts holds its title and description). */
+export function guideRoute(page: GuidePageContent): RouteMeta {
+  return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: GUIDES_UPDATED, priority: 0.7 };
+}
+
+/** Every page search engines may index: the registry, the service pages (the rupee copies, the ones crawlers are served) and the guides, without noindex pages. */
 export function indexableRoutes(): RouteMeta[] {
-  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map((ref) => serviceRoute(servicePageFor(ref.id, "INR")))];
+  const routes: readonly RouteMeta[] = [...Object.values(ROUTES), ...SERVICE_PAGES.map((ref) => serviceRoute(servicePageFor(ref.id, "INR"))), ...GUIDE_PAGES.map(guideRoute)];
   return routes.filter((r) => !r.noindex);
 }
 

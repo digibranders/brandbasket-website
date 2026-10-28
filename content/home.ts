@@ -50,7 +50,7 @@ export const SHARE_IMAGE = {
   lead: "Get your business website for",
   word: "FREE",
   line: "Built for you.",
-  lineAccent: "Live in about a week.",
+  lineAccent: "Live in 7 working days.",
 } as const;
 
 /** Locked copy: change only with the owner's yes. */
@@ -68,7 +68,7 @@ export interface Fact {
 export function factsFor(currency: Currency): readonly Fact[] {
   return [
     { icon: currency === "INR" ? "CurrencyInr" : "CurrencyDollar", text: `${formatMoney(0, currency)} to build` },
-    { icon: "RocketLaunch", text: "Live in about a week" },
+    { icon: "RocketLaunch", text: "Live in 7 working days" },
     { icon: "Wrench", text: "No technical work" },
     { icon: "FileText", text: "One report a month" },
   ];

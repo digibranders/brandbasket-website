@@ -55,6 +55,9 @@ const GROUP_ICON: Readonly<Record<ServiceIconKey, Icon>> = {
   Question,
 };
 
+/** A group with more items than this lists them in two columns (it already spans the full width as the last, odd card). */
+const LONG_GROUP = 6;
+
 const RING = "shadow-[0_0_0_1px_rgba(21,22,26,0.06),0_40px_70px_-52px_rgba(40,28,14,0.4)]";
 
 function colourOf(id: PlanId): CSSProperties {
@@ -139,7 +142,7 @@ function Group({ group, id }: { readonly group: ServiceGroup; readonly id: PlanI
         <span aria-hidden="true" className="grid size-11 place-items-center rounded-full bg-[color-mix(in_srgb,var(--c)_14%,var(--surface))] text-[var(--c)]"><GroupIcon weight="duotone" className="size-6" /></span>
         <h3 className="font-display text-[21px] font-medium leading-[1.2] tracking-[-0.025em]">{group.title}</h3>
       </header>
-      <ul className="grid gap-2.5">
+      <ul className={`grid gap-2.5 ${group.items.length > LONG_GROUP ? "min-[760px]:grid-cols-2 min-[760px]:gap-x-8" : ""}`}>
         {group.items.map((item) => (
           <li key={item} className="grid grid-cols-[20px_1fr] items-start gap-2.5 text-[15.5px] leading-[1.4]">
             <Check aria-hidden="true" className="mt-px size-[18px] text-sage" />

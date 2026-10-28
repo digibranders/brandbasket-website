@@ -1,12 +1,24 @@
 // content/contact.ts
-// Copy for /contact, word for word from the mock view "Contact" (docs/design/mock.html, #view-contact).
+// Copy for /contact, word for word from the mock view "Contact" (docs/design/mock.html, #view-contact), plus the next steps, social heading and FAQ below it (2026-10-28).
 
 export const CONTACT_PAGE = {
   title: "Contact us.",
   lede: "Ask about a free website, a plan, or the site you already have. We reply within one working day.",
   whatsappNote: "the fastest way to reach us",
-  officeLabel: "Registered office",
 } as const;
+
+/** Under the contact rows. The steps are the homepage's (content/home.ts STEPS), so only the heading is new. */
+export const CONTACT_NEXT = { heading: "What happens next" } as const;
+
+export const CONTACT_FOLLOW = { heading: "Follow us" } as const;
+
+/** The homepage questions a visitor most often has before writing, in the order shown. The answers come from content/home.ts. */
+export const CONTACT_FAQ_QUESTIONS = [
+  "Is the website really free?",
+  "What do I pay for every month?",
+  "How long does it take to build my website?",
+  "Can I cancel?",
+] as const;
 
 export const CONTACT_LABELS = {
   name: "Your name",

@@ -57,4 +57,11 @@ describe("securityHeaders", () => {
       expect(new Set(sources).size).toBe(sources.length);
     }
   });
+
+  it("opens the OyeChats origins only when the chat is on", () => {
+    const csp = (chat: boolean): string => securityHeaders({ dev: false, tools: [], chat }).find((h) => h.key === "Content-Security-Policy")?.value ?? "";
+    expect(csp(true)).toContain("script-src 'self' 'unsafe-inline' https://cdn.oyechats.com;");
+    expect(csp(true)).toContain("connect-src 'self' https://api.oyechats.com wss://api.oyechats.com;");
+    expect(csp(false)).not.toContain("oyechats");
+  });
 });

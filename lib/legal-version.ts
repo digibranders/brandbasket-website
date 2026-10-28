@@ -22,5 +22,6 @@
  *               Privacy: the contact form no longer asks for a topic, so only the plans picked are collected, and it records
  *               that the person agreed to the policy.
  * 2026-10-28.2  Shipping policy: a website is usually live within 7 working days (was "about a week").
+ * 2026-10-28.3  Privacy: names OyeChats as the provider of the chat on the contact page, when that chat is switched on.
  */
-export const LEGAL_TEXT_VERSION = "2026-10-28.2";
+export const LEGAL_TEXT_VERSION = "2026-10-28.3";

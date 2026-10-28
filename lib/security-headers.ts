@@ -1,4 +1,5 @@
 import { TOOLS, type VendorId } from "./consent";
+import { OYECHATS_BOT_KEY, OYECHATS_ORIGINS } from "./oyechats";
 
 export interface Header {
   readonly key: string;
@@ -13,8 +14,8 @@ export interface Header {
  * (plan 12); the consent banner still keeps GTM from loading until a purpose is allowed. A tool added to the container
  * needs its origins here too, or the browser blocks it. Blog pictures come from the CMS's public media bucket (`mediaOrigin`).
  */
-export function securityHeaders({ dev, tools = TOOLS, mediaOrigin }: { readonly dev: boolean; readonly tools?: readonly VendorId[]; readonly mediaOrigin?: string }): Header[] {
-  const origins = tagOrigins(tools);
+export function securityHeaders({ dev, tools = TOOLS, mediaOrigin, chat = OYECHATS_BOT_KEY !== null }: { readonly dev: boolean; readonly tools?: readonly VendorId[]; readonly mediaOrigin?: string; readonly chat?: boolean }): Header[] {
+  const origins = withChat(tagOrigins(tools), chat);
   const extra = (list: readonly string[]): string => list.map((origin) => ` ${origin}`).join("");
   const csp = [
     "default-src 'self'",
@@ -80,6 +81,13 @@ const TOOL_ORIGINS: Readonly<Record<VendorId, TagOrigins>> = {
   // Meta's pixel loads from connect.facebook.net and reports to www.facebook.com.
   metaPixel: { ...NONE, script: ["https://connect.facebook.net"], img: ["https://www.facebook.com"], connect: ["https://www.facebook.com", "https://connect.facebook.net"] },
 };
+
+/** The OyeChats widget on the contact page (lib/oyechats.ts). Headers are site wide, so its origins open only when a bot key is configured. */
+function withChat(origins: TagOrigins, chat: boolean): TagOrigins {
+  if (!chat) return origins;
+  const add = (key: "script" | "style" | "img" | "font" | "connect"): string[] => [...new Set([...origins[key], ...OYECHATS_ORIGINS[key]])];
+  return { ...origins, script: add("script"), style: add("style"), img: add("img"), font: add("font"), connect: add("connect") };
+}
 
 function tagOrigins(tools: readonly VendorId[]): TagOrigins {
   if (tools.length === 0) return NONE;

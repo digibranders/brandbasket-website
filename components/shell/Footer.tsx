@@ -1,10 +1,12 @@
 // components/shell/Footer.tsx
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactElement } from "react";
 import { CurrencySwitch } from "@/components/currency/CurrencySwitch";
 import { FOOTER_NAV, LEGAL_NAV } from "@/content/navigation";
 import { businessDetails } from "@/lib/site-config";
 import { Logo } from "./Logo";
+import { SocialLinks } from "./SocialLinks";
 import "./footer.css";
 
 export function Footer(): ReactElement {
@@ -25,6 +27,7 @@ export function Footer(): ReactElement {
                 <li><a className="site-footer-link" href={`mailto:${businessDetails.email}`}>{businessDetails.email}</a></li>
                 <li><a className="site-footer-link" href={`tel:${businessDetails.phoneHref}`}>{businessDetails.phone}</a></li>
               </ul>
+              <SocialLinks />
             </div>
           </div>
           <div className="site-footer-colophon">
@@ -35,7 +38,7 @@ export function Footer(): ReactElement {
       </div>
       <div className="site-footer-signature" aria-hidden="true">
         <div className="in-wrap">
-          <div className="site-footer-wordmark" />
+          <Image src="/brand/brandbasket-logo-horizontal-light.svg" alt="" width={1188} height={200} className="site-footer-wordmark" />
         </div>
       </div>
     </footer>

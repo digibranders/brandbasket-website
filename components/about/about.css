@@ -1,0 +1,68 @@
+/* components/about/about.css: the hero picture and the receipt ("How we earn") on /about. */
+
+.about-receipt-wrap {
+  filter: drop-shadow(var(--shadow-receipt));
+  transform: rotate(-1.2deg);
+}
+
+/* Paper with a torn zigzag edge at the bottom. */
+.about-receipt {
+  padding: 28px 26px 40px;
+  background: var(--surface);
+  -webkit-mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 20px 100%;
+  mask: conic-gradient(from -45deg at bottom, #0000, #000 1deg 89deg, #0000 90deg) 50% / 20px 100%;
+}
+
+.about-receipt-line {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  padding-block: 9px;
+  font-size: 15.5px;
+}
+
+.about-receipt-leader {
+  flex: 1;
+  min-width: 12px;
+  border-bottom: 2px dotted var(--line);
+  transform: translateY(-4px);
+}
+
+.about-receipt-value {
+  font-family: var(--font-mono), monospace;
+  font-size: 13.5px;
+  color: var(--rattan-ink);
+  text-align: right;
+}
+
+/* The lines print in one after another when the receipt scrolls into view (motion/Reveal sets data-reveal). */
+@media (prefers-reduced-motion: no-preference) {
+  [data-reveal="done"] .about-receipt-line {
+    animation: about-print 700ms var(--ease) both;
+    animation-delay: calc(var(--i, 0) * 110ms + 250ms);
+  }
+}
+
+@keyframes about-print {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* The hero picture: tiles drift slowly around the mark. Each tile has its own pace so they never move together. */
+.about-orbit-tile {
+  animation: about-drift 7s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i, 0) * -1.4s);
+}
+
+@keyframes about-drift {
+  from { transform: translateY(-6px) rotate(var(--tilt, 0deg)); }
+  to { transform: translateY(6px) rotate(var(--tilt, 0deg)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .about-orbit-tile { animation: none; transform: rotate(var(--tilt, 0deg)); }
+}
+
+.about-section {
+  scroll-margin-top: 96px;
+}

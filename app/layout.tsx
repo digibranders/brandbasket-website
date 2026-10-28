@@ -18,6 +18,8 @@ export const metadata: Metadata = {
   description: siteConfig.description,
   manifest: "/site.webmanifest",
   robots: isProductionSite() ? undefined : { index: false, follow: false },
+  // Search Console's "HTML tag" ownership check. GA4 and Clarity come through the Tag Manager container (lib/consent.ts).
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
 };
 
 export const viewport: Viewport = { themeColor: "#f6f5f2", colorScheme: "light" };

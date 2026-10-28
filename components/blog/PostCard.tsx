@@ -7,7 +7,7 @@ import { Avatar } from "./Avatar";
 import { PostMeta } from "./PostMeta";
 import { Thumb } from "./Thumb";
 
-const CARD_SIZES = "(min-width: 1280px) 600px, (min-width: 860px) 45vw, 100vw";
+const CARD_SIZES = "(min-width: 1280px) 400px, (min-width: 1000px) 30vw, (min-width: 640px) 45vw, 100vw";
 const CATEGORY = "text-[13.5px] font-semibold text-rattan-ink";
 const TITLE = "font-display font-semibold leading-[1.18] tracking-[-0.025em]";
 
@@ -26,15 +26,15 @@ export function PostCard({ post, heading = "h2", showExcerpt = true, showCategor
   );
 }
 
-/** The newest post, large, with its byline (listing option A). */
-export function FeaturedPost({ post }: { readonly post: Card }): ReactElement {
+/** The newest post: a wide cover with the title, excerpt and byline under it. */
+export function LeadPost({ post }: { readonly post: Card }): ReactElement {
   return (
-    <Link href={`/blog/${post.slug}`} className="group mt-11 grid items-center gap-5 rounded-[30px] bg-surface p-3.5 shadow-[0_0_0_1px_var(--line-2),var(--shadow)] min-[860px]:grid-cols-[1.35fr_1fr] min-[860px]:gap-11">
-      <Thumb image={post.cover} sizes="(min-width: 860px) 60vw, 100vw" priority className="rounded-[20px]" />
-      <div className="grid gap-3.5 px-1.5 pb-2.5 min-[860px]:py-3 min-[860px]:pl-0 min-[860px]:pr-[18px]">
+    <Link href={`/blog/${post.slug}`} className="group grid content-start gap-5">
+      <Thumb image={post.cover} sizes="(min-width: 1000px) 56vw, 100vw" priority className="rounded-[28px] shadow-[0_0_0_1px_var(--line-2),var(--shadow)]" />
+      <div className="grid gap-3.5">
         {post.category === null ? null : <span className={CATEGORY}>{post.category.name}</span>}
-        <h2 className={`${TITLE} text-[clamp(26px,2.6vw,36px)]`}>{post.title}</h2>
-        <p className="line-clamp-3 leading-[1.55] text-ink-2">{post.excerpt}</p>
+        <h2 className={`${TITLE} text-[clamp(28px,3vw,42px)]`}>{post.title}</h2>
+        <p className="line-clamp-3 max-w-[60ch] text-[17px] leading-[1.55] text-ink-2">{post.excerpt}</p>
         {post.author === null ? null : (
           <div className="flex items-center gap-3">
             <Avatar name={post.author.name} />
@@ -44,6 +44,20 @@ export function FeaturedPost({ post }: { readonly post: Card }): ReactElement {
             </div>
           </div>
         )}
+      </div>
+    </Link>
+  );
+}
+
+/** A short ruled row for the stack beside the lead post: a small cover, the title and the date. */
+export function LatestPost({ post }: { readonly post: Card }): ReactElement {
+  return (
+    <Link href={`/blog/${post.slug}`} className="group grid grid-cols-[112px_1fr] items-start gap-4 border-t border-line py-5 first:border-t-0 first:pt-0 min-[1000px]:grid-cols-[132px_1fr]">
+      <Thumb image={post.cover} sizes="132px" className="rounded-[14px]" />
+      <div className="grid gap-1.5">
+        {post.category === null ? null : <span className={CATEGORY}>{post.category.name}</span>}
+        <h3 className={`${TITLE} text-[18px]`}>{post.title}</h3>
+        <PostMeta publishedAt={post.publishedAt} minutes={post.readingMinutes} />
       </div>
     </Link>
   );

@@ -16,7 +16,7 @@ test("footer keeps navigation and contact details accessible at every size", asy
 
   await expect(footer.getByRole("link", { name: businessDetails.email })).toHaveAttribute("href", `mailto:${businessDetails.email}`);
   await expect(footer.getByRole("link", { name: businessDetails.phone })).toHaveAttribute("href", `tel:${businessDetails.phoneHref}`);
-  // The legal entity is named on the Contact, About, Privacy and Terms pages, not in the footer (owner, 2026-10-26).
+  // The legal entity is named on the Privacy and Terms pages, not in the footer (owner, 2026-10-26).
   await expect(footer.getByText(businessDetails.legalName, { exact: false })).toHaveCount(0);
   await expect(footer.getByText(`© ${new Date().getFullYear()} ${businessDetails.tradeName}`)).toBeVisible();
 

@@ -1,6 +1,6 @@
 // lib/site-config.test.ts
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { businessDetails, isProductionSite, siteConfig } from "./site-config";
+import { businessDetails, isProductionSite, siteConfig, socialLinks } from "./site-config";
 
 describe("businessDetails", () => {
   it("is Digibranders trading as Brandbasket", () => {
@@ -38,6 +38,14 @@ describe("businessDetails", () => {
       expect(p.purpose.trim()).not.toBe("");
       expect(p.location.trim()).not.toBe("");
     }
+  });
+
+  it("links social profiles over https with a label each", () => {
+    for (const link of socialLinks) {
+      expect(link.href.startsWith("https://")).toBe(true);
+      expect(link.label.trim()).not.toBe("");
+    }
+    expect(new Set(socialLinks.map((link) => link.network)).size).toBe(socialLinks.length);
   });
 
   it("carries no price in the default description", () => {

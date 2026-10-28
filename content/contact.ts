@@ -90,5 +90,14 @@ export const CONTACT_FORM_COPY = {
   submit: "Send message",
   submitting: "Sending",
   doneTitle: "Thanks, your message is in.",
-  doneBody: "We will reply within one working day. For anything urgent, WhatsApp us.",
+  /** Shown before the visitor's own email address. */
+  doneSentTo: "We sent a confirmation to",
+  /** Shown before the visitor's own phone number, when they gave one. */
+  doneCallPre: "We will call you on",
+  doneCallPost: "or email you within one working day.",
+  /** The reply line when no phone was given: the Day 1 step of "What happens next". */
+  doneEmailOnly: "We will email you within one working day to arrange your 15-minute call.",
+  doneUrgent: "For anything urgent, WhatsApp us.",
+  /** The first line of the WhatsApp chat opened from the done card; the business name follows. */
+  doneWhatsApp: "Hi Brandbasket, I just sent you a message on your website. My business is",
 } as const;

@@ -76,6 +76,27 @@ test("a valid submission shows the thank-you message and focuses it", async ({ p
   await expect(done).toBeFocused();
 });
 
+test("the thank-you card repeats the email and phone and opens WhatsApp with the business named", async ({ page }) => {
+  await mockContactApi(page);
+  await page.goto("/contact");
+  await fillRequired(page);
+  await page.getByRole("button", { name: CONTACT_FORM_COPY.submit }).click();
+  const done = page.getByRole("status").filter({ hasText: CONTACT_FORM_COPY.doneTitle });
+  await expect(done).toContainText("asha@example.com");
+  await expect(done).toContainText(`${CONTACT_FORM_COPY.doneCallPre} 98765 43210`);
+  const href = await done.getByRole("link", { name: "Chat on WhatsApp" }).getAttribute("href");
+  expect(decodeURIComponent(href ?? "")).toContain("My business is Asha Dental Clinic.");
+});
+
+test("without a phone the thank-you card says the call is arranged by email", async ({ page }) => {
+  await mockContactApi(page);
+  await page.goto("/contact");
+  await fillRequired(page);
+  await page.getByLabel(CONTACT_LABELS.phone).fill("");
+  await page.getByRole("button", { name: CONTACT_FORM_COPY.submit }).click();
+  await expect(page.getByRole("status").filter({ hasText: CONTACT_FORM_COPY.doneTitle })).toContainText(CONTACT_FORM_COPY.doneEmailOnly);
+});
+
 test("?plan=website,search posts no plans and no topic", async ({ page }) => {
   const posted = await mockContactApi(page);
   await page.goto("/contact?plan=website,search#start");

@@ -10,6 +10,31 @@ export const CONTACT_PAGE = {
 /** Under the contact rows. The steps are the homepage's (content/home.ts STEPS), so only the heading is new. */
 export const CONTACT_NEXT = { heading: "What happens next" } as const;
 
+/** The chat card on /contact (components/contact/ContactChat.tsx). New copy: it goes to the owner before it ships. The answers come from the OyeChats bot. */
+export const CONTACT_CHAT = {
+  title: "Chat with us",
+  subtitle: "Instant answers about plans, pricing and your website",
+  greeting: "Hi! I'm the Brandbasket assistant. I can tell you what a plan includes, how long a website takes, or what happens after you sign up.",
+  /** Tap to ask. They are shown only until the visitor sends a first message. */
+  starters: ["Is the website really free?", "How long does it take to build my website?", "Can I cancel?"],
+  startersLabel: "Questions to start with",
+  logLabel: "Conversation with the Brandbasket assistant",
+  placeholder: "Ask anything about Brandbasket",
+  send: "Send question",
+  typing: "The assistant is typing",
+  poweredBy: "Powered by",
+  provider: "OyeChats",
+  notice: "Your messages are shared with OyeChats, our chat provider.",
+  privacyLink: "Privacy policy",
+  errors: {
+    failed: "Sorry, I could not answer that. Please try again, or use the form to write to us.",
+    timeout: "That took too long. Please try again, or use the form to write to us.",
+    rate_limited: "You are sending messages quickly. Please wait a moment and try again.",
+    over_capacity: "The assistant is busy right now. Please use the form to write to us.",
+    maintenance: "The assistant is briefly offline. Please use the form to write to us.",
+  },
+} as const;
+
 export const CONTACT_FOLLOW = { heading: "Follow us" } as const;
 
 /** The homepage questions a visitor most often has before writing, in the order shown. The answers come from content/home.ts. */

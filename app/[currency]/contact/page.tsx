@@ -7,7 +7,6 @@ import { ContactFaq } from "@/components/contact/ContactFaq";
 import { ContactForm } from "@/components/contact/ContactForm";
 import { ContactNext } from "@/components/contact/ContactNext";
 import { ContactSocial } from "@/components/contact/ContactSocial";
-import { OyeChatsWidget } from "@/components/contact/OyeChatsWidget";
 import { CONTACT_PAGE } from "@/content/contact";
 import { currencyParam } from "@/lib/currency";
 import { breadcrumbJsonLd, contactPageJsonLd } from "@/lib/seo/jsonld";
@@ -43,7 +42,6 @@ export default async function ContactPage({ params }: { readonly params: Promise
             </div>
           </div>
         </div>
-        <OyeChatsWidget />
         <JsonLd data={contactPageJsonLd()} />
         <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Contact", path: "/contact" }])} />
       </section>

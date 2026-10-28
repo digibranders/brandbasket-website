@@ -11,17 +11,14 @@ export function parseBotKey(source: Readonly<Record<string, string | undefined>>
 }
 
 // A literal process.env read, so Next.js inlines it into the client bundle.
-/** The OyeChats bot for this site's contact page. Null: no chat widget, and no OyeChats origin in the security policy. */
+/** The OyeChats bot behind the chat on /contact. Null: no chat card, and no OyeChats address in the security policy. */
 export const OYECHATS_BOT_KEY: string | null = parseBotKey({ [BOT_KEY_ENV]: process.env.NEXT_PUBLIC_OYECHATS_BOT_KEY });
 
-/** The widget script, and the only OyeChats address the browser may talk to besides its API. */
-export const OYECHATS_SCRIPT_SRC = "https://cdn.oyechats.com/oyechats-widget.js";
+/** Where the chat messages go. The page talks to this API itself: OyeChats' own floating widget cannot sit inside a page. */
+export const OYECHATS_API_URL = "https://api.oyechats.com";
 
-/** Origins the widget loads from and reports to (its loader, styles, chat API and live-chat socket). */
-export const OYECHATS_ORIGINS = {
-  script: ["https://cdn.oyechats.com"],
-  style: ["https://cdn.oyechats.com"],
-  img: ["https://cdn.oyechats.com", "https://api.oyechats.com"],
-  font: ["https://cdn.oyechats.com"],
-  connect: ["https://api.oyechats.com", "wss://api.oyechats.com"],
-} as const;
+/** OyeChats' website, linked from the logo in the chat footer. */
+export const OYECHATS_SITE_URL = "https://www.oyechats.com";
+
+/** The only OyeChats address the browser may connect to (lib/security-headers.ts). */
+export const OYECHATS_ORIGINS = { connect: [OYECHATS_API_URL] } as const;

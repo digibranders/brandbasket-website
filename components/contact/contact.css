@@ -72,37 +72,68 @@ textarea.ct-input { min-height: 148px; resize: vertical; }
   border: 0; background: none; color: inherit; font: inherit; text-align: left; cursor: pointer;
 }
 .ct-chat-head:focus-visible { outline: 2px solid var(--ink); outline-offset: -2px; border-radius: 22px; }
-.ct-chat-panel { display: grid; gap: 12px; padding: 4px 14px 14px; border-top: 1px solid var(--line); padding-top: 14px; }
-.ct-chat-log { display: grid; align-content: start; gap: 10px; min-height: 170px; max-height: 340px; overflow-y: auto; overscroll-behavior: contain; padding-right: 2px; }
-.ct-bubble { max-width: 88%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.5; overflow-wrap: anywhere; }
+.ct-chat-panel {
+  display: grid; gap: 12px; padding: 16px 14px 14px; border-top: 1px solid var(--line);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--rattan-wash) 38%, var(--surface)), var(--surface) 140px);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ct-chat-panel:not([hidden]) { animation: ct-panel-in 420ms var(--ease); }
+  .ct-row { animation: ct-rise 320ms var(--ease); }
+}
+@keyframes ct-panel-in { from { opacity: 0; transform: translateY(-8px); } to { opacity: 1; transform: none; } }
+@keyframes ct-rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+
+/* The padding keeps the bubbles' shadows and the avatar ring from being trimmed by the scroll area, and the last bubble clear of its bottom edge. */
+.ct-chat-log { display: grid; align-content: start; gap: 12px; min-height: 190px; max-height: 360px; overflow-y: auto; overscroll-behavior: contain; padding: 4px 6px 14px 4px; margin: -4px -6px -14px -4px; }
+.ct-row { display: grid; grid-template-columns: 28px minmax(0, 1fr); align-items: end; gap: 8px; }
+.ct-row-user { grid-template-columns: minmax(0, 1fr); justify-items: end; }
+.ct-avatar { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: var(--rattan-wash); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--rattan) 30%, transparent); }
+.ct-bubble { max-width: 100%; padding: 10px 14px; border-radius: 18px; font-size: 15px; line-height: 1.55; overflow-wrap: anywhere; }
+.ct-row-user .ct-bubble { max-width: 88%; }
 .ct-bubble > * + * { margin-top: 6px; }
 .ct-bubble ul { display: grid; gap: 4px; padding-left: 1.1em; list-style: disc; }
 .ct-bubble a { text-decoration: underline; text-underline-offset: 3px; text-decoration-color: var(--rattan); }
-.ct-bubble-bot { justify-self: start; background: var(--sunken); border-bottom-left-radius: 6px; }
-.ct-bubble-user { justify-self: end; background: var(--action); color: var(--action-ink); border-bottom-right-radius: 6px; }
-.ct-bubble-error { background: color-mix(in srgb, var(--error) 8%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--error) 30%, transparent); }
+.ct-bubble-bot { justify-self: start; background: var(--surface); border-bottom-left-radius: 6px; box-shadow: 0 0 0 1px rgba(21, 22, 26, 0.07), 0 8px 16px -12px rgba(40, 28, 14, 0.3); }
+.ct-bubble-user { background: var(--action); color: var(--action-ink); border-bottom-right-radius: 6px; }
+.ct-bubble-error { background: color-mix(in srgb, var(--error) 7%, var(--surface)); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--error) 30%, transparent); }
 .ct-typing { display: inline-flex; gap: 5px; align-items: center; height: 22px; }
-.ct-typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--ink-2); opacity: 0.5; }
+.ct-typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--rattan-ink); opacity: 0.45; }
 @media (prefers-reduced-motion: no-preference) {
   .ct-typing i { animation: ct-dot 1.1s ease-in-out infinite; }
   .ct-typing i:nth-child(2) { animation-delay: 0.15s; }
   .ct-typing i:nth-child(3) { animation-delay: 0.3s; }
 }
 @keyframes ct-dot { 0%, 70%, 100% { opacity: 0.35; transform: translateY(0); } 35% { opacity: 1; transform: translateY(-3px); } }
+
+.ct-starters { display: flex; flex-wrap: wrap; gap: 8px; padding-left: 36px; }
+.ct-starter {
+  padding: 8px 14px; border: 1px solid color-mix(in srgb, var(--rattan) 40%, transparent); border-radius: 999px; background: var(--surface); color: var(--ink); font: inherit; font-size: 14px; line-height: 1.3; text-align: left; cursor: pointer;
+  transition: background-color 250ms var(--ease), border-color 250ms var(--ease), transform 200ms var(--ease);
+}
+.ct-starter:hover { background: var(--rattan-wash); border-color: var(--rattan); }
+.ct-starter:active { transform: scale(0.97); }
+.ct-starter:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
 .ct-chat-form { display: flex; gap: 8px; }
 .ct-chat-input {
-  flex: 1; min-width: 0; height: 46px; padding: 0 18px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font: inherit; font-size: 15px; color: var(--ink);
+  flex: 1; min-width: 0; height: 48px; padding: 0 18px; border: 1px solid var(--line); border-radius: 999px; background: var(--surface); font: inherit; font-size: 15px; color: var(--ink);
   transition: border-color 250ms var(--ease), box-shadow 250ms var(--ease);
 }
 .ct-chat-input:hover { border-color: rgba(21, 22, 26, 0.3); }
 .ct-chat-input:focus { border-color: var(--ink); outline: none; box-shadow: 0 0 0 4px color-mix(in srgb, var(--rattan) 28%, transparent); }
 .ct-chat-input::placeholder { color: color-mix(in srgb, var(--ink-2) 80%, var(--surface)); }
 .ct-chat-send {
-  display: grid; flex: none; place-items: center; width: 46px; height: 46px; border: 0; border-radius: 50%; background: var(--action); color: var(--action-ink); cursor: pointer;
+  display: grid; flex: none; place-items: center; width: 48px; height: 48px; border: 0; border-radius: 50%; background: var(--action); color: var(--action-ink); cursor: pointer;
   transition: transform 200ms var(--ease), opacity 200ms var(--ease);
 }
 .ct-chat-send:active:not(:disabled) { transform: scale(0.94); }
-.ct-chat-send:disabled { opacity: 0.4; cursor: not-allowed; }
+.ct-chat-send:disabled { opacity: 0.35; cursor: not-allowed; }
 .ct-chat-send:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.ct-chat-note { font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
-.ct-chat-note a { text-decoration: underline; text-underline-offset: 3px; }
+
+.ct-chat-foot { display: grid; gap: 4px; font-size: 12.5px; line-height: 1.5; color: var(--ink-2); }
+.ct-powered { display: inline-flex; align-items: center; gap: 7px; color: var(--ink); font-weight: 500; }
+.ct-chat-foot a { text-decoration: underline; text-underline-offset: 3px; }
+/* The logo is the link: no underline, a lift on hover and a ring for the keyboard. */
+.ct-chat-foot a.ct-powered-link { display: inline-flex; padding: 2px 4px; margin: -2px -4px; border-radius: 6px; text-decoration: none; transition: opacity 200ms var(--ease), transform 200ms var(--ease); }
+.ct-chat-foot a.ct-powered-link:hover { opacity: 0.7; transform: translateY(-1px); }
+.ct-chat-foot a.ct-powered-link:focus-visible { outline: 2px solid var(--ink); outline-offset: 1px; }

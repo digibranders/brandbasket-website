@@ -2,11 +2,12 @@
 // components/contact/ContactChat.tsx: the OyeChats bot as a card in the contact column. Closed it looks like the other contact rows;
 // opened it becomes a conversation in place. It calls the OyeChats API itself (lib/oyechats-chat.ts), so there is no floating bubble.
 import { ArrowUp, CaretDown, ChatCircleDots } from "@phosphor-icons/react";
+import Image from "next/image";
 import Link from "next/link";
 import { type FormEvent, type ReactElement, useEffect, useId, useRef, useState } from "react";
 import { CONTACT_CHAT } from "@/content/contact";
 import { type Block, type Inline, parseChatText } from "@/lib/chat-format";
-import { OYECHATS_BOT_KEY } from "@/lib/oyechats";
+import { OYECHATS_BOT_KEY, OYECHATS_SITE_URL } from "@/lib/oyechats";
 import { askBot, ChatError } from "@/lib/oyechats-chat";
 
 type Role = "bot" | "user";
@@ -62,6 +63,15 @@ function BotText({ blocks }: { readonly blocks: readonly Block[] }): ReactElemen
   );
 }
 
+/** The assistant's picture beside its messages: the Brandbasket mark on the rattan tint. */
+function Avatar(): ReactElement {
+  return (
+    <span aria-hidden="true" className="ct-avatar">
+      <Image src="/brand/brandbasket-mark.svg" alt="" width={18} height={18} className="size-[18px]" />
+    </span>
+  );
+}
+
 export function ContactChat(): ReactElement | null {
   const [open, setOpen] = useState(false);
   const [draft, setDraft] = useState("");
@@ -85,6 +95,8 @@ export function ContactChat(): ReactElement | null {
 
   if (OYECHATS_BOT_KEY === null) return null;
   const botKey = OYECHATS_BOT_KEY;
+  /** The starter questions are offered until the visitor has asked something. */
+  const started = messages.some((message) => message.role === "user");
 
   const add = (role: Role, text: string, error = false): void => {
     const id = nextId.current++;
@@ -96,11 +108,8 @@ export function ContactChat(): ReactElement | null {
     if (!open) window.requestAnimationFrame(() => inputRef.current?.focus());
   }
 
-  async function submit(event: FormEvent<HTMLFormElement>): Promise<void> {
-    event.preventDefault();
-    const question = draft.trim();
+  async function ask(question: string): Promise<void> {
     if (question === "" || sending) return;
-    setDraft("");
     add("user", question);
     setSending(true);
     const controller = new AbortController();
@@ -119,6 +128,14 @@ export function ContactChat(): ReactElement | null {
     }
   }
 
+  function submit(event: FormEvent<HTMLFormElement>): void {
+    event.preventDefault();
+    const question = draft.trim();
+    if (question === "") return;
+    setDraft("");
+    void ask(question);
+  }
+
   return (
     <section aria-labelledby={titleId} className="ct-chat">
       <button type="button" aria-expanded={open} aria-controls={panelId} onClick={toggle} className="ct-chat-head">
@@ -131,22 +148,47 @@ export function ContactChat(): ReactElement | null {
       </button>
       <div id={panelId} hidden={!open} className="ct-chat-panel">
         <div ref={logRef} role="log" aria-live="polite" aria-label={CONTACT_CHAT.logLabel} className="ct-chat-log">
-          {messages.map((message) => (
-            <div key={message.id} className={`ct-bubble ${message.role === "user" ? "ct-bubble-user" : "ct-bubble-bot"} ${message.error === true ? "ct-bubble-error" : ""}`}>
-              {message.role === "user" ? message.text : <BotText blocks={parseChatText(message.text)} />}
+          {messages.map((message) =>
+            message.role === "user" ? (
+              <div key={message.id} className="ct-row ct-row-user">
+                <div className="ct-bubble ct-bubble-user">{message.text}</div>
+              </div>
+            ) : (
+              <div key={message.id} className="ct-row">
+                <Avatar />
+                <div className={`ct-bubble ct-bubble-bot ${message.error === true ? "ct-bubble-error" : ""}`}>
+                  <BotText blocks={parseChatText(message.text)} />
+                </div>
+              </div>
+            ),
+          )}
+          {started ? null : (
+            <div role="group" aria-label={CONTACT_CHAT.startersLabel} className="ct-starters">
+              {CONTACT_CHAT.starters.map((question) => (
+                <button key={question} type="button" disabled={sending} onClick={() => void ask(question)} className="ct-starter">{question}</button>
+              ))}
             </div>
-          ))}
+          )}
           {sending ? (
-            <div className="ct-bubble ct-bubble-bot" role="status" aria-label={CONTACT_CHAT.typing}>
-              <span aria-hidden="true" className="ct-typing"><i /><i /><i /></span>
+            <div className="ct-row" role="status" aria-label={CONTACT_CHAT.typing}>
+              <Avatar />
+              <div className="ct-bubble ct-bubble-bot"><span aria-hidden="true" className="ct-typing"><i /><i /><i /></span></div>
             </div>
           ) : null}
         </div>
-        <form onSubmit={(event) => void submit(event)} className="ct-chat-form">
+        <form onSubmit={submit} className="ct-chat-form">
           <input ref={inputRef} type="text" value={draft} onChange={(event) => setDraft(event.target.value)} maxLength={MAX_QUESTION} autoComplete="off" aria-label={CONTACT_CHAT.placeholder} placeholder={CONTACT_CHAT.placeholder} className="ct-chat-input" />
           <button type="submit" disabled={sending || draft.trim() === ""} aria-label={CONTACT_CHAT.send} className="ct-chat-send"><ArrowUp aria-hidden="true" weight="bold" className="size-5" /></button>
         </form>
-        <p className="ct-chat-note">{CONTACT_CHAT.notice} <Link href="/privacy">{CONTACT_CHAT.privacyLink}</Link>.</p>
+        <div className="ct-chat-foot">
+          <span className="ct-powered">
+            {CONTACT_CHAT.poweredBy}
+            <a href={OYECHATS_SITE_URL} target="_blank" rel="noopener noreferrer" aria-label={`${CONTACT_CHAT.provider} website`} className="ct-powered-link">
+              <Image src="/brand/oyechats-wordmark.png" alt={CONTACT_CHAT.provider} width={1390} height={424} className="h-[17px] w-auto" />
+            </a>
+          </span>
+          <p>{CONTACT_CHAT.notice} <Link href="/privacy">{CONTACT_CHAT.privacyLink}</Link>.</p>
+        </div>
       </div>
     </section>
   );

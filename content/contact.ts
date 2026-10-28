@@ -13,13 +13,18 @@ export const CONTACT_NEXT = { heading: "What happens next" } as const;
 /** The chat card on /contact (components/contact/ContactChat.tsx). New copy: it goes to the owner before it ships. The answers come from the OyeChats bot. */
 export const CONTACT_CHAT = {
   title: "Chat with us",
-  subtitle: "Ask about plans, pricing or your website",
-  greeting: "Hi, I'm the Brandbasket assistant. Ask me about plans, pricing or getting your website live.",
+  subtitle: "Instant answers about plans, pricing and your website",
+  greeting: "Hi! I'm the Brandbasket assistant. I can tell you what a plan includes, how long a website takes, or what happens after you sign up.",
+  /** Tap to ask. They are shown only until the visitor sends a first message. */
+  starters: ["Is the website really free?", "How long does it take to build my website?", "Can I cancel?"],
+  startersLabel: "Questions to start with",
   logLabel: "Conversation with the Brandbasket assistant",
-  placeholder: "Type your question",
+  placeholder: "Ask anything about Brandbasket",
   send: "Send question",
   typing: "The assistant is typing",
-  notice: "Your messages are answered by OyeChats, our chat provider.",
+  poweredBy: "Powered by",
+  provider: "OyeChats",
+  notice: "Your messages are shared with OyeChats, our chat provider.",
   privacyLink: "Privacy policy",
   errors: {
     failed: "Sorry, I could not answer that. Please try again, or use the form to write to us.",

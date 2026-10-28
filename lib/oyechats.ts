@@ -17,5 +17,8 @@ export const OYECHATS_BOT_KEY: string | null = parseBotKey({ [BOT_KEY_ENV]: proc
 /** Where the chat messages go. The page talks to this API itself: OyeChats' own floating widget cannot sit inside a page. */
 export const OYECHATS_API_URL = "https://api.oyechats.com";
 
+/** OyeChats' website, linked from the logo in the chat footer. */
+export const OYECHATS_SITE_URL = "https://www.oyechats.com";
+
 /** The only OyeChats address the browser may connect to (lib/security-headers.ts). */
 export const OYECHATS_ORIGINS = { connect: [OYECHATS_API_URL] } as const;

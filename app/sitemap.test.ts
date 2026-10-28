@@ -19,22 +19,22 @@ beforeEach(() => {
 describe("sitemap", () => {
   it("lists About and no industry pages", async () => {
     const urls = (await sitemap()).map((entry) => entry.url);
-    expect(urls).toContain("https://brandbasket.in/about");
+    expect(urls).toContain("https://www.brandbasket.in/about");
     expect(urls.some((url) => url.includes("/industries"))).toBe(false);
     expect(new Set(urls).size).toBe(urls.length);
   });
 
   it("leaves the noindex data notice out", async () => {
-    expect((await sitemap()).map((entry) => entry.url)).not.toContain("https://brandbasket.in/notice");
+    expect((await sitemap()).map((entry) => entry.url)).not.toContain("https://www.brandbasket.in/notice");
   });
 
   it("adds the blog, its posts, categories and authors with the CMS's change times", async () => {
     const entries = await sitemap();
     const at = (url: string) => entries.find((entry) => entry.url === url)?.lastModified;
-    expect(at("https://brandbasket.in/blog/website-cost-india")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
-    expect(at("https://brandbasket.in/blog/category/website-basics")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
-    expect(at("https://brandbasket.in/blog/author/ananya-kulkarni")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
-    expect(at("https://brandbasket.in/blog")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
+    expect(at("https://www.brandbasket.in/blog/website-cost-india")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
+    expect(at("https://www.brandbasket.in/blog/category/website-basics")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
+    expect(at("https://www.brandbasket.in/blog/author/ananya-kulkarni")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
+    expect(at("https://www.brandbasket.in/blog")).toEqual(new Date("2026-10-12T06:00:00.000Z"));
   });
 
   it("fails whole when the CMS cannot answer, rather than listing half the site", async () => {

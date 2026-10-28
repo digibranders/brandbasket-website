@@ -31,7 +31,7 @@ describe("GET /llms.txt", () => {
 
   it("links every indexable page and leaves the noindex notice out", async () => {
     const body = await GET().text();
-    expect(body).toContain("(https://brandbasket.in/pricing)");
+    expect(body).toContain("(https://www.brandbasket.in/pricing)");
     for (const r of indexableRoutes()) expect(body).toContain(`[${r.title}](`);
     expect(body).not.toContain("/notice");
   });

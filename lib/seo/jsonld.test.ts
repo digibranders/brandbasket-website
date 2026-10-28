@@ -14,8 +14,12 @@ describe("organizationJsonLd", () => {
     expect(org.taxID).toBe("27AAICD9268J1Z0");
   });
 
+  it("points at a logo file that ships in public/", () => {
+    expect(organizationJsonLd().logo).toBe("https://www.brandbasket.in/icon-512.png");
+  });
+
   it("carries the @id the WebSite publisher points at", () => {
-    expect(organizationJsonLd()["@id"]).toBe("https://brandbasket.in/#organization");
+    expect(organizationJsonLd()["@id"]).toBe("https://www.brandbasket.in/#organization");
   });
 });
 
@@ -23,8 +27,8 @@ describe("webSiteJsonLd", () => {
   it("describes the site and names the organization as publisher", () => {
     const site = webSiteJsonLd();
     expect(site["@type"]).toBe("WebSite");
-    expect(site.url).toBe("https://brandbasket.in");
-    expect(site.publisher["@id"]).toBe("https://brandbasket.in/#organization");
+    expect(site.url).toBe("https://www.brandbasket.in");
+    expect(site.publisher["@id"]).toBe("https://www.brandbasket.in/#organization");
   });
 });
 
@@ -35,7 +39,7 @@ describe("planOffersJsonLd", () => {
     expect(prices).toEqual([2999, 9999, 24999]);
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(true);
-    expect(service.provider["@id"]).toBe("https://brandbasket.in/#organization");
+    expect(service.provider["@id"]).toBe("https://www.brandbasket.in/#organization");
   });
   it("publishes dollar prices with no tax flag on a dollar page", () => {
     const offers = planOffersJsonLd("USD", { packages: true }).hasOfferCatalog.itemListElement;
@@ -68,7 +72,7 @@ describe("faqJsonLd", () => {
 describe("breadcrumbJsonLd", () => {
   it("builds absolute URLs in order", () => {
     const crumbs = breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }]);
-    expect(crumbs.itemListElement.map((c) => c.item)).toEqual(["https://brandbasket.in/", "https://brandbasket.in/pricing"]);
+    expect(crumbs.itemListElement.map((c) => c.item)).toEqual(["https://www.brandbasket.in/", "https://www.brandbasket.in/pricing"]);
     expect(crumbs.itemListElement[1].position).toBe(2);
   });
 });
@@ -76,7 +80,7 @@ describe("breadcrumbJsonLd", () => {
 describe("contactPageJsonLd", () => {
   it("points at /contact and carries the site-config phone and email", () => {
     const page = contactPageJsonLd();
-    expect(page.url).toBe("https://brandbasket.in/contact");
+    expect(page.url).toBe("https://www.brandbasket.in/contact");
     expect(page.about.telephone).toBe("+91 866 861 0953");
     expect(page.about.email).toBe("support@brandbasket.in");
   });
@@ -86,8 +90,8 @@ describe("aboutPageJsonLd", () => {
   it("points at /about and is about the organization", () => {
     const page = aboutPageJsonLd({ name: "About Brandbasket", description: "Who we are." });
     expect(page["@type"]).toBe("AboutPage");
-    expect(page.url).toBe("https://brandbasket.in/about");
-    expect(page.about["@id"]).toBe("https://brandbasket.in/#organization");
+    expect(page.url).toBe("https://www.brandbasket.in/about");
+    expect(page.about["@id"]).toBe("https://www.brandbasket.in/#organization");
   });
 });
 
@@ -99,14 +103,14 @@ describe("the blog's structured data", () => {
     const ld = blogPostingJsonLd(fixturePost);
     expect(ld).toMatchObject({
       "@type": "BlogPosting",
-      url: "https://brandbasket.in/blog/website-cost-india",
+      url: "https://www.brandbasket.in/blog/website-cost-india",
       headline: "What does a website cost in India?",
       datePublished: "2026-10-05T04:30:00.000Z",
       dateModified: "2026-10-12T06:00:00.000Z",
       articleSection: "Website basics",
       image: "https://media.brandbasket.in/blog/cover-1200x630.jpg",
-      author: { "@id": "https://brandbasket.in/blog/author/ananya-kulkarni", name: "Ananya Kulkarni" },
-      publisher: { "@id": "https://brandbasket.in/#organization" },
+      author: { "@id": "https://www.brandbasket.in/blog/author/ananya-kulkarni", name: "Ananya Kulkarni" },
+      publisher: { "@id": "https://www.brandbasket.in/#organization" },
     });
   });
 
@@ -117,8 +121,8 @@ describe("the blog's structured data", () => {
 
   it("gives an author one id, the author page, that the post and the profile page share", () => {
     const person = personJsonLd(fixtureAuthor);
-    expect(person["@id"]).toBe("https://brandbasket.in/blog/author/ananya-kulkarni");
-    expect(person).toMatchObject({ jobTitle: "Local SEO lead", sameAs: ["https://www.linkedin.com/in/ananya-kulkarni"], worksFor: { "@id": "https://brandbasket.in/#organization" } });
+    expect(person["@id"]).toBe("https://www.brandbasket.in/blog/author/ananya-kulkarni");
+    expect(person).toMatchObject({ jobTitle: "Local SEO lead", sameAs: ["https://www.linkedin.com/in/ananya-kulkarni"], worksFor: { "@id": "https://www.brandbasket.in/#organization" } });
     expect(profilePageJsonLd(fixtureAuthor).mainEntity).toEqual({ "@id": person["@id"] });
     expect(blogPostingJsonLd(fixturePost).author?.["@id"]).toBe(person["@id"]);
   });

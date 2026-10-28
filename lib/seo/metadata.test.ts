@@ -35,7 +35,7 @@ describe("pageMetadata", () => {
   it("builds the canonical and open graph url from the path", () => {
     const meta = pageMetadata({ ...base, path: "/pricing" });
     expect(meta.alternates?.canonical).toBe("/pricing");
-    expect(meta.openGraph).toMatchObject({ url: "https://brandbasket.in/pricing" });
+    expect(meta.openGraph).toMatchObject({ url: "https://www.brandbasket.in/pricing" });
   });
 
   it("makes an article of a post, with its own share image", () => {

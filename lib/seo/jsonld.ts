@@ -16,6 +16,7 @@ export interface OrganizationLd {
   readonly name: string;
   readonly legalName: string;
   readonly url: string;
+  readonly logo: string;
   readonly email: string;
   readonly telephone: string;
   readonly taxID: string;
@@ -39,6 +40,7 @@ export function organizationJsonLd(): OrganizationLd {
     name: businessDetails.tradeName,
     legalName: businessDetails.legalName,
     url: siteConfig.url,
+    logo: `${siteConfig.url}/icon-512.png`,
     email: businessDetails.email,
     telephone: businessDetails.phone,
     taxID: businessDetails.gstNumber,

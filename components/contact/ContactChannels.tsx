@@ -6,7 +6,6 @@ import { CONTACT_PAGE } from "@/content/contact";
 import { trackAttrs } from "@/lib/analytics";
 import { OYECHATS_BOT_KEY } from "@/lib/oyechats";
 import { businessDetails } from "@/lib/site-config";
-import { ContactChat } from "./ContactChat";
 
 interface Channel {
   readonly label: string;
@@ -22,11 +21,10 @@ const CHANNELS: readonly Channel[] = [
   { label: "Email", detail: businessDetails.email, href: `mailto:${businessDetails.email}`, icon: EnvelopeSimple },
 ];
 
-/** Direct channels (mock: .ct-ways). With a chat bot set up, the chat card takes the WhatsApp row's place; WhatsApp stays as the floating icon on every page. The registered office is not printed here (owner, 2026-10-28); it stays on the legal pages. */
+/** Direct channels (mock: .ct-ways). With a chat bot set up, the chat card (its own area on the page) takes the WhatsApp row's place; WhatsApp stays as the floating icon on every page. The registered office is not printed here (owner, 2026-10-28); it stays on the legal pages. */
 export function ContactChannels(): ReactElement {
   return (
-    <ul className="mt-8 grid gap-3">
-      {OYECHATS_BOT_KEY === null ? null : <li><ContactChat /></li>}
+    <ul className={OYECHATS_BOT_KEY === null ? "mt-8 grid gap-3" : "grid gap-3 min-[1000px]:mt-3"}>
       {CHANNELS.filter((channel) => OYECHATS_BOT_KEY === null || channel.whatsapp !== true).map(({ label, detail, href, icon: ChannelIcon, whatsapp }) => (
         <li key={label}>
           <a

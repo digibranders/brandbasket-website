@@ -7,7 +7,7 @@ export const BLOG_COPY = {
     lede: "Websites, Google, social and AI search, explained by the team that runs them for our clients.",
     empty: "No posts yet. Check back soon.",
     allPosts: "All posts",
-    latest: "Latest posts",
+    allGuides: "All guides",
   },
   post: {
     toc: "On this page",

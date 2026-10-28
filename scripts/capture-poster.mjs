@@ -1,5 +1,5 @@
 // scripts/capture-poster.mjs
-// Captures the 3D basket in its base state (website tiles only) as public/basket/poster.avif.
+// Captures the 3D basket in its base state (website tiles only) as public/basket/woven-basket-hero.avif.
 // Usage: start the site (npm run dev), then `node scripts/capture-poster.mjs [url]`. Default url: http://localhost:3130/
 import { mkdir, stat } from "node:fs/promises";
 import { fileURLToPath } from "node:url";
@@ -7,7 +7,7 @@ import { chromium } from "playwright";
 import sharp from "sharp";
 
 const url = process.argv[2] ?? "http://localhost:3130/";
-const out = new URL("../public/basket/poster.avif", import.meta.url);
+const out = new URL("../public/basket/woven-basket-hero.avif", import.meta.url);
 const SETTLE_MS = 4000; // the last base tile drops at 770 ms; this leaves time for the bounces to finish
 const MAX_KB = 40;
 // Fine cane bindings need room in the AVIF budget; this resolution keeps the final scene under 40 KB.

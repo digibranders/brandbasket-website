@@ -64,8 +64,10 @@ describe("home content", () => {
   });
   it("points every work case at a desktop and phone image", () => {
     for (const c of WORK.cases) {
-      expect(c.desktop.src).toBe(`/work/full-${c.id}-desk.jpg`);
-      expect(c.phone.src).toBe(`/work/full-${c.id}-mob.jpg`);
+      // The files are named after the client: "Curry Cook" is /work/curry-cook-website-desktop.jpg.
+      const slug = c.name.toLowerCase().replace(/\s+/g, "-");
+      expect(c.desktop.src).toBe(`/work/${slug}-website-desktop.jpg`);
+      expect(c.phone.src).toBe(`/work/${slug}-website-phone.jpg`);
     }
   });
   it("tells the same page limit in the FAQ and the included list", () => {

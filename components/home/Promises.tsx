@@ -7,7 +7,7 @@ import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { PROMISES } from "@/content/home";
 import { HOME_ICONS } from "./icons";
 
-const PHOTO = "/images/support-person.jpg";
+const PHOTO = "/images/support-team-member.jpg";
 const BUBBLE = "absolute z-[3] flex w-fit max-w-full gap-3 rounded-[22px] py-3.5 pl-3.5 pr-[18px] text-[14.5px] leading-[1.4] shadow-[0_24px_44px_-26px_rgba(40,28,14,0.55),0_0_0_1px_rgba(21,22,26,0.06)]";
 
 /**

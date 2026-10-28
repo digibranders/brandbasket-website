@@ -5,12 +5,13 @@ import { type ReactElement, useEffect, useRef, useState } from "react";
 import { basket } from "@/lib/basket-store";
 import { readDeviceHints, shouldRender3D } from "@/lib/device-hints";
 import type { BasketScene } from "./scene/types";
+import "./stage.css";
 
 /**
- * Poster first (it is the LCP image). After the page is idle and the stage is near the viewport, loads the OGL
- * scene with a dynamic import, fades the poster out and keeps the tiles in sync with the basket store.
- * The poster is served unoptimized: it is already AVIF under the 40 KB budget, and re-encoding only grows it.
- * `priority` marks it as the LCP image (eager, high fetch priority; Next 16 deprecates the Image `priority` prop).
+ * The rendered basket fades in and rises into place before its tiles drop. The image is a static fallback only;
+ * keeping it out of the live entrance avoids a visible swap between two different renderings of the weave.
+ * The fallback is an unoptimized AVIF under the 40 KB budget; re-encoding only grows it.
+ * `priority` starts an above-the-fold scene promptly and loads its fallback eagerly; secondary stages wait for idle.
  */
 interface BasketStageProps {
   readonly priority?: boolean;
@@ -20,17 +21,33 @@ interface BasketStageProps {
 
 export function BasketStage({ priority = false, label = "A woven basket holding the services in your plan" }: BasketStageProps): ReactElement {
   const host = useRef<HTMLDivElement>(null);
+  const enter = useRef<(() => void) | null>(null);
   const [live, setLive] = useState(false);
+  const [fallback, setFallback] = useState(false);
+  const [recovered, setRecovered] = useState(false);
 
   useEffect(() => {
     const el = host.current;
     if (!el) return;
+    let cancelled = false;
+    const showFallback = (): void => {
+      queueMicrotask(() => {
+        if (cancelled) return;
+        setLive(false);
+        // Never expose a partially loaded fallback, even on a slow connection.
+        void loadImage("/basket/woven-basket-hero.avif").then((image) => {
+          if (!cancelled && image) setFallback(true);
+        });
+      });
+    };
     const hints = readDeviceHints();
-    if (!shouldRender3D(hints)) return;
+    if (!shouldRender3D(hints)) {
+      showFallback();
+      return () => { cancelled = true; };
+    }
     let scene: BasketScene | undefined;
     let unsubscribe: (() => void) | undefined;
     let started = false;
-    let cancelled = false;
     let visible = false;
     let rebuilds = 0;
     let rebuildTimer: number | undefined;
@@ -40,14 +57,28 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
       const [mod, image] = await Promise.all([import("./scene/scene"), loadImage("/basket/studio-house.avif")]);
       const labelFamily = await mod.loadFaceFonts();
       if (cancelled) return;
-      scene = mod.createBasketScene(el, image, { reducedMotion: hints.reducedMotion, initialPick: basket.get(), labelFamily, onContextLost: recover });
+      scene = mod.createBasketScene(el, image, {
+        reducedMotion: hints.reducedMotion,
+        initialPick: basket.get(),
+        animateEntry: rebuilds === 0,
+        labelFamily,
+        onReady: () => {
+          if (cancelled) return;
+          setRecovered(rebuilds > 0);
+          setLive(true);
+        },
+        onContextLost: recover,
+      });
+      enter.current = scene.startEntry;
       scene.setVisible(visible);
       unsubscribe = basket.subscribe(() => scene?.setPick(basket.get()));
-      setLive(true);
     };
     const begin = (): void => {
       // A failed load or WebGL setup leaves the poster in place, which is the designed fallback.
-      start().catch((error: unknown) => console.warn("Basket stage stayed on its poster.", error));
+      start().catch((error: unknown) => {
+        showFallback();
+        console.warn("Basket stage stayed on its poster.", error);
+      });
     };
     // The browser took the WebGL context (a phone backgrounding the tab, a GPU reset). Show the poster at once, then try
     // one rebuild; a context lost again means this device cannot hold it, and the poster stays.
@@ -56,7 +87,8 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
       unsubscribe = undefined;
       scene?.destroy();
       scene = undefined;
-      setLive(false);
+      enter.current = null;
+      showFallback();
       if (cancelled || rebuilds++ > 0) return;
       rebuildTimer = window.setTimeout(begin, 1000);
     }
@@ -65,8 +97,10 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
       visible = Boolean(entry?.isIntersecting);
       if (visible && !started) {
         started = true;
+        if (priority) {
+          begin();
         // Safari has no requestIdleCallback.
-        if (typeof window.requestIdleCallback === "function") {
+        } else if (typeof window.requestIdleCallback === "function") {
           const id = window.requestIdleCallback(begin, { timeout: 2000 });
           idle = { cancel: () => window.cancelIdleCallback(id) };
         } else {
@@ -85,12 +119,24 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
       io.disconnect();
       unsubscribe?.();
       scene?.destroy();
+      enter.current = null;
       setLive(false);
     };
-  }, []);
+  }, [priority]);
 
   return (
-    <div ref={host} role="img" aria-label={label} className="relative aspect-[1.12] max-h-[620px] w-full min-[1000px]:aspect-[1.02]">
+    <div
+      ref={host}
+      role="img"
+      aria-label={label}
+      data-live={live}
+      data-fallback={fallback}
+      data-recovered={recovered}
+      className="basket-stage relative isolate aspect-[1.12] max-h-[620px] w-full min-[1000px]:aspect-[1.02]"
+      onAnimationEnd={(event) => {
+        if (live && event.target instanceof HTMLCanvasElement && event.animationName === "basket-arrive") enter.current?.();
+      }}
+    >
       <Image
         src="/basket/woven-basket-hero.avif"
         alt=""
@@ -99,8 +145,21 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
         loading={priority ? "eager" : "lazy"}
         fetchPriority={priority ? "high" : "auto"}
         sizes="(min-width: 660px) 620px, 100vw"
-        className={`pointer-events-none object-contain transition-opacity duration-300 ease-(--ease) ${live ? "opacity-0" : "opacity-100"}`}
+        className="basket-stage-poster pointer-events-none z-[2] object-contain"
       />
+      <noscript>
+        <style>{".basket-stage > .basket-stage-poster { display: none; }"}</style>
+        <Image
+          src="/basket/woven-basket-hero.avif"
+          alt=""
+          fill
+          unoptimized
+          loading={priority ? "eager" : "lazy"}
+          fetchPriority={priority ? "high" : "auto"}
+          sizes="(min-width: 660px) 620px, 100vw"
+          className="pointer-events-none z-[2] object-contain"
+        />
+      </noscript>
     </div>
   );
 }
@@ -109,7 +168,7 @@ export function BasketStage({ priority = false, label = "A woven basket holding 
 function loadImage(src: string): Promise<HTMLImageElement | null> {
   return new Promise((resolve) => {
     const img = new window.Image();
-    img.onload = () => resolve(img);
+    img.onload = () => { img.decode().then(() => resolve(img), () => resolve(null)); };
     img.onerror = () => resolve(null);
     img.src = src;
   });

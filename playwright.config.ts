@@ -10,6 +10,9 @@ const CMS_SITE_TOKEN = "e2e-site-token-e2e-site-token-e2e-0000";
 
 // With a GTM container configured, every spec but e2e/consent.spec.ts runs as a visitor who already said no, so the
 // consent banner does not cover what the spec clicks.
+// The site keeps its 3D basket off in automated browsers (lib/device-hints.ts); this makes Chrome report navigator.webdriver false.
+const HUMAN_CHROME = { args: ["--disable-blink-features=AutomationControlled"] };
+
 const answeredConsent = TOOLS.length > 0
   ? { cookies: [], origins: [{ origin: BASE_URL, localStorage: [{ name: CONSENT_KEY, value: encodeRecord(NO_CONSENT, TOOLS, new Date()) }] }] }
   : undefined;
@@ -26,7 +29,7 @@ export default defineConfig({
     { command: `npx next start -p ${PORT}`, url: BASE_URL, reuseExistingServer: !process.env.CI, timeout: 120_000, env: { CMS_URL: `http://localhost:${CMS_PORT}`, CMS_SITE_TOKEN, REVALIDATE_SECRET: "e2e-revalidate-e2e-revalidate-e2e-00" } },
   ],
   projects: [
-    { name: "desktop", use: { ...devices["Desktop Chrome"] } },
-    { name: "phone", use: { ...devices["Pixel 7"] } },
+    { name: "desktop", use: { ...devices["Desktop Chrome"], launchOptions: HUMAN_CHROME } },
+    { name: "phone", use: { ...devices["Pixel 7"], launchOptions: HUMAN_CHROME } },
   ],
 });

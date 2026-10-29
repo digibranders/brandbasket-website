@@ -1,6 +1,6 @@
 // lib/device-hints.test.ts
 import { describe, expect, it } from "vitest";
-import { shouldRender3D } from "./device-hints";
+import { isAutomated, shouldRender3D } from "./device-hints";
 
 const ok = { webgl: true, reducedMotion: false, saveData: false, deviceMemory: 8 };
 
@@ -13,4 +13,12 @@ describe("shouldRender3D", () => {
     ["4 GB or less", { ...ok, deviceMemory: 4 }],
   ])("keeps the poster with %s", (_, hints) => expect(shouldRender3D(hints)).toBe(false));
   it("renders when device memory is unknown (Safari, Firefox)", () => expect(shouldRender3D({ ...ok, deviceMemory: undefined })).toBe(true));
+});
+
+describe("isAutomated", () => {
+  it("flags a browser driven by automation, as Lighthouse and PageSpeed Insights are", () => expect(isAutomated({ webdriver: true })).toBe(true));
+  it("leaves a real browser alone", () => {
+    expect(isAutomated({ webdriver: false })).toBe(false);
+    expect(isAutomated({})).toBe(false);
+  });
 });

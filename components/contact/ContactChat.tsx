@@ -174,6 +174,7 @@ export function ContactChat(): ReactElement | null {
               {CONTACT_CHAT.starters.map((question) => (
                 <button key={question} type="button" disabled={sending} onClick={() => void ask(question)} className="ct-starter">{question}</button>
               ))}
+              <a href={CONTACT_CHAT.support.href} className="ct-starter">{CONTACT_CHAT.support.label}</a>
             </div>
           )}
           {sending ? (

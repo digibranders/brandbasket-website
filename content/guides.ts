@@ -3,7 +3,7 @@
 // glossary (plan: SEO and AEO pass, 2026-10-28). New copy: the owner reads it before it ships. It states only what the plans, the
 // FAQs and the blog already say, and carries no price, so one set of words serves rupees and dollars.
 import { CANCEL_ANSWER } from "./legal/cancellation";
-import type { FaqItem, LinkItem } from "./types";
+import type { FaqItem, GuideLink } from "./types";
 
 export interface GuideSection {
   readonly heading: string;
@@ -32,7 +32,7 @@ export interface GuidePageContent {
   readonly table?: GuideTable;
   readonly faq: readonly FaqItem[];
   /** Posts and pages to read next. */
-  readonly next: readonly LinkItem[];
+  readonly next: readonly GuideLink[];
 }
 
 export const GUIDE_COPY = {
@@ -102,9 +102,9 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       { q: "Can I cancel?", a: CANCEL_ANSWER },
     ],
     next: [
-      { label: "Local SEO for clinics and dentists in India", href: "/blog/local-seo-for-clinics-and-dentists-india" },
-      { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india" },
-      { label: "Local SEO + AEO plan", href: "/services/local-seo-aeo" },
+      { label: "Local SEO for clinics and dentists in India", href: "/blog/local-seo-for-clinics-and-dentists-india", summary: "Why clinics and dentists need local SEO, and how to get found on Google Maps." },
+      { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india", summary: "Set up and verify your Google Business Profile so your listing shows in local search." },
+      { label: "Local SEO + AEO plan", href: "/services/local-seo-aeo", summary: "Our Local SEO and AEO plan: Google listing, local search and AI answers, managed monthly." },
     ],
   },
   {
@@ -149,9 +149,9 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       { q: "Can I cancel?", a: CANCEL_ANSWER },
     ],
     next: [
-      { label: "Restaurants: your own website or Zomato and Swiggy?", href: "/blog/restaurant-own-website-or-zomato-swiggy" },
-      { label: "How to get more Google reviews and reply to them", href: "/blog/get-more-google-reviews-and-reply" },
-      { label: "Social Media and Ads plan", href: "/services/social-media-and-ads" },
+      { label: "Restaurants: your own website or Zomato and Swiggy?", href: "/blog/restaurant-own-website-or-zomato-swiggy", summary: "Your own website or Zomato and Swiggy: what each offers a restaurant, and how to choose." },
+      { label: "How to get more Google reviews and reply to them", href: "/blog/get-more-google-reviews-and-reply", summary: "Simple ways to get more Google reviews, and how to reply to each one well." },
+      { label: "Social Media and Ads plan", href: "/services/social-media-and-ads", summary: "Our Social Media and Ads plan: posts and Facebook and Instagram ads, run for you monthly." },
     ],
   },
   {
@@ -190,9 +190,9 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       { q: "Can I cancel?", a: CANCEL_ANSWER },
     ],
     next: [
-      { label: "What a salon, gym or coaching institute website should contain", href: "/blog/salon-gym-coaching-website-pages" },
-      { label: "Do I need a website if I already have Instagram?", href: "/blog/do-i-need-a-website-if-i-have-instagram" },
-      { label: "WhatsApp Business or a website: which does a small shop need?", href: "/blog/whatsapp-business-or-website" },
+      { label: "What a salon, gym or coaching institute website should contain", href: "/blog/salon-gym-coaching-website-pages", summary: "The pages a salon, gym or coaching institute website needs, and what each is for." },
+      { label: "Do I need a website if I already have Instagram?", href: "/blog/do-i-need-a-website-if-i-have-instagram", summary: "Why an Instagram profile is not a website, and what a site does that social cannot." },
+      { label: "WhatsApp Business or a website: which does a small shop need?", href: "/blog/whatsapp-business-or-website", summary: "WhatsApp Business or a website: which a small shop needs first, and when to have both." },
     ],
   },
   {
@@ -242,9 +242,9 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       { q: "Can I move my site later?", a: "Your domain moves with you. The design and the content we write are provided as a hosted service while you are subscribed, so they stay with Brandbasket." },
     ],
     next: [
-      { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free" },
-      { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india" },
-      { label: "Pricing", href: "/pricing" },
+      { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free", summary: "Where a free website fits, its catch, and what to ask an agency before you agree." },
+      { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india", summary: "What a small business website should cost in India, and what the price must include." },
+      { label: "Pricing", href: "/pricing", summary: "Our three monthly plans, what each includes, and how the package discounts work." },
     ],
   },
 ];
@@ -284,42 +284,34 @@ export const GLOSSARY = {
     { term: "DPDP Act", definition: "India's Digital Personal Data Protection Act, 2023. It sets rules for how businesses collect and use personal data, such as a name and phone number from an enquiry form." },
   ],
   next: [
-    { label: "Local SEO and AEO: what is the difference, and which first?", href: "/blog/local-seo-vs-aeo-which-first" },
-    { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india" },
-    { label: "Local SEO + AEO plan", href: "/services/local-seo-aeo" },
+    { label: "Local SEO and AEO: what is the difference, and which first?", href: "/blog/local-seo-vs-aeo-which-first", summary: "Local SEO and AEO solve different problems. Here is which one to start with." },
+    { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india", summary: "Set up and verify your Google Business Profile so your listing shows in local search." },
+    { label: "Local SEO + AEO plan", href: "/services/local-seo-aeo", summary: "Our Local SEO and AEO plan: Google listing, local search and AI answers, managed monthly." },
   ],
 } as const;
 
 /** Guides shown under a page: the posts and pages worth reading from where the visitor is. */
 export const GUIDE_LINKS = {
-  home: [
-    { label: "Do I need a website if I already have Instagram?", href: "/blog/do-i-need-a-website-if-i-have-instagram" },
-    { label: "WhatsApp Business or a website: which does a small shop need?", href: "/blog/whatsapp-business-or-website" },
-    { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options" },
-    { label: "A website for your clinic or dental practice", href: "/for/clinics-and-dentists" },
-    { label: "A website for your restaurant or cafe", href: "/for/restaurants" },
-    { label: "A website for your salon, gym or coaching institute", href: "/for/salons-gyms-and-coaching" },
-  ],
   pricing: [
-    { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india" },
-    { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free" },
-    { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options" },
+    { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india", summary: "What a small business website should cost in India, and what the price must include." },
+    { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free", summary: "Where a free website fits, its catch, and what to ask an agency before you agree." },
+    { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options", summary: "Free website, freelancer, agency or DIY builder: what each gives you and who it suits." },
   ],
   website: [
-    { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free" },
-    { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india" },
-    { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options" },
+    { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free", summary: "Where a free website fits, its catch, and what to ask an agency before you agree." },
+    { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india", summary: "What a small business website should cost in India, and what the price must include." },
+    { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options", summary: "Free website, freelancer, agency or DIY builder: what each gives you and who it suits." },
   ],
   growth: [
-    { label: "How much should a local business spend on Facebook and Instagram ads?", href: "/blog/facebook-instagram-ads-budget-local-business" },
-    { label: "How to get more Google reviews and reply to them", href: "/blog/get-more-google-reviews-and-reply" },
-    { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india" },
+    { label: "How much should a local business spend on Facebook and Instagram ads?", href: "/blog/facebook-instagram-ads-budget-local-business", summary: "How much to spend on Facebook and Instagram ads, and how to tell if they bring enquiries." },
+    { label: "How to get more Google reviews and reply to them", href: "/blog/get-more-google-reviews-and-reply", summary: "Simple ways to get more Google reviews, and how to reply to each one well." },
+    { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india", summary: "Set up and verify your Google Business Profile so your listing shows in local search." },
   ],
   search: [
-    { label: "Local SEO and AEO: what is the difference, and which first?", href: "/blog/local-seo-vs-aeo-which-first" },
-    { label: "How to get your local business recommended by ChatGPT and Google AI", href: "/blog/get-local-business-recommended-by-ai" },
-    { label: "Website and search terms, in plain words", href: "/glossary" },
+    { label: "Local SEO and AEO: what is the difference, and which first?", href: "/blog/local-seo-vs-aeo-which-first", summary: "Local SEO and AEO solve different problems. Here is which one to start with." },
+    { label: "How to get your local business recommended by ChatGPT and Google AI", href: "/blog/get-local-business-recommended-by-ai", summary: "How to get your business named when people ask ChatGPT or Google AI for a local pick." },
+    { label: "Website and search terms, in plain words", href: "/glossary", summary: "Plain meanings of the website and search terms local businesses hear most." },
   ],
-} as const satisfies Record<string, readonly LinkItem[]>;
+} as const satisfies Record<string, readonly GuideLink[]>;
 
 export const GUIDE_LINKS_HEADING = "Guides worth reading.";

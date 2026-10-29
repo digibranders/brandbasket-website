@@ -38,7 +38,7 @@ export const ABOUT: About = {
   lede: "BrandBasket helps local businesses and small and medium-sized enterprises (SMEs) in India and the USA build, manage and strengthen their online presence.",
   who: {
     heading: "Who we are",
-    lead: "Managing a website, social media, ad campaigns and local search takes time, technical knowledge and ongoing effort. BrandBasket brings these services together.",
+    lead: "Managing your website, social media, advertising, and local search. BrandBasket brings everything together under one roof, so you can focus on growing your business.",
     body: "We focus on the practical digital services businesses need to establish their presence online, maintain their websites, connect with customers and improve their visibility across digital channels, without having to manage every part of it themselves.",
   },
   what: {

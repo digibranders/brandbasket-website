@@ -14,9 +14,11 @@ export const CONTACT_NEXT = { heading: "What happens next" } as const;
 export const CONTACT_CHAT = {
   title: "Chat with us",
   subtitle: "Instant answers about plans, pricing and your website",
-  greeting: "Hi! I'm the Brandbasket assistant. I can tell you what a plan includes, how long a website takes, or what happens after you sign up.",
+  greeting: "Hi! I'm the Brandbasket assistant. how can i help ?",
   /** Tap to ask. They are shown only until the visitor sends a first message. */
-  starters: ["Is the website really free?", "How long does it take to build my website?", "Can I cancel?"],
+  starters: ["Is the website really free?", "Can I cancel?"],
+  /** Hands the visitor to the team: a link to the contact form further down the page, shown with the starters. */
+  support: { label: "Connect with Support Team", href: "#ct-form-title" },
   startersLabel: "Questions to start with",
   logLabel: "Conversation with the Brandbasket assistant",
   placeholder: "Ask us anything",

@@ -205,14 +205,11 @@ export function StartFooter(): ReactElement {
     <footer className="site-footer">
       <div className="site-footer-body">
         <div className="in-wrap">
-          <div className="grid gap-3 border-t border-line pb-6 pt-8 text-[13.5px] text-ink-2">
-            <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-1.5">
-              <Link href="/privacy" className="text-ink underline underline-offset-[3px]">Privacy Policy</Link>
-              <Link href="/terms" className="text-ink underline underline-offset-[3px]">Terms</Link>
-              <Link href="/refund" className="text-ink underline underline-offset-[3px]">Refund and cancellation</Link>
-            </nav>
-            <p className="max-w-[78ch]">{businessDetails.tradeName} is a brand of {businessDetails.legalName}. {businessDetails.address.join(" ")}</p>
-          </div>
+          <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-1.5 border-t border-line pb-6 pt-8 text-[13.5px] text-ink-2">
+            <Link href="/privacy" className="text-ink underline underline-offset-[3px]">Privacy Policy</Link>
+            <Link href="/terms" className="text-ink underline underline-offset-[3px]">Terms</Link>
+            <Link href="/refund" className="text-ink underline underline-offset-[3px]">Refund and cancellation</Link>
+          </nav>
           <div className="site-footer-colophon">
             <p>&copy; {new Date().getFullYear()} {businessDetails.tradeName}</p>
           </div>

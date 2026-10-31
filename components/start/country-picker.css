@@ -1,0 +1,6 @@
+/* The country list grows out of the field it belongs to. Reduced motion is handled by the global rule in globals.css. */
+.country-pop { transform-origin: top left; animation: country-pop 180ms var(--ease) both; }
+@keyframes country-pop {
+  from { opacity: 0; transform: translateY(-6px) scale(0.98); }
+  to { opacity: 1; transform: none; }
+}

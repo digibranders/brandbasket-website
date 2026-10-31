@@ -104,7 +104,7 @@ export function CareSection({ currency }: { readonly currency: Currency }): Reac
               </p>
               <span className="text-sm text-action-ink/78">{offer.run.label}</span>
             </div>
-            <ArrowButton href="#start" tone="inverse" location="start_price" short={START_PAY_LABEL}>{START_PAY_LABEL}</ArrowButton>
+            <ArrowButton href="#start" tone="inverse" location="start_price" short={START_PAY_LABEL} centered>{START_PAY_LABEL}</ArrowButton>
             <p className="text-center text-[13px] text-action-ink/78">{CARE.priceNote}</p>
           </aside>
         </Reveal>

@@ -32,7 +32,7 @@ export function readMobile(value: string): Mobile | null {
 
 export const startFields = {
   name: z.string().trim().min(2, START_ERRORS.name).max(START_MAX.name, START_ERRORS.name).regex(NO_CONTROL, START_ERRORS.name),
-  phone: z.string().trim().max(START_MAX.phone, START_ERRORS.phoneWorld).refine((value) => readMobile(value) !== null, START_ERRORS.phoneWorld),
+  phone: z.string().trim().max(START_MAX.phone, START_ERRORS.phone).refine((value) => readMobile(value) !== null, START_ERRORS.phone),
   email: z.email(START_ERRORS.email).max(START_MAX.email, START_ERRORS.email),
 } as const;
 

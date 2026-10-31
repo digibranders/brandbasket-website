@@ -35,7 +35,7 @@ function Plan({ plan, currency, doesLabel, excludesLabel }: { readonly plan: Pla
         </div>
         <p className="num col-span-full mt-3.5 font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
           <span className="whitespace-nowrap">
-            <s className="mr-2 text-[clamp(20px,2vw,24px)] tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{plan.was}</s>
+            <s className="mr-2 text-[clamp(20px,2vw,24px)] tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{plan.was}</s>
             {plan.price}
           </span><small className="mt-1 block font-sans text-sm font-medium tracking-normal text-ink-2">{plan.priceNote}</small>
         </p>

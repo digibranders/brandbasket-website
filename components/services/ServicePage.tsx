@@ -97,7 +97,7 @@ function Hero({ page, currency }: { readonly page: ServicePageContent; readonly 
               {page.id === "website" ? <span className="mt-1 inline-block rounded-full bg-rattan-wash px-2.5 py-[3px] text-xs font-semibold leading-[1.4] text-rattan-ink">{SERVICE_COPY.freeBuild}</span> : null}
             </div>
             <p className="num col-span-full mt-3.5 font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
-              <s className="mb-1.5 block text-[clamp(20px,2vw,24px)] leading-none tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(planUsualPrice(page.id, currency), currency)}</s>
+              <s className="mb-1.5 block text-[clamp(20px,2vw,24px)] leading-none tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(planUsualPrice(page.id, currency), currency)}</s>
               {formatMoney(planPrice(page.id, currency), currency)}<small className="ml-1 font-sans text-sm font-medium tracking-normal text-ink-2">{serviceMoneyCopy(currency).perMonth}</small>
             </p>
           </div>

@@ -6,7 +6,7 @@ import type { Currency } from "@/lib/currency";
 /** The usual price, struck through beside the offer price. */
 function Usual({ children }: { readonly children: string }): ReactElement {
   return (
-    <s className="num font-display text-[clamp(18px,1.7vw,22px)] leading-none tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-2">
+    <s className="num font-display text-[clamp(18px,1.7vw,22px)] leading-none tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1">
       <span className="sr-only">{BASKET_COPY.was} </span>
       {children}
     </s>

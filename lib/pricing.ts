@@ -41,16 +41,23 @@ export function planPrice(id: PlanId, currency: Currency): number {
 }
 
 /**
- * The "usually" prices printed struck through beside the Managed Website offer (owner, 2026-10-31): what building a site
- * costs elsewhere and the monthly price before the launch offer. Display only; nothing is billed from them.
+ * The "usually" prices printed struck through beside each plan price and beside the free build (owner, 2026-10-31): the
+ * monthly price before the launch offer, and what building a website costs elsewhere. Display only; nothing is billed from them.
  */
-const WEBSITE_USUAL: Readonly<Record<Currency, { readonly build: number; readonly monthly: number }>> = {
-  INR: { build: 35000, monthly: 4999 },
-  USD: { build: 1200, monthly: 99 },
+const USUAL_PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, number>>>> = {
+  INR: { website: 4999, growth: 14999, search: 39999 },
+  USD: { website: 99, growth: 225, search: 549 },
 };
+const USUAL_BUILD_PRICES: Readonly<Record<Currency, number>> = { INR: 35000, USD: 1200 };
 
-export function websiteUsualPrices(currency: Currency): { readonly build: number; readonly monthly: number } {
-  return WEBSITE_USUAL[currency];
+/** The struck-through "usually" monthly price of one plan. */
+export function planUsualPrice(id: PlanId, currency: Currency): number {
+  return USUAL_PLAN_PRICES[currency][id];
+}
+
+/** The struck-through "usually" price of building a website, beside the free build. */
+export function buildUsualPrice(currency: Currency): number {
+  return USUAL_BUILD_PRICES[currency];
 }
 
 /** GST already inside every rupee price. Only the legal text, the rupee pages and the platform's invoices name the rate; dollar pages never do. */

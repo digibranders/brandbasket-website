@@ -12,7 +12,10 @@ interface StartBarProps {
   readonly label: string;
 }
 
-/** A phone-width bar with the price and the pay button, shown only while the form is off screen. Wide screens keep the form in view and never show it. */
+/**
+ * The main site's phone dock, for this page: the dark floating island (dock-isle, components/basket/dock.css) with the price and a
+ * white pay button, shown only while the form is off screen. Wide screens keep the form in view and never show it.
+ */
 export function StartBar({ price, unit, note, label }: StartBarProps): ReactElement {
   const [away, setAway] = useState(false);
 
@@ -27,13 +30,13 @@ export function StartBar({ price, unit, note, label }: StartBarProps): ReactElem
   return (
     <div
       inert={!away}
-      className={`fixed inset-x-0 bottom-0 z-20 flex items-center justify-between gap-3 border-t border-line bg-bg/90 px-[max(16px,env(safe-area-inset-left))] pt-2.5 pb-[calc(10px+env(safe-area-inset-bottom))] backdrop-blur-md transition-transform duration-[400ms] ease-[var(--ease)] min-[980px]:hidden ${away ? "translate-y-0" : "translate-y-[110%]"}`}
+      className={`dock-isle fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 mx-auto flex max-w-[480px] items-center justify-between gap-3 rounded-full py-2 pl-5 pr-2 transition-[transform,opacity] duration-[450ms] min-[980px]:hidden ${away ? "ease-[cubic-bezier(0.34,1.4,0.64,1)]" : "pointer-events-none translate-y-[150%] opacity-0 ease-[var(--ease)]"}`}
     >
-      <p className="grid leading-[1.15]">
-        <span className="num font-display text-xl font-medium tracking-[-0.03em]">{price}<small className="ml-1 font-sans text-[13px] font-medium text-ink-2">{unit}</small></span>
-        <span className="text-[12.5px] text-ink-2">{note}</span>
+      <p className="grid min-w-0 gap-0.5 leading-[1.15]">
+        <b className="num whitespace-nowrap font-display text-xl font-medium tracking-[-0.025em] text-action-ink">{price}<small className="ml-1 font-sans text-[13px] font-medium text-action-ink/70">{unit}</small></b>
+        <span className="truncate text-[12.5px] text-action-ink/70">{note}</span>
       </p>
-      <a href="#start" {...trackAttrs("cta_click", "start_bar")} className={`${pillClasses("sm", "action")} h-12 text-[15px]`}>
+      <a href="#start" {...trackAttrs("cta_click", "start_bar")} className={`${pillClasses("sm", "inverse")} flex-none`}>
         {label}
         <Arrow size="sm" />
       </a>

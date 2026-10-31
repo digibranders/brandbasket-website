@@ -5,11 +5,13 @@ import { track } from "@vercel/analytics";
 import Link from "next/link";
 import { type FocusEvent, type FormEvent, type ReactElement, useRef, useState } from "react";
 import { z } from "zod";
+import { readConsent } from "@/components/consent/consent-storage";
 import { pushConversion } from "@/components/consent/tags";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
 import { START_ERRORS, START_FORM, START_PAY_NOTE } from "@/content/start";
 import { startSubmitEvent, trackAttrs } from "@/lib/analytics";
+import { readAttribution, type AttributionInput } from "@/lib/attribution";
 import type { Currency } from "@/lib/currency";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS } from "@/lib/security/form-fields";
@@ -51,6 +53,22 @@ function adsParams(): Partial<Record<(typeof ADS_KEYS)[number], string>> {
     const value = query.get(key);
     return value ? [[key, value.slice(0, 120)]] : [];
   }));
+}
+
+/** The ad's ids, with the cookies read only for what the visitor allowed (Global Privacy Control is a no to advertising). It travels sealed into the sign-up address, to be kept on the account (plan 59). */
+function pageAttribution(): ReturnType<typeof readAttribution> {
+  const saved = readConsent();
+  const gpc = (navigator as Navigator & { readonly globalPrivacyControl?: boolean }).globalPrivacyControl === true;
+  const input: AttributionInput = {
+    search: window.location.search,
+    cookie: document.cookie,
+    consent: { measurement: saved?.measurement === true, advertising: saved?.advertising === true && !gpc },
+    path: window.location.pathname,
+    referrer: document.referrer,
+    host: window.location.hostname,
+    now: Date.now(),
+  };
+  return readAttribution(input);
 }
 
 const INPUT_BOX = "flex items-stretch rounded-[14px] border-[1.5px] border-[#8d8b85] bg-white transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_3px_rgba(21,22,26,0.1)] aria-[invalid=true]:border-error";
@@ -106,6 +124,7 @@ export function StartForm(): ReactElement {
       consent: agreed,
       noticeVersion: LEGAL_TEXT_VERSION,
       ads: adsParams(),
+      attribution: pageAttribution() ?? undefined,
       [FORM_TOKEN_FIELD]: token,
       ...Object.fromEntries(HONEYPOT_FIELDS.map((name) => [name, value(name)])),
     };

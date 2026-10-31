@@ -52,8 +52,9 @@ function adsParams(): Partial<Record<(typeof ADS_KEYS)[number], string>> {
   }));
 }
 
-const INPUT_BOX = "flex items-stretch rounded-[14px] border-[1.5px] border-[#8d8b85] bg-white transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_4px_rgba(196,138,71,0.22)] aria-[invalid=true]:border-error";
-const INPUT = "h-[52px] min-w-0 flex-1 bg-transparent px-4 text-base outline-none";
+const INPUT_BOX = "flex items-stretch rounded-[14px] border-[1.5px] border-[#8d8b85] bg-white transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_3px_rgba(21,22,26,0.1)] aria-[invalid=true]:border-error";
+/** The field's own border is the focus indicator; the important flag is needed because the site-wide :focus-visible outline (globals.css) is unlayered and would otherwise draw a second, square ring on the input inside it. */
+const INPUT = "h-[52px] min-w-0 flex-1 bg-transparent px-4 text-base outline-none!";
 
 export function StartForm(): ReactElement {
   const currency = useCurrency();

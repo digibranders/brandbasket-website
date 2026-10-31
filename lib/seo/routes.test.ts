@@ -1,7 +1,7 @@
 // lib/seo/routes.test.ts
 import { describe, expect, it } from "vitest";
 import { GUIDE_PAGES } from "@/content/guides";
-import { guideRoute, indexableRoutes, ROUTES } from "./routes";
+import { guideRoute, indexableRoutes, type RouteMeta, ROUTES } from "./routes";
 
 describe("route registry", () => {
   it("keeps titles within 60 characters and descriptions between 120 and 155", () => {
@@ -31,6 +31,11 @@ describe("route registry", () => {
   });
   it("keeps noindex pages out of the sitemap", () => {
     expect(indexableRoutes().some((r) => r.path === "/notice")).toBe(false);
+  });
+  it("keeps the ad landing page out of search and its links unfollowed", () => {
+    expect(ROUTES.start).toMatchObject({ path: "/start", noindex: true, nofollow: true });
+    expect(indexableRoutes().some((r) => r.path === "/start")).toBe(false);
+    expect((Object.values(ROUTES) as readonly RouteMeta[]).filter((r) => r.nofollow).map((r) => r.path)).toEqual(["/start"]);
   });
   it("shows no price or discount in any page's title or description", () => {
     for (const r of indexableRoutes()) {

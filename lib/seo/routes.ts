@@ -19,6 +19,8 @@ export interface RouteMeta {
   readonly updated: string;
   readonly priority: number;
   readonly noindex?: boolean;
+  /** With noindex: also tells search engines not to follow the page's links, even once the site is live. */
+  readonly nofollow?: boolean;
 }
 
 const { legalName, tradeName, postalAddress } = businessDetails;
@@ -54,6 +56,16 @@ export const ROUTES = {
     description: `Talk to ${tradeName} about a free website for your local business, a monthly plan or the site you already have. WhatsApp, call, email or send a message.`,
     updated: UPDATED,
     priority: 0.7,
+  },
+  start: {
+    path: "/start",
+    title: `Start your free business website | ${tradeName}`,
+    description: "Get a professional website for your local business, built free and live in 7 working days. We host, secure and look after it every month.",
+    updated: "2026-10-31",
+    priority: 0,
+    // The page ad clicks land on: it repeats the homepage's offer, so it stays out of search and the sitemap, and its links are never followed.
+    noindex: true,
+    nofollow: true,
   },
   blog: {
     path: "/blog",

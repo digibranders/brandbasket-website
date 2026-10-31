@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import type { ContactInput } from "@/lib/contact-schema";
-import { forwardEnquiry, pageOf } from "./platform-leads";
+import { forwardEnquiry, forwardStart, pageOf, startMessage } from "./platform-leads";
+import type { StartInput } from "./start-schema";
 
 const LEAD: ContactInput = { name: "Asha Rao", phone: "98200 11111", email: "asha@example.in", business: "Rao Dental Care", city: "Thane", message: "Please call me", consent: true, noticeVersion: "2026-10-19.1" };
 const ENV = { url: "https://app.example.test", token: "t".repeat(32) };
@@ -52,5 +53,36 @@ describe("pageOf", () => {
     expect(pageOf(visit("https://brandbasket.in/contact?plan=website#form"))).toBe("/contact");
     expect(pageOf(visit(null))).toBeNull();
     expect(pageOf(visit("not a url"))).toBeNull();
+  });
+});
+
+const START: StartInput = { name: "Rahul Mehta", phone: "98765 43210", email: "rahul@mehta.in", consent: true, noticeVersion: "2026-10-26.3", ads: { utm_source: "google", utm_campaign: "diwali", gclid: "g1" } };
+const MOBILE = { e164: "+919876543210", indian: "9876543210" };
+
+describe("startMessage", () => {
+  it("says the visitor went on to payment and which ad brought them", () => {
+    expect(startMessage(START.ads)).toBe("Ad landing page. Going to payment. utm_source=google, utm_campaign=diwali, gclid=g1");
+    expect(startMessage(undefined)).toBe("Ad landing page. Going to payment.");
+  });
+});
+
+describe("forwardStart", () => {
+  it("posts the lead as a website plan lead and says it was stored", async () => {
+    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    expect(await forwardStart(START, MOBILE, visit("https://www.brandbasket.in/start?utm_source=google"), ENV)).toBe(true);
+    const [, init] = fetchMock.mock.calls[0] ?? [];
+    expect(JSON.parse(String(init?.body))).toEqual({
+      kind: "contact",
+      contact: { name: "Rahul Mehta", business: "Not given yet", email: "rahul@mehta.in", phone: "+919876543210", city: "", plans: ["website"], message: "Ad landing page. Going to payment. utm_source=google, utm_campaign=diwali, gclid=g1", page: "/start" },
+      clientIp: "203.0.113.9",
+      noticeVersion: "2026-10-26.3",
+    });
+  });
+
+  it("says it was not stored when the platform refuses or is down, and never throws", async () => {
+    fetchMock.mockResolvedValueOnce(new Response("{}", { status: 500 }));
+    expect(await forwardStart(START, MOBILE, visit(null), ENV)).toBe(false);
+    fetchMock.mockRejectedValueOnce(new Error("network"));
+    expect(await forwardStart(START, MOBILE, visit(null), ENV)).toBe(false);
   });
 });

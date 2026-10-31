@@ -20,6 +20,13 @@ describe("pageMetadata", () => {
     vi.unstubAllEnvs();
   });
 
+  it("keeps a nofollow page nofollow once indexing is on", () => {
+    vi.stubEnv("SITE_INDEXING", "on");
+    vi.stubEnv("VERCEL_ENV", "production");
+    expect(pageMetadata({ ...base, noindex: true, nofollow: true }).robots).toEqual({ index: false, follow: false });
+    vi.unstubAllEnvs();
+  });
+
   it("sets the registry title as an absolute title", () => {
     expect(pageMetadata(base).title).toEqual({ absolute: "t" });
   });

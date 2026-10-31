@@ -56,18 +56,18 @@ describe("pageOf", () => {
   });
 });
 
-const START: StartInput = { intent: "pay", name: "Rahul Mehta", phone: "98765 43210", email: "rahul@mehta.in", consent: true, noticeVersion: "2026-10-26.3", ads: { utm_source: "google", utm_campaign: "diwali", gclid: "g1" } };
+const START: StartInput = { name: "Rahul Mehta", phone: "98765 43210", email: "rahul@mehta.in", consent: true, noticeVersion: "2026-10-26.3", ads: { utm_source: "google", utm_campaign: "diwali", gclid: "g1" } };
 const MOBILE = { e164: "+919876543210", indian: "9876543210" };
 
 describe("startMessage", () => {
-  it("says what was asked and which ad brought the visitor", () => {
-    expect(startMessage("pay", START.ads)).toBe("Ad landing page. Going to payment. utm_source=google, utm_campaign=diwali, gclid=g1");
-    expect(startMessage("callback", undefined)).toBe("Ad landing page. Asked to speak with the support team first: please call.");
+  it("says the visitor went on to payment and which ad brought them", () => {
+    expect(startMessage(START.ads)).toBe("Ad landing page. Going to payment. utm_source=google, utm_campaign=diwali, gclid=g1");
+    expect(startMessage(undefined)).toBe("Ad landing page. Going to payment.");
   });
 });
 
 describe("forwardStart", () => {
-  it("posts a paying visitor as a website lead and says it was stored", async () => {
+  it("posts the lead as a website plan lead and says it was stored", async () => {
     fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
     expect(await forwardStart(START, MOBILE, visit("https://www.brandbasket.in/start?utm_source=google"), ENV)).toBe(true);
     const [, init] = fetchMock.mock.calls[0] ?? [];
@@ -79,10 +79,9 @@ describe("forwardStart", () => {
     });
   });
 
-  it("asks for no plan when the visitor wants a call, and says so when the platform refuses or is down", async () => {
+  it("says it was not stored when the platform refuses or is down, and never throws", async () => {
     fetchMock.mockResolvedValueOnce(new Response("{}", { status: 500 }));
-    expect(await forwardStart({ ...START, intent: "callback" }, MOBILE, visit(null), ENV)).toBe(false);
-    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body)).contact.plans).toEqual([]);
+    expect(await forwardStart(START, MOBILE, visit(null), ENV)).toBe(false);
     fetchMock.mockRejectedValueOnce(new Error("network"));
     expect(await forwardStart(START, MOBILE, visit(null), ENV)).toBe(false);
   });

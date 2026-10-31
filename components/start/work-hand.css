@@ -1,0 +1,105 @@
+/* The ad landing page's phone version of "Real websites, live today": a hand of three phones, the chosen one in front. */
+.wh-stage {
+  position: relative;
+  height: 436px;
+  margin-inline: calc(-1 * clamp(18px, 4vw, 56px));
+  touch-action: pan-y;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  /* The side phones fade out at the screen edges instead of being cut off. */
+  mask-image: linear-gradient(90deg, transparent 0, #000 13%, #000 87%, transparent 100%);
+}
+
+/* A warm patch behind the front phone. */
+.wh-stage::before {
+  content: "";
+  position: absolute;
+  inset: 8% 12% 0;
+  border-radius: 50%;
+  background: radial-gradient(ellipse at 50% 55%, var(--rattan-wash), transparent 70%);
+}
+
+.wh-phone {
+  --sh: 398px;
+  position: absolute;
+  top: 12px;
+  left: 50%;
+  width: 200px;
+  margin-left: -100px;
+  padding: 7px;
+  border-radius: 38px;
+  background: var(--ink);
+  box-shadow: 0 30px 56px -24px rgba(0, 0, 0, 0.55), inset 0 0 0 1.5px color-mix(in srgb, var(--ink), white 12%);
+  transition: transform 550ms var(--ease), opacity 550ms var(--ease), filter 550ms var(--ease);
+  will-change: transform;
+}
+
+.wh-phone[data-pos="0"] { z-index: 3; transform: none; }
+.wh-phone[data-pos="-1"] { z-index: 1; transform: translateX(-120px) scale(0.8); opacity: 0.88; filter: saturate(0.7); cursor: pointer; }
+.wh-phone[data-pos="1"] { z-index: 1; transform: translateX(120px) scale(0.8); opacity: 0.88; filter: saturate(0.7); cursor: pointer; }
+
+/* The camera pill. */
+.wh-phone::after {
+  content: "";
+  position: absolute;
+  top: 14px;
+  left: 50%;
+  z-index: 2;
+  width: 30%;
+  height: 14px;
+  transform: translateX(-50%);
+  border-radius: 999px;
+  background: var(--ink);
+}
+
+.wh-screen {
+  height: var(--sh);
+  overflow: hidden;
+  border-radius: 31px;
+  background: var(--sunken);
+}
+
+.wh-shot { display: block; width: 100%; height: auto; max-width: none; pointer-events: none; }
+
+/* Only the phone in front scrolls its page, slowly down and back, so a visitor sees more than the top. It starts at the top each time it comes forward. */
+@keyframes wh-scroll {
+  to { transform: translateY(calc(-100% + var(--sh))); }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wh-phone[data-pos="0"] .wh-shot { animation: wh-scroll var(--dur) linear 1.4s infinite alternate; }
+  .wh-stage:active .wh-phone[data-pos="0"] .wh-shot { animation-play-state: paused; }
+}
+
+/* The name changes with a soft fade. */
+@keyframes wh-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .wh-cap { animation: wh-in 450ms var(--ease) both; }
+}
+
+/* Story-style progress bars: the hit area is 44px tall, the bar itself is thin. */
+.wh-dot {
+  display: grid;
+  align-items: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.wh-dot i {
+  display: block;
+  height: 4px;
+  border-radius: 999px;
+  background: var(--line);
+  transition: background 300ms var(--ease), transform 300ms var(--ease);
+}
+
+.wh-dot[aria-selected="true"] i { background: var(--rattan-text); transform: scaleX(1.35); }

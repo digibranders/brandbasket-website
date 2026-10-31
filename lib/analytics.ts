@@ -11,7 +11,7 @@ export type ConversionEvent =
   | { readonly name: "whatsapp_click"; readonly properties: { readonly location: string } }
   | { readonly name: "basket_open"; readonly properties: { readonly location: string } }
   | { readonly name: "contact_submit"; readonly properties: { readonly plans: string } }
-  | { readonly name: "start_submit"; readonly properties: { readonly intent: "pay" | "callback" } };
+  | { readonly name: "start_submit"; readonly properties: { readonly intent: "pay" } };
 
 type ClickName = "cta_click" | "whatsapp_click" | "basket_open";
 
@@ -46,7 +46,7 @@ export function submitEvent(plans: readonly PlanId[]): ConversionEvent {
   return { name: "contact_submit", properties: { plans: plans.length > 0 ? planList(plans) : "none" } };
 }
 
-/** Sent after the ad landing page's form is accepted: someone going to pay, or asking the support team to call. */
-export function startSubmitEvent(intent: "pay" | "callback"): ConversionEvent {
-  return { name: "start_submit", properties: { intent } };
+/** Sent after the ad landing page's form is accepted: someone going on to payment. */
+export function startSubmitEvent(): ConversionEvent {
+  return { name: "start_submit", properties: { intent: "pay" } };
 }

@@ -30,8 +30,8 @@ function platform(): PlatformLeadsEnv | null {
 }
 
 /**
- * The ad landing page's form. Keeps the lead in the staff console, then either answers with where the sign-up page is (the
- * visitor's details sealed into its address so it opens filled in) or confirms that the support team will call.
+ * The ad landing page's form. Keeps the lead in the staff console, then answers with where the sign-up page is: the visitor's
+ * details sealed into its address so it opens already filled in.
  */
 export async function POST(request: Request): Promise<Response> {
   const limit = rateLimit(`start:${clientKey(request)}`, 8, 10 * 60_000);
@@ -62,10 +62,8 @@ export async function POST(request: Request): Promise<Response> {
   if (mobile === null) return invalid();
 
   const env = platform();
-  const stored = env === null ? false : await forwardStart(lead, mobile, request, env);
-  if (lead.intent === "callback") return stored ? Response.json({ ok: true }, { headers: NO_STORE }) : sendFailed();
-
-  // Someone paying is never held up by the staff console: the sign-up page needs only the sealed details.
+  // Someone paying is never held up by the staff console: the lead is kept if it can be, and the sign-up page needs only the sealed details.
+  if (env !== null) await forwardStart(lead, mobile, request, env);
   const token = env === null ? null : sealStart({ name: lead.name, email: lead.email.toLowerCase(), phone: mobile.indian }, env.token);
   return Response.json({ ok: true, next: startHref(token) }, { headers: NO_STORE });
 }

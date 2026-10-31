@@ -11,9 +11,6 @@ const NO_CONTROL = /^\P{Cc}*$/u;
 /** Field length caps, shared with the inputs' maxLength so the browser never lets a visitor exceed them. */
 export const START_MAX = { name: 60, phone: 20, email: 120 } as const;
 
-export const START_INTENTS = ["pay", "callback"] as const;
-export type StartIntent = (typeof START_INTENTS)[number];
-
 /** The campaign parameters kept from the ad's address; anything else in it is dropped. */
 export const ADS_KEYS = ["utm_source", "utm_medium", "utm_campaign", "utm_term", "utm_content", "gclid", "fbclid"] as const;
 export type AdsKey = (typeof ADS_KEYS)[number];
@@ -42,7 +39,6 @@ export const startFields = {
 const adsParam = z.string().max(120).optional();
 
 export const startSchema = z.object({
-  intent: z.enum(START_INTENTS),
   name: startFields.name,
   phone: startFields.phone,
   email: startFields.email,

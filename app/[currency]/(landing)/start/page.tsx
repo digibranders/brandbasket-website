@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { WorkShowcase } from "@/components/home/WorkShowcase";
 import { StartBar } from "@/components/start/StartBar";
+import { WorkHand } from "@/components/start/WorkHand";
 import { CareSection, StartClosing, StartFacts, StartFaq, StartHero, StepsSection } from "@/components/start/StartSections";
 import { Band } from "@/components/ui/Band";
 import { barNoteFor, START_PAY_LABEL } from "@/content/start";
@@ -25,7 +26,10 @@ export default async function StartPage({ params }: { readonly params: Promise<{
       <StartHero currency={currency} />
       <StartFacts currency={currency} />
       <Band tone="sunken" className="py-[clamp(56px,8vw,112px)]">
-        <WorkShowcase />
+        <div className="max-[639px]:hidden">
+          <WorkShowcase />
+        </div>
+        <WorkHand />
       </Band>
       <CareSection currency={currency} />
       <StepsSection />

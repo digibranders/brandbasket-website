@@ -5,7 +5,7 @@ const SECRET = "t".repeat(40);
 const ENV = { BREVO_API_KEY: "xkeysib-test", FORM_SECRET: "s".repeat(32), CONTACT_INBOX: "hello@brandbasket.in", MAIL_SENDER: "hello@brandbasket.in", PLATFORM_LEADS_URL: "https://app.example.test", LEADS_API_TOKEN: SECRET };
 /** No platform address and no shared secret: local work without the platform. */
 const LOCAL = { ...ENV, PLATFORM_LEADS_URL: "", LEADS_API_TOKEN: "" };
-const LEAD = { intent: "pay", name: "Rahul Mehta", phone: "98765 43210", email: "Rahul@Mehta.in", consent: true, noticeVersion: "2026-10-26.3", ads: { utm_source: "google" } };
+const LEAD = { name: "Rahul Mehta", phone: "98765 43210", email: "Rahul@Mehta.in", consent: true, noticeVersion: "2026-10-26.3", ads: { utm_source: "google" } };
 const T0 = new Date("2026-10-31T10:00:00Z");
 
 const post = (body: unknown): Request =>
@@ -92,24 +92,6 @@ describe("POST /api/start", () => {
     const res = await POST(request);
     expect(res.status).toBe(200);
     expect(((await res.json()) as { next: string }).next).toContain("start=");
-  });
-
-  it("confirms a call back only once the lead is stored", async () => {
-    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
-    const ok = await human(ENV, { intent: "callback" });
-    expect(await (await ok.POST(ok.request)).json()).toEqual({ ok: true });
-
-    fetchMock.mockResolvedValue(new Response("{}", { status: 500 }));
-    const failed = await human(ENV, { intent: "callback" });
-    const res = await failed.POST(failed.request);
-    expect(res.status).toBe(502);
-    expect(((await res.json()) as { error: string }).error).toContain("call or WhatsApp");
-  });
-
-  it("says the same when no platform is configured and someone asks for a call", async () => {
-    const { POST, request } = await human(LOCAL, { intent: "callback" });
-    expect((await POST(request)).status).toBe(502);
-    expect(fetchMock).not.toHaveBeenCalled();
   });
 
   it("sends a paying visitor to the plain sign-up when no platform is configured", async () => {

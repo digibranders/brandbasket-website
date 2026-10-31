@@ -2,7 +2,6 @@
 // Copy for the ad landing page (/start). The headline is the owner's own wording (2026-10-31); the rest is proposed and goes to the owner before it ships.
 // Prices, the offer line and the FAQ answers are built from content/home.ts and lib/pricing.ts, so they cannot drift from the site.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { planPrice } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 
 export type StartIconKey =
@@ -51,13 +50,8 @@ export const START_FORM = {
   paying: "Opening sign-up",
   or: "or",
   support: "I’d like to speak with your support team first",
-  sending: "Sending",
-  doneTitle: "Thank you",
-  doneCallPre: "Our support team will call you on",
-  doneCallPost: "We call",
-  doneWhatsApp: "Prefer WhatsApp? Message us",
-  back: "Back to the form",
-  whatsappMessage: "Hi Brandbasket, I would like to know more about the free website.",
+  /** Typed ready to send when the support button opens WhatsApp. */
+  whatsappMessage: "Hi Brandbasket, I would like to know more about the business website.",
 } as const;
 
 export const START_ERRORS = {
@@ -73,11 +67,8 @@ export const START_ERRORS = {
   send: "We could not send this. Please call or WhatsApp us instead.",
 } as const;
 
-/** What the pay button's small print says, per currency: rupees keep their GST wording, dollars never mention tax. */
-export function payNoteFor(currency: Currency): string {
-  const first = formatMoney(planPrice("website", currency), currency);
-  return `First month ${first}${currency === "INR" ? ", GST included" : ""}. Then monthly. Cancel anytime.`;
-}
+/** The small print under the pay button. The price and GST are on the offer line above it. */
+export const START_PAY_NOTE = "Cancel anytime.";
 
 /** The phone bar's small line under the monthly price. The GST wording stays on the offer line and the form's note, so the bar fits one tidy row. */
 export function barNoteFor(currency: Currency): string {

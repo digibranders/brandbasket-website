@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { readMobile, startSchema } from "./start-schema";
 
-const VALID = { intent: "pay", name: "Rahul Mehta", phone: "98765 43210", email: "rahul@mehta.in", consent: true, noticeVersion: "2026-10-26.3" };
+const VALID = { name: "Rahul Mehta", phone: "98765 43210", email: "rahul@mehta.in", consent: true, noticeVersion: "2026-10-26.3" };
 
 describe("readMobile", () => {
   it.each([
@@ -21,13 +21,12 @@ describe("readMobile", () => {
 });
 
 describe("startSchema", () => {
-  it("accepts a complete lead for either intent", () => {
+  it("accepts a complete lead", () => {
     expect(startSchema.safeParse(VALID).success).toBe(true);
-    expect(startSchema.safeParse({ ...VALID, intent: "callback" }).success).toBe(true);
   });
 
   it("needs a name, a mobile number, an email and the consent tick", () => {
-    for (const patch of [{ name: "A" }, { phone: "123" }, { email: "rahul@mehta" }, { consent: false }, { intent: "other" }]) {
+    for (const patch of [{ name: "A" }, { phone: "123" }, { email: "rahul@mehta" }, { consent: false }]) {
       expect(startSchema.safeParse({ ...VALID, ...patch }).success, JSON.stringify(patch)).toBe(false);
     }
   });

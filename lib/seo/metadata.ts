@@ -28,7 +28,7 @@ interface PageMetadataOptions {
 
 /** Metadata for one page from its registry entry (lib/seo/routes.ts). */
 export function pageMetadata(
-  { title, description, path, noindex = false }: Pick<RouteMeta, "title" | "description" | "path" | "noindex">,
+  { title, description, path, noindex = false, nofollow = false }: Pick<RouteMeta, "title" | "description" | "path" | "noindex" | "nofollow">,
   { ownShareImage = false, article, image }: PageMetadataOptions = {},
 ): Metadata {
   const url = `${siteConfig.url}${path}`;
@@ -44,6 +44,6 @@ export function pageMetadata(
     twitter: { card: "summary_large_image", title, description, ...images },
     // Only set the key when needed: a present-but-undefined key overrides the layout robots in Next's metadata merge.
     // Before launch the layout's "noindex, nofollow" applies everywhere, so a noindex page must not loosen it to follow.
-    ...(noindex ? { robots: { index: false, follow: isProductionSite() } } : {}),
+    ...(noindex ? { robots: { index: false, follow: nofollow ? false : isProductionSite() } } : {}),
   };
 }

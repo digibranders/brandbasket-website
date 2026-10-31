@@ -1,21 +1,20 @@
 "use client";
 // components/start/StartForm.tsx
-import { CheckCircle, WarningCircle } from "@phosphor-icons/react/dist/ssr";
+import { WarningCircle } from "@phosphor-icons/react/dist/ssr";
 import { track } from "@vercel/analytics";
 import Link from "next/link";
-import { type FocusEvent, type FormEvent, type ReactElement, useEffect, useRef, useState } from "react";
+import { type FocusEvent, type FormEvent, type ReactElement, useRef, useState } from "react";
 import { z } from "zod";
 import { pushConversion } from "@/components/consent/tags";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
-import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
-import { payNoteFor, START_ERRORS, START_FORM, SUPPORT_HOURS } from "@/content/start";
-import { startSubmitEvent } from "@/lib/analytics";
+import { START_ERRORS, START_FORM, START_PAY_NOTE } from "@/content/start";
+import { startSubmitEvent, trackAttrs } from "@/lib/analytics";
 import type { Currency } from "@/lib/currency";
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { FORM_TOKEN_FIELD, HONEYPOT_FIELDS } from "@/lib/security/form-fields";
-import { siteConfig } from "@/lib/site-config";
-import { ADS_KEYS, readMobile, START_MAX, type StartIntent, startFields } from "@/lib/start-schema";
+import { businessDetails, siteConfig } from "@/lib/site-config";
+import { ADS_KEYS, readMobile, START_MAX, startFields } from "@/lib/start-schema";
 import { useFormToken } from "./use-form-token";
 
 type Field = "name" | "phone" | "email";
@@ -24,8 +23,10 @@ type Errors = Partial<Record<ErrorField, string>>;
 const FIELDS: readonly Field[] = ["name", "phone", "email"];
 const ERROR_FIELDS: readonly ErrorField[] = [...FIELDS, "consent"];
 
-/** `called` keeps what the visitor typed that the confirmation repeats back to them. It never goes to analytics. */
-type Status = { readonly kind: "idle" } | { readonly kind: "busy"; readonly intent: StartIntent } | { readonly kind: "opening" } | { readonly kind: "called"; readonly name: string; readonly phone: string } | { readonly kind: "error"; readonly message: string };
+type Status = { readonly kind: "idle" | "busy" | "opening" } | { readonly kind: "error"; readonly message: string };
+
+/** "I'd like to speak with your support team first": a WhatsApp chat with the message already typed. No details are asked for and nothing is saved. */
+const SUPPORT_HREF = `${businessDetails.whatsappHref}?text=${encodeURIComponent(START_FORM.whatsappMessage)}`;
 
 const startResponse = z.union([
   z.object({ ok: z.literal(true), next: z.string().optional() }),
@@ -60,15 +61,10 @@ export function StartForm(): ReactElement {
   const currency = useCurrency();
   const india = currency === "INR";
   const formRef = useRef<HTMLFormElement>(null);
-  const doneRef = useRef<HTMLDivElement>(null);
   const readyToken = useFormToken();
   const [errors, setErrors] = useState<Errors>({});
   const [status, setStatus] = useState<Status>({ kind: "idle" });
   const working = status.kind === "busy" || status.kind === "opening";
-
-  useEffect(() => {
-    if (status.kind === "called") doneRef.current?.focus();
-  }, [status.kind]);
 
   const focusField = (name: ErrorField): void => formRef.current?.querySelector<HTMLElement>(`[name="${name}"]`)?.focus();
   const check = (name: Field, value: string): void => setErrors((current) => ({ ...current, [name]: fieldError(name, value, currency) }));
@@ -79,7 +75,7 @@ export function StartForm(): ReactElement {
     if (errors[name]) check(name, event.currentTarget.value);
   };
 
-  async function submit(intent: StartIntent): Promise<void> {
+  async function submit(): Promise<void> {
     const form = formRef.current;
     if (!form || working) return;
     const data = new FormData(form);
@@ -99,14 +95,13 @@ export function StartForm(): ReactElement {
       return;
     }
 
-    setStatus({ kind: "busy", intent });
+    setStatus({ kind: "busy" });
     const token = await readyToken();
     if (!token) {
       setStatus({ kind: "error", message: START_ERRORS.send });
       return;
     }
     const body = {
-      intent,
       ...Object.fromEntries(FIELDS.map((name) => [name, value(name)])),
       consent: agreed,
       noticeVersion: LEGAL_TEXT_VERSION,
@@ -118,13 +113,9 @@ export function StartForm(): ReactElement {
       const res = await fetch("/api/start", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify(body) });
       const result = startResponse.safeParse(await res.json().catch(() => null));
       if (res.ok && result.success && "ok" in result.data) {
-        const sent = startSubmitEvent(intent);
+        const sent = startSubmitEvent();
         track(sent.name, sent.properties);
         pushConversion(sent);
-        if (intent === "callback") {
-          setStatus({ kind: "called", name: value("name"), phone: value("phone") });
-          return;
-        }
         // Only ever to the app: the address comes from our own server, and is checked anyway before the page leaves.
         const to = result.data.next;
         if (to !== undefined && to.startsWith(`${siteConfig.appUrl}/`)) {
@@ -144,20 +135,6 @@ export function StartForm(): ReactElement {
     } catch {
       setStatus({ kind: "error", message: START_ERRORS.send });
     }
-  }
-
-  if (status.kind === "called") {
-    return (
-      <div ref={doneRef} role="status" tabIndex={-1} className="grid justify-items-start gap-3.5 py-2 outline-none">
-        <CheckCircle aria-hidden="true" weight="fill" className="size-10 text-sage" />
-        <b className="font-display text-[26px] font-medium tracking-[-0.03em]">{`${START_FORM.doneTitle}, ${status.name.split(/\s+/)[0] ?? ""}.`}</b>
-        <p className="max-w-[40ch] text-ink-2">
-          {START_FORM.doneCallPre} <b className="break-words font-medium text-ink">{status.phone}</b>. {START_FORM.doneCallPost} {SUPPORT_HOURS}.
-        </p>
-        <WhatsAppButton location="start_done" label={START_FORM.doneWhatsApp} message={START_FORM.whatsappMessage} />
-        <button type="button" onClick={() => setStatus({ kind: "idle" })} className="cursor-pointer border-0 bg-transparent p-0 font-display text-[14.5px] font-semibold underline decoration-rattan decoration-2 underline-offset-[5px]">{START_FORM.back}</button>
-      </div>
-    );
   }
 
   const field = (name: Field, rest: { readonly type: string; readonly autoComplete: string; readonly inputMode?: "tel" | "email"; readonly prefix?: string; readonly hint?: string }): ReactElement => {
@@ -192,7 +169,7 @@ export function StartForm(): ReactElement {
   };
 
   return (
-    <form ref={formRef} noValidate onSubmit={(event) => { event.preventDefault(); void submit("pay"); }} className="grid gap-[18px]">
+    <form ref={formRef} noValidate onSubmit={(event) => { event.preventDefault(); void submit(); }} className="grid gap-[18px]">
       <div>
         <h2 className="font-display text-[clamp(24px,2.2vw,30px)] font-medium leading-[1.1] tracking-[-0.03em]">{START_FORM.title}</h2>
         <p className="mt-1.5 text-[15px] text-ink-2">{START_FORM.sub}</p>
@@ -226,19 +203,20 @@ export function StartForm(): ReactElement {
 
       <div className="grid gap-3">
         <button type="submit" disabled={working} className={`${pillClasses("md", "action")} w-full cursor-pointer disabled:cursor-wait disabled:opacity-70`}>
-          {status.kind === "opening" || (status.kind === "busy" && status.intent === "pay") ? START_FORM.paying : START_FORM.pay}
+          {working ? START_FORM.paying : START_FORM.pay}
           <Arrow size="md" />
         </button>
-        <p className="text-center text-[13px] text-ink-2">{payNoteFor(currency)}</p>
+        <p className="text-center text-[13px] text-ink-2">{START_PAY_NOTE}</p>
         <div aria-hidden="true" className="flex items-center gap-3 text-[13px] text-ink-2 before:h-px before:flex-1 before:bg-line after:h-px after:flex-1 after:bg-line">{START_FORM.or}</div>
-        <button
-          type="button"
-          disabled={working}
-          onClick={() => void submit("callback")}
-          className="min-h-[52px] w-full cursor-pointer rounded-full border-[1.5px] border-ink/30 bg-transparent px-5 py-3 text-left font-display text-[15.5px] font-semibold leading-tight tracking-[-0.01em] transition-colors duration-300 ease-[var(--ease)] hover:border-ink hover:bg-surface disabled:cursor-wait disabled:opacity-70"
+        <a
+          href={SUPPORT_HREF}
+          target="_blank"
+          rel="noopener"
+          {...trackAttrs("whatsapp_click", "start_form")}
+          className="flex min-h-[52px] w-full items-center rounded-full border-[1.5px] border-ink/30 px-5 py-3 font-display text-[15.5px] font-semibold leading-tight tracking-[-0.01em] transition-colors duration-300 ease-[var(--ease)] hover:border-ink hover:bg-surface"
         >
-          {status.kind === "busy" && status.intent === "callback" ? START_FORM.sending : START_FORM.support}
-        </button>
+          {START_FORM.support}
+        </a>
       </div>
     </form>
   );

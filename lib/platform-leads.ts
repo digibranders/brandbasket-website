@@ -1,7 +1,7 @@
 import type { ContactInput } from "@/lib/contact-schema";
 import type { PlanId } from "@/lib/pricing";
 import { clientKey } from "@/lib/security/rateLimit";
-import { ADS_KEYS, type Mobile, type StartInput, type StartIntent } from "@/lib/start-schema";
+import { ADS_KEYS, type Mobile, type StartInput } from "@/lib/start-schema";
 
 /** Where the platform takes enquiries (its POST /api/leads), and the shared secret it checks (its LEADS_API_TOKEN). */
 export interface PlatformLeadsEnv {
@@ -64,16 +64,16 @@ export async function forwardEnquiry(lead: ContactInput, request: Request, env: 
 /** The ad page's business name until the sign-up asks for it: the platform's intake wants one. */
 const START_BUSINESS = "Not given yet";
 
-/** The line the team reads first: what the visitor asked for and which ad brought them. */
-export function startMessage(intent: StartIntent, ads: StartInput["ads"]): string {
-  const asked = intent === "pay" ? "Ad landing page. Going to payment." : "Ad landing page. Asked to speak with the support team first: please call.";
+/** The line the team reads first: that the visitor went on to payment, and which ad brought them. */
+export function startMessage(ads: StartInput["ads"]): string {
+  const asked = "Ad landing page. Going to payment.";
   const source = ADS_KEYS.flatMap((key) => (ads?.[key] ? [`${key}=${ads[key]}`] : [])).join(", ");
   return source === "" ? asked : `${asked} ${source}`;
 }
 
 /**
- * Sends an ad landing page lead to the staff console. A visitor who asked for a call needs this to succeed, so it says whether it did;
- * one on the way to payment is a lead the team can follow up if they never finish, and is never held up by it.
+ * Sends an ad landing page lead to the staff console: someone on the way to payment, whom the team can follow up if they never
+ * finish. Never throws, and the visitor is never held up by it.
  */
 export async function forwardStart(lead: StartInput, mobile: Mobile, request: Request, env: PlatformLeadsEnv): Promise<boolean> {
   const contact: PlatformContact = {
@@ -82,8 +82,8 @@ export async function forwardStart(lead: StartInput, mobile: Mobile, request: Re
     email: lead.email,
     phone: mobile.e164,
     city: "",
-    plans: lead.intent === "pay" ? ["website"] : [],
-    message: startMessage(lead.intent, lead.ads),
+    plans: ["website"],
+    message: startMessage(lead.ads),
   };
   return postContact(contact, lead.noticeVersion, request, env, "start");
 }

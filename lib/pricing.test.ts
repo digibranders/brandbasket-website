@@ -17,6 +17,7 @@ import {
   PLAN_IDS,
   planPrice,
   samePick,
+  websiteUsualPrices,
 } from "./pricing";
 
 const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
@@ -43,6 +44,14 @@ describe("plans", () => {
   it("charges extras in each currency (owner, 2026-10-27 for dollars)", () => {
     expect(extrasFor("INR")).toEqual({ hour: 500, reel: 500, adBudgetCap: 10000 });
     expect(extrasFor("USD")).toEqual({ hour: 10, reel: 10, adBudgetCap: 120 });
+  });
+});
+
+describe("websiteUsualPrices", () => {
+  it("holds the struck-through prices and keeps them above the real ones", () => {
+    expect(websiteUsualPrices("INR")).toEqual({ build: 35000, monthly: 4999 });
+    expect(websiteUsualPrices("USD")).toEqual({ build: 1200, monthly: 99 });
+    for (const currency of CURRENCIES) expect(websiteUsualPrices(currency).monthly).toBeGreaterThan(planPrice("website", currency));
   });
 });
 

@@ -3,7 +3,7 @@
 // Prices and rates are built from lib/pricing.ts, per currency: rupees keep their GST wording, dollars never mention tax. The basket panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { GST_LABEL, planPrice } from "@/lib/pricing";
+import { GST_LABEL, planPrice, websiteUsualPrices } from "@/lib/pricing";
 import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -29,8 +29,8 @@ export type HomeIconKey =
 
 export interface OfferLineContent {
   readonly ariaLabel: string;
-  readonly build: { readonly price: string; readonly label: string };
-  readonly run: { readonly price: string; readonly unit: string; readonly label: string };
+  readonly build: { readonly was: string; readonly price: string; readonly label: string };
+  readonly run: { readonly was: string; readonly price: string; readonly unit: string; readonly label: string };
 }
 
 /** The "0 + monthly" offer line. Shared by the homepage hero and the pricing hero. Rupees end with ", incl. GST"; dollars drop it. */
@@ -38,10 +38,13 @@ export function offerFor(currency: Currency): OfferLineContent {
   const zero = formatMoney(0, currency);
   const monthly = formatMoney(planPrice("website", currency), currency);
   const inr = currency === "INR";
+  const usual = websiteUsualPrices(currency);
+  const usualBuild = formatMoney(usual.build, currency);
+  const usualMonthly = formatMoney(usual.monthly, currency);
   return {
-    ariaLabel: `${zero} to build your website, plus ${monthly} a month${inr ? ", GST included," : ""} to keep it running`,
-    build: { price: zero, label: "to build your website" },
-    run: { price: monthly, unit: "/month", label: inr ? "to keep it running, incl. GST" : "to keep it running" },
+    ariaLabel: `${zero} to build your website, usually ${usualBuild}, plus ${monthly} a month${inr ? ", GST included," : ""} to keep it running, usually ${usualMonthly}`,
+    build: { was: usualBuild, price: zero, label: "to build your website" },
+    run: { was: usualMonthly, price: monthly, unit: "/month", label: inr ? "to keep it running, incl. GST" : "to keep it running" },
   };
 }
 

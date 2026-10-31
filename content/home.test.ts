@@ -33,16 +33,16 @@ describe("home content", () => {
   });
   it("keeps the rupee offer line word for word", () => {
     expect(offerFor("INR")).toEqual({
-      ariaLabel: "₹0 to build your website, plus ₹2,999 a month, GST included, to keep it running",
-      build: { price: "₹0", label: "to build your website" },
-      run: { price: "₹2,999", unit: "/month", label: "to keep it running, incl. GST" },
+      ariaLabel: "₹0 to build your website, usually ₹35,000, plus ₹2,999 a month, GST included, to keep it running, usually ₹4,999",
+      build: { was: "₹35,000", price: "₹0", label: "to build your website" },
+      run: { was: "₹4,999", price: "₹2,999", unit: "/month", label: "to keep it running, incl. GST" },
     });
   });
   it("prints the dollar offer line without any tax wording", () => {
     expect(offerFor("USD")).toEqual({
-      ariaLabel: "$0 to build your website, plus $65 a month to keep it running",
-      build: { price: "$0", label: "to build your website" },
-      run: { price: "$65", unit: "/month", label: "to keep it running" },
+      ariaLabel: "$0 to build your website, usually $1,200, plus $65 a month to keep it running, usually $99",
+      build: { was: "$1,200", price: "$0", label: "to build your website" },
+      run: { was: "$99", price: "$65", unit: "/month", label: "to keep it running" },
     });
   });
   it("has the section counts of the mock", () => {

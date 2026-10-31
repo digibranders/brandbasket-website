@@ -40,6 +40,19 @@ export function planPrice(id: PlanId, currency: Currency): number {
   return PLAN_PRICES[currency][id];
 }
 
+/**
+ * The "usually" prices printed struck through beside the Managed Website offer (owner, 2026-10-31): what building a site
+ * costs elsewhere and the monthly price before the launch offer. Display only; nothing is billed from them.
+ */
+const WEBSITE_USUAL: Readonly<Record<Currency, { readonly build: number; readonly monthly: number }>> = {
+  INR: { build: 35000, monthly: 4999 },
+  USD: { build: 1200, monthly: 99 },
+};
+
+export function websiteUsualPrices(currency: Currency): { readonly build: number; readonly monthly: number } {
+  return WEBSITE_USUAL[currency];
+}
+
 /** GST already inside every rupee price. Only the legal text, the rupee pages and the platform's invoices name the rate; dollar pages never do. */
 export const GST_RATE = 0.18;
 /** GST as printed in copy, for example "18%". */

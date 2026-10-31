@@ -1,5 +1,6 @@
 // components/start/StartSections.tsx
 import { Phone, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import Image from "next/image";
 import Link from "next/link";
 import type { ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
@@ -13,6 +14,7 @@ import { homeFaqFor, offerFor } from "@/content/home";
 import { CARE, START, START_CLOSING, START_FAQ_HEADING, START_FAQ_QUESTIONS, START_PAY_LABEL, START_STEPS, startFactsFor, SUPPORT_HOURS } from "@/content/start";
 import type { Currency } from "@/lib/currency";
 import { businessDetails } from "@/lib/site-config";
+import "@/components/shell/footer.css";
 import { START_ICONS } from "./icons";
 import { StartForm } from "./StartForm";
 
@@ -194,16 +196,34 @@ export function StartClosing(): ReactElement {
   );
 }
 
-/** The legal minimum, with no way out to the rest of the site. */
+/**
+ * The legal minimum, with no way out to the rest of the site, and the big faded mark the main site's footer ends on (same
+ * classes, components/shell/footer.css). The spacer keeps the mark clear of the phone bar.
+ */
 export function StartFooter(): ReactElement {
   return (
-    <footer className="in-wrap grid gap-2.5 pb-[110px] pt-7 text-[13.5px] text-ink-2 min-[980px]:pb-9">
-      <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-1.5">
-        <Link href="/privacy" className="text-ink underline underline-offset-[3px]">Privacy Policy</Link>
-        <Link href="/terms" className="text-ink underline underline-offset-[3px]">Terms</Link>
-        <Link href="/refund" className="text-ink underline underline-offset-[3px]">Refund and cancellation</Link>
-      </nav>
-      <p>{businessDetails.tradeName} is a brand of {businessDetails.legalName}. {businessDetails.address.join(" ")}</p>
+    <footer className="site-footer">
+      <div className="site-footer-body">
+        <div className="in-wrap">
+          <div className="grid gap-3 border-t border-line pb-6 pt-8 text-[13.5px] text-ink-2">
+            <nav aria-label="Legal" className="flex flex-wrap gap-x-5 gap-y-1.5">
+              <Link href="/privacy" className="text-ink underline underline-offset-[3px]">Privacy Policy</Link>
+              <Link href="/terms" className="text-ink underline underline-offset-[3px]">Terms</Link>
+              <Link href="/refund" className="text-ink underline underline-offset-[3px]">Refund and cancellation</Link>
+            </nav>
+            <p className="max-w-[78ch]">{businessDetails.tradeName} is a brand of {businessDetails.legalName}. {businessDetails.address.join(" ")}</p>
+          </div>
+          <div className="site-footer-colophon">
+            <p>&copy; {new Date().getFullYear()} {businessDetails.tradeName}</p>
+          </div>
+        </div>
+      </div>
+      <div className="site-footer-signature" aria-hidden="true">
+        <div className="in-wrap">
+          <Image src="/brand/brandbasket-logo-horizontal-light.svg" alt="" width={1188} height={200} className="site-footer-wordmark" />
+        </div>
+      </div>
+      <div aria-hidden="true" className="h-20 min-[980px]:hidden" />
     </footer>
   );
 }

@@ -56,7 +56,7 @@ export const ROUTES = {
     priority: 0.7,
   },
   start: {
-    path: "/start",
+    path: "/website-landing-page",
     title: `Start your free business website | ${tradeName}`,
     description: "Get a professional website for your local business, built free and live in 7 working days. We host, secure and look after it every month.",
     updated: "2026-10-31",

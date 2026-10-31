@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
       },
     },
   },
+  // The ad landing page first went live at /start; anything still pointing there lands on its new address with its query string.
+  async redirects() {
+    return [{ source: "/start", destination: "/website-landing-page", permanent: false }];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: securityHeaders({ dev: process.env.NODE_ENV !== "production", mediaOrigin: BLOG_MEDIA_ORIGIN }) },
@@ -26,7 +30,7 @@ const nextConfig: NextConfig = {
       // Until launch is approved, every host is noindex (see isProductionSite).
       ...(isProductionSite() ? [] : [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex" }] }]),
       // The ad landing page is for ad clicks only: never indexed, whatever launch state the site is in (its links may still be followed). Its robots.txt entry stays open so ad reviewers (AdsBot) can still load it and crawlers can read this header.
-      { source: "/start", headers: [{ key: "X-Robots-Tag", value: "noindex" }] },
+      { source: "/website-landing-page", headers: [{ key: "X-Robots-Tag", value: "noindex" }] },
       // The vercel.app copies stay out of search permanently, after launch too. Listed last so it wins on those hosts.
       { source: "/:path*", has: [{ type: "host" as const, value: ".*\\.vercel\\.app" }], headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
     ];

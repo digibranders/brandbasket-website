@@ -34,8 +34,8 @@ describe("route registry", () => {
     expect(indexableRoutes().some((r) => r.path === "/notice")).toBe(false);
   });
   it("keeps the ad landing page out of search and the sitemap but lets its links be followed once live", () => {
-    expect(ROUTES.start).toMatchObject({ path: "/start", noindex: true });
-    expect(indexableRoutes().some((r) => r.path === "/start")).toBe(false);
+    expect(ROUTES.start).toMatchObject({ path: "/website-landing-page", noindex: true });
+    expect(indexableRoutes().some((r) => r.path === "/website-landing-page")).toBe(false);
     vi.stubEnv("SITE_INDEXING", "on");
     vi.stubEnv("VERCEL_ENV", "production");
     expect(pageMetadata(ROUTES.start).robots).toEqual({ index: false, follow: true });

@@ -49,6 +49,7 @@ export const START_FORM = {
   pay: START_PAY_LABEL,
   paying: "Opening sign-up",
   support: "Talk to us",
+  or: "or",
   /** Typed ready to send when the support button opens WhatsApp. */
   whatsappMessage: "Hi Brandbasket, I would like to know more about the business website.",
 } as const;

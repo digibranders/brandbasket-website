@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { loginHref, signupHref } from "./signup";
+import { loginHref, signupHref, startHref } from "./signup";
 
 describe("signupHref", () => {
   it("sends the picked plans to the app's sign-in, in catalogue order", () => {
@@ -14,3 +14,13 @@ describe("loginHref", () => {
   });
 });
 
+
+describe("startHref", () => {
+  it("opens the Managed Website sign-up with the sealed details", () => {
+    expect(startHref("abc123")).toBe("https://app.brandbasket.in/login?plan=website&start=abc123");
+  });
+
+  it("is the plain Managed Website sign-up with no token", () => {
+    expect(startHref(null)).toBe("https://app.brandbasket.in/login?plan=website");
+  });
+});

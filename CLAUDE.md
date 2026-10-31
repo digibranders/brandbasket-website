@@ -15,6 +15,11 @@ Stack: Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS v4, Vite
 - The site is noindex until launch. Turning indexing on is a launch step: set SITE_INDEXING=on in Vercel production only after the owner approves, then submit the sitemap in Search Console.
 - The site is light only. Tokens are in `app/globals.css`. Use the tokens, never raw colours.
 
+## Landing pages for ads
+- `app/[currency]/` holds two route groups: `(site)` is the whole site with its navigation, closing band, footer, chat and basket; `(landing)` has only a logo, a way to call and the legal links. Pages for ad traffic go in `(landing)`. `/start` is the first one: mock `../docs/design/ads-landing-mock.html`, copy in `content/start.ts`, parts in `components/start/`.
+- `/start` is noindex (`ROUTES.start`), never in the sitemap, and its form posts to `app/api/start/route.ts`: the lead goes to the platform's `/api/leads` (`forwardStart`), then a paying visitor is sent to the app's sign-up with `?start=<token>`. The token (`lib/start-token.ts`, AES-GCM under `LEADS_API_TOKEN`, one hour) seals name, email and mobile so the address holds no readable personal data. brandbasket-platform keeps an identical copy of that file; change both together.
+- Every button on the page that goes to the form says `START_PAY_LABEL`. Campaign parameters (`utm_*`, `gclid`, `fbclid`) are kept in the lead's message so the team can tell which ad it came from.
+
 ## Currency (rupees or dollars)
 - Every page is built twice, under `app/[currency]/` (`/inr` and `/usd`). `proxy.ts` serves the right copy at the plain address: the footer switch (cookie `bb_currency`, set by a `?currency=` link) first, then `x-vercel-ip-country` (India or unknown is rupees, anything else dollars), and search engines and other bots always get rupees. `/inr/...` and `/usd/...` redirect to the plain address.
 - `lib/currency.ts` holds the currency helpers and `formatMoney`; prices, extras and ad money for both currencies are in `lib/pricing.ts`. Every total takes a `currency`. Client components read it with `useCurrency()`, server components get it from the page `params` (`currencyParam`).

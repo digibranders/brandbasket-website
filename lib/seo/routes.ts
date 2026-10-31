@@ -55,6 +55,15 @@ export const ROUTES = {
     updated: UPDATED,
     priority: 0.7,
   },
+  start: {
+    path: "/start",
+    title: `Start your free business website | ${tradeName}`,
+    description: "Get a professional website for your local business, built free and live in 7 working days. We host, secure and look after it every month.",
+    updated: "2026-10-31",
+    priority: 0,
+    // The page ad clicks land on: it repeats the homepage's offer, so it stays out of search and the sitemap.
+    noindex: true,
+  },
   blog: {
     path: "/blog",
     title: `Blog: guides for local businesses | ${tradeName}`,

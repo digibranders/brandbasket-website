@@ -69,8 +69,8 @@ function pageAttribution(): ReturnType<typeof readAttribution> {
   return readAttribution(input);
 }
 
-/** The two form buttons: the same size and shape, label centred in the space beside a round icon chip pinned to the right edge. They sit in an equal two-column grid that stacks only when a column would be under 8.25rem. */
-const CTA = "group inline-flex h-[54px] w-full cursor-pointer items-center justify-between whitespace-nowrap rounded-full text-[15px] font-semibold transition-[transform,background-color] duration-500 ease-[var(--ease)] active:scale-[0.98]";
+/** Both form buttons share one shape and size: full width, label centred beside a round icon chip pinned to the right edge. Colour tells them apart: dark for paying, light copper for talking to us first. */
+const CTA = "group inline-flex cursor-pointer items-center justify-between whitespace-nowrap rounded-full font-semibold transition-[transform,background-color] duration-500 ease-[var(--ease)] active:scale-[0.98]";
 const INPUT_BOX = "relative flex items-stretch rounded-[14px] border-[1.5px] border-[#8d8b85] bg-white transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_3px_rgba(21,22,26,0.1)] aria-[invalid=true]:border-error";
 /** The field's own border is the focus indicator; the important flag is needed because the site-wide :focus-visible outline (globals.css) is unlayered and would otherwise draw a second, square ring on the input inside it. */
 const INPUT = "h-[52px] min-w-0 flex-1 bg-transparent px-4 text-base outline-none!";
@@ -235,28 +235,26 @@ export function StartForm(): ReactElement {
 
       {status.kind === "error" ? <p role="alert" className="rounded-[14px] border border-error/25 bg-error/5 p-4 text-sm text-error">{status.message}</p> : null}
 
+      {/* Two long buttons of the same size: Pay now, the cancel note, then Talk to us. */}
       <div className="grid gap-3">
-        {/* Two equal buttons side by side, labels centred; on a very narrow screen they wrap and stack. */}
-        <div className="grid grid-cols-[repeat(auto-fit,minmax(8.25rem,1fr))] gap-3">
-          <button type="submit" disabled={working} className={`${CTA} gap-2 bg-action px-2 text-action-ink disabled:cursor-wait disabled:opacity-70`}>
-            <span className="flex-1 text-center">{working ? START_FORM.paying : START_FORM.pay}</span>
-            <Arrow size="md" />
-          </button>
-          <a
-            href={SUPPORT_HREF}
-            target="_blank"
-            rel="noopener"
-            {...trackAttrs("whatsapp_click", "start_form")}
-            className={`${CTA} gap-2 border-[1.5px] border-rattan bg-rattan-wash px-[6.5px] text-ink hover:bg-[color-mix(in_srgb,var(--rattan-wash)_70%,var(--rattan))]`}
-          >
-            <span className="flex-1 text-center">{START_FORM.support}</span>
-            {/* The same 36px round chip as the pay button's arrow, so the two buttons weigh the same; white to stand out on the light fill. */}
-            <span aria-hidden="true" className="grid size-9 flex-none place-items-center rounded-full bg-white text-[var(--whatsapp)] shadow-[inset_0_0_0_1px_rgba(196,138,71,0.3)] transition-transform duration-500 ease-[var(--ease)] group-hover:-translate-y-px group-hover:translate-x-0.5 group-hover:scale-[1.06]">
-              <WhatsappLogo weight="fill" className="size-5" />
-            </span>
-          </a>
-        </div>
+        <button type="submit" disabled={working} className={`${CTA} h-14 w-full gap-2 bg-action px-2 text-base text-action-ink disabled:cursor-wait disabled:opacity-70`}>
+          <span className="flex-1 text-center">{working ? START_FORM.paying : START_FORM.pay}</span>
+          <Arrow size="md" />
+        </button>
         <p className="text-center text-[13px] text-ink-2">{START_PAY_NOTE}</p>
+        <a
+          href={SUPPORT_HREF}
+          target="_blank"
+          rel="noopener"
+          {...trackAttrs("whatsapp_click", "start_form")}
+          className={`${CTA} mt-1 h-14 w-full gap-2 border-[1.5px] border-rattan bg-rattan-wash pl-2 pr-[6.5px] text-base text-ink hover:bg-[color-mix(in_srgb,var(--rattan-wash)_70%,var(--rattan))]`}
+        >
+          <span className="flex-1 text-center">{START_FORM.support}</span>
+          {/* The same 36px round chip as the arrow's; white to stand out on the light fill. */}
+          <span aria-hidden="true" className="grid size-9 flex-none place-items-center rounded-full bg-white text-[var(--whatsapp)] shadow-[inset_0_0_0_1px_rgba(196,138,71,0.3)] transition-transform duration-500 ease-[var(--ease)] group-hover:-translate-y-px group-hover:translate-x-0.5 group-hover:scale-[1.06]">
+            <WhatsappLogo weight="fill" className="size-5" />
+          </span>
+        </a>
       </div>
     </form>
   );

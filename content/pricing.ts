@@ -4,7 +4,7 @@
 // never mentions a tax. The hero plan rows and basket labels live in content/basket.ts. Cancellation wording reuses
 // content/legal/cancellation.ts so pricing and legal agree.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { extrasFor, PACKAGES, PLANS, planPrice, type Package, type PlanId, websiteUsualPrices } from "@/lib/pricing";
+import { extrasFor, PACKAGES, PLANS, planPrice, planUsualPrice, type Package, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -27,8 +27,8 @@ export interface PlanColumn {
   readonly id: PlanId;
   readonly name: string;
   readonly price: string;
-  /** The usual price, struck through above the price; only the Managed Website plan has one. */
-  readonly was?: string;
+  /** The usual price, struck through beside the price. */
+  readonly was: string;
   readonly priceNote: string;
   /** A short tag under the name, only where it adds a fact. */
   readonly tag?: string;
@@ -64,7 +64,7 @@ export function planColumns(currency: Currency): readonly PlanColumn[] {
       id: "website",
       name: PLANS.website.name,
       price: formatMoney(planPrice("website", currency), currency),
-      was: formatMoney(websiteUsualPrices(currency).monthly, currency),
+      was: formatMoney(planUsualPrice("website", currency), currency),
       priceNote,
       tag: "Free build",
       audience: "For businesses that want a website without the technical work.",
@@ -84,6 +84,7 @@ export function planColumns(currency: Currency): readonly PlanColumn[] {
       id: "growth",
       name: PLANS.growth.name,
       price: formatMoney(planPrice("growth", currency), currency),
+      was: formatMoney(planUsualPrice("growth", currency), currency),
       priceNote,
       audience: "For businesses that want posts, reviews and ads handled for them.",
       does: [
@@ -102,6 +103,7 @@ export function planColumns(currency: Currency): readonly PlanColumn[] {
       id: "search",
       name: PLANS.search.name,
       price: formatMoney(planPrice("search", currency), currency),
+      was: formatMoney(planUsualPrice("search", currency), currency),
       priceNote,
       audience: "For businesses that want to be found on Google and in AI answers.",
       does: [

@@ -79,6 +79,7 @@ describe("pricing content", () => {
   describe("rupee copy", () => {
     it("keeps the approved prices and GST wording", () => {
       expect(planColumns("INR").map((c) => c.price)).toEqual(["₹2,999", "₹9,999", "₹24,999"]);
+      expect(planColumns("INR").map((c) => c.was)).toEqual(["₹4,999", "₹14,999", "₹39,999"]);
       expect(planColumns("INR").every((c) => c.priceNote === "a month, incl. GST")).toBe(true);
       expect(compareCopy("INR").lede).toBe("Three plans, each on its own. Prices are monthly, GST included. Add more than one and the prices drop.");
       expect(everyPlan("INR").items).toContain("Billed monthly, GST included");
@@ -91,6 +92,7 @@ describe("pricing content", () => {
   describe("dollar copy", () => {
     it("prints dollar prices", () => {
       expect(planColumns("USD").map((c) => c.price)).toEqual(["$65", "$150", "$350"]);
+      expect(planColumns("USD").map((c) => c.was)).toEqual(["$99", "$225", "$549"]);
       expect(planColumns("USD").every((c) => c.priceNote === "a month")).toBe(true);
       expect(compareCopy("USD").lede).toBe("Three plans, each on its own. Prices are monthly. Add more than one and the prices drop.");
       expect(pricingFaq("USD")[0]?.a).toBe("Yes. We design and build it for $0. The $65 monthly plan keeps it hosted, secure and up to date.");

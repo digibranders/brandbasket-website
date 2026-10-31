@@ -35,9 +35,9 @@ function Plan({ plan, currency, doesLabel, excludesLabel }: { readonly plan: Pla
         </div>
         <p className="num col-span-full mt-3.5 font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
           <span className="whitespace-nowrap">
-            {plan.was ? <s className="mr-2 text-[clamp(20px,2vw,24px)] tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{plan.was}</s> : null}
+            <s className="mr-2 text-[clamp(20px,2vw,24px)] tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{plan.was}</s>
             {plan.price}
-          </span><small className={`font-sans text-sm font-medium tracking-normal text-ink-2 ${plan.was ? "mt-1 block" : "ml-1"}`}>{plan.priceNote}</small>
+          </span><small className="mt-1 block font-sans text-sm font-medium tracking-normal text-ink-2">{plan.priceNote}</small>
         </p>
         <p className="col-span-full mt-2 max-w-[34ch] text-[15px] leading-normal text-ink-2">{plan.audience}</p>
         <Link href={servicePageFor(plan.id, currency).path} className="group col-span-full mt-3 inline-flex w-fit items-center gap-1.5 text-[15px] font-semibold underline decoration-[var(--c)] decoration-2 underline-offset-4">

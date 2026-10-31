@@ -5,6 +5,7 @@ import {
   adCreditFor,
   basketPlans,
   type BasketPick,
+  buildUsualPrice,
   extrasFor,
   GST_LABEL,
   GST_RATE,
@@ -16,8 +17,8 @@ import {
   packageTotal,
   PLAN_IDS,
   planPrice,
+  planUsualPrice,
   samePick,
-  websiteUsualPrices,
 } from "./pricing";
 
 const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
@@ -47,11 +48,15 @@ describe("plans", () => {
   });
 });
 
-describe("websiteUsualPrices", () => {
-  it("holds the struck-through prices and keeps them above the real ones", () => {
-    expect(websiteUsualPrices("INR")).toEqual({ build: 35000, monthly: 4999 });
-    expect(websiteUsualPrices("USD")).toEqual({ build: 1200, monthly: 99 });
-    for (const currency of CURRENCIES) expect(websiteUsualPrices(currency).monthly).toBeGreaterThan(planPrice("website", currency));
+describe("usual prices", () => {
+  it("holds the struck-through prices (owner, 2026-10-31)", () => {
+    expect(PLAN_IDS.map((id) => planUsualPrice(id, "INR"))).toEqual([4999, 14999, 39999]);
+    expect(PLAN_IDS.map((id) => planUsualPrice(id, "USD"))).toEqual([99, 225, 549]);
+    expect(buildUsualPrice("INR")).toBe(35000);
+    expect(buildUsualPrice("USD")).toBe(1200);
+  });
+  it("keeps every usual price above the real one", () => {
+    for (const currency of CURRENCIES) for (const id of PLAN_IDS) expect(planUsualPrice(id, currency)).toBeGreaterThan(planPrice(id, currency));
   });
 });
 

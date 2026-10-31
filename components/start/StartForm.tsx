@@ -69,7 +69,7 @@ function pageAttribution(): ReturnType<typeof readAttribution> {
   return readAttribution(input);
 }
 
-/** Both form buttons share one shape and size: full width, label centred beside a round icon chip pinned to the right edge. Colour tells them apart: dark for paying, light copper for talking to us first. */
+/** Both form buttons share one shape and size: full width, label centred beside a round icon chip pinned to the right edge. Colour tells them apart: dark for paying, light copper for talking to us first, with an "or" line between. */
 const CTA = "group inline-flex cursor-pointer items-center justify-between whitespace-nowrap rounded-full font-semibold transition-[transform,background-color] duration-500 ease-[var(--ease)] active:scale-[0.98]";
 const INPUT_BOX = "relative flex items-stretch rounded-[14px] border-[1.5px] border-[#8d8b85] bg-white transition-[border-color,box-shadow] duration-200 focus-within:border-ink focus-within:shadow-[0_0_0_3px_rgba(21,22,26,0.1)] aria-[invalid=true]:border-error";
 /** The field's own border is the focus indicator; the important flag is needed because the site-wide :focus-visible outline (globals.css) is unlayered and would otherwise draw a second, square ring on the input inside it. */
@@ -235,19 +235,20 @@ export function StartForm(): ReactElement {
 
       {status.kind === "error" ? <p role="alert" className="rounded-[14px] border border-error/25 bg-error/5 p-4 text-sm text-error">{status.message}</p> : null}
 
-      {/* Two long buttons of the same size: Pay now, the cancel note, then Talk to us. */}
+      {/* Two long buttons of the same size: Pay now, the cancel note, an "or" line, then Talk to us. */}
       <div className="grid gap-3">
         <button type="submit" disabled={working} className={`${CTA} h-14 w-full gap-2 bg-action px-2 text-base text-action-ink disabled:cursor-wait disabled:opacity-70`}>
           <span className="flex-1 text-center">{working ? START_FORM.paying : START_FORM.pay}</span>
           <Arrow size="md" />
         </button>
         <p className="text-center text-[13px] text-ink-2">{START_PAY_NOTE}</p>
+        <div aria-hidden="true" className="flex items-center gap-3 text-[13px] text-ink-2 before:h-px before:flex-1 before:bg-line after:h-px after:flex-1 after:bg-line">{START_FORM.or}</div>
         <a
           href={SUPPORT_HREF}
           target="_blank"
           rel="noopener"
           {...trackAttrs("whatsapp_click", "start_form")}
-          className={`${CTA} mt-1 h-14 w-full gap-2 border-[1.5px] border-rattan bg-rattan-wash pl-2 pr-[6.5px] text-base text-ink hover:bg-[color-mix(in_srgb,var(--rattan-wash)_70%,var(--rattan))]`}
+          className={`${CTA} h-14 w-full gap-2 border-[1.5px] border-rattan bg-rattan-wash pl-2 pr-[6.5px] text-base text-ink hover:bg-[color-mix(in_srgb,var(--rattan-wash)_70%,var(--rattan))]`}
         >
           <span className="flex-1 text-center">{START_FORM.support}</span>
           {/* The same 36px round chip as the arrow's; white to stand out on the light fill. */}

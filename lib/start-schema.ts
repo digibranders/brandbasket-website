@@ -32,7 +32,7 @@ export function readMobile(value: string): Mobile | null {
 
 export const startFields = {
   name: z.string().trim().min(2, START_ERRORS.name).max(START_MAX.name, START_ERRORS.name).regex(NO_CONTROL, START_ERRORS.name),
-  phone: z.string().trim().max(START_MAX.phone, START_ERRORS.phoneWorld).refine((value) => readMobile(value) !== null, START_ERRORS.phoneWorld),
+  phone: z.string().trim().max(START_MAX.phone, START_ERRORS.phone).refine((value) => readMobile(value) !== null, START_ERRORS.phone),
   email: z.email(START_ERRORS.email).max(START_MAX.email, START_ERRORS.email),
 } as const;
 
@@ -45,6 +45,8 @@ export const startSchema = z.object({
   // Ticked on the form: the server refuses a lead that did not agree to the privacy policy.
   consent: z.literal(true, { error: START_ERRORS.consent }),
   noticeVersion: z.string().min(1).max(40),
+  // The ad the visitor came from, ids included. Untrusted: the route cleans it (cleanAttribution) before it is sealed into the sign-up address.
+  attribution: z.unknown().optional(),
   ads: z.object({ utm_source: adsParam, utm_medium: adsParam, utm_campaign: adsParam, utm_term: adsParam, utm_content: adsParam, gclid: adsParam, fbclid: adsParam }).optional(),
 });
 

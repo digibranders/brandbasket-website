@@ -1,4 +1,4 @@
-// app/[currency]/(landing)/start/page.tsx
+// app/[currency]/(landing)/website-landing-page/page.tsx
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { WorkShowcase } from "@/components/home/WorkShowcase";

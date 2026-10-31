@@ -16,8 +16,8 @@ Stack: Next.js 16 App Router, React 19, TypeScript strict, Tailwind CSS v4, Vite
 - The site is light only. Tokens are in `app/globals.css`. Use the tokens, never raw colours.
 
 ## Landing pages for ads
-- `app/[currency]/` holds two route groups: `(site)` is the whole site with its navigation, closing band, footer, chat and basket; `(landing)` has only a logo, a way to call and the legal links. Pages for ad traffic go in `(landing)`. `/start` is the first one: mock `../docs/design/ads-landing-mock.html`, copy in `content/start.ts`, parts in `components/start/`.
-- `/start` is noindex (`ROUTES.start`), never in the sitemap, and its form posts to `app/api/start/route.ts`: the lead goes to the platform's `/api/leads` (`forwardStart`), then a paying visitor is sent to the app's sign-up with `?start=<token>`. The token (`lib/start-token.ts`, AES-GCM under `LEADS_API_TOKEN`, one hour) seals name, email and mobile so the address holds no readable personal data. brandbasket-platform keeps an identical copy of that file; change both together.
+- `app/[currency]/` holds two route groups: `(site)` is the whole site with its navigation, closing band, footer, chat and basket; `(landing)` has only a logo, a way to call and the legal links. Pages for ad traffic go in `(landing)`. `/website-landing-page` is the first one: mock `../docs/design/ads-landing-mock.html`, copy in `content/start.ts`, parts in `components/start/`.
+- `/website-landing-page` is noindex (`ROUTES.start`), never in the sitemap, and its form posts to `app/api/start/route.ts`: the lead goes to the platform's `/api/leads` (`forwardStart`), then a paying visitor is sent to the app's sign-up with `?start=<token>`. The token (`lib/start-token.ts`, AES-GCM under `LEADS_API_TOKEN`, one hour) seals name, email and mobile so the address holds no readable personal data. brandbasket-platform keeps an identical copy of that file; change both together.
 - Every button on the page that goes to the form says `START_PAY_LABEL`. Campaign parameters (`utm_*`, `gclid`, `fbclid`) are kept in the lead's message so the team can tell which ad it came from.
 
 ## Currency (rupees or dollars)

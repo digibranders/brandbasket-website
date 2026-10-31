@@ -86,6 +86,21 @@ describe("POST /api/start", () => {
     expect(fetchMock).toHaveBeenCalledOnce();
   });
 
+  it("seals the ad attribution into the sign-up address, cleaned, and leaves it out when there is none", async () => {
+    fetchMock.mockResolvedValue(new Response("{}", { status: 200 }));
+    const attribution = { values: { utm_source: "meta", utm_campaign: "diwali", evil: "x" }, consentMeasurement: true, consentAdvertising: false };
+    const { POST, request } = await human(ENV, { attribution });
+    const { next } = (await (await POST(request)).json()) as { next: string };
+    expect(openStart(new URL(next).searchParams.get("start") ?? "", SECRET)?.attr).toEqual({
+      values: { utm_source: "meta", utm_campaign: "diwali" },
+      consentMeasurement: true,
+      consentAdvertising: false,
+    });
+    const plain = await human(ENV, { attribution: "junk" });
+    const sent = (await (await plain.POST(plain.request)).json()) as { next: string };
+    expect(openStart(new URL(sent.next).searchParams.get("start") ?? "", SECRET)).not.toHaveProperty("attr");
+  });
+
   it("never holds a paying visitor up when the platform is down", async () => {
     fetchMock.mockRejectedValue(new Error("network"));
     const { POST, request } = await human(ENV);

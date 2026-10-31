@@ -13,14 +13,14 @@ async function robotsFor(source: string): Promise<string | undefined> {
 afterEach(() => vi.unstubAllEnvs());
 
 describe("X-Robots-Tag for the ad landing page", () => {
-  it("is noindex, nofollow before launch", async () => {
-    expect(await robotsFor("/start")).toBe("noindex, nofollow");
+  it("is noindex before launch", async () => {
+    expect(await robotsFor("/website-landing-page")).toBe("noindex");
   });
 
-  it("is still noindex, nofollow once the site is live, when other pages carry no header", async () => {
+  it("is still noindex once the site is live, when other pages carry no header", async () => {
     vi.stubEnv("SITE_INDEXING", "on");
     vi.stubEnv("VERCEL_ENV", "production");
-    expect(await robotsFor("/start")).toBe("noindex, nofollow");
+    expect(await robotsFor("/website-landing-page")).toBe("noindex");
     expect(await robotsFor("/pricing")).toBeUndefined();
   });
 });

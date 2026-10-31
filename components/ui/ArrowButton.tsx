@@ -16,6 +16,8 @@ interface ArrowButtonProps {
   readonly tone?: Tone;
   /** What to say instead of the children on a phone. */
   readonly short?: string;
+  /** Centre the label in the space beside the arrow, for a full-width button. */
+  readonly centered?: boolean;
 }
 
 interface ArrowSubmitButtonProps {
@@ -41,10 +43,10 @@ export function Arrow({ size }: { readonly size: Size }): ReactElement {
 }
 
 /** Pill button with the arrow in its own circle, as in the mock. */
-export function ArrowButton({ href, children, short, location, size = "md", tone = "action" }: ArrowButtonProps): ReactElement {
+export function ArrowButton({ href, children, short, location, size = "md", tone = "action", centered = false }: ArrowButtonProps): ReactElement {
   return (
     <Link href={href} className={pillClasses(size, tone)} {...trackAttrs("cta_click", location)}>
-      <PhoneLabel full={children} short={short} />
+      {centered ? <span className="flex-1 text-center"><PhoneLabel full={children} short={short} /></span> : <PhoneLabel full={children} short={short} />}
       <Arrow size={size} />
     </Link>
   );

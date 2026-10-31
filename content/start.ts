@@ -34,7 +34,7 @@ export const START = {
 } as const;
 
 /** The one label for the paying intent, used on every button that goes to the form. */
-export const START_PAY_LABEL = "Continue to payment";
+export const START_PAY_LABEL = "Pay now";
 
 export const START_FORM = {
   title: "Start your website",
@@ -48,8 +48,7 @@ export const START_FORM = {
   terms: "Terms",
   pay: START_PAY_LABEL,
   paying: "Opening sign-up",
-  or: "or",
-  support: "Speak to support first",
+  support: "Talk to us",
   /** Typed ready to send when the support button opens WhatsApp. */
   whatsappMessage: "Hi Brandbasket, I would like to know more about the business website.",
 } as const;
@@ -57,7 +56,7 @@ export const START_FORM = {
 export const START_ERRORS = {
   name: "Please tell us your name.",
   phoneIndia: "Enter a 10-digit mobile number.",
-  phoneWorld: "Enter your number with its country code, such as +44 7700 900123.",
+  phone: "Enter a valid mobile number.",
   email: "Enter a valid email address.",
   consent: "Tick the box to agree to the Privacy Policy and Terms.",
   form: "Please check the form.",
@@ -75,7 +74,7 @@ export function barNoteFor(currency: Currency): string {
   return `${formatMoney(0, currency)} to build`;
 }
 
-/** The support team's hours, said once: the confirmation after "speak with your support team first" and the closing band. */
+/** The support team's hours, said once: the closing band. */
 export const SUPPORT_HOURS = businessDetails.hours;
 
 export interface StartFact {

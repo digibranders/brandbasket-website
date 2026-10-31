@@ -7,7 +7,7 @@ import { screenSubmission } from "@/lib/security/honeypot";
 import { clientKey, rateLimit } from "@/lib/security/rateLimit";
 import { startHref } from "@/lib/signup";
 import { readMobile, startSchema } from "@/lib/start-schema";
-import { sealStart } from "@/lib/start-token";
+import { cleanAttribution, sealStart } from "@/lib/start-token";
 
 export const runtime = "nodejs";
 
@@ -64,6 +64,7 @@ export async function POST(request: Request): Promise<Response> {
   const env = platform();
   // Someone paying is never held up by the staff console: the lead is kept if it can be, and the sign-up page needs only the sealed details.
   if (env !== null) await forwardStart(lead, mobile, request, env);
-  const token = env === null ? null : sealStart({ name: lead.name, email: lead.email.toLowerCase(), phone: mobile.indian }, env.token);
+  const attr = cleanAttribution(lead.attribution);
+  const token = env === null ? null : sealStart({ name: lead.name, email: lead.email.toLowerCase(), phone: mobile.indian, ...(attr === null ? {} : { attr }) }, env.token);
   return Response.json({ ok: true, next: startHref(token) }, { headers: NO_STORE });
 }

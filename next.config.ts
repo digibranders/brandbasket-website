@@ -25,8 +25,8 @@ const nextConfig: NextConfig = {
       { source: "/blog/preview/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
       // Until launch is approved, every host is noindex (see isProductionSite).
       ...(isProductionSite() ? [] : [{ source: "/:path*", headers: [{ key: "X-Robots-Tag", value: "noindex" }] }]),
-      // The ad landing page is for ad clicks only: never indexed and its links never followed, whatever launch state the site is in. Its robots.txt entry stays open so ad reviewers (AdsBot) can still load it and crawlers can read this header.
-      { source: "/start", headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
+      // The ad landing page is for ad clicks only: never indexed, whatever launch state the site is in (its links may still be followed). Its robots.txt entry stays open so ad reviewers (AdsBot) can still load it and crawlers can read this header.
+      { source: "/start", headers: [{ key: "X-Robots-Tag", value: "noindex" }] },
       // The vercel.app copies stay out of search permanently, after launch too. Listed last so it wins on those hosts.
       { source: "/:path*", has: [{ type: "host" as const, value: ".*\\.vercel\\.app" }], headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }] },
     ];

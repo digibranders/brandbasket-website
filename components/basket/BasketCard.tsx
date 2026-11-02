@@ -70,7 +70,7 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
     <div className="basket-weave relative grid gap-[22px] self-start overflow-hidden rounded-3xl border border-rattan/30 px-[26px] py-[26px] max-[560px]:px-4 max-[560px]:py-[22px]">
       <div className="flex items-start justify-between gap-4">
         <div className="grid gap-1">
-          <h4 className="font-display text-[28px] font-medium leading-none tracking-[-0.035em] text-rattan-ink">{BASKET_CARD.title}</h4>
+          <h3 className="font-display text-[28px] font-medium leading-none tracking-[-0.035em] text-rattan-ink">{BASKET_CARD.title}</h3>
           <p className="max-w-[40ch] text-[15px] text-ink-2">{BASKET_CARD.intro}</p>
         </div>
         <Image src="/brand/brandbasket-mark.svg" alt="" width={40} height={40} className="size-10 flex-none" />

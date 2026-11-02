@@ -185,8 +185,8 @@ test("the studio preview still renders when its photograph is unavailable", asyn
 });
 
 test("basket dragging releases after focus loss, cancellation, and a missed mouseup", async ({ page }) => {
-  // Headless Chromium renders WebGL on the CPU, so drag-driven specs share their time budget with every other spec.
-  test.slow();
+  // Headless Chromium renders WebGL on the CPU. On a two-core CI runner each frame of this spec takes seconds and the spec drives dozens of them, so it gets a budget of its own.
+  test.setTimeout(300_000);
   await page.goto("/");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
@@ -223,8 +223,8 @@ test("basket dragging releases after focus loss, cancellation, and a missed mous
 });
 
 test("a released basket keeps its momentum without keeping pointer capture", async ({ page }) => {
-  // Headless Chromium renders WebGL on the CPU, so drag-driven specs share their time budget with every other spec.
-  test.slow();
+  // Headless Chromium renders WebGL on the CPU. On a two-core CI runner each frame of this spec takes seconds and the spec drives dozens of them, so it gets a budget of its own.
+  test.setTimeout(300_000);
   await page.clock.install();
   await page.clock.pauseAt(new Date(Date.now() + 1000));
   // Observe the basket body's real render matrix, excluding translated tiles and the shadow.

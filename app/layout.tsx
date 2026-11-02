@@ -24,6 +24,9 @@ export const metadata: Metadata = {
 
 export const viewport: Viewport = { themeColor: "#f6f5f2", colorScheme: "light" };
 
+// Both scripts are served by Vercel from /_vercel/*; on any other host (CI, a local `next start`) that address is a 404 and the browser console shows errors.
+const ON_VERCEL = process.env.VERCEL !== undefined;
+
 export default function RootLayout({ children }: { readonly children: ReactNode }): ReactElement {
   return (
     <html lang="en-IN" className={fontVariables}>
@@ -32,8 +35,8 @@ export default function RootLayout({ children }: { readonly children: ReactNode 
         {TOOLS.length > 0 && <ConsentBanner />}
         <JsonLd data={organizationJsonLd()} />
         <ConversionTracking />
-        <Analytics />
-        <SpeedInsights />
+        {ON_VERCEL && <Analytics />}
+        {ON_VERCEL && <SpeedInsights />}
       </body>
     </html>
   );

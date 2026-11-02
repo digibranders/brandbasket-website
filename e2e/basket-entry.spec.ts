@@ -8,6 +8,8 @@ interface EntryFrame {
 }
 interface EntryState {
   frames: EntryFrame[];
+  /** The canvas halfway through its entrance animation, read by seeking the animation rather than by waiting for a frame. */
+  midpoint?: Omit<EntryFrame, "poster">;
   draws: number[];
   duringEntrance: number[];
 }
@@ -51,6 +53,20 @@ for (const route of ["/", "/pricing"]) {
           if (!offscreen) draws++;
           draw.call(this, mode, count, type, offset);
         };
+        // On a slow runner (software WebGL) the page may not draw once during the 650 ms entrance, so the halfway state is read by seeking the real animation.
+        document.addEventListener("animationstart", (event) => {
+          const canvas = event.target;
+          if (!(canvas instanceof HTMLCanvasElement)) return;
+          const animation = canvas.getAnimations().find((candidate): candidate is CSSAnimation => candidate instanceof CSSAnimation && candidate.animationName === "basket-arrive");
+          const duration = animation?.effect?.getComputedTiming().duration;
+          if (!animation || typeof duration !== "number") return;
+          animation.pause();
+          animation.currentTime = duration / 2;
+          const style = getComputedStyle(canvas);
+          state.midpoint = { opacity: Number(style.opacity), y: new DOMMatrixReadOnly(style.transform).m42 };
+          animation.currentTime = 0;
+          animation.play();
+        }, true);
         function sample(): void {
           const stage = document.querySelector(".basket-stage");
           const canvas = stage?.querySelector("canvas");
@@ -75,9 +91,9 @@ for (const route of ["/", "/pricing"]) {
       await expect.poll(() => page.evaluate(() => {
         const draws = window.basketEntry.draws;
         return Math.max(...draws) - draws[0];
-      })).toBeGreaterThan(0);
+      }), { timeout: 20_000 }).toBeGreaterThan(0);
       const state = await page.evaluate(() => window.basketEntry);
-      expect(state.frames.some((frame) => frame.opacity > 0 && frame.opacity < 1 && frame.y > 0), "the basket itself must rise and fade into view").toBe(true);
+      expect(state.midpoint !== undefined && state.midpoint.opacity > 0 && state.midpoint.opacity < 1 && state.midpoint.y > 0, "the basket itself must rise and fade into view").toBe(true);
       expect(state.frames.every((frame) => frame.poster === 0), "the entrance must never overlap a poster with the live canvas").toBe(true);
       expect(state.duringEntrance.length).toBeGreaterThan(0);
       expect(new Set(state.duringEntrance).size, "tiles must wait until the basket has arrived").toBe(1);

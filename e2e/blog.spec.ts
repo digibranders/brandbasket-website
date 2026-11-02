@@ -100,7 +100,8 @@ test("an author shows their role, links and posts, and an unknown one is a 404",
   await page.goto("/blog/author/ananya-kulkarni");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText("Ananya Kulkarni");
   await expect(page.locator("main").getByText("Local SEO lead")).toBeVisible();
-  await expect(page.getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", "https://www.linkedin.com/in/ananya-kulkarni");
+  // The footer has a LinkedIn link of its own, so look in the page body for the author's.
+  await expect(page.locator("main").getByRole("link", { name: "LinkedIn" })).toHaveAttribute("href", "https://www.linkedin.com/in/ananya-kulkarni");
   await expect(page.getByRole("heading", { name: "Posts by Ananya" })).toBeVisible();
   expect((await request.get("/blog/author/nobody")).status()).toBe(404);
 });

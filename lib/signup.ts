@@ -1,6 +1,6 @@
 import { type BasketPick, PLAN_IDS } from "./pricing";
 import { siteConfig } from "./site-config";
-import { START_PARAM } from "./start-token";
+import { START_PARAM } from "./start-attribution";
 
 /** The app's sign-in with no plan in the address, which opens the Sign in view (a plan opens Create account instead). */
 export function loginHref(): string {

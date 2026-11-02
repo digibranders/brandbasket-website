@@ -161,7 +161,7 @@ describe("POST /api/contact", () => {
     expect((await POST(post({ ...LEAD, formToken }))).status).toBe(502);
   });
 
-  it("copies a valid lead to the platform after both emails, when the platform is set", async () => {
+  it("copies a valid lead to the platform before sending emails, when the platform is set", async () => {
     fetchMock.mockResolvedValue(new Response("{}", { status: 201 }));
     const { POST, token } = await load({ ...ENV, PLATFORM_LEADS_URL: "https://app.example.test", LEADS_API_TOKEN: "t".repeat(32) });
     const formToken = token();
@@ -169,12 +169,12 @@ describe("POST /api/contact", () => {
     const res = await POST(post({ ...LEAD, formToken }));
     expect(await res.json()).toEqual({ ok: true });
     expect(fetchMock).toHaveBeenCalledTimes(3);
-    expect(fetchMock.mock.calls[2]?.[0]).toBe("https://app.example.test/api/leads");
-    expect(JSON.parse(String(fetchMock.mock.calls[2]?.[1]?.body))).toMatchObject({ kind: "contact", contact: { business: "Rao Dental Care", plans: [] } });
+    expect(fetchMock.mock.calls[0]?.[0]).toBe("https://app.example.test/api/leads");
+    expect(JSON.parse(String(fetchMock.mock.calls[0]?.[1]?.body))).toMatchObject({ kind: "contact", contact: { business: "Rao Dental Care", plans: [] } });
   });
 
   it("still says the message arrived when the platform copy fails", async () => {
-    fetchMock.mockResolvedValueOnce(new Response("{}", { status: 201 })).mockResolvedValueOnce(new Response("{}", { status: 201 })).mockResolvedValueOnce(new Response("down", { status: 503 }));
+    fetchMock.mockResolvedValueOnce(new Response("down", { status: 503 })).mockResolvedValue(new Response("{}", { status: 201 }));
     const { POST, token } = await load({ ...ENV, PLATFORM_LEADS_URL: "https://app.example.test", LEADS_API_TOKEN: "t".repeat(32) });
     const formToken = token();
     vi.setSystemTime(T0.getTime() + 5_000);

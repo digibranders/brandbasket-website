@@ -61,6 +61,9 @@ export async function POST(request: Request): Promise<Response> {
   const parsed = contactSchema.safeParse(body);
   if (!parsed.success) return Response.json({ error: CONTACT_ERRORS.form, fields: z.flattenError(parsed.error).fieldErrors }, { status: 422 });
 
+  // Record the lead on the platform first so customer data is never lost if email delivery fails.
+  await copyToPlatform(parsed.data, request);
+
   const mail = buildLeadEmail(parsed.data);
   try {
     await sendTransactionalEmail({
@@ -90,7 +93,6 @@ export async function POST(request: Request): Promise<Response> {
   } catch (error) {
     logFailure("confirmation send", error);
   }
-  await copyToPlatform(parsed.data, request);
   await postEnquiryToTeams(parsed.data);
   return Response.json({ ok: true });
 }

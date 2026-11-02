@@ -27,6 +27,12 @@ export class BrevoSendError extends Error {
 }
 
 export async function sendTransactionalEmail(params: SendTransactionalEmailParams): Promise<void> {
+  const apiKey = serverEnv().BREVO_API_KEY?.trim();
+  // Only outside production: a production server without a key must fail loudly, not report mail as sent.
+  if (process.env.NODE_ENV !== "production" && (!apiKey || apiKey.startsWith("local-dev"))) {
+    console.log("Local development email delivery skipped (no live key):", params.subject, params.to);
+    return;
+  }
   const response = await fetch(BREVO_API_URL, {
     method: "POST",
     headers: {

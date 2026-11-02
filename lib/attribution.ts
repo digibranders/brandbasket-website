@@ -1,5 +1,5 @@
 // lib/attribution.ts
-import { cleanAttribution, type Attribution, type AttributionKey } from "./start-token";
+import { cleanAttribution, type Attribution, type AttributionKey } from "./start-attribution";
 
 /**
  * Reads the ad a visitor came from (plan 59): the campaign and click ids in the address always, the Meta and Google Analytics

@@ -1,4 +1,7 @@
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:crypto";
+import { cleanAttribution, type Attribution } from "./start-attribution";
+
+export { ATTRIBUTION_CAPS, cleanAttribution, START_PARAM, type Attribution, type AttributionKey } from "./start-attribution";
 
 /**
  * What the ad landing page hands to the app's sign-up page so it opens already filled in: the visitor's name, email and
@@ -6,55 +9,12 @@ import { createCipheriv, createDecipheriv, createHash, randomBytes } from "node:
  * good for an hour. The address carries an opaque string, never the details themselves.
  *
  * brandbasket-platform keeps an identical copy (apps/platform/lib/start-token.ts). Change both together.
+ * Browser code must import from ./start-attribution instead: this file needs node:crypto, which a client bundle pays for in size.
  */
-
-/** The sign-up address's query parameter that carries the token. */
-export const START_PARAM = "start";
 
 const TTL_MS = 60 * 60 * 1000;
 const IV_BYTES = 12;
 const TAG_BYTES = 16;
-
-/** Every attribution value the token may carry, with the longest it may be. Anything else is dropped. */
-export const ATTRIBUTION_CAPS = {
-  utm_source: 120,
-  utm_medium: 120,
-  utm_campaign: 120,
-  utm_term: 120,
-  utm_content: 120,
-  gclid: 120,
-  fbclid: 120,
-  fbp: 60,
-  fbc: 120,
-  ga_client_id: 40,
-  ga_session_id: 20,
-  landing_path: 200,
-  referrer_host: 100,
-} as const;
-export type AttributionKey = keyof typeof ATTRIBUTION_CAPS;
-
-/** The ad a visitor came from, and which tracking they had agreed to when the ids were read (plan 59). */
-export interface Attribution {
-  readonly values: Readonly<Partial<Record<AttributionKey, string>>>;
-  readonly consentMeasurement: boolean;
-  readonly consentAdvertising: boolean;
-}
-
-/** The attribution in `raw` with only the known, short, single-line text values kept; null when none is left. Never throws. */
-export function cleanAttribution(raw: unknown): Attribution | null {
-  if (typeof raw !== "object" || raw === null || Array.isArray(raw)) return null;
-  const { values, consentMeasurement, consentAdvertising } = raw as Record<string, unknown>;
-  if (typeof values !== "object" || values === null || Array.isArray(values)) return null;
-  const kept: Partial<Record<AttributionKey, string>> = {};
-  for (const key of Object.keys(ATTRIBUTION_CAPS) as AttributionKey[]) {
-    const value = (values as Record<string, unknown>)[key];
-    if (typeof value !== "string") continue;
-    const text = value.trim();
-    if (text !== "" && text.length <= ATTRIBUTION_CAPS[key] && !/\p{Cc}/u.test(text)) kept[key] = text;
-  }
-  if (Object.keys(kept).length === 0) return null;
-  return { values: kept, consentMeasurement: consentMeasurement === true, consentAdvertising: consentAdvertising === true };
-}
 
 export interface StartPrefill {
   readonly name: string;

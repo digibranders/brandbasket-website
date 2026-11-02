@@ -1,5 +1,5 @@
 // lib/consent.ts
-import { z } from "zod";
+import * as z from "zod/mini";
 
 /**
  * Consent for the optional tags (plan 12). Every tag runs inside one Google Tag Manager container, whose id is a public

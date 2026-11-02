@@ -60,7 +60,7 @@ function TableBlock({ table }: { readonly table: GuideTable }): ReactElement {
                   i === 0 ? (
                     <th key={cell} scope="row" className="border-b border-line px-4 py-3 align-top font-medium text-ink">{cell}</th>
                   ) : (
-                    <td key={`${row[0]}-${cell}`} className={`border-b border-line px-4 py-3 align-top ${i === 1 ? "bg-sunken text-ink" : ""}`}>{cell}</td>
+                    <td key={`${row[0]}-${i}`} className={`border-b border-line px-4 py-3 align-top ${i === 1 ? "bg-sunken text-ink" : ""}`}>{cell}</td>
                   ),
                 )}
               </tr>

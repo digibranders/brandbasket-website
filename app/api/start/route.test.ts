@@ -1,6 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { openStart } from "@/lib/start-token";
 
+// `after` only runs inside a Next request; here the callbacks are kept so a test can run them once the reply is in hand.
+const afterCallbacks = vi.hoisted<Array<() => unknown>>(() => []);
+vi.mock("next/server", async (importOriginal) => ({ ...(await importOriginal<typeof import("next/server")>()), after: (callback: () => unknown) => void afterCallbacks.push(callback) }));
+
 const SECRET = "t".repeat(40);
 const ENV = { BREVO_API_KEY: "xkeysib-test", FORM_SECRET: "s".repeat(32), CONTACT_INBOX: "hello@brandbasket.in", MAIL_SENDER: "hello@brandbasket.in", PLATFORM_LEADS_URL: "https://app.example.test", LEADS_API_TOKEN: SECRET };
 /** No platform address and no shared secret: local work without the platform. */
@@ -26,6 +30,7 @@ beforeEach(() => {
   vi.useFakeTimers({ now: T0 });
   vi.stubGlobal("fetch", fetchMock);
   fetchMock.mockReset();
+  afterCallbacks.length = 0;
   for (const key of Object.keys(ENV)) vi.stubEnv(key, "");
   vi.spyOn(console, "error").mockImplementation(() => undefined);
 });
@@ -112,5 +117,63 @@ describe("POST /api/start", () => {
   it("sends a paying visitor to the plain sign-up when no platform is configured", async () => {
     const { POST, request } = await human(LOCAL);
     expect(await (await POST(request)).json()).toEqual({ ok: true, next: "https://app.brandbasket.in/login?plan=website" });
+  });
+
+  describe("when the platform copy of the lead is dropped", () => {
+    const TEAMS = "https://prod-12.centralindia.logic.azure.com/workflows/abc/triggers/manual/paths/invoke?sig=secret";
+    const urls = (): string[] => fetchMock.mock.calls.map(([target]) => String(target));
+    const runAfter = async (): Promise<void> => {
+      for (const callback of afterCallbacks.splice(0)) await callback();
+    };
+    /** The platform answers with `platform`; Brevo and Teams answer 2xx unless told otherwise. */
+    const answer = (platform: () => Response | Promise<Response>, others: () => Response = () => new Response("{}", { status: 200 })): void => {
+      fetchMock.mockImplementation(async (target) => (String(target).startsWith("https://app.example.test") ? platform() : others()));
+    };
+
+    it.each([
+      ["rate limits the request", () => new Response("slow down", { status: 429 })],
+      ["cannot be reached", () => { throw new Error("network"); }],
+    ])("tells the team by email and Teams, after the reply, when the platform %s", async (_case, platform) => {
+      vi.stubEnv("TEAMS_ENQUIRIES_WEBHOOK_URL", TEAMS);
+      answer(platform);
+      const { POST, request } = await human(ENV);
+      const res = await POST(request);
+      expect(res.status).toBe(200);
+      expect(((await res.json()) as { next: string }).next).toContain("start=");
+      expect(urls()).toEqual(["https://app.example.test/api/leads"]);
+      expect(afterCallbacks).toHaveLength(1);
+
+      await runAfter();
+      expect(urls()).toEqual(["https://app.example.test/api/leads", "https://api.brevo.com/v3/smtp/email", TEAMS]);
+      const brevo = JSON.parse(String(fetchMock.mock.calls[1]?.[1]?.body)) as { to: Array<{ email: string }>; textContent: string };
+      expect(brevo.to).toEqual([{ email: "hello@brandbasket.in", name: "Brandbasket" }]);
+      expect(brevo.textContent).toContain("Rahul@Mehta.in");
+      expect(brevo.textContent).toContain("+919876543210");
+      expect(brevo.textContent).toContain("utm_source=google");
+    });
+
+    it("sends no alert when the platform kept the lead", async () => {
+      answer(() => new Response("{}", { status: 200 }));
+      const { POST, request } = await human(ENV);
+      await POST(request);
+      expect(afterCallbacks).toHaveLength(0);
+      expect(fetchMock).toHaveBeenCalledOnce();
+    });
+
+    it("still tells Teams, and never throws or logs the address, when the alert email fails", async () => {
+      vi.stubEnv("TEAMS_ENQUIRIES_WEBHOOK_URL", TEAMS);
+      answer(() => new Response("no", { status: 429 }), () => new Response("denied", { status: 401 }));
+      const { POST, request } = await human(ENV);
+      await POST(request);
+      await expect(runAfter()).resolves.toBeUndefined();
+      expect(urls()).toContain(TEAMS);
+      expect(JSON.stringify(vi.mocked(console.error).mock.calls).toLowerCase()).not.toContain("rahul@mehta.in");
+    });
+
+    it("sends no alert when no platform is configured", async () => {
+      const { POST, request } = await human(LOCAL);
+      await POST(request);
+      expect(afterCallbacks).toHaveLength(0);
+    });
   });
 });

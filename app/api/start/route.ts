@@ -1,4 +1,5 @@
 // app/api/start/route.ts
+import { after } from "next/server";
 import { z } from "zod";
 import { START_ERRORS } from "@/content/start";
 import { platformLeadsEnv, serverEnv } from "@/lib/env";
@@ -6,6 +7,7 @@ import { forwardStart, type PlatformLeadsEnv } from "@/lib/platform-leads";
 import { screenSubmission } from "@/lib/security/honeypot";
 import { clientKey, rateLimit } from "@/lib/security/rateLimit";
 import { startHref } from "@/lib/signup";
+import { alertDroppedStart } from "@/lib/start-alert";
 import { readMobile, startSchema } from "@/lib/start-schema";
 import { cleanAttribution, sealStart } from "@/lib/start-token";
 
@@ -63,7 +65,8 @@ export async function POST(request: Request): Promise<Response> {
 
   const env = platform();
   // Someone paying is never held up by the staff console: the lead is kept if it can be, and the sign-up page needs only the sealed details.
-  if (env !== null) await forwardStart(lead, mobile, request, env);
+  // A dropped copy (platform down, or it rate limited us) would leave the lead in a log only, so the team is told after the reply goes out.
+  if (env !== null && !(await forwardStart(lead, mobile, request, env))) after(() => alertDroppedStart(lead, mobile));
   const attr = cleanAttribution(lead.attribution);
   const token = env === null ? null : sealStart({ name: lead.name, email: lead.email.toLowerCase(), phone: mobile.indian, ...(attr === null ? {} : { attr }) }, env.token);
   return Response.json({ ok: true, next: startHref(token) }, { headers: NO_STORE });

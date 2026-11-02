@@ -39,7 +39,7 @@ export function proxy(request: NextRequest): NextResponse {
   return NextResponse.rewrite(url);
 }
 
-/** Pages only: the API, built assets, files with an extension (robots.txt, sitemap.xml, llms.txt, icons), the feed and the share image carry no price. */
+/** Pages only: the API, built assets, files with an extension (robots.txt, sitemap.xml, llms.txt, icons), the feed and the share image carry no price. CMS preview tokens contain a dot, so that one path is let through the extension rule. */
 export const config = {
-  matcher: ["/((?!api/|_next/|opengraph-image|blog/feed\\.xml|.*\\..*).*)"],
+  matcher: ["/((?!api/|_next/|opengraph-image|blog/feed\\.xml|(?!blog/preview/).*\\..*).*)"],
 };

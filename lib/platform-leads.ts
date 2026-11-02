@@ -62,7 +62,7 @@ export async function forwardEnquiry(lead: ContactInput, request: Request, env: 
 }
 
 /** The ad page's business name until the sign-up asks for it: the platform's intake wants one. */
-const START_BUSINESS = "Not given yet";
+export const START_BUSINESS = "Not given yet";
 
 /** The line the team reads first: that the visitor went on to payment, and which ad brought them. */
 export function startMessage(ads: StartInput["ads"]): string {

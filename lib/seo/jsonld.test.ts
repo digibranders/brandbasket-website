@@ -127,3 +127,11 @@ describe("the blog's structured data", () => {
     expect(blogPostingJsonLd(fixturePost).author?.["@id"]).toBe(person["@id"]);
   });
 });
+
+describe("organizationJsonLd contact details", () => {
+  it("publishes a description and a customer support contact point", () => {
+    const org = organizationJsonLd();
+    expect(org.description).toContain("local businesses in India");
+    expect(org.contactPoint).toMatchObject({ "@type": "ContactPoint", contactType: "customer support", email: "support@brandbasket.in" });
+  });
+});

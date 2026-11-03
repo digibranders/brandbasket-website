@@ -22,7 +22,7 @@ export function Footer(): ReactElement {
             <FooterList title="Brandbasket" links={FOOTER_NAV} />
             <FooterList title="Legal" links={LEGAL_NAV} />
             <div className="site-footer-contact">
-              <h2 className="site-footer-label">Talk to us</h2>
+              <p className="site-footer-label">Talk to us</p>
               <ul className="site-footer-contact-links">
                 <li><a className="site-footer-link" href={`mailto:${businessDetails.email}`}>{businessDetails.email}</a></li>
                 <li><a className="site-footer-link" href={`tel:${businessDetails.phoneHref}`}>{businessDetails.phone}</a></li>
@@ -48,7 +48,7 @@ export function Footer(): ReactElement {
 function FooterList({ title, links }: { readonly title: string; readonly links: readonly { label: string; href: string }[] }): ReactElement {
   return (
     <nav aria-label={title}>
-      <h2 className="site-footer-label">{title}</h2>
+      <p className="site-footer-label">{title}</p>
       <ul className="site-footer-links">
         {links.map((link) => <li key={link.href}><Link className="site-footer-link" href={link.href}>{link.label}</Link></li>)}
       </ul>

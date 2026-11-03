@@ -24,3 +24,23 @@ describe("X-Robots-Tag for the ad landing page", () => {
     expect(await robotsFor("/pricing")).toBeUndefined();
   });
 });
+
+describe("headers for agents and static files", () => {
+  async function rules(): Promise<Rule[]> {
+    return (await nextConfig.headers?.()) as Rule[];
+  }
+
+  it("sends a Link header on the home page pointing at the sitemap, llms.txt and the feed", async () => {
+    const link = (await rules()).find((rule) => rule.source === "/")?.headers.find((h) => h.key === "Link")?.value ?? "";
+    expect(link).toContain('</sitemap.xml>; rel="sitemap"');
+    expect(link).toContain('</llms.txt>; rel="describedby"');
+    expect(link).toContain('</blog/feed.xml>; rel="alternate"');
+  });
+
+  it("caches the image and brand folders for a day", async () => {
+    for (const dir of ["basket", "brand", "images", "work"]) {
+      const rule = (await rules()).find((r) => r.source === `/${dir}/:path*`);
+      expect(rule?.headers).toContainEqual({ key: "Cache-Control", value: "public, max-age=86400, stale-while-revalidate=604800" });
+    }
+  });
+});

@@ -39,7 +39,7 @@ export function pageMetadata(
     // Registry titles are complete, so the layout's "%s | Brandbasket" template must not append the brand again.
     title: { absolute: title },
     description,
-    alternates: { canonical: path },
+    alternates: { canonical: path, types: { "application/rss+xml": `${siteConfig.url}/blog/feed.xml` } },
     openGraph: { title, description, url, siteName: siteConfig.name, locale: "en_IN", ...(article === undefined ? { type: "website" as const } : { type: "article" as const, ...article, authors: article.authors === undefined ? undefined : [...article.authors] }), ...images },
     twitter: { card: "summary_large_image", title, description, ...images },
     // Only set the key when needed: a present-but-undefined key overrides the layout robots in Next's metadata merge.

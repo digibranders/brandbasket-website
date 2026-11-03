@@ -22,7 +22,8 @@ export interface RouteMeta {
 }
 
 const { legalName, tradeName, postalAddress } = businessDetails;
-const UPDATED = "2026-10-21";
+const UPDATED = "2026-10-31";
+const LEGAL_UPDATED = "2026-10-28";
 const SERVICES_UPDATED = "2026-10-26";
 const GUIDES_UPDATED = "2026-10-28";
 
@@ -82,28 +83,28 @@ export const ROUTES = {
     path: "/privacy",
     title: `${privacyPolicy.title} | ${tradeName}`,
     description: `How ${tradeName}, a brand of ${legalName}, collects, uses and protects personal data under the DPDP Act 2023 of India.`,
-    updated: UPDATED,
+    updated: LEGAL_UPDATED,
     priority: 0.3,
   },
   terms: {
     path: "/terms",
     title: `${termsOfService.title} | ${tradeName}`,
     description: `The terms for the free ${tradeName} website build and monthly plans: fees, GST, ownership, cancellation, liability and governing law.`,
-    updated: UPDATED,
+    updated: LEGAL_UPDATED,
     priority: 0.3,
   },
   refund: {
     path: "/refund",
     title: `${refundPolicy.title} | ${tradeName}`,
     description: `How ${tradeName} bills its monthly plans, how to cancel, when we refund a payment and how long a refund takes to reach your bank.`,
-    updated: UPDATED,
+    updated: LEGAL_UPDATED,
     priority: 0.3,
   },
   shipping: {
     path: "/shipping",
     title: `${shippingPolicy.title} | ${tradeName}`,
     description: `${tradeName} sells digital services and ships nothing physical. How and when your website and monthly services are delivered online.`,
-    updated: UPDATED,
+    updated: LEGAL_UPDATED,
     priority: 0.3,
   },
   glossary: {
@@ -117,7 +118,7 @@ export const ROUTES = {
     path: "/notice",
     title: `${dataNotice.title} | ${tradeName}`,
     description: `Notices from ${tradeName} about the personal data we hold, such as a data breach notice, and who to contact about each one.`,
-    updated: UPDATED,
+    updated: LEGAL_UPDATED,
     priority: 0.1,
     noindex: true,
   },

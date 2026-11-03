@@ -1,5 +1,6 @@
 // proxy.ts
 import { NextResponse, type NextRequest, userAgent } from "next/server";
+import { wantsMarkdown } from "@/lib/agents/markdown";
 import { CURRENCY_COOKIE, CURRENCY_COOKIE_MAX_AGE_SECONDS, type Currency, currencyForCountry, currencyFromSegment, currencySegment, DEFAULT_CURRENCY, isCurrency } from "@/lib/currency";
 
 /**
@@ -35,6 +36,11 @@ export function proxy(request: NextRequest): NextResponse {
     return NextResponse.redirect(url, 308);
   }
   const url = request.nextUrl.clone();
+  if (request.method === "GET" && wantsMarkdown(request.headers.get("accept"))) {
+    // An agent asked for markdown: app/md/ fetches this page as HTML and converts it.
+    url.pathname = `/md${pathname === "/" ? "" : pathname}`;
+    return NextResponse.rewrite(url);
+  }
   url.pathname = `/${currencySegment(currencyFor(request))}${pathname === "/" ? "" : pathname}`;
   return NextResponse.rewrite(url);
 }

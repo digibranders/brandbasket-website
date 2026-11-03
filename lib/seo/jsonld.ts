@@ -21,6 +21,8 @@ export interface OrganizationLd {
   readonly telephone: string;
   readonly taxID: string;
   readonly foundingDate: string;
+  readonly description: string;
+  readonly contactPoint: { readonly "@type": "ContactPoint"; readonly contactType: "customer support"; readonly telephone: string; readonly email: string; readonly areaServed: "IN"; readonly availableLanguage: "English" };
   readonly address: {
     readonly "@type": "PostalAddress";
     readonly streetAddress: string;
@@ -46,6 +48,8 @@ export function organizationJsonLd(): OrganizationLd {
     telephone: businessDetails.phone,
     taxID: businessDetails.gstNumber,
     foundingDate: String(businessDetails.foundingYear),
+    description: "Brandbasket builds websites for local businesses in India for free, then runs the website, Google profile, ads and local search for a monthly fee.",
+    contactPoint: { "@type": "ContactPoint", contactType: "customer support", telephone: businessDetails.phone, email: businessDetails.email, areaServed: "IN", availableLanguage: "English" },
     address: {
       "@type": "PostalAddress",
       streetAddress: postalAddress.street,

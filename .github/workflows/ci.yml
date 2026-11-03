@@ -41,6 +41,7 @@ jobs:
       # Indexing on for this throwaway build only, so the SEO score measures the page that ships at launch.
       - run: npm run build
         env: { VERCEL_ENV: production, SITE_INDEXING: "on" }
+      # The SEO floor is 0.9, not 1: Lighthouse's robots.txt audit does not know the Content-Signal directive, which costs exactly one audit (0.92). Any other SEO failure still drops the score below 0.9.
       # Budgets in lighthouserc.json for performance (0.8), LCP (5 s) and script size (300 KiB) are ratchets, not targets: an empty Next 16.4.2 page already ships 137 KB of script and
       # the site ships about 255 to 280 KB. They fail on a regression (a crypto polyfill once added 140 KB), not on the design weight. Tighten them as the bundle shrinks.
       # The contact page asks /api/form-token for a spam-check token; without these settings it answers 503 and the browser console logs an error. Throwaway values, never used to send mail.

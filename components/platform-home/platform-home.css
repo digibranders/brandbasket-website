@@ -92,14 +92,15 @@
 @media (max-width: 480px) { .svc-cta { gap: 8px; padding: 0 18px; font-size: 14px; } }
 .svc-cta:hover { transform: translateY(-2px); box-shadow: 0 16px 30px -16px rgba(0, 0, 0, 0.5); }
 .svc-cta:active { transform: scale(0.98); }
-.svc-stage { position: relative; display: grid; place-items: center; min-width: 0; min-height: clamp(260px, 56vw, 380px); }
+/* The picture of the work is for laptops: on a phone or tablet the panel is just the name, the words and the button. */
+.svc-stage { display: none; position: relative; place-items: center; min-width: 0; }
 
 /* Wide screens: the copy on the left, the picture on the right, and each panel pins a little lower than the one before
    it, so the edge of every earlier panel stays showing as they pile up. */
 @media (min-width: 1000px) {
   .svc-stack { gap: 28px; padding-bottom: 0; }
   .svc-panel { position: sticky; top: calc(92px + var(--i) * 22px); grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: clamp(24px, 3vw, 56px); height: clamp(520px, calc(100dvh - 210px), 600px); }
-  .svc-stage { min-height: 0; height: 100%; }
+  .svc-stage { display: grid; min-height: 0; height: 100%; }
 }
 
 /* ---------- three steps: a staircase ---------- */
@@ -197,9 +198,9 @@
    takes the height left under the pinned heading (the screen's height minus 520px, between 130 and 330px) and the basket is drawn to fit it. */
 .bp-card { display: grid; gap: 14px; overflow: hidden; border-radius: 32px; padding: clamp(14px, 1.8vw, 24px) clamp(18px, 2.2vw, 28px) clamp(18px, 2vw, 26px); }
 .bp-stage { height: clamp(130px, calc(100dvh - 520px), 330px); }
-.bp-stage > .basket-stage { height: 100%; max-height: none; aspect-ratio: auto; }
-/* The basket is drawn with room to spare round it, so the stage is scaled up inside the card (which clips) to make the
-   basket bigger without making the card taller. The transparent canvas may overlap the text below; nothing there is clickable. */
+/* The basket is drawn with room to spare round it, so the stage is made bigger than the card's slot (122%, centred a little
+   above the middle) and the card, which clips, hides the spill. It is a real larger canvas, not a stretched picture, so the
+   tiles stay sharp. The transparent canvas may overlap the text below; nothing there is clickable. */
 .bp-stage { position: relative; z-index: 0; }
-.bp-stage > .basket-stage { transform: scale(1.22); transform-origin: 50% 42%; }
+.bp-stage > .basket-stage { position: absolute; left: -11%; top: -9.2%; width: 122%; height: 122%; max-height: none; aspect-ratio: auto; }
 .bp-card > :not(.bp-stage) { position: relative; z-index: 1; }

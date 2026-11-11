@@ -10,16 +10,17 @@ async function scrollTo(page: import("@playwright/test").Page, selector: string,
   await page.locator(selector).first().evaluate((el, where) => el.scrollIntoView({ block: where as ScrollLogicalPosition }), block);
 }
 
-test("on the homepage it hides over the hero and the plans and shows down to the closing call", async ({ page }) => {
+test("on the homepage it hides over the hero only and shows down to the closing call, plans included", async ({ page }) => {
   await page.goto("/");
   await expect.poll(() => dockHidden(page)).toBe(true);
 
   await scrollTo(page, "#services", "center");
   await expect.poll(() => dockHidden(page)).toBe(false);
 
-  // The plans have their own basket beside them.
+  // A phone has no basket card in the plans, so the floating cart is what shows the basket there.
   await scrollTo(page, "#plans", "center");
-  await expect.poll(() => dockHidden(page)).toBe(true);
+  await expect.poll(() => dockHidden(page)).toBe(false);
+  await expect(page.locator("#plans .bp-card")).toHaveCount(0);
 
   await scrollTo(page, "#faq", "center");
   await expect.poll(() => dockHidden(page)).toBe(false);

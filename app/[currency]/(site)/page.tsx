@@ -38,7 +38,7 @@ export default async function HomePage({ params }: { readonly params: Promise<{ 
       <HomePricing currency={currency} />
       <WhoSection />
       <WhySection />
-      <Band tone="sunken" className="py-[clamp(56px,8vw,112px)]">
+      <Band tone="sunken" className="py-[clamp(40px,8vw,112px)]">
         <DecorIcon icon={CursorClick} size={139} rotate={8} faint className="right-[19%] top-[78px] max-[760px]:hidden" />
         <DecorIcon icon={Star} size={109} rotate={-11} faint className="right-[10%] top-[118px] max-[760px]:hidden" />
         <DecorIcon icon={MapPin} size={126} rotate={12} faint className="right-[3%] top-[70px]" />

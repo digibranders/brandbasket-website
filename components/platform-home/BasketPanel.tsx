@@ -1,5 +1,5 @@
 "use client";
-import type { ReactElement } from "react";
+import { type ReactElement, useSyncExternalStore } from "react";
 import { BasketCta } from "@/components/basket/BasketCta";
 import { BasketStage } from "@/components/basket/BasketStage";
 import { useBasket } from "@/components/basket/useBasket";
@@ -14,11 +14,22 @@ import { monitoringIncluded, monthlyTotal } from "@/lib/pricing";
  * The homepage plans section's live basket: the woven 3D basket fills as plans are chosen, with the monthly total, the
  * monitoring line under it. It reads the same basket as the dock and every plan button.
  */
-export function BasketPanel(): ReactElement {
+const WIDE = "(min-width: 1000px)";
+const watchWide = (notify: () => void): (() => void) => {
+  const query = window.matchMedia(WIDE);
+  query.addEventListener("change", notify);
+  return () => query.removeEventListener("change", notify);
+};
+
+export function BasketPanel(): ReactElement | null {
+  // Only laptops show this card. The server markup assumes a laptop (so nothing jumps there); on a phone it is dropped as
+  // soon as the page hydrates, so the 3D scene never loads, and the floating cart does the job.
+  const wide = useSyncExternalStore(watchWide, () => window.matchMedia(WIDE).matches, () => true);
   const pick = useBasket();
   const currency = useCurrency();
   // Short names ("Website + Social media") keep the label on one or two lines; the full names are on the plan cards.
   const names = HOME_SERVICES.filter((service) => pick[service.id]).map((service) => service.short).join(" + ");
+  if (!wide) return null;
   return (
     <div className="bp-card basket-weave">
       <div className="bp-stage"><BasketStage label="A woven basket that fills with the plans you choose" /></div>

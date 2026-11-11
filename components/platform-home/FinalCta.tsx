@@ -7,7 +7,7 @@ import { FINAL_CTA } from "@/content/platform-home";
 /** The homepage's own closing call on the woven panel. The layout's closing band is left off the homepage (components/shell/closing-paths.ts). */
 export function FinalCta(): ReactElement {
   return (
-    <section aria-labelledby="h-final" className="in-wrap pb-16 min-[640px]:pb-24">
+    <section aria-labelledby="h-final" className="in-wrap pb-10 min-[640px]:pb-24">
       <Reveal>
         <div className="basket-weave grid justify-items-center gap-6 rounded-[36px] px-[clamp(20px,5vw,72px)] py-[clamp(56px,8vw,120px)] text-center">
           <h2 id="h-final" className="max-w-[14ch] font-display text-[clamp(40px,6vw,84px)] font-semibold leading-[0.98] tracking-[-0.05em]">

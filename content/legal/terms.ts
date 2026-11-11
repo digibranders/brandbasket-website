@@ -4,7 +4,7 @@ import { formatMoney } from "@/lib/currency";
 import { extrasFor, GST_RATE, MONITORING, monitoringPrice, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
-import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
+import { PLAN_BILLING_TERMS } from "./fees";
 import type { LegalDocument } from "./types";
 
 const { legalName, tradeName, cin, gstNumber, email, courts } = businessDetails;
@@ -29,7 +29,7 @@ export const termsOfService: LegalDocument = {
       paragraphs: [
         `We build your website free of charge. You can take ${website.name} at ${rupees("website")} a month, ${social.name} at ${rupees("social")} a month and ${ads.name} at ${rupees("ads")} a month; each plan can be bought on its own. ${MONITORING.name} is included with all three plans, or ${formatMoney(monitoringPrice("INR"), "INR")} a month with one or two.`,
         `The ${website.name} plan includes 2 edits a month of up to 15 minutes each. We quote any other work before we start it, at ${formatMoney(hour, "INR")} an hour, and do it only once you agree.`,
-        `${ads.name} manages Facebook and Instagram ad budgets of up to ${formatMoney(adBudgetCap, "INR")} a month of your own money, plus any ad credit from us. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
+        `${ads.name} manages Facebook and Instagram ad budgets of up to ${formatMoney(adBudgetCap, "INR")} a month of your own money. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
         "What each plan includes is shown on our Pricing page when you sign up. If we agree a written proposal with you, it governs that engagement where it differs from these terms.",
       ],
     },
@@ -50,8 +50,7 @@ export const termsOfService: LegalDocument = {
       heading: "5. Fees and payment",
       paragraphs: [
         `Plans are billed monthly, in advance, at the prices above, which include ${gstPercent}% GST. Your first payment covers your first month, and the plan then renews each month until you cancel. ${RENEWAL_REMINDER}`,
-        PACKAGE_TERMS,
-        AD_CREDIT_TERMS,
+        PLAN_BILLING_TERMS,
         PAYMENT_FAILURE,
         "When we refund a payment, and when we don't, is set out in our Refund and cancellation policy.",
       ],

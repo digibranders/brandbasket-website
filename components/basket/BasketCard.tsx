@@ -1,21 +1,20 @@
 "use client";
 import type { Icon } from "@phosphor-icons/react";
-import { CalendarCheck, Check, Globe, InstagramLogo, Lightning, Megaphone, PiggyBank } from "@phosphor-icons/react/dist/ssr";
+import { Check, Globe, InstagramLogo, Megaphone } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import type { CSSProperties, ReactElement } from "react";
-import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNote, type Rich, slotLabel } from "@/content/basket-card";
+import { BASKET_CARD, headline, type Rich, slotLabel } from "@/content/basket-card";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { basketPlans, type BasketPick, monthlyTotal, PLAN_IDS, PLANS, type PlanId, packageSaving, packageTotal, planPrice } from "@/lib/pricing";
+import { basketPlans, type BasketPick, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
 const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
-const BENEFIT_ICON: Readonly<Record<BenefitKind, Icon>> = { saving: PiggyBank, ads: Megaphone, year: CalendarCheck };
 /** Each stamp lands at its own slight angle, as a hand stamp would. */
 const TILT: Readonly<Record<PlanId, string>> = { website: "-8deg", social: "6deg", ads: "-4deg" };
 
@@ -62,10 +61,9 @@ function Slot({ id, pick, onlyOne, currency }: { readonly id: PlanId; readonly p
   );
 }
 
-/** The loyalty card: a stamp per plan, the one-time offer, then the basket actions (mock: .bcard). The reward track and fine print were removed at the owner's request, 2026-10-22. */
+/** The loyalty card: a stamp per plan, then the basket actions (mock: .bcard). The reward track and fine print were removed at the owner's request, 2026-10-22. */
 function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
   const count = basketPlans(pick).length;
-  const once = oneTimeNote(pick, currency);
   return (
     <div className="basket-weave relative grid gap-[22px] self-start overflow-hidden rounded-3xl border border-rattan/30 px-[26px] py-[26px] max-[560px]:px-4 max-[560px]:py-[22px]">
       <div className="flex items-start justify-between gap-4">
@@ -78,14 +76,6 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
       <div className="grid grid-cols-3 gap-3 max-[560px]:gap-1.5">
         {PLAN_IDS.map((id) => <Slot key={id} id={id} pick={pick} onlyOne={count === 1} currency={currency} />)}
       </div>
-      {once ? (
-        <div className="grid w-full gap-1.5 rounded-2xl border-[1.5px] border-dashed border-rattan-text/55 bg-surface px-4 py-3.5 text-[14.5px] leading-[1.45] [&_b]:text-rattan-ink">
-          <span className="inline-flex items-center gap-1 justify-self-start rounded-full bg-rattan-ink py-[3px] pl-1.5 pr-2.5 font-mono text-[11px] font-medium uppercase tracking-[0.1em] text-surface">
-            <Lightning weight="fill" aria-hidden="true" className="size-[15px]" />{BASKET_CARD.oneTimeTag}
-          </span>
-          <p><RichText line={once} /></p>
-        </div>
-      ) : null}
       <div className="cta-pair pt-1">
         <BasketCta location="plans" label={BASKET_CARD.checkoutCta} short={BASKET_CARD.checkoutCtaShort} anchor="dock" />
         <OutlineButton href="/pricing#compare" location="plans_compare" short={BASKET_COPY.compareShort}>{BASKET_COPY.compare}</OutlineButton>
@@ -94,12 +84,9 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
   );
 }
 
-/** A receipt: the plans, what they earn and the next plan worth adding, then the total at the foot, level with the Basket Card's actions (mock: .bsum; owner picked the receipt layout, 2026-10-22). */
+/** A receipt: the plans and the one offer, then the total at the foot, level with the Basket Card's actions (mock: .bsum; owner picked the receipt layout, 2026-10-22). */
 function Summary({ pick, currency }: { readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
-  const monthly = packageTotal(pick, currency);
-  const saving = packageSaving(pick, currency) > 0;
-  const next = nextStamp(pick, currency);
-  const gains = benefits(pick, currency);
+  const monthly = monthlyTotal(pick, currency);
   return (
     <div className="flex flex-col items-start gap-3.5 rounded-3xl border border-line bg-surface p-[26px] max-[560px]:px-[18px] max-[560px]:py-[22px]">
       <div className="grid gap-2">
@@ -114,29 +101,9 @@ function Summary({ pick, currency }: { readonly pick: BasketPick; readonly curre
         </ul>
       </div>
       <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick, currency)}</p>
-      {gains.length > 0 ? (
-        <ul className="grid w-full gap-[9px]">
-          {gains.map((benefit) => {
-            const BenefitIcon = BENEFIT_ICON[benefit.kind];
-            return (
-              <li key={benefit.kind} className="flex items-center gap-2.5 text-[15px]">
-                <BenefitIcon weight="duotone" aria-hidden="true" className="size-5 flex-none text-sage" />
-                <span><RichText line={benefit} /></span>
-              </li>
-            );
-          })}
-        </ul>
-      ) : null}
-      {next ? (
-        <div className="grid w-full gap-1 rounded-2xl bg-rattan-wash px-4 py-3.5 text-[14.5px] text-rattan-ink">
-          <p className="text-[13px]">{BASKET_CARD.nextLabel} <b className="font-display text-base font-medium">{next.name}</b></p>
-          <p>{next.body}</p>
-        </div>
-      ) : null}
       <div data-basket-total className="mt-auto grid w-full gap-1 border-t border-line pt-4">
         <span className="text-[13px] text-ink-2">{BASKET_CARD.totalLabel}</span>
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">
-          {saving ? <s className="text-[22px] tracking-[-0.02em] text-ink-2 decoration-rattan-text/80 decoration-2"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(monthlyTotal(pick, currency), currency)}</s> : null}
           <span className="text-[clamp(42px,4.6vw,56px)] font-medium leading-none tracking-[-0.05em]">{formatMoney(monthly, currency)}</span>
           <small className="font-sans text-sm text-ink-2">{moneyCopy(currency).inclGst}</small>
         </p>

@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { CURRENCIES } from "@/lib/currency";
 import { type BasketPick, PLAN_IDS, PLANS } from "@/lib/pricing";
-import { BASKET_COPY, moneyCopy, offerNote, planCount, PRICING_PLANS, saveLine } from "./basket";
+import { BASKET_COPY, moneyCopy, offerNote, planCount, PRICING_PLANS } from "./basket";
 
 const pick = (website: boolean, social: boolean, ads: boolean): BasketPick => ({ website, social, ads });
 
@@ -13,8 +13,8 @@ describe("basket copy", () => {
   it("names the pricing rows as the plans", () => {
     for (const id of PLAN_IDS) expect(PRICING_PLANS[id].name).toBe(PLANS[id].name);
   });
-  it("states the package offers as the mock does", () => {
-    expect(BASKET_COPY.heroIntro).toBe("Build your basket. Two plans are 10% off, all three are 20% off.");
+  it("states the one offer, monitoring with all three plans (owner, 2026-11-11)", () => {
+    expect(BASKET_COPY.heroIntro).toBe("Build your basket. Take all three plans and Dedicated Expert Monitoring is included.");
     expect(BASKET_COPY.startPlan).toBe("Start my plan");
     expect(BASKET_COPY.proceed).toBe("Proceed to checkout");
   });
@@ -49,49 +49,19 @@ describe("money copy", () => {
   });
 });
 
-describe("offerNote in rupees", () => {
-  it.each([pick(true, false, false), pick(false, true, false), pick(false, false, true)])("invites a single plan to take a package", (one) => {
-    expect(offerNote(one, "INR")).toBe("Take two plans and save 10%. Take all three and save 20%.");
+describe("offerNote", () => {
+  it.each(CURRENCIES)("says monitoring is included only when all three plans are in the basket (%s)", (currency) => {
+    expect(offerNote(pick(true, true, true), currency)).toBe("Dedicated Expert Monitoring is included with all three plans.");
+    for (const p of [pick(true, false, false), pick(false, true, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(false, true, true)]) {
+      expect(offerNote(p, currency)).toMatch(/^Pick all three plans and Dedicated Expert Monitoring is included\. Otherwise it is /);
+    }
   });
-  it("prices Website + Social with its ad money for both", () => {
-    expect(offerNote(pick(true, true, false), "INR")).toBe("Website + Social: 10% off, so you save ₹599 a month. Start with both and we add ₹1,500 a month to your ads.");
+  it("prices monitoring in the page's currency", () => {
+    expect(offerNote(pick(true, false, false), "INR")).toContain("₹6,000 a month");
+    expect(offerNote(pick(true, false, false), "USD")).toContain("$99 a month");
   });
-  it("prices Website + Ads without ad money", () => {
-    expect(offerNote(pick(true, false, true), "INR")).toBe("Website + Ads: 10% off, so you save ₹599 a month.");
-  });
-  it("prices Social + Ads with its ad money for both", () => {
-    expect(offerNote(pick(false, true, true), "INR")).toBe("Social + Ads: 10% off, so you save ₹599 a month. Start with both and we add ₹1,500 a month to your ads.");
-  });
-  it("says all three for the full basket", () => {
-    expect(offerNote(pick(true, true, true), "INR")).toBe("All three: 20% off, so you save ₹1,799 a month. Start with all three and we add ₹3,000 a month to your ads.");
-  });
-});
-
-describe("offerNote in dollars", () => {
-  it("invites a single plan to take a package", () => {
-    expect(offerNote(pick(true, false, false), "USD")).toBe("Take two plans and save 10%. Take all three and save 20%.");
-  });
-  it("prices Website + Social with its ad money for both", () => {
-    expect(offerNote(pick(true, true, false), "USD")).toBe("Website + Social: 10% off, so you save $11 a month. Start with both and we add $30 a month to your ads.");
-  });
-  it("prices Website + Ads without ad money", () => {
-    expect(offerNote(pick(true, false, true), "USD")).toBe("Website + Ads: 10% off, so you save $11 a month.");
-  });
-  it("prices Social + Ads with its ad money for both", () => {
-    expect(offerNote(pick(false, true, true), "USD")).toBe("Social + Ads: 10% off, so you save $11 a month. Start with both and we add $30 a month to your ads.");
-  });
-  it("says all three for the full basket", () => {
-    expect(offerNote(pick(true, true, true), "USD")).toBe("All three: 20% off, so you save $35 a month. Start with all three and we add $60 a month to your ads.");
-  });
-});
-
-describe("saveLine", () => {
-  it("is empty without a saving", () => {
-    for (const currency of CURRENCIES) expect(saveLine(pick(true, false, false), currency)).toBe("");
-  });
-  it("prints the monthly saving of a package", () => {
-    expect(saveLine(pick(true, true, true), "INR")).toBe("You save ₹1,799 a month");
-    expect(saveLine(pick(true, true, true), "USD")).toBe("You save $35 a month");
+  it("offers no discount and no ad money", () => {
+    for (const currency of CURRENCIES) expect(offerNote(pick(true, true, false), currency)).not.toMatch(/% off|save|ad money|for your ads/i);
   });
 });
 
@@ -99,7 +69,7 @@ describe("dollar copy never mentions tax", () => {
   it("has no GST, tax or incl. in any dollar string", () => {
     const picks = [pick(true, false, false), pick(false, true, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(false, true, true), pick(true, true, true)];
     // Values only: the key names (inclGst) are code, not copy.
-    const all = [Object.values(moneyCopy("USD")), Object.values(BASKET_COPY), Object.values(PRICING_PLANS).map((p) => Object.values(p)), picks.map((p) => [offerNote(p, "USD"), saveLine(p, "USD")])];
+    const all = [Object.values(moneyCopy("USD")), Object.values(BASKET_COPY), Object.values(PRICING_PLANS).map((p) => Object.values(p)), picks.map((p) => offerNote(p, "USD"))];
     expect(JSON.stringify(all)).not.toMatch(/gst|tax|incl\./i);
   });
 });

@@ -5,12 +5,12 @@ import Link from "next/link";
 import { type CSSProperties, type ReactElement, useId, useState } from "react";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
-import { BASKET_COPY, moneyCopy, offerNote, planCount, saveLine } from "@/content/basket";
+import { BASKET_COPY, moneyCopy, offerNote, planCount } from "@/content/basket";
 import { slotLabel } from "@/content/basket-card";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
 import { formatMoney } from "@/lib/currency";
-import { basketPlans, PLAN_IDS, packageTotal, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
+import { basketPlans, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
 import { signupHref } from "@/lib/signup";
 import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
@@ -33,8 +33,8 @@ interface Change {
 }
 
 /**
- * The basket card (docs/design/nav-cart-options.html, Woven): what is in the basket on a three-part meter, the package
- * offer, every plan with add and remove, the monthly total (GST included) and the checkout button. The white core of a glass
+ * The basket card (docs/design/nav-cart-options.html, Woven): what is in the basket on a three-part meter, the one offer
+ * (monitoring with all three plans), every plan with add and remove, the monthly total (GST included) and the checkout button. The white core of a glass
  * tray; the tray (.bc-shell) belongs to whoever shows the card. Styles in wall.css. Its parts rise in turn whenever an
  * ancestor carries data-open="true".
  */
@@ -51,7 +51,6 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
     setSeen(pick);
   }
   const onlyOne = basketPlans(pick).length === 1;
-  const saving = saveLine(pick, currency);
   return (
     <section aria-labelledby={titleId} className="bc-core">
       <div className="bc-head bc-rise" style={{ "--i": 0 } as CSSProperties}>
@@ -100,10 +99,9 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
       </ul>
       <div className="bc-total bc-rise" style={{ "--i": 4 } as CSSProperties}>
         <div>
-          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(packageTotal(pick, currency), currency)} dir={change.dir} /></p>
+          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(monthlyTotal(pick, currency), currency)} dir={change.dir} /></p>
           <small>{moneyCopy(currency).phoneBarCaption}</small>
         </div>
-        {saving ? <span className="bc-chip">{saving}</span> : null}
       </div>
       <Link href={signupHref(pick)} {...trackAttrs("cta_click", location)} style={{ "--i": 5 } as CSSProperties} className={`${pillClasses("md", "action")} bc-rise w-full`}>
         {BASKET_COPY.proceed}

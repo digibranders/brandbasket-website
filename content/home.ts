@@ -154,7 +154,7 @@ export const PROMISES = {
 
 /** Heading for the homepage basket section (owner asked for a plans heading, 2026-10-22). */
 export const PLANS_SECTION = {
-  small: "The more you add, the more you save.",
+  small: "Take all three and monitoring is included.",
   large: "Pick your plans.",
 } as const;
 

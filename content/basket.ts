@@ -1,8 +1,10 @@
 // content/basket.ts
 // Copy for the basket controls, word for word from the mock (docs/design/mock.html: .phc-act .adds, #h-plans .addpanel,
-// .offer-note, .pbar). Percents and money come from lib/pricing.ts, in the page's currency.
-import { type Currency, formatMoney } from "@/lib/currency";
-import { adCreditFor, type BasketPick, basketPlans, PACKAGES, PLAN_IDS, packageFor, packageSaving, type PlanId } from "@/lib/pricing";
+// .offer-note, .pbar). Money comes from lib/pricing.ts, in the page's currency. There are no package discounts or ad money
+// (owner, 2026-11-11); the one offer is Dedicated Expert Monitoring free with all three plans.
+import type { Currency } from "@/lib/currency";
+import { type BasketPick, basketPlans, monitoringIncluded, PLAN_IDS, type PlanId } from "@/lib/pricing";
+import { monitoringNote } from "./pricing";
 
 export interface PlanCopy {
   readonly name: string;
@@ -18,15 +20,8 @@ export const PRICING_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
   ads: { name: "Paid Ads Management", summary: "Meta ads with AI creatives, set up and optimised", switchLabel: "Add Paid Ads Management" },
 };
 
-/** The smallest offer on two plans, and the offer on all three, as printed: "20%" and "30%". */
-const twoPlanPercents = PACKAGES.filter((p) => basketPlans(p.pick).length === 2).map((p) => p.percent);
-const allThree = PACKAGES.find((p) => basketPlans(p.pick).length === PLAN_IDS.length);
-if (twoPlanPercents.length === 0 || !allThree) throw new RangeError("PACKAGES needs a two-plan package and an all-three package");
-const TWO_PLANS_FROM = `${Math.min(...twoPlanPercents)}%`;
-const ALL_THREE = `${allThree.percent}%`;
-
 export const BASKET_COPY = {
-  heroIntro: `Build your basket. Two plans are ${TWO_PLANS_FROM} off, all three are ${ALL_THREE} off.`,
+  heroIntro: "Build your basket. Take all three plans and Dedicated Expert Monitoring is included.",
   perMonth: "a month",
   basketPrefix: "Your basket:",
   /** Read before the struck list price. */
@@ -75,18 +70,7 @@ export function planCount(pick: BasketPick): string {
   return `${basketPlans(pick).length} of ${PLAN_IDS.length} plans`;
 }
 
-/** The strip under the plan rows (mock: offerText()): the invitation for one plan, or what the package earns. */
+/** The strip under the plan rows: the one offer, Dedicated Expert Monitoring free with all three plans. */
 export function offerNote(pick: BasketPick, currency: Currency): string {
-  const pkg = packageFor(pick);
-  if (!pkg) return `Take two plans and save ${TWO_PLANS_FROM}. Take all three and save ${ALL_THREE}.`;
-  const line = `${pkg.name}: ${pkg.percent}% off, so you save ${formatMoney(packageSaving(pick, currency), currency)} a month.`;
-  const credit = adCreditFor(pick, currency);
-  if (credit === 0) return line;
-  return `${line} Start with ${basketPlans(pick).length === PLAN_IDS.length ? "all three" : "both"} and we add ${formatMoney(credit, currency)} a month to your ads.`;
-}
-
-/** The line under the pricing hero total (mock: .was-line); empty when the basket saves nothing. */
-export function saveLine(pick: BasketPick, currency: Currency): string {
-  const saving = packageSaving(pick, currency);
-  return saving > 0 ? `You save ${formatMoney(saving, currency)} a month` : "";
+  return monitoringNote(monitoringIncluded(pick), currency);
 }

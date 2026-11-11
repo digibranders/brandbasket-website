@@ -244,7 +244,7 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
     next: [
       { label: "Is a free website really free? What to ask an agency", href: "/blog/is-a-free-website-really-free", summary: "Where a free website fits, its catch, and what to ask an agency before you agree." },
       { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india", summary: "What a small business website should cost in India, and what the price must include." },
-      { label: "Pricing", href: "/pricing", summary: "Our three monthly plans, what each includes, and how the package discounts work." },
+      { label: "Pricing", href: "/pricing", summary: "Our three monthly plans and what each includes." },
     ],
   },
 ];

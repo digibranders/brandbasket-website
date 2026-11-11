@@ -32,7 +32,7 @@ import { StepsList } from "@/components/ui/StepsList";
 import { BASKET_COPY } from "@/content/basket";
 import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent, serviceMoneyCopy } from "@/content/services";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { packageSaving, PACKAGES, packageTotal, PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
+import { PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/jsonld";
 import { ServiceStartButton } from "./ServiceStartButton";
 
@@ -222,49 +222,6 @@ export function Limits({ page }: { readonly page: ServicePageContent }): ReactEl
   );
 }
 
-function Packages({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
-  const plan = PLANS[page.id];
-  const rows = PACKAGES.filter((pkg) => pkg.pick[page.id]);
-  const copy = SERVICE_COPY.packages;
-  return (
-    <Section labelledBy="h-packages" tight>
-      <Reveal><SectionHead id="h-packages" title={copy.heading} lede={serviceMoneyCopy(currency).packagesLede} /></Reveal>
-      <Reveal>
-        <div role="region" aria-label={copy.heading} tabIndex={0} className="overflow-x-auto rounded-[24px] bg-surface focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rattan-ink">
-          <table className={`w-full min-w-[560px] border-collapse text-left ${RING}`}>
-            <caption className="sr-only">{copy.heading}</caption>
-            <thead>
-              <tr className="text-[13px] font-semibold text-ink-2">
-                <th scope="col" className="px-6 py-4">Plans</th>
-                <th scope="col" className="px-6 py-4">Price</th>
-                <th scope="col" className="px-6 py-4">{copy.saveLabel}</th>
-                <th scope="col" className="px-6 py-4">{copy.adMoneyLabel}</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-t border-line">
-                <th scope="row" className="px-6 py-4 font-display text-[18px] font-medium tracking-[-0.02em]">{plan.name}<span className="ml-2 text-sm font-normal text-ink-2">{copy.aloneLabel}</span></th>
-                <td className="num px-6 py-4">{formatMoney(planPrice(page.id, currency), currency)}</td>
-                <td className="px-6 py-4 text-ink-2">{copy.none}</td>
-                <td className="px-6 py-4 text-ink-2">{copy.none}</td>
-              </tr>
-              {rows.map((pkg) => (
-                <tr key={pkg.id} className="border-t border-line">
-                  <th scope="row" className="px-6 py-4 font-display text-[18px] font-medium tracking-[-0.02em]">{pkg.name}<span className="ml-2 text-sm font-normal text-ink-2">{pkg.percent}% off</span></th>
-                  <td className="num px-6 py-4 font-semibold">{formatMoney(packageTotal(pkg.pick, currency), currency)}</td>
-                  <td className="num px-6 py-4">{formatMoney(packageSaving(pkg.pick, currency), currency)}</td>
-                  <td className="num px-6 py-4">{pkg.adCredit[currency] > 0 ? formatMoney(pkg.adCredit[currency], currency) : copy.none}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-        <p className="mt-3 text-sm text-ink-2">{copy.adMoneyNote}</p>
-      </Reveal>
-    </Section>
-  );
-}
-
 function ServiceFaq({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-service-faq" tight>
@@ -279,7 +236,7 @@ function ServiceFaq({ page }: { readonly page: ServicePageContent }): ReactEleme
 }
 
 /**
- * One service page: who it is for, what we do, what sets it apart, how it works, what is left out, the packages it joins
+ * One service page: who it is for, what we do, what sets it apart, how it works, what is left out
  * and its questions. The closing section comes from the root layout. Prices come from lib/pricing in the page's currency,
  * the lists from the pricing cards, so a page never repeats a number it could drift from.
  */
@@ -292,7 +249,6 @@ export function ServicePage({ page, currency }: { readonly page: ServicePageCont
       <Spotlight page={page} currency={currency} />
       <How page={page} />
       <Limits page={page} />
-      <Packages page={page} currency={currency} />
       <ServiceFaq page={page} />
       <JsonLd data={serviceJsonLd(page, currency)} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }, { name: PLANS[page.id].name, path: page.path }])} />

@@ -4,7 +4,7 @@
 // New copy: it goes to the owner before it ships (2026-10-26). Every price, percentage and cap is built from lib/pricing.ts for the page's currency (rupees with GST included, dollars with no tax named),
 // and the lists of what is and is not included come from content/pricing.ts so the pricing cards and these pages agree.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { extrasFor, PACKAGES, PLANS, planPrice, type PlanId } from "@/lib/pricing";
+import { extrasFor, planPrice, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER } from "./legal/cancellation";
 import { adSpendAnswer, NO_GUARANTEE_ANSWER, planColumns } from "./pricing";
 import type { Step } from "./home";
@@ -65,20 +65,12 @@ export interface ServicePageContent {
   readonly faq: readonly FaqItem[];
 }
 
-const WEBSITE = PLANS.website;
-const SOCIAL = PLANS.social;
-const ADS = PLANS.ads;
-
 /** The words under "Not included" on the pricing card of a plan, so the two never differ. */
 function excludesOf(id: PlanId, currency: Currency): readonly string[] {
   const column = planColumns(currency).find((plan) => plan.id === id);
   if (!column) throw new RangeError(`No pricing column for ${id}`);
   return column.excludes;
 }
-
-/** The package percentages: the same for every two-plan package, and the all-three one. They do not depend on the currency. */
-const TWO_PLAN_PERCENT = Math.min(...PACKAGES.filter((pkg) => Object.values(pkg.pick).filter(Boolean).length === 2).map((pkg) => pkg.percent));
-const ALL_PLAN_PERCENT = Math.max(...PACKAGES.map((pkg) => pkg.percent));
 
 /** Rupee prices carry GST and say so; dollar prices never mention a tax. */
 function gstNote(currency: Currency): string {
@@ -207,7 +199,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         },
         {
           q: "Do I need the website plan?",
-          a: `No. Every plan can be bought on its own. Taken with ${WEBSITE.name} or ${ADS.name}, the prices drop.`,
+          a: `No. Every plan can be bought on its own, at the same price.`,
         },
         {
           q: "Do you guarantee followers, leads or sales?",
@@ -262,7 +254,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         },
         {
           q: "Do I need the website plan?",
-          a: `No. Every plan can be bought on its own. Taken with ${WEBSITE.name} or ${SOCIAL.name}, the prices drop.`,
+          a: `No. Every plan can be bought on its own, at the same price.`,
         },
         {
           q: "Do you guarantee leads or sales?",
@@ -321,22 +313,11 @@ export const SERVICE_COPY = {
   start: "Start my plan",
   /** The site's own "View pricing" label, short enough to sit beside the main button on a phone. */
   compare: "View pricing",
-  packages: {
-    heading: "Add a plan, pay less.",
-    aloneLabel: "On its own",
-    saveLabel: "You save",
-    adMoneyLabel: "Ad money a month",
-    adMoneyNote: "Only when the plans start together at your first checkout.",
-    none: "None",
-  },
   faqHeading: "Questions about this plan.",
   exploreMore: "Explore more",
 } as const;
 
-/** The two lines of service copy that name the price basis: the unit under a price, and the packages lede. */
-export function serviceMoneyCopy(currency: Currency): { readonly perMonth: string; readonly packagesLede: string } {
-  const offers = `Any two plans are ${TWO_PLAN_PERCENT}% off and all three are ${ALL_PLAN_PERCENT}% off.`;
-  return currency === "INR"
-    ? { perMonth: "a month, GST included", packagesLede: `${offers} Every price includes GST.` }
-    : { perMonth: "a month", packagesLede: offers };
+/** The unit printed under a plan price: rupee prices carry GST and say so; dollar prices never mention a tax. */
+export function serviceMoneyCopy(currency: Currency): { readonly perMonth: string } {
+  return { perMonth: currency === "INR" ? "a month, GST included" : "a month" };
 }

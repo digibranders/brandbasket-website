@@ -42,19 +42,18 @@ describe("planOffersJsonLd", () => {
     expect(service.provider["@id"]).toBe("https://www.brandbasket.in/#organization");
   });
   it("publishes dollar prices with no tax flag on a dollar page", () => {
-    const offers = planOffersJsonLd("USD", { packages: true }).hasOfferCatalog.itemListElement;
-    expect(offers.map((offer) => offer.priceSpecification.price)).toEqual([59, 59, 59, 107, 107, 107, 142]);
+    const offers = planOffersJsonLd("USD").hasOfferCatalog.itemListElement;
+    expect(offers.map((offer) => offer.priceSpecification.price)).toEqual([59, 59, 59]);
     for (const offer of offers) {
       expect(offer.priceSpecification.priceCurrency).toBe("USD");
       expect(offer.priceSpecification).not.toHaveProperty("valueAddedTaxIncluded");
     }
   });
-  it("adds the four packages after the plans when asked", () => {
-    const offers = planOffersJsonLd("INR", { packages: true }).hasOfferCatalog.itemListElement;
-    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([5399, 5399, 5399, 7198]);
-    expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + Ads", "Social + Ads", "All three"]);
-    expect(offers[3].priceSpecification.unitText).toBe("MONTH");
-    expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(true);
+  it("lists only the three plans, with no package offers", () => {
+    const offers = planOffersJsonLd("INR").hasOfferCatalog.itemListElement;
+    expect(offers.map((offer) => offer.name)).toEqual(["Website Management", "Social Media Management", "Paid Ads Management"]);
+    expect(offers[0].priceSpecification.unitText).toBe("MONTH");
+    expect(offers[0].priceSpecification.valueAddedTaxIncluded).toBe(true);
   });
 });
 

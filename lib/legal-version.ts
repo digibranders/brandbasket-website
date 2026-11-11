@@ -26,5 +26,7 @@
  * 2026-11-06.1  Terms: the plans are Website Management, Social Media Management and Paid Ads Management (Local SEO + AEO
  *               is no longer sold), Paid Ads Management manages the ad budget, and Dedicated Expert Monitoring is
  *               included with all three plans or priced monthly with one or two. Not yet published.
+ * 2026-11-11.1  Terms and plan-change wording: every plan costs the same, there are no package prices and no monthly ad
+ *               credit, and the only offer is Dedicated Expert Monitoring included with all three plans.
  */
-export const LEGAL_TEXT_VERSION = "2026-11-06.1";
+export const LEGAL_TEXT_VERSION = "2026-11-11.1";

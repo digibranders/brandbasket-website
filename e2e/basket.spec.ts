@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 import { PRICING_PLANS } from "@/content/basket";
 import { formatMoney } from "@/lib/currency";
-import { type BasketPick, packageTotal, PLAN_IDS } from "@/lib/pricing";
+import { type BasketPick, monthlyTotal, PLAN_IDS } from "@/lib/pricing";
 
 test("the basket renders cast shadows as well as its main scene", async ({ page }) => {
   await page.addInitScript(() => {
@@ -64,7 +64,7 @@ const PICKS: readonly BasketPick[] = [
   { website: true, social: true, ads: true },
 ];
 
-const pickTotal = (pick: BasketPick): string => formatMoney(packageTotal(pick, "INR"), "INR");
+const pickTotal = (pick: BasketPick): string => formatMoney(monthlyTotal(pick, "INR"), "INR");
 
 for (const pick of PICKS) {
   const total = pickTotal(pick);
@@ -81,16 +81,16 @@ for (const pick of PICKS) {
 
 test("the expected totals match the owner's figures", () => {
   // Guards the formula itself: if these move, prices changed and the owner signs off on the new figures.
-  expect(PICKS.map(pickTotal)).toEqual(["₹2,999", "₹5,399", "₹5,399", "₹7,198"]);
+  expect(PICKS.map(pickTotal)).toEqual(["₹2,999", "₹5,998", "₹5,998", "₹8,997"]);
 });
 
-test("Social and Ads without the website is the 10% package", async ({ page }) => {
+test("Social and Ads without the website are the two plans added up", async ({ page }) => {
   await page.goto("/pricing");
   const hero = page.locator("section[aria-labelledby='h-pricing']");
   await hero.getByRole("switch", { name: PRICING_PLANS.social.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.ads.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
-  await expect(hero.locator("[data-basket-total]").getByText("₹5,399", { exact: true })).toBeVisible();
+  await expect(hero.locator("[data-basket-total]").getByText("₹5,998", { exact: true })).toBeVisible();
 });
 
 test("the last switch on cannot be turned off", async ({ page }) => {
@@ -120,12 +120,13 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await page.goto("/pricing");
   const card = page.locator("#basket-card");
   await card.getByRole("button", { name: "Add Social Media Management", exact: true }).click();
-  await expect(card.getByText("10% off and ₹1,500 a month for your ads.", { exact: true })).toBeVisible();
+  // Two plans are just the two plans added up: no discount, no ad money.
+  await expect(card.getByText("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is ₹6,000 a month.", { exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: "Remove Social Media Management" })).toHaveAttribute("aria-pressed", "true");
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Website Management", "Social Media Management"]);
   await card.getByRole("button", { name: "Add Paid Ads Management", exact: true }).click();
-  await expect(card.getByText("Full basket. 20% off and ₹3,000 a month for your ads.", { exact: true })).toBeVisible();
-  await expect(card.getByText(formatMoney(packageTotal({ website: true, social: true, ads: true }, "INR"), "INR"), { exact: false }).first()).toBeVisible();
+  await expect(card.getByText("Dedicated Expert Monitoring is included with all three plans.", { exact: true })).toBeVisible();
+  await expect(card.getByText(formatMoney(monthlyTotal({ website: true, social: true, ads: true }, "INR"), "INR"), { exact: false }).first()).toBeVisible();
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {

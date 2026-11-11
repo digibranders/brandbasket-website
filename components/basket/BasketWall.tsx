@@ -6,7 +6,7 @@ import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { formatMoney } from "@/lib/currency";
-import { basketPlans, packageFor, packageTotal, PLAN_IDS, type PlanId } from "@/lib/pricing";
+import { basketPlans, monthlyTotal, PLAN_IDS, type PlanId } from "@/lib/pricing";
 import { PLAN_INK } from "./basket-view";
 import { basketPanel } from "./basket-panel";
 import { BasketSummary, PLAN_ICON } from "./BasketSummary";
@@ -141,8 +141,7 @@ export function BasketWall(): ReactElement | null {
   if (!active) return null;
 
   const count = basketPlans(pick).length;
-  const total = formatMoney(packageTotal(pick, currency), currency);
-  const percent = packageFor(pick)?.percent;
+  const total = formatMoney(monthlyTotal(pick, currency), currency);
   const swung = landing !== null && landing.added.length > 0;
   const delayStyle = { "--d": `${landing?.delay ?? 0}ms` } as CSSProperties;
 
@@ -184,7 +183,6 @@ export function BasketWall(): ReactElement | null {
           </span>
           <span className="bw-string" />
           <span className="bw-tag">
-            {percent ? <span key={`chip${landing?.n ?? 0}`} style={delayStyle} className={`bc-chip ${landing ? "bw-chip-in" : ""}`}>{percent}% off</span> : null}
             <b className="num"><Roll value={total} dir={landing?.dir ?? 1} delay={landing?.delay ?? 0} /></b>
             <span className="bw-tag-note">{moneyCopy(currency).phoneBarCaption}</span>
           </span>

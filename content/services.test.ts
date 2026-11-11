@@ -93,10 +93,7 @@ describe("service pages", () => {
     expect(text).toContain("₹500 an hour");
     expect(text).toContain("₹500");
     expect(text).not.toContain("$");
-    expect(serviceMoneyCopy("INR")).toEqual({
-      perMonth: "a month, GST included",
-      packagesLede: "Any two plans are 10% off and all three are 20% off. Every price includes GST.",
-    });
+    expect(serviceMoneyCopy("INR")).toEqual({ perMonth: "a month, GST included" });
   });
 
   it("prints dollars with no tax anywhere on the dollar pages", () => {
@@ -108,7 +105,7 @@ describe("service pages", () => {
     for (const price of ["$59", "$120", "$10 an hour"]) expect(text).toContain(price);
     expect(servicePageFor("social", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
-    expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month", packagesLede: "Any two plans are 10% off and all three are 20% off." });
+    expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month" });
     expect(Object.values(PLANS).map((plan) => plan.name).every((name) => !NO_TAX.test(name))).toBe(true);
   });
 

@@ -76,7 +76,7 @@ function Plan({ plan, currency, doesLabel, excludesLabel }: { readonly plan: Pla
 
 /**
  * The three plans side by side (docs/design/homepage-v2.html, #cmp-new): price, who it is for, what we do and what is
- * left out, with the rows lined up across plans. Then what every plan shares, and the packages that bundle them.
+ * left out, with the rows lined up across plans. Then what every plan shares.
  * Plans and prices are built from lib/pricing, so nothing here repeats a number.
  */
 export function PlanColumns({ currency }: { readonly currency: Currency }): ReactElement {

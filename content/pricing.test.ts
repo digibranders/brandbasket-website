@@ -2,7 +2,7 @@
 import { describe, expect, it } from "vitest";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import { CURRENCIES, type Currency, formatMoney } from "@/lib/currency";
-import { extrasFor, PACKAGES, PLANS, planPrice } from "@/lib/pricing";
+import { extrasFor, PLANS, planPrice } from "@/lib/pricing";
 import { compareCopy, everyPlan, planColumns, PRICING_HERO, pricingFaq } from "./pricing";
 
 const TAX_WORDS = /gst|tax|incl\./i;
@@ -15,11 +15,6 @@ describe("pricing content", () => {
   it("keeps the locked hero headline", () => {
     expect(`${PRICING_HERO.title} ${PRICING_HERO.accent}`).toBe("Simple monthly plans. Start with your website.");
   });
-  it("keeps the Social ad money equal across the two-plan packages that include it", () => {
-    // One amount covers both two-plan packages with Social, so they must stay equal.
-    expect(PACKAGES.find((p) => p.id === "website-social")?.adCredit).toEqual(PACKAGES.find((p) => p.id === "social-ads")?.adCredit);
-  });
-
   describe.each(CURRENCIES)("in %s", (currency) => {
     const columns = planColumns(currency);
     const faq = pricingFaq(currency);
@@ -70,7 +65,7 @@ describe("pricing content", () => {
         "Is ad spend included?",
         "Do you guarantee leads or sales?",
       ]);
-      expect(faq[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + Ads is 10% off.");
+      expect(faq[2]?.a).toBe("No. Every plan can be bought on its own, at the same price.");
     });
     it("has no em or en dashes", () => {
       expect(allCopy(currency)).not.toMatch(/[\u2013\u2014]/);
@@ -82,7 +77,7 @@ describe("pricing content", () => {
       expect(planColumns("INR").map((c) => c.price)).toEqual(["₹2,999", "₹2,999", "₹2,999"]);
       expect(planColumns("INR").map((c) => c.was)).toEqual(["₹4,999", "₹4,999", "₹4,999"]);
       expect(planColumns("INR").every((c) => c.priceNote === "a month, incl. GST")).toBe(true);
-      expect(compareCopy("INR").lede).toBe("Three plans, each on its own. Prices are monthly, GST included. Add more than one and the prices drop.");
+      expect(compareCopy("INR").lede).toBe("Three plans, each on its own. Prices are monthly, GST included. Every plan costs the same.");
       expect(everyPlan("INR").items).toContain("Billed monthly, GST included");
       expect(pricingFaq("INR")[0]?.a).toBe("Yes. We design and build it for ₹0. The ₹2,999 monthly plan keeps it hosted, secure and up to date.");
       expect(pricingFaq("INR")[4]?.a).toContain("up to ₹10,000 a month");
@@ -95,7 +90,7 @@ describe("pricing content", () => {
       expect(planColumns("USD").map((c) => c.price)).toEqual(["$59", "$59", "$59"]);
       expect(planColumns("USD").map((c) => c.was)).toEqual(["$79", "$79", "$79"]);
       expect(planColumns("USD").every((c) => c.priceNote === "a month")).toBe(true);
-      expect(compareCopy("USD").lede).toBe("Three plans, each on its own. Prices are monthly. Add more than one and the prices drop.");
+      expect(compareCopy("USD").lede).toBe("Three plans, each on its own. Prices are monthly. Every plan costs the same.");
       expect(pricingFaq("USD")[0]?.a).toBe("Yes. We design and build it for $0. The $59 monthly plan keeps it hosted, secure and up to date.");
       expect(pricingFaq("USD")[4]?.a).toContain("up to $120 a month");
       expect(planColumns("USD")[1]?.excludes).toContain("Reels and video editing, $10 per reel");

@@ -3,7 +3,7 @@ import type { ServicePageContent } from "@/content/services";
 import type { Currency } from "@/lib/currency";
 import type { FaqItem } from "@/content/types";
 import type { AuthorProfile, Post } from "@/lib/cms/schema";
-import { PACKAGES, packageTotal, PLAN_IDS, planPrice, PLANS } from "@/lib/pricing";
+import { PLAN_IDS, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig, socialLinks } from "@/lib/site-config";
 
 /** One node id for the organization, so other entities can point at it instead of repeating it. */
@@ -118,8 +118,8 @@ function monthlyOffer(name: string, price: number, currency: Currency): ServiceL
   };
 }
 
-/** One Offer per plan at list price in the page's currency; the pricing page also lists one per package at its package price. */
-export function planOffersJsonLd(currency: Currency, { packages = false }: { readonly packages?: boolean } = {}): ServiceLd {
+/** One Offer per plan in the page's currency. */
+export function planOffersJsonLd(currency: Currency): ServiceLd {
   return {
     "@context": "https://schema.org",
     "@type": "Service",
@@ -131,7 +131,6 @@ export function planOffersJsonLd(currency: Currency, { packages = false }: { rea
       name: "Brandbasket plans",
       itemListElement: [
         ...PLAN_IDS.map((id) => monthlyOffer(PLANS[id].name, planPrice(id, currency), currency)),
-        ...(packages ? PACKAGES.map((pkg) => monthlyOffer(pkg.name, packageTotal(pkg.pick, currency), currency)) : []),
       ],
     },
   };

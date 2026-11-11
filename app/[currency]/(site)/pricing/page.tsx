@@ -29,7 +29,7 @@ export default async function PricingPage({ params }: { readonly params: Promise
       <BasketBand />
       <PricingFaq currency={currency} />
       <GuideLinks links={GUIDE_LINKS.pricing} />
-      <JsonLd data={planOffersJsonLd(currency, { packages: true })} />
+      <JsonLd data={planOffersJsonLd(currency)} />
       <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }])} />
     </>
   );

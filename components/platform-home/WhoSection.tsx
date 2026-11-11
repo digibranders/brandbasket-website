@@ -4,7 +4,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { WHO } from "@/content/platform-home";
 
 interface Tile {
-  /** Photo in public/home/who (made with agy, 2026-11-11). */
+  /** Photo in public/home/who (made with agy, 2026-11-11; the "-2" set replaced the first, brown one the same day and renamed so caches refresh). */
   readonly photo: string;
   /** Place in the mosaic (components/platform-home/platform-home.css, .who-*). */
   readonly area: "a" | "b" | "c" | "d" | "e" | "f";
@@ -13,12 +13,12 @@ interface Tile {
 
 /** One tile per kind of business, in the order of WHO.segments. Tall: a, c, e. Wide: f. */
 const TILES: readonly Tile[] = [
-  { photo: "startups", area: "a", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "small-businesses", area: "b", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "professional-services", area: "c", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "retail-ecommerce", area: "d", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "restaurants-hospitality", area: "f", sizes: "(min-width: 1000px) 600px, 92vw" },
-  { photo: "growing-companies", area: "e", sizes: "(min-width: 1000px) 300px, 46vw" },
+  { photo: "startups-2", area: "a", sizes: "(min-width: 1000px) 300px, 46vw" },
+  { photo: "small-businesses-2", area: "b", sizes: "(min-width: 1000px) 300px, 46vw" },
+  { photo: "professional-services-2", area: "c", sizes: "(min-width: 1000px) 300px, 46vw" },
+  { photo: "retail-ecommerce-2", area: "d", sizes: "(min-width: 1000px) 300px, 46vw" },
+  { photo: "restaurants-hospitality-2", area: "f", sizes: "(min-width: 1000px) 600px, 92vw" },
+  { photo: "growing-companies-2", area: "e", sizes: "(min-width: 1000px) 300px, 46vw" },
 ];
 
 /**

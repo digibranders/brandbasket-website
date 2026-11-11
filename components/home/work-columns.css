@@ -1,12 +1,8 @@
 /* components/home/work-columns.css
-   The homepage "Real websites" columns. A site is shown by letting a tall screenshot slide up and down inside a screen:
-   `top` goes from 0 to 100% of the screen while the image is moved up by 100% of itself, so the image's top meets the
-   screen's top at the start and its bottom meets the screen's bottom at the end, whatever its height. The open column
-   shows a browser window, the closed ones a phone; both are always laid out (hidden with opacity, not display) so their
-   pictures are already loaded when a column opens. */
-@keyframes ws-run { from { top: 0; transform: translateY(0); } to { top: 100%; transform: translateY(-100%); } }
-.wc-run { position: absolute; left: 0; width: 100%; height: auto; max-width: none; user-select: none; animation: ws-run var(--dur, 20s) ease-in-out infinite alternate; }
-
+   The homepage "Real websites" columns. Each screen is a scroll container holding the full-length screenshot; WorkColumns.tsx
+   scrolls it by itself, pauses on hover and lets the visitor drag, wheel or touch it. The open column shows a browser window,
+   the closed ones a phone; both are always laid out (hidden with opacity, not display) so their pictures are already loaded
+   when a column opens. */
 .wc-row { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
 .wc-item { min-width: 0; }
 .wc-panel {
@@ -18,7 +14,15 @@
 /* The screens. Closed: a phone. Open: a browser window. */
 .wc-screen { position: absolute; display: block; opacity: 0; visibility: hidden; transition: opacity 450ms var(--ease), visibility 0s linear 450ms; }
 .wc-item[data-open="true"] .wc-screen-desk, .wc-item:not([data-open="true"]) .wc-screen-phone { opacity: 1; visibility: visible; transition: opacity 450ms var(--ease) 150ms, visibility 0s; }
-.wc-view { position: relative; display: block; overflow: hidden; background: var(--sunken); }
+.wc-view { position: relative; display: block; overflow-y: auto; overflow-x: hidden; background: var(--sunken); scrollbar-width: none; touch-action: pan-y; cursor: grab; }
+.wc-view::-webkit-scrollbar { display: none; }
+.wc-view[data-dragging] { cursor: grabbing; }
+.wc-img { display: block; width: 100%; height: auto; max-width: none; user-select: none; pointer-events: none; }
+/* "Drag to scroll", over the browser window on hover, as in the earlier showcase. */
+.wc-chip { position: absolute; left: 50%; bottom: 12px; z-index: 2; display: inline-flex; align-items: center; gap: 6px; padding: 7px 12px; border-radius: 999px; translate: -50% 6px; background: color-mix(in srgb, var(--ink) 82%, transparent); color: var(--action-ink); font-size: 12.5px; font-weight: 600; opacity: 0; pointer-events: none; transition: opacity 300ms var(--ease), translate 300ms var(--ease); }
+.wc-screen-desk:hover .wc-chip { opacity: 1; translate: -50% 0; }
+.wc-screen-desk:has([data-dragging]) .wc-chip { opacity: 0; }
+@media (hover: none) { .wc-chip { display: none; } }
 
 .wc-screen-desk { overflow: hidden; border-radius: 16px; background: var(--surface); box-shadow: 0 30px 50px -26px rgba(40, 28, 14, 0.55), 0 0 0 1px var(--line-2); }
 .wc-bar { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; background: var(--sunken); }
@@ -61,4 +65,4 @@
   .wc-item:not([data-open="true"]) .wc-text { text-align: center; left: 12px; right: 12px; bottom: 26px; }
   .wc-item:not([data-open="true"]) .wc-text > span { display: none; }
 }
-@media (prefers-reduced-motion: reduce) { .wc-run { animation: none; top: 0; transform: none; } .wc-item, .wc-screen { transition: none; } }
+@media (prefers-reduced-motion: reduce) { .wc-item, .wc-screen, .wc-chip { transition: none; } }

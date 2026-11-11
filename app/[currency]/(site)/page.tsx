@@ -3,7 +3,7 @@ import { CursorClick, MapPin, Star } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
 import type { ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
-import { WorkShowcase } from "@/components/home/WorkShowcase";
+import { WorkColumns } from "@/components/home/WorkColumns";
 import { FinalCta } from "@/components/platform-home/FinalCta";
 import { HomePricing } from "@/components/platform-home/HomePricing";
 import { HowSection } from "@/components/platform-home/HowSection";
@@ -42,7 +42,7 @@ export default async function HomePage({ params }: { readonly params: Promise<{ 
         <DecorIcon icon={CursorClick} size={139} rotate={8} faint className="right-[19%] top-[78px] max-[760px]:hidden" />
         <DecorIcon icon={Star} size={109} rotate={-11} faint className="right-[10%] top-[118px] max-[760px]:hidden" />
         <DecorIcon icon={MapPin} size={126} rotate={12} faint className="right-[3%] top-[70px]" />
-        <WorkShowcase />
+        <WorkColumns />
       </Band>
       <PlatformFaq />
       <FinalCta />

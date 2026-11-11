@@ -1,0 +1,64 @@
+/* components/home/work-columns.css
+   The homepage "Real websites" columns. A site is shown by letting a tall screenshot slide up and down inside a screen:
+   `top` goes from 0 to 100% of the screen while the image is moved up by 100% of itself, so the image's top meets the
+   screen's top at the start and its bottom meets the screen's bottom at the end, whatever its height. The open column
+   shows a browser window, the closed ones a phone; both are always laid out (hidden with opacity, not display) so their
+   pictures are already loaded when a column opens. */
+@keyframes ws-run { from { top: 0; transform: translateY(0); } to { top: 100%; transform: translateY(-100%); } }
+.wc-run { position: absolute; left: 0; width: 100%; height: auto; max-width: none; user-select: none; animation: ws-run var(--dur, 20s) ease-in-out infinite alternate; }
+
+.wc-row { display: grid; gap: 10px; margin: 0; padding: 0; list-style: none; }
+.wc-item { min-width: 0; }
+.wc-panel {
+  position: relative; display: block; width: 100%; height: 100%; min-height: 150px; overflow: hidden; padding: 0; border: 0; border-radius: 28px; background: var(--ground); color: var(--ink); text-align: left; cursor: pointer;
+  container-type: size; box-shadow: inset 0 0 0 1px var(--line-2), 0 30px 50px -36px rgba(40, 28, 14, 0.5);
+}
+.wc-panel:focus-visible { outline: 2px solid var(--rattan); outline-offset: 3px; }
+
+/* The screens. Closed: a phone. Open: a browser window. */
+.wc-screen { position: absolute; display: block; opacity: 0; visibility: hidden; transition: opacity 450ms var(--ease), visibility 0s linear 450ms; }
+.wc-item[data-open="true"] .wc-screen-desk, .wc-item:not([data-open="true"]) .wc-screen-phone { opacity: 1; visibility: visible; transition: opacity 450ms var(--ease) 150ms, visibility 0s; }
+.wc-view { position: relative; display: block; overflow: hidden; background: var(--sunken); }
+
+.wc-screen-desk { overflow: hidden; border-radius: 16px; background: var(--surface); box-shadow: 0 30px 50px -26px rgba(40, 28, 14, 0.55), 0 0 0 1px var(--line-2); }
+.wc-bar { display: flex; align-items: center; gap: 6px; height: 32px; padding: 0 12px; background: var(--sunken); }
+.wc-bar i { width: 9px; height: 9px; border-radius: 99px; background: color-mix(in srgb, var(--ink) 14%, var(--line)); }
+.wc-bar > span { display: inline-flex; align-items: center; gap: 5px; margin-left: 8px; padding: 2px 10px; border-radius: 7px; background: var(--surface); font-size: 11.5px; color: var(--ink-2); }
+.wc-screen-desk .wc-view { height: calc(100% - 32px); }
+
+.wc-screen-phone { box-sizing: border-box; padding: 6px; border-radius: 30px; background: var(--ink); box-shadow: 0 30px 50px -22px rgba(0, 0, 0, 0.55), inset 0 0 0 1.5px color-mix(in srgb, var(--ink), white 12%); }
+.wc-screen-phone::after { content: ""; position: absolute; left: 50%; top: 11px; width: 30%; height: 11px; translate: -50% 0; border-radius: 99px; background: var(--ink); }
+.wc-screen-phone .wc-view { width: 100%; height: 100%; border-radius: 24px; }
+
+.wc-text { position: absolute; display: grid; gap: 3px; }
+.wc-text b { font-family: var(--font-red-hat-display), sans-serif; font-weight: 700; line-height: 1; letter-spacing: -0.04em; }
+.wc-text > span { font-size: 15px; line-height: 1.3; color: var(--ink-2); }
+
+/* Phones and tablets: three rows. A closed row shows its name and a phone peeking up from the foot; the open row is
+   taller and shows the browser window over the name. */
+@media (max-width: 999px) {
+  .wc-item { height: 160px; transition: height 600ms var(--ease); }
+  .wc-item[data-open="true"] { height: 400px; }
+  .wc-screen-desk { left: 14px; right: 14px; top: 14px; bottom: 96px; }
+  .wc-screen-phone { right: 18px; top: 18px; width: 92px; height: 200px; }
+  .wc-text { left: 18px; right: 18px; bottom: 16px; }
+  .wc-text b { font-size: 26px; }
+  .wc-item:not([data-open="true"]) .wc-text { right: 130px; top: 18px; bottom: auto; }
+  .wc-item:not([data-open="true"]) .wc-text > span { display: none; }
+}
+
+/* Laptops: a row of three columns that trade width. Sizes come from the panel itself (container units), so the phone and
+   the browser always fit the column and leave room for the name under them. */
+@media (min-width: 1000px) {
+  .wc-row { display: flex; height: clamp(520px, 41vw, 620px); gap: 12px; }
+  .wc-item { flex: 1 1 0; min-width: 0; transition: flex-grow 700ms var(--ease); }
+  .wc-item[data-open="true"] { flex-grow: 3.2; }
+  .wc-screen-desk { left: 22px; right: 22px; top: 22px; bottom: 132px; }
+  .wc-screen-phone { left: 50%; top: 22px; translate: -50% 0; height: calc(100cqh - 132px - 22px); width: min(calc(100cqw - 40px), calc((100cqh - 154px) * 0.4615)); }
+  .wc-text { left: 22px; right: 22px; bottom: 22px; }
+  .wc-text b { font-size: clamp(34px, 3.6vw, 56px); }
+  .wc-item:not([data-open="true"]) .wc-text b { font-size: clamp(22px, 2vw, 30px); letter-spacing: -0.035em; }
+  .wc-item:not([data-open="true"]) .wc-text { text-align: center; left: 12px; right: 12px; bottom: 26px; }
+  .wc-item:not([data-open="true"]) .wc-text > span { display: none; }
+}
+@media (prefers-reduced-motion: reduce) { .wc-run { animation: none; top: 0; transform: none; } .wc-item, .wc-screen { transition: none; } }

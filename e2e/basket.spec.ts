@@ -81,16 +81,16 @@ for (const pick of PICKS) {
 
 test("the expected totals match the owner's figures", () => {
   // Guards the formula itself: if these move, prices changed and the owner signs off on the new figures.
-  expect(PICKS.map(pickTotal)).toEqual(["₹2,999", "₹11,699", "₹25,199", "₹30,398"]);
+  expect(PICKS.map(pickTotal)).toEqual(["₹2,999", "₹5,399", "₹5,399", "₹7,198"]);
 });
 
-test("Social and SEO without the website is the 20% package", async ({ page }) => {
+test("Social and Ads without the website is the 10% package", async ({ page }) => {
   await page.goto("/pricing");
   const hero = page.locator("section[aria-labelledby='h-pricing']");
   await hero.getByRole("switch", { name: PRICING_PLANS.social.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.ads.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
-  await expect(hero.locator("[data-basket-total]").getByText("₹31,499", { exact: true })).toBeVisible();
+  await expect(hero.locator("[data-basket-total]").getByText("₹5,399", { exact: true })).toBeVisible();
 });
 
 test("the last switch on cannot be turned off", async ({ page }) => {

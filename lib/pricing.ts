@@ -34,8 +34,8 @@ export const PLANS: Readonly<Record<PlanId, Plan>> = {
  * and the customer pays 11699; owner, 2026-10-26). Every figure here is a whole number.
  */
 const PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, number>>>> = {
-  INR: { website: 2999, social: 9999, ads: 24999 },
-  USD: { website: 65, social: 150, ads: 350 },
+  INR: { website: 2999, social: 2999, ads: 2999 },
+  USD: { website: 59, social: 59, ads: 59 },
 };
 
 /** What one plan costs a month on its own. */
@@ -48,8 +48,8 @@ export function planPrice(id: PlanId, currency: Currency): number {
  * monthly price before the launch offer, and what building a website costs elsewhere. Display only; nothing is billed from them.
  */
 const USUAL_PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, number>>>> = {
-  INR: { website: 4999, social: 14999, ads: 39999 },
-  USD: { website: 99, social: 225, ads: 549 },
+  INR: { website: 4999, social: 4999, ads: 4999 },
+  USD: { website: 79, social: 79, ads: 79 },
 };
 const USUAL_BUILD_PRICES: Readonly<Record<Currency, number>> = { INR: 35000, USD: 1200 };
 
@@ -181,7 +181,7 @@ export function nextPlanToAdd(pick: BasketPick, currency: Currency): NextPlan | 
  */
 export const MONITORING = { name: "Dedicated Expert Monitoring" } as const;
 
-const MONITORING_PRICES: Readonly<Record<Currency, number>> = { INR: 6000, USD: 75 };
+const MONITORING_PRICES: Readonly<Record<Currency, number>> = { INR: 6000, USD: 99 };
 
 /** What monitoring costs a month as an add-on. */
 export function monitoringPrice(currency: Currency): number {

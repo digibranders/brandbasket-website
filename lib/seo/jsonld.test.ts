@@ -36,14 +36,14 @@ describe("planOffersJsonLd", () => {
   it("publishes each plan's monthly price from the pricing module", () => {
     const service = planOffersJsonLd("INR");
     const prices = service.hasOfferCatalog.itemListElement.map((offer) => offer.priceSpecification.price);
-    expect(prices).toEqual([2999, 9999, 24999]);
+    expect(prices).toEqual([2999, 2999, 2999]);
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.priceCurrency).toBe("INR");
     expect(service.hasOfferCatalog.itemListElement[0].priceSpecification.valueAddedTaxIncluded).toBe(true);
     expect(service.provider["@id"]).toBe("https://www.brandbasket.in/#organization");
   });
   it("publishes dollar prices with no tax flag on a dollar page", () => {
     const offers = planOffersJsonLd("USD", { packages: true }).hasOfferCatalog.itemListElement;
-    expect(offers.map((offer) => offer.priceSpecification.price)).toEqual([65, 150, 350, 194, 374, 450, 452]);
+    expect(offers.map((offer) => offer.priceSpecification.price)).toEqual([59, 59, 59, 107, 107, 107, 142]);
     for (const offer of offers) {
       expect(offer.priceSpecification.priceCurrency).toBe("USD");
       expect(offer.priceSpecification).not.toHaveProperty("valueAddedTaxIncluded");
@@ -51,7 +51,7 @@ describe("planOffersJsonLd", () => {
   });
   it("adds the four packages after the plans when asked", () => {
     const offers = planOffersJsonLd("INR", { packages: true }).hasOfferCatalog.itemListElement;
-    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([11699, 25199, 31499, 30398]);
+    expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([5399, 5399, 5399, 7198]);
     expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + Ads", "Social + Ads", "All three"]);
     expect(offers[3].priceSpecification.unitText).toBe("MONTH");
     expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(true);

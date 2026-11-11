@@ -24,9 +24,9 @@ import {
 const pick = (website: boolean, social: boolean, ads: boolean): BasketPick => ({ website, social, ads });
 
 describe("plans", () => {
-  it("prices the three plans (owner decisions, 2026-10-21 and 2026-10-27)", () => {
-    expect(PLAN_IDS.map((id) => planPrice(id, "INR"))).toEqual([2999, 9999, 24999]);
-    expect(PLAN_IDS.map((id) => planPrice(id, "USD"))).toEqual([65, 150, 350]);
+  it("prices every plan the same (owner, 2026-11-11: 2,999 rupees or $59)", () => {
+    expect(PLAN_IDS.map((id) => planPrice(id, "INR"))).toEqual([2999, 2999, 2999]);
+    expect(PLAN_IDS.map((id) => planPrice(id, "USD"))).toEqual([59, 59, 59]);
   });
 
   it.each(CURRENCIES)("keeps %s prices in whole units and package offers in whole percent (the whole-unit saving relies on both)", (currency) => {
@@ -50,8 +50,8 @@ describe("plans", () => {
 
 describe("usual prices", () => {
   it("holds the struck-through prices (owner, 2026-10-31)", () => {
-    expect(PLAN_IDS.map((id) => planUsualPrice(id, "INR"))).toEqual([4999, 14999, 39999]);
-    expect(PLAN_IDS.map((id) => planUsualPrice(id, "USD"))).toEqual([99, 225, 549]);
+    expect(PLAN_IDS.map((id) => planUsualPrice(id, "INR"))).toEqual([4999, 4999, 4999]);
+    expect(PLAN_IDS.map((id) => planUsualPrice(id, "USD"))).toEqual([79, 79, 79]);
     expect(buildUsualPrice("INR")).toBe(35000);
     expect(buildUsualPrice("USD")).toBe(1200);
   });
@@ -71,19 +71,19 @@ describe("baskets", () => {
   // Every rupee price includes 18% GST (owner, 2026-10-26); dollar prices carry no tax. Either way, what a basket costs is what the customer pays.
   const CASES: readonly (readonly [Currency, BasketPick, number, number, number, number, string | null])[] = [
     ["INR", pick(true, false, false), 2999, 2999, 0, 0, null],
-    ["INR", pick(false, true, false), 9999, 9999, 0, 0, null],
-    ["INR", pick(false, false, true), 24999, 24999, 0, 0, null],
-    ["INR", pick(true, true, false), 12998, 11699, 1299, 1500, "website-social"],
-    ["INR", pick(true, false, true), 27998, 25199, 2799, 0, "website-ads"],
-    ["INR", pick(false, true, true), 34998, 31499, 3499, 1500, "social-ads"],
-    ["INR", pick(true, true, true), 37997, 30398, 7599, 3000, "everything"],
-    ["USD", pick(true, false, false), 65, 65, 0, 0, null],
-    ["USD", pick(false, true, false), 150, 150, 0, 0, null],
-    ["USD", pick(false, false, true), 350, 350, 0, 0, null],
-    ["USD", pick(true, true, false), 215, 194, 21, 30, "website-social"],
-    ["USD", pick(true, false, true), 415, 374, 41, 0, "website-ads"],
-    ["USD", pick(false, true, true), 500, 450, 50, 30, "social-ads"],
-    ["USD", pick(true, true, true), 565, 452, 113, 60, "everything"],
+    ["INR", pick(false, true, false), 2999, 2999, 0, 0, null],
+    ["INR", pick(false, false, true), 2999, 2999, 0, 0, null],
+    ["INR", pick(true, true, false), 5998, 5399, 599, 1500, "website-social"],
+    ["INR", pick(true, false, true), 5998, 5399, 599, 0, "website-ads"],
+    ["INR", pick(false, true, true), 5998, 5399, 599, 1500, "social-ads"],
+    ["INR", pick(true, true, true), 8997, 7198, 1799, 3000, "everything"],
+    ["USD", pick(true, false, false), 59, 59, 0, 0, null],
+    ["USD", pick(false, true, false), 59, 59, 0, 0, null],
+    ["USD", pick(false, false, true), 59, 59, 0, 0, null],
+    ["USD", pick(true, true, false), 118, 107, 11, 30, "website-social"],
+    ["USD", pick(true, false, true), 118, 107, 11, 0, "website-ads"],
+    ["USD", pick(false, true, true), 118, 107, 11, 30, "social-ads"],
+    ["USD", pick(true, true, true), 177, 142, 35, 60, "everything"],
   ];
 
   it.each(CASES)("prices %s %o", (currency, basket, list, monthly, saving, adCredit, packageId) => {
@@ -115,14 +115,10 @@ describe("baskets", () => {
     ]);
   });
 
-  it.each(CURRENCIES)("prices every %s two-plan package below all three except Social + SEO (owner's choice, 2026-10-22)", (currency) => {
+  it.each(CURRENCIES)("prices every %s two-plan package below all three, and all three below the plans bought one by one", (currency) => {
     const everything = packageTotal(pick(true, true, true), currency);
-    for (const p of PACKAGES.filter((p) => p.id !== "everything" && p.id !== "social-ads")) expect(packageTotal(p.pick, currency)).toBeLessThan(everything);
-  });
-
-  it("prices Social + SEO above all three in rupees (31,499 against 30,398) and $2 below it in dollars ($450 against $452)", () => {
-    expect(packageTotal(pick(false, true, true), "INR")).toBeGreaterThan(packageTotal(pick(true, true, true), "INR"));
-    expect(packageTotal(pick(true, true, true), "USD") - packageTotal(pick(false, true, true), "USD")).toBe(2);
+    for (const p of PACKAGES.filter((p) => p.id !== "everything")) expect(packageTotal(p.pick, currency)).toBeLessThan(everything);
+    expect(everything).toBeLessThan(monthlyTotal(pick(true, true, true), currency));
   });
 
   it("gives an empty basket no price and no package", () => {
@@ -150,7 +146,7 @@ describe("formatMoney", () => {
   });
 
   it("prints dollars with a dollar sign and thousands commas", () => {
-    expect(formatMoney(65, "USD")).toBe("$65");
+    expect(formatMoney(59, "USD")).toBe("$59");
     expect(formatMoney(1200, "USD")).toBe("$1,200");
     expect(formatMoney(0, "USD")).toBe("$0");
   });
@@ -164,18 +160,18 @@ describe("formatMoney", () => {
 
 describe("nextPlanToAdd", () => {
   it("picks the plan that adds the most saving and ad credit for its extra cost", () => {
-    // Website alone: Social adds 1,299 saved + 1,500 ads for 8,700 more; SEO adds 2,799 for 22,200 more.
-    expect(nextPlanToAdd(pick(true, false, false), "INR")).toEqual({ id: "social", pick: pick(true, true, false), extra: 8700, saving: 1299, adCredit: 1500 });
+    // Website alone: Social adds 599 saved + 1,500 ads for 2,400 more; Ads adds 599 saved and no ad money for 2,400 more.
+    expect(nextPlanToAdd(pick(true, false, false), "INR")).toEqual({ id: "social", pick: pick(true, true, false), extra: 2400, saving: 599, adCredit: 1500 });
     expect(nextPlanToAdd(pick(false, true, false), "INR")?.id).toBe("website");
-    expect(nextPlanToAdd(pick(true, true, false), "INR")).toEqual({ id: "ads", pick: pick(true, true, true), extra: 18699, saving: 7599, adCredit: 3000 });
+    expect(nextPlanToAdd(pick(true, true, false), "INR")).toEqual({ id: "ads", pick: pick(true, true, true), extra: 1799, saving: 1799, adCredit: 3000 });
   });
   it("prices the same choice in dollars", () => {
-    expect(nextPlanToAdd(pick(true, false, false), "USD")).toEqual({ id: "social", pick: pick(true, true, false), extra: 129, saving: 21, adCredit: 30 });
-    expect(nextPlanToAdd(pick(true, true, false), "USD")).toEqual({ id: "ads", pick: pick(true, true, true), extra: 258, saving: 113, adCredit: 60 });
+    expect(nextPlanToAdd(pick(true, false, false), "USD")).toEqual({ id: "social", pick: pick(true, true, false), extra: 48, saving: 11, adCredit: 30 });
+    expect(nextPlanToAdd(pick(true, true, false), "USD")).toEqual({ id: "ads", pick: pick(true, true, true), extra: 35, saving: 35, adCredit: 60 });
   });
-  it("reports the small extra when a package costs only a little more than the basket now", () => {
-    // SEO alone is 24,999; Website + SEO is 25,199.
-    expect(nextPlanToAdd(pick(false, false, true), "INR")).toMatchObject({ id: "website", extra: 200, saving: 2799, adCredit: 0 });
+  it("prefers the plan that carries ad money when two cost the same", () => {
+    // Ads alone: Website + Ads and Social + Ads both cost 5,399, but only Social + Ads brings 1,500 of ad money.
+    expect(nextPlanToAdd(pick(false, false, true), "INR")).toMatchObject({ id: "social", extra: 2400, saving: 599, adCredit: 1500 });
   });
   it("returns null when every plan is in the basket", () => {
     expect(nextPlanToAdd(pick(true, true, true), "INR")).toBeNull();

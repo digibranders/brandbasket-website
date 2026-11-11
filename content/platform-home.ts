@@ -1,7 +1,7 @@
 // content/platform-home.ts
 // Copy for the AI-platform homepage. Word for word from the owner's Homepage_Copy_Final.docx (2026-11-06), with
 // [Brand Name] set to Brandbasket. SEO is left off the homepage, as in the doc (owner, 2026-11-06); its service page stays.
-// The words inside the example pictures (the hero stage, the service previews, the review list) are sample UI text and go
+// The words inside the example pictures (the service previews, the review list) are sample UI text and go
 // to the owner before release. The main buttons open the basket, like every main button on the site, so they carry a
 // label and no address.
 import { SERVICE_PAGES } from "./services";
@@ -145,20 +145,6 @@ export const FINAL_CTA = {
   body: "Website, social media and paid ads. Managed with AI, in one place.",
   primary: { label: "Get Started Today" },
   secondary: { label: "Talk to Our Team", href: CONTACT_HREF },
-} as const;
-
-/** Sample words inside the hero picture: one request, and what it turns into across the four services. */
-export const HERO_STAGE = {
-  label: "Example: one request in Brandbasket updates the website, schedules a post and prepares an ad, then waits for the owner's approval",
-  site: "currycook.com",
-  request: "Promote our weekend thali everywhere.",
-  updates: [
-    { id: "website", title: "Offer banner added", meta: "Home page" },
-    { id: "social", title: "Post scheduled", meta: "Instagram, Saturday 11:00" },
-    { id: "ads", title: "Local ad ready", meta: "7 days, near you" },
-  ] satisfies readonly { readonly id: HomeServiceId; readonly title: string; readonly meta: string }[],
-  review: "3 updates ready for your review",
-  approve: "Approve all",
 } as const;
 
 /** The homepage plans section (owner's image, 2026-11-06, in Brandbasket's own design). */

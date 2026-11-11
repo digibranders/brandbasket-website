@@ -10,12 +10,16 @@ async function scrollTo(page: import("@playwright/test").Page, selector: string,
   await page.locator(selector).first().evaluate((el, where) => el.scrollIntoView({ block: where as ScrollLogicalPosition }), block);
 }
 
-test("on the homepage it hides over the hero only and shows down to the closing call", async ({ page }) => {
+test("on the homepage it hides over the hero and the plans and shows down to the closing call", async ({ page }) => {
   await page.goto("/");
   await expect.poll(() => dockHidden(page)).toBe(true);
 
   await scrollTo(page, "#services", "center");
   await expect.poll(() => dockHidden(page)).toBe(false);
+
+  // The plans have their own basket beside them.
+  await scrollTo(page, "#plans", "center");
+  await expect.poll(() => dockHidden(page)).toBe(true);
 
   await scrollTo(page, "#faq", "center");
   await expect.poll(() => dockHidden(page)).toBe(false);
@@ -50,4 +54,23 @@ test("on the pricing page it hides over the hero and the dark basket band, and s
 
   await scrollTo(page, "#closing", "center");
   await expect.poll(() => dockHidden(page)).toBe(false);
+});
+
+test.describe("the hanging basket on a laptop", () => {
+  test.use({ viewport: { width: 1440, height: 803 } });
+  const wallHidden = (page: import("@playwright/test").Page): Promise<boolean> => page.locator("[data-basket-wall]").evaluate((el) => (el as HTMLElement).inert);
+
+  test("on the homepage it hides over the hero and the plans and shows between them", async ({ page }) => {
+    await page.goto("/");
+    await expect.poll(() => wallHidden(page)).toBe(true);
+
+    await scrollTo(page, "#services", "center");
+    await expect.poll(() => wallHidden(page)).toBe(false);
+
+    await scrollTo(page, "#plans", "center");
+    await expect.poll(() => wallHidden(page)).toBe(true);
+
+    await scrollTo(page, "#faq", "center");
+    await expect.poll(() => wallHidden(page)).toBe(false);
+  });
 });

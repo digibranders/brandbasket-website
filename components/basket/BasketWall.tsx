@@ -43,6 +43,8 @@ export function BasketWall(): ReactElement | null {
   const cardId = useId();
   const [open, setOpen] = useState(false);
   const [landing, setLanding] = useState<Landing | null>(null);
+  const [hidden, setHidden] = useState(true);
+  const hiddenRef = useRef(true);
   const [page, setPage] = useState(pathname);
   // A new page starts with the card closed. Adjusting state while rendering is React's pattern for reacting to a changed value.
   if (page !== pathname) {
@@ -54,6 +56,27 @@ export function BasketWall(): ReactElement | null {
   const cardRef = useRef<HTMLDivElement>(null);
   const timer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const active = showsDock(pathname);
+
+  useEffect(() => {
+    hiddenRef.current = hidden;
+  }, [hidden]);
+
+  // The basket steps aside while the hero or a [data-dock-hide] section (the plans, a dark band) is on screen: those
+  // already show a basket or say what it says. Bound again on every page, as in BasketDock.
+  useEffect(() => {
+    if (!active) return;
+    const seen = new Set<Element>();
+    const update = (): void => setHidden(seen.size > 0);
+    const watched = new IntersectionObserver((entries) => {
+      entries.forEach((e) => { if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
+      update();
+    });
+    const els = document.querySelectorAll("#hero, [data-dock-hide]");
+    els.forEach((el) => watched.observe(el));
+    // Otherwise the first observer callback sets the state; updating now would flash the basket before it runs.
+    if (els.length === 0) update();
+    return () => { watched.disconnect(); setHidden(true); };
+  }, [active, pathname]);
 
   const later = useCallback((next: boolean, ms: number): void => {
     clearTimeout(timer.current);
@@ -98,7 +121,7 @@ export function BasketWall(): ReactElement | null {
       const root = rootRef.current;
       // Hidden below 1000px, where BasketDock answers instead.
       if (!root || root.getClientRects().length === 0) return;
-      const source = last && performance.now() - last.at < CLICK_WINDOW_MS && last.el.isConnected && !root.contains(last.el) ? last.el : null;
+      const source = !hiddenRef.current && last && performance.now() - last.at < CLICK_WINDOW_MS && last.el.isConnected && !root.contains(last.el) ? last.el : null;
       const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
       let delay = 0;
       if (!reduced && source && added.length > 0) {
@@ -134,7 +157,7 @@ export function BasketWall(): ReactElement | null {
   };
 
   return (
-    <div ref={rootRef} data-basket-wall data-open={open} role="region" aria-label={BASKET_COPY.dockLabel} onBlur={onBlur} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} className="bw">
+    <div ref={rootRef} data-basket-wall data-open={open} data-hidden={hidden} inert={hidden} role="region" aria-label={BASKET_COPY.dockLabel} onBlur={onBlur} onPointerEnter={onPointerEnter} onPointerLeave={onPointerLeave} className="bw">
       <button
         ref={faceRef}
         type="button"

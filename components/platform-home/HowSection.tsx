@@ -1,52 +1,76 @@
-import { ArrowDown, ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import type { Icon } from "@phosphor-icons/react";
+import { ArrowDown, RocketLaunch, SlidersHorizontal, Stack } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement, ReactNode } from "react";
 import { BasketCta } from "@/components/basket/BasketCta";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
-import { SectionHead } from "@/components/ui/SectionHead";
-import { HOW } from "@/content/platform-home";
+import { HOW, MODES } from "@/content/platform-home";
 import { ServicePicker } from "./ServicePicker";
+
+interface StepLook {
+  readonly icon: Icon;
+  /** The block's ground and text colour: pale rattan, then caramel, then ink, so the climb reads as progress. */
+  readonly ground: string;
+  readonly mark: string;
+  readonly body: string;
+}
+
+const LOOKS: readonly StepLook[] = [
+  { icon: Stack, ground: "bg-rattan-wash text-ink", mark: "text-rattan-text/20", body: "text-ink-2" },
+  { icon: SlidersHorizontal, ground: "text-ink [background:linear-gradient(160deg,#d9a465,var(--rattan)_50%,#b6793a)]", mark: "text-white/30", body: "text-ink/80" },
+  { icon: RocketLaunch, ground: "bg-ink text-action-ink", mark: "text-white/[0.09]", body: "text-action-ink/75" },
+];
+
+/** A small picture per step, from the words the step already uses: nothing new is said in them. */
+const VISUALS: readonly ReactNode[] = [
+  null,
+  <div key="two" aria-hidden="true" className="how-two"><span>{MODES.diy.title}</span><span>{MODES.dfy.title}</span></div>,
+  <div key="climb" aria-hidden="true" className="how-climb"><span>Create</span><span>Publish</span><span>Improve</span></div>,
+];
 
 /** What each step lets the visitor do, in the order of HOW.steps: pick plans, read the two ways, start. */
 const ACTIONS: readonly ReactNode[] = [
   <ServicePicker key="pick" />,
-  <a key="ways" href="#ways" className="group inline-flex items-center gap-1.5 text-[15px] font-semibold underline decoration-rattan decoration-2 underline-offset-[6px]">
+  <a key="ways" href="#ways" className="group inline-flex items-center gap-1.5 text-[15px] font-semibold text-ink underline decoration-ink decoration-2 underline-offset-[6px]">
     {HOW.waysLink}
-    <ArrowDown aria-hidden="true" weight="bold" className="size-4 text-rattan-text transition-transform duration-300 ease-[var(--ease)] group-hover:translate-y-[3px]" />
+    <ArrowDown aria-hidden="true" weight="bold" className="size-4 transition-transform duration-300 ease-[var(--ease)] group-hover:translate-y-[3px]" />
   </a>,
-  <BasketCta key="start" location="how" label={HOW.start} />,
+  <BasketCta key="start" location="how" label={HOW.start} tone="inverse" />,
 ];
 
 /**
- * "Up and Running in Three Steps.": three cards that are also the way in. Step 1 adds plans to the basket, step 2 jumps
- * to "Do It Yourself / Done For You", step 3 opens the basket with what was picked. It sits right after the services,
- * so the sections below it follow the same order.
+ * "Up and Running in Three Steps.": a staircase. Three blocks rise left to right, pale, caramel, ink, and the heading
+ * sits in the space above the low steps. The blocks are also the way in: step 1 adds plans to the basket, step 2 jumps
+ * to "Do It Yourself / Done For You", step 3 opens the basket with what was picked. On a phone they stack, equal height.
  */
 export function HowSection(): ReactElement {
   return (
-    <Section id="how" labelledBy="h-how">
-      <Reveal>
-        <SectionHead id="h-how" step title={<>{HOW.heading} <em className="font-light not-italic text-rattan-text">{HOW.headingAccent}</em></>} />
-      </Reveal>
-      <ol className="grid grid-cols-[minmax(0,1fr)] gap-4 min-[900px]:grid-cols-3">
-        {HOW.steps.map((step, i) => (
-          <li key={step.title} className="relative grid">
-            <Reveal delay={i * 90} className="grid">
-              <article className="grid grid-rows-[auto_auto_1fr_auto] gap-3 rounded-[28px] bg-surface p-[clamp(22px,2.4vw,30px)] shadow-[0_0_0_1px_rgba(21,22,26,0.06),0_40px_70px_-52px_rgba(40,28,14,0.4)]">
-                <span aria-hidden="true" className="num grid size-11 place-items-center rounded-full bg-rattan-wash font-display text-[19px] font-semibold text-rattan-ink">{i + 1}</span>
-                <h3 className="mt-2 font-display text-[clamp(22px,2vw,26px)] font-medium leading-[1.15] tracking-[-0.025em]">{step.title}</h3>
-                <p className="max-w-[34ch] text-[16px] leading-[1.55] text-ink-2">{step.body}</p>
-                <div className="mt-4 self-end">{ACTIONS[i]}</div>
+    <Section id="how" labelledBy="h-how" className="scroll-mt-24">
+      <div className="how-stairs">
+        <Reveal className="how-head">
+          <h2 id="h-how" className="font-display text-[clamp(40px,5.6vw,88px)] font-semibold leading-[0.98] tracking-[-0.052em]">
+            {HOW.heading} <em className="font-light not-italic text-rattan-text">{HOW.headingAccent}</em>
+          </h2>
+        </Reveal>
+        {HOW.steps.map((step, i) => {
+          const look = LOOKS[i];
+          if (!look) return null;
+          const StepIcon = look.icon;
+          return (
+            <Reveal key={step.title} delay={i * 110} className={`how-step how-step-${i}`}>
+              <article className={`how-block ${look.ground}`}>
+                <StepIcon aria-hidden="true" weight="thin" className={`how-mark ${look.mark}`} />
+                <div className="grid gap-3">
+                  <h3 className="max-w-[14ch] font-display text-[clamp(26px,2.6vw,38px)] font-semibold leading-[1.05] tracking-[-0.035em]">{step.title}</h3>
+                  <p className={`max-w-[32ch] text-[16.5px] leading-[1.55] ${look.body}`}>{step.body}</p>
+                </div>
+                <div className="how-visual">{VISUALS[i]}</div>
+                <div className="how-action">{ACTIONS[i]}</div>
               </article>
             </Reveal>
-            {i < HOW.steps.length - 1 ? (
-              <span aria-hidden="true" className="absolute -right-6 top-[38px] z-[1] hidden size-8 place-items-center rounded-full border border-line bg-bg text-rattan-text min-[900px]:grid">
-                <ArrowRight weight="bold" className="size-4" />
-              </span>
-            ) : null}
-          </li>
-        ))}
-      </ol>
+          );
+        })}
+      </div>
     </Section>
   );
 }

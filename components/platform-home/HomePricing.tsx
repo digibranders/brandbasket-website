@@ -6,7 +6,6 @@ import { Reveal } from "@/components/motion/Reveal";
 import { MonitoringBand } from "@/components/pricing/MonitoringBand";
 import { PlanBasketButton } from "@/components/pricing/PlanBasketButton";
 import { Section } from "@/components/ui/Section";
-import { SectionHead } from "@/components/ui/SectionHead";
 import { BASKET_COPY } from "@/content/basket";
 import { HOME_PRICING } from "@/content/platform-home";
 import { type PlanColumn, planColumns } from "@/content/pricing";
@@ -63,17 +62,20 @@ function PlanCard({ plan }: { readonly plan: PlanColumn }): ReactElement {
 
 /**
  * "Grow Your Business with AI-Powered Management.": the three plans, each dropping into the woven basket beside them,
- * which keeps the running total and the package offer. Dedicated Expert Monitoring sits under the plans.
+ * which keeps the running total and the package offer. The heading and the basket are one column that pins together
+ * while the plans scroll past; Dedicated Expert Monitoring sits under the plans.
  */
 export function HomePricing({ currency }: { readonly currency: Currency }): ReactElement {
   return (
-    <Section id="plans" labelledBy="h-plans" className="scroll-mt-24">
-      <Reveal>
-        <SectionHead id="h-plans" step title={<>{HOME_PRICING.heading} <em className="font-light not-italic text-rattan-text">{HOME_PRICING.headingAccent}</em></>} />
-      </Reveal>
+    <Section id="plans" labelledBy="h-plans" dockHide className="scroll-mt-24">
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[1000px]:grid-cols-[0.82fr_1.18fr] min-[1000px]:items-start min-[1000px]:gap-8">
-        <Reveal className="min-w-0 min-[1000px]:sticky min-[1000px]:top-28">
-          <BasketPanel />
+        <Reveal className="min-w-0 min-[1000px]:sticky min-[1000px]:top-24">
+          <div className="grid gap-5 min-[1000px]:gap-4">
+            <h2 id="h-plans" className="font-display text-[clamp(32px,2.9vw,40px)] font-semibold leading-[1.04] tracking-[-0.042em]">
+              {HOME_PRICING.heading} <em className="font-light not-italic text-rattan-text">{HOME_PRICING.headingAccent}</em>
+            </h2>
+            <BasketPanel />
+          </div>
         </Reveal>
         <div className="grid min-w-0 gap-4">
           {planColumns(currency).map((plan, i) => (

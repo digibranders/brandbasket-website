@@ -11,7 +11,9 @@
 }
 @keyframes bw-in { from { opacity: 0; transform: translateX(150%); } to { opacity: 1; transform: none; } }
 
-.bw-face { display: block; width: 100px; padding-top: 34px; cursor: pointer; text-align: center; transition: transform 500ms var(--ease), opacity 220ms var(--ease); }
+.bw-face { display: block; width: 100px; padding-top: 34px; cursor: pointer; text-align: center; transition: transform 500ms var(--ease), translate 450ms var(--ease), opacity 220ms var(--ease); }
+/* Hidden over the hero and the plans: it slides off the right edge. */
+.bw[data-hidden="true"] > * { translate: 150% 0; opacity: 0; pointer-events: none; }
 .bw[data-open="true"] .bw-face { transform: translateX(14px) scale(0.96); opacity: 0; pointer-events: none; }
 .bw-hang { display: grid; justify-items: center; transform-origin: 50% 0; }
 .bw-swing { animation: bw-swing 1300ms var(--ease) var(--d, 0ms) both; }

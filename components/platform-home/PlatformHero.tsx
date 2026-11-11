@@ -14,7 +14,7 @@ export function PlatformHero(): ReactElement {
   return (
     <section id="hero" aria-labelledby="h-hero" className="relative overflow-hidden">
       <div aria-hidden="true" className="pointer-events-none absolute inset-0 [background:radial-gradient(ellipse_70%_50%_at_50%_30%,rgba(255,255,255,0.95),transparent_70%),radial-gradient(ellipse_80%_40%_at_50%_104%,rgba(196,138,71,0.16),transparent_70%)]" />
-      <div className="relative mx-auto grid w-full max-w-[1760px] gap-[clamp(24px,3vw,44px)] px-[clamp(18px,3vw,48px)] pb-14 pt-[112px]">
+      <div className="in-wrap relative grid gap-[clamp(24px,3vw,44px)] pb-14 pt-[112px]">
         <h1 id="h-hero" className="poster-title">
           <span className="poster-line">{lead} {entire}</span>
           <span className="poster-line poster-fill">{filled.join(" ")}</span>

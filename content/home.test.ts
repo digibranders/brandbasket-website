@@ -40,9 +40,9 @@ describe("home content", () => {
   });
   it("prints the dollar offer line without any tax wording", () => {
     expect(offerFor("USD")).toEqual({
-      ariaLabel: "$0 to build your website, usually $1,200, plus $65 a month to keep it running, usually $99",
+      ariaLabel: "$0 to build your website, usually $1,200, plus $59 a month to keep it running, usually $79",
       build: { was: "$1,200", price: "$0", label: "to build your website" },
-      run: { was: "$99", price: "$65", unit: "/month", label: "to keep it running" },
+      run: { was: "$79", price: "$59", unit: "/month", label: "to keep it running" },
     });
   });
   it("has the section counts of the mock", () => {
@@ -90,7 +90,7 @@ describe("home content", () => {
   it("builds the FAQ prices from lib/pricing", () => {
     expect(HOME_FAQ[0]?.a).toContain(`${formatMoney(planPrice("website", "INR"), "INR")} a month, GST included, which keeps`);
     expect(HOME_FAQ[2]?.a).toBe(`Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`);
-    expect(homeFaqFor("USD")[0]?.a).toContain("$65 a month, which keeps it hosted");
+    expect(homeFaqFor("USD")[0]?.a).toContain("$59 a month, which keeps it hosted");
     expect(homeFaqFor("USD")[2]?.a).toBe("Just your first month. After that you pay monthly.");
   });
   it("shows the facts and the sample report in dollars for USD", () => {

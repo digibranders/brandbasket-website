@@ -28,11 +28,13 @@
 .poster-icons { display: flex; gap: 2px; color: var(--rattan); font-size: clamp(16px, 1.7vw, 26px); }
 .poster-foot { display: grid; gap: 22px; }
 @media (max-width: 899px) {
-  /* A phone has no room beside the type, so the headline fills the width ("Digital Presence." is about 6.8em wide) and the badge sits under it. */
+  /* The headline fills the width of a phone ("Digital Presence." is about 6.8em wide). */
   .poster-title { font-size: 12.4vw; line-height: 0.95; }
-  /* The first line, "Your Entire", is short, so the badge sits in the empty space to its right, level with that line and
-     clear of "Digital Presence." under it. Its size and place follow the headline's (12.4vw). */
-  .poster-badge { top: calc(112px - 3.6vw); right: clamp(18px, 3vw, 48px); width: max(62px, 14.5vw); }
+  /* A phone has no room for the ring of words (it would be unreadable at this size), so the badge becomes a small pill of
+     the three service icons, level with the short first line, "Your Entire", and clear of "Digital Presence." under it. */
+  .poster-ring { display: none; }
+  .poster-badge { top: calc(112px + 5.9vw - 18px); right: clamp(18px, 3vw, 48px); width: auto; height: 36px; aspect-ratio: auto; padding: 0 12px; rotate: -4deg; }
+  .poster-icons { gap: 9px; font-size: 18px; }
 }
 @media (min-width: 900px) {
   /* Text and buttons together on the left: the basket dock sits on the right edge and must not cover the buttons. */

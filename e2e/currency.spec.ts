@@ -27,7 +27,7 @@ test.describe("a visitor in the United States", () => {
     await page.goto("/pricing");
     await expect(page).toHaveURL(/\/pricing$/);
     const main = page.locator("main");
-    for (const price of ["$65", "$150", "$350"]) await expect(main.getByText(price).first()).toBeVisible();
+    for (const price of ["$59", "$99"]) await expect(main.getByText(price).first()).toBeVisible();
     await expect(page).toHaveTitle(/^Pricing: a free website and monthly plans/);
     await expect(page).not.toHaveTitle(/[₹$]/);
   });
@@ -82,7 +82,7 @@ test.describe("a visitor in India, or one we cannot place", () => {
     await page.goto("/pricing");
     await page.getByRole("contentinfo").getByRole("link", { name: "USD" }).click();
     await expect(page).toHaveURL(/\/pricing$/);
-    await expect(page.locator("main").getByText("$65").first()).toBeVisible();
+    await expect(page.locator("main").getByText("$59").first()).toBeVisible();
     await expect(page.locator("main")).not.toContainText("₹");
   });
 });

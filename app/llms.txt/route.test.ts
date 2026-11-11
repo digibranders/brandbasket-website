@@ -16,8 +16,8 @@ describe("GET /llms.txt", () => {
   it("lists plan prices and the package terms", async () => {
     const body = await (await GET()).text();
     expect(body).toContain("Website Management: ₹2,999 a month, GST included");
-    expect(body).toContain("Social Media Management: ₹9,999 a month, GST included");
-    expect(body).toContain("Paid Ads Management: ₹24,999 a month, GST included");
+    expect(body).toContain("Social Media Management: ₹2,999 a month, GST included");
+    expect(body).toContain("Paid Ads Management: ₹2,999 a month, GST included");
     expect(body).toContain(`- Package offer: ${PACKAGE_TERMS}`);
     expect(body).not.toContain("chosen at sign-up");
   });
@@ -31,10 +31,10 @@ describe("GET /llms.txt", () => {
 
   it("lists the four packages with list price, package price, saving and the ad credit", async () => {
     const body = await (await GET()).text();
-    expect(body).toContain("- Website + Social: ₹12,998 a month at list price; ₹11,699 a month as a package (10% off, you save ₹1,299). Bought together as you start: ₹1,500 a month of ad credit.");
-    expect(body).toContain("- Website + Ads: ₹27,998 a month at list price; ₹25,199 a month as a package (10% off, you save ₹2,799).\n");
-    expect(body).toContain("- Social + Ads: ₹34,998 a month at list price; ₹31,499 a month as a package (10% off, you save ₹3,499). Bought together as you start: ₹1,500 a month of ad credit.");
-    expect(body).toContain("- All three: ₹37,997 a month at list price; ₹30,398 a month as a package (20% off, you save ₹7,599). Bought together as you start: ₹3,000 a month of ad credit.");
+    expect(body).toContain("- Website + Social: ₹5,998 a month at list price; ₹5,399 a month as a package (10% off, you save ₹599). Bought together as you start: ₹1,500 a month of ad credit.");
+    expect(body).toContain("- Website + Ads: ₹5,998 a month at list price; ₹5,399 a month as a package (10% off, you save ₹599).\n");
+    expect(body).toContain("- Social + Ads: ₹5,998 a month at list price; ₹5,399 a month as a package (10% off, you save ₹599). Bought together as you start: ₹1,500 a month of ad credit.");
+    expect(body).toContain("- All three: ₹8,997 a month at list price; ₹7,198 a month as a package (20% off, you save ₹1,799). Bought together as you start: ₹3,000 a month of ad credit.");
   });
 
   it("links every indexable page and leaves the noindex notice out", async () => {

@@ -32,9 +32,9 @@ describe("Basket Card copy", () => {
 
 describe("headline", () => {
   it("asks a single plan to add one more, with the saving that brings (rupees)", () => {
-    // Website + Social saves 1,299 a month and Website + Ads saves 2,799 (docs/plans/25): the plan worth adding most is named.
-    expect(headline(pick(true, false, false), "INR")).toBe("Add one more plan to get 10% off, save ₹1,299/month.");
-    expect(headline(pick(false, false, true), "INR")).toBe("Add one more plan to get 10% off, save ₹2,799/month.");
+    // Every two-plan package saves 599 a month now that every plan costs the same: the plan worth adding is the one that carries ad money.
+    expect(headline(pick(true, false, false), "INR")).toBe("Add one more plan to get 10% off, save ₹599/month.");
+    expect(headline(pick(false, false, true), "INR")).toBe("Add one more plan to get 10% off, save ₹599/month.");
   });
   it("names the package offer and its ad money (rupees)", () => {
     expect(headline(pick(true, true, false), "INR")).toBe("10% off and ₹1,500 a month for your ads.");
@@ -42,8 +42,8 @@ describe("headline", () => {
     expect(headline(pick(true, true, true), "INR")).toBe("Full basket. 20% off and ₹3,000 a month for your ads.");
   });
   it("asks a single plan to add one more, with the saving that brings (dollars)", () => {
-    expect(headline(pick(true, false, false), "USD")).toBe("Add one more plan to get 10% off, save $21/month.");
-    expect(headline(pick(false, false, true), "USD")).toBe("Add one more plan to get 10% off, save $41/month.");
+    expect(headline(pick(true, false, false), "USD")).toBe("Add one more plan to get 10% off, save $11/month.");
+    expect(headline(pick(false, false, true), "USD")).toBe("Add one more plan to get 10% off, save $11/month.");
   });
   it("names the package offer and its ad money (dollars)", () => {
     expect(headline(pick(true, true, false), "USD")).toBe("10% off and $30 a month for your ads.");
@@ -55,14 +55,14 @@ describe("headline", () => {
 describe("benefits", () => {
   it("lists the saving, the ad money and the first year for a package", () => {
     expect(benefits(pick(true, true, true), "INR").map(text)).toEqual([
-      "You save ₹7,599 every month",
+      "You save ₹1,799 every month",
       "We add ₹3,000 a month to your ads",
-      "₹1,27,188 back in your first year",
+      "₹57,588 back in your first year",
     ]);
     expect(benefits(pick(true, true, true), "USD").map(text)).toEqual([
-      "You save $113 every month",
+      "You save $35 every month",
       "We add $60 a month to your ads",
-      "$2,076 back in your first year",
+      "$1,140 back in your first year",
     ]);
     for (const currency of CURRENCIES) expect(benefits(pick(true, false, true), currency).map((b) => b.kind)).toEqual(["saving", "year"]);
   });
@@ -98,21 +98,21 @@ describe("oneTimeNote", () => {
 
 describe("nextStamp", () => {
   it("names the next plan and the full basket it leads to, in the owner's words", () => {
-    // All three save 7,599 a month at 20% (docs/plans/25); in dollars 113.
+    // All three save 1,799 a month at 20% (docs/plans/25); in dollars 35.
     expect(nextStamp(pick(true, false, false), "INR")).toEqual({
       id: "social",
       name: "Social Media Management",
-      body: "Add two more plans to get 20% off, save ₹7,599/month.",
+      body: "Add two more plans to get 20% off, save ₹1,799/month.",
     });
     expect(nextStamp(pick(true, false, false), "USD")).toEqual({
       id: "social",
       name: "Social Media Management",
-      body: "Add two more plans to get 20% off, save $113/month.",
+      body: "Add two more plans to get 20% off, save $35/month.",
     });
-    expect(nextStamp(pick(true, true, false), "INR")?.body).toBe("Add one more plan to get 20% off, save ₹7,599/month.");
-    expect(nextStamp(pick(true, false, true), "INR")?.body).toBe("Add one more plan to get 20% off, save ₹7,599/month.");
-    expect(nextStamp(pick(false, false, true), "INR")?.body).toBe("Add two more plans to get 20% off, save ₹7,599/month.");
-    expect(nextStamp(pick(false, false, true), "USD")?.body).toBe("Add two more plans to get 20% off, save $113/month.");
+    expect(nextStamp(pick(true, true, false), "INR")?.body).toBe("Add one more plan to get 20% off, save ₹1,799/month.");
+    expect(nextStamp(pick(true, false, true), "INR")?.body).toBe("Add one more plan to get 20% off, save ₹1,799/month.");
+    expect(nextStamp(pick(false, false, true), "INR")?.body).toBe("Add two more plans to get 20% off, save ₹1,799/month.");
+    expect(nextStamp(pick(false, false, true), "USD")?.body).toBe("Add two more plans to get 20% off, save $35/month.");
   });
   it("is null on a full card", () => {
     for (const currency of CURRENCIES) expect(nextStamp(pick(true, true, true), currency)).toBeNull();

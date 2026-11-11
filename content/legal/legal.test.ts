@@ -5,7 +5,7 @@ import { formatMoney } from "@/lib/currency";
 import { extrasFor, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { CANCEL_ANSWER, PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
-import { AD_CREDIT_TERMS, PACKAGE_TERMS } from "./fees";
+import { PLAN_BILLING_TERMS } from "./fees";
 import { dataNotice } from "./notice";
 import { privacyPolicy } from "./privacy";
 import { refundPolicy } from "./refund";
@@ -54,17 +54,17 @@ describe("legal documents", () => {
     expect(text).toContain(formatMoney(extrasFor("INR").adBudgetCap, "INR"));
     expect(text).toContain(businessDetails.courts);
   });
-  it("state the package price and ad credit terms in the fees section", () => {
+  it("state how plans are billed in the fees section, with no package price and no ad credit (owner, 2026-11-11)", () => {
     const fees = JSON.stringify(termsOfService.sections.find((s) => s.heading === "5. Fees and payment"));
-    expect(fees).toContain(PACKAGE_TERMS);
-    expect(fees).toContain(AD_CREDIT_TERMS);
+    expect(fees).toContain(PLAN_BILLING_TERMS);
+    expect(JSON.stringify(ALL)).not.toMatch(/package price|ad credit|% off/i);
   });
   it("say each plan can be bought on its own and drop the sign-up offer", () => {
     expect(JSON.stringify(termsOfService)).toContain("each plan can be bought on its own");
     expect(JSON.stringify(ALL)).not.toMatch(/chosen at sign-up|needs the Managed Website/i);
   });
-  it("keep the package price and ad credit when a payment fails", () => {
-    expect(PAYMENT_FAILURE).toContain("Your package price and ad credit stay.");
+  it("say nothing about package prices or ad credit when a payment fails", () => {
+    expect(PAYMENT_FAILURE).not.toMatch(/package|ad credit/i);
   });
   it("states cancellation and failed payments for any plan, not only the website", () => {
     for (const rule of [CANCEL_ANSWER, CANCELLATION_RULE, PAYMENT_FAILURE]) expect(rule).not.toMatch(/^[^.]*\b[Yy]our website\b/);
@@ -72,8 +72,8 @@ describe("legal documents", () => {
     expect(PAYMENT_FAILURE).toContain("Your plans pause");
   });
 
-  it("ships the 2026-11-06.1 text version", () => {
-    expect(LEGAL_TEXT_VERSION).toBe("2026-11-06.1");
+  it("ships the 2026-11-11.1 text version", () => {
+    expect(LEGAL_TEXT_VERSION).toBe("2026-11-11.1");
   });
   it("use one cancellation, payment and ownership policy in the terms and the refund policy", () => {
     const section = (heading: string): string => JSON.stringify(ALL.flatMap((d) => d.sections).find((s) => s.heading === heading));

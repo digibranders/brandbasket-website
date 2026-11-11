@@ -4,7 +4,6 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 const getPostsPage = vi.hoisted(() => vi.fn());
 vi.mock("@/lib/cms/blog", () => ({ getPostsPage }));
 
-import { PACKAGE_TERMS } from "@/content/legal/fees";
 import { indexableRoutes } from "@/lib/seo/routes";
 import { GET } from "./route";
 
@@ -13,12 +12,12 @@ beforeEach(() => {
 });
 
 describe("GET /llms.txt", () => {
-  it("lists plan prices and the package terms", async () => {
+  it("lists plan prices and says there are no offers but monitoring", async () => {
     const body = await (await GET()).text();
     expect(body).toContain("Website Management: ₹2,999 a month, GST included");
     expect(body).toContain("Social Media Management: ₹2,999 a month, GST included");
     expect(body).toContain("Paid Ads Management: ₹2,999 a month, GST included");
-    expect(body).toContain(`- Package offer: ${PACKAGE_TERMS}`);
+    expect(body).toContain("- Offers: none. Every plan costs the same and is billed at its own price. The only offer is Dedicated Expert Monitoring, included with all three plans");
     expect(body).not.toContain("chosen at sign-up");
   });
 
@@ -29,12 +28,10 @@ describe("GET /llms.txt", () => {
     expect(body).toContain("- Billing: monthly, cancel anytime with no notice period\n");
   });
 
-  it("lists the four packages with list price, package price, saving and the ad credit", async () => {
+  it("lists no packages, package prices or ad credit", async () => {
     const body = await (await GET()).text();
-    expect(body).toContain("- Website + Social: ₹5,998 a month at list price; ₹5,399 a month as a package (10% off, you save ₹599). Bought together as you start: ₹1,500 a month of ad credit.");
-    expect(body).toContain("- Website + Ads: ₹5,998 a month at list price; ₹5,399 a month as a package (10% off, you save ₹599).\n");
-    expect(body).toContain("- Social + Ads: ₹5,998 a month at list price; ₹5,399 a month as a package (10% off, you save ₹599). Bought together as you start: ₹1,500 a month of ad credit.");
-    expect(body).toContain("- All three: ₹8,997 a month at list price; ₹7,198 a month as a package (20% off, you save ₹1,799). Bought together as you start: ₹3,000 a month of ad credit.");
+    expect(body).not.toContain("## Packages");
+    expect(body).not.toMatch(/package|ad credit|% off/i);
   });
 
   it("links every indexable page and leaves the noindex notice out", async () => {

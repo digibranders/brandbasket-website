@@ -4,17 +4,9 @@
 // never mentions a tax. The hero plan rows and basket labels live in content/basket.ts. Cancellation wording reuses
 // content/legal/cancellation.ts so pricing and legal agree.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { extrasFor, MONITORING, monitoringPrice, PACKAGES, PLANS, planPrice, planUsualPrice, type Package, type PlanId } from "@/lib/pricing";
+import { extrasFor, MONITORING, monitoringPrice, PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
-
-function packageById(id: Package["id"]): Package {
-  const pkg = PACKAGES.find((p) => p.id === id);
-  if (!pkg) throw new RangeError(`No package ${id}`);
-  return pkg;
-}
-/** The package for a business that already has a website. */
-const SOCIAL_ADS = packageById("social-ads");
 
 /** Locked copy: change only with the owner's yes. The offer line is OFFER in content/home.ts. */
 export const PRICING_HERO = {
@@ -47,7 +39,7 @@ export interface CompareCopy {
 export function compareCopy(currency: Currency): CompareCopy {
   return {
     heading: "Which plan fits you?",
-    lede: `Three plans, each on its own. Prices are monthly${currency === "INR" ? ", GST included" : ""}. Add more than one and the prices drop.`,
+    lede: `Three plans, each on its own. Prices are monthly${currency === "INR" ? ", GST included" : ""}. Every plan costs the same.`,
     doesLabel: "What we do",
     excludesLabel: "Not included",
   };
@@ -135,7 +127,7 @@ export const PRICING_FAQ_HEADING = "Questions about pricing.";
 /** The answers every page that shows them must word the same way: they are promises, so they come from one place. */
 export function adSpendAnswer(currency: Currency): string {
   const adCap = formatMoney(extrasFor(currency).adBudgetCap, currency);
-  return `No. You pay Meta directly for your own ads, and ${PLANS.ads.name} manages up to ${adCap} a month of it. Packages started together add our ad money on top.`;
+  return `No. You pay Meta directly for your own ads, and ${PLANS.ads.name} manages up to ${adCap} a month of it.`;
 }
 export const NO_GUARANTEE_ANSWER = "No one honestly can. You see the work and the numbers in a report every month.";
 
@@ -152,7 +144,7 @@ export function pricingFaq(currency: Currency): readonly FaqItem[] {
     },
     {
       q: "Do I need the website plan?",
-      a: `No. Every plan can be bought on its own. If you already have a website, ${SOCIAL_ADS.name} is ${SOCIAL_ADS.percent}% off.`,
+      a: "No. Every plan can be bought on its own, at the same price.",
     },
     {
       q: "Can I add or drop a plan later?",

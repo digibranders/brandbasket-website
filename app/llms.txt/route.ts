@@ -1,8 +1,7 @@
 // app/llms.txt/route.ts
-import { PACKAGE_TERMS } from "@/content/legal/fees";
 import { formatMoney } from "@/lib/currency";
 import { getPostsPage } from "@/lib/cms/blog";
-import { extrasFor, GST_LABEL, MONITORING, monitoringPrice, monthlyTotal, PACKAGES, packageSaving, packageTotal, planPrice, PLANS } from "@/lib/pricing";
+import { extrasFor, GST_LABEL, MONITORING, monitoringPrice, planPrice, PLANS } from "@/lib/pricing";
 import { indexableRoutes, routeUrl } from "@/lib/seo/routes";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
@@ -25,10 +24,6 @@ async function latestPosts(): Promise<string> {
 export async function GET(): Promise<Response> {
   const { locality, region } = businessDetails.postalAddress;
   const plans = Object.values(PLANS).map((p) => `- ${p.name}: ${inr(planPrice(p.id, "INR"))} a month, GST included`).join("\n");
-  const packages = PACKAGES.map((p) => {
-    const credit = p.adCredit.INR > 0 ? ` Bought together as you start: ${inr(p.adCredit.INR)} a month of ad credit.` : "";
-    return `- ${p.name}: ${inr(monthlyTotal(p.pick, "INR"))} a month at list price; ${inr(packageTotal(p.pick, "INR"))} a month as a package (${p.percent}% off, you save ${inr(packageSaving(p.pick, "INR"))}).${credit}`;
-  }).join("\n");
   const pages = indexableRoutes().map((r) => `- [${r.title}](${routeUrl(r.path)}): ${r.description}`).join("\n");
   const { hour, adBudgetCap } = extrasFor("INR");
   const posts = await latestPosts();
@@ -47,13 +42,10 @@ ${siteConfig.name} is a brand of ${businessDetails.legalName} (GSTIN ${businessD
 - Paid Ads Management: Meta ads with AI ad copy and creatives; covers up to ${inr(adBudgetCap)} a month of your ad budget; ad spend is paid to Meta by you
 - ${MONITORING.name}: included with all three plans, otherwise ${inr(monitoringPrice("INR"))} a month
 - The domain is registered in your name; the design and content we write are provided as a hosted service while you are subscribed
-- Package offer: ${PACKAGE_TERMS}
+- Offers: none. Every plan costs the same and is billed at its own price. The only offer is ${MONITORING.name}, included with all three plans
 
 ## Plans
 ${plans}
-
-## Packages
-${packages}
 
 ## Pages
 ${pages}

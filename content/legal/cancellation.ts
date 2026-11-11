@@ -11,8 +11,8 @@ export const RENEWAL_REMINDER = "We remind you before every renewal, so you are 
 export const CANCEL_ANSWER = `Yes, anytime, with no notice period. Your plans keep running until the end of the month you have already paid for, and your domain stays yours. ${RENEWAL_REMINDER}`;
 export const CANCELLATION_RULE = "There is no notice period: your plans keep running until the end of the month you have already paid for, and that month is the last one charged.";
 export const HOSTED_SERVICE = `The design and the content we write stay with ${businessDetails.tradeName} and are provided as a hosted service while you are subscribed.`;
-export const PAYMENT_FAILURE = "Your plans pause as soon as a payment is due and unpaid; there is no grace period. A website we host goes offline with its content kept safe, and everything comes back as soon as the payment goes through. Your package price and ad credit stay.";
+export const PAYMENT_FAILURE = "Your plans pause as soon as a payment is due and unpaid; there is no grace period. A website we host goes offline with its content kept safe, and everything comes back as soon as the payment goes through.";
 /** When adding or dropping a plan takes effect. Shared by the terms and the refund policy. */
 export const PLAN_CHANGE = "The change starts from your next monthly bill.";
 /** Owner-approved answer to "Can I add or drop a plan later?", used by the pricing FAQ. */
-export const PLAN_CHANGE_ANSWER = "Yes. Add a plan any time and your basket moves to the package price from your next bill. Drop one from a package and the plans you keep go back to their own prices from your next bill, and package prices never apply to your account again.";
+export const PLAN_CHANGE_ANSWER = "Yes. Add or drop a plan any time, and the change starts from your next bill. Every plan is billed at its own price.";

@@ -3,11 +3,11 @@ import { Basket } from "@phosphor-icons/react/dist/ssr";
 import { usePagePath } from "@/components/currency/usePagePath";
 import { type CSSProperties, type ReactElement, useEffect, useRef, useState } from "react";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
-import { BASKET_COPY, saveLine } from "@/content/basket";
+import { BASKET_COPY } from "@/content/basket";
 import { trackAttrs } from "@/lib/analytics";
 import { basket } from "@/lib/basket-store";
 import { formatMoney } from "@/lib/currency";
-import { basketPlans, PLAN_IDS, packageTotal } from "@/lib/pricing";
+import { basketPlans, monthlyTotal, PLAN_IDS } from "@/lib/pricing";
 import { dockLabel, PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { showsDock } from "./dock-paths";
@@ -38,7 +38,7 @@ const CLICK_WINDOW_MS = 600;
  *
  * It also answers every change. Adding a plan sends a dot in that plan's colour from the control you clicked into the
  * basket; the basket then squashes, the count pops, a ring leaves the pill and the total rolls to its new value. Removing
- * a plan sags the basket and rolls the total down. Reaching a package raises a saving tag. Nothing moves on first paint or
+ * a plan sags the basket and rolls the total down. Nothing moves on first paint or
  * when a saved basket is restored, and reduced motion gets no flight.
  */
 export function BasketDock(): ReactElement | null {
@@ -111,8 +111,7 @@ export function BasketDock(): ReactElement | null {
   const dir = pulse?.dir ?? 1;
   const delay = pulse?.delay ?? 0;
   const delayStyle = { "--d": `${delay}ms` } as CSSProperties;
-  const saving = saveLine(pick, currency);
-  const total = formatMoney(packageTotal(pick, currency), currency);
+  const total = formatMoney(monthlyTotal(pick, currency), currency);
   return (
     <div
       data-basket-dock
@@ -122,9 +121,6 @@ export function BasketDock(): ReactElement | null {
       className={`dock-isle fixed inset-x-3 bottom-[max(12px,env(safe-area-inset-bottom,0px))] z-30 mx-auto flex max-w-[480px] items-center gap-3 rounded-full py-2 pl-2.5 pr-2 transition-[transform,opacity] duration-[450ms] min-[1000px]:hidden ${hidden ? "pointer-events-none translate-y-[150%] opacity-0 ease-[var(--ease)]" : "ease-[cubic-bezier(0.34,1.4,0.64,1)]"}`}
     >
       {pulse ? <span key={`ring${pulse.id}`} aria-hidden="true" style={delayStyle} className="dock-ring" /> : null}
-      {saving ? (
-        <span key={saving} aria-hidden="true" style={delayStyle} className={`num absolute -top-3.5 left-16 rounded-full bg-sage px-3 py-1 text-[12.5px] font-semibold leading-none text-action-ink shadow-[0_8px_16px_-8px_rgba(40,28,14,0.5)] ${pulse ? "dock-chip-in" : ""}`}>{saving}</span>
-      ) : null}
       <button
         type="button"
         data-basket-trigger

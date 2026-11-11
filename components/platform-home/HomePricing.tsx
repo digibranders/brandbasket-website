@@ -62,7 +62,7 @@ function PlanCard({ plan }: { readonly plan: PlanColumn }): ReactElement {
 
 /**
  * "Grow Your Business with AI-Powered Management.": the three plans, each dropping into the woven basket beside them,
- * which keeps the running total and the package offer. The heading and the basket are one column that pins together
+ * which keeps the running total and the monitoring line. The heading and the basket are one column that pins together
  * while the plans scroll past; Dedicated Expert Monitoring sits under the plans.
  */
 export function HomePricing({ currency }: { readonly currency: Currency }): ReactElement {

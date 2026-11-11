@@ -22,6 +22,10 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 1 : 0,
+  // A CI runner draws the WebGL basket in software. Four workers on four cores starve each page's main thread, so actions time out
+  // at random (a different set of specs each run). Two workers and a longer timeout leave each page enough CPU.
+  workers: process.env.CI ? 2 : undefined,
+  timeout: process.env.CI ? 60_000 : 30_000,
   use: { baseURL: BASE_URL, trace: "retain-on-failure", storageState: answeredConsent },
   webServer: [
     // Stands in for the CMS, so the blog is tested without one (e2e/cms-fixture-server.mjs).

@@ -2,7 +2,7 @@
 import { PACKAGE_TERMS } from "@/content/legal/fees";
 import { formatMoney } from "@/lib/currency";
 import { getPostsPage } from "@/lib/cms/blog";
-import { extrasFor, GST_LABEL, monthlyTotal, PACKAGES, packageSaving, packageTotal, planPrice, PLANS } from "@/lib/pricing";
+import { extrasFor, GST_LABEL, MONITORING, monitoringPrice, monthlyTotal, PACKAGES, packageSaving, packageTotal, planPrice, PLANS } from "@/lib/pricing";
 import { indexableRoutes, routeUrl } from "@/lib/seo/routes";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
@@ -42,9 +42,10 @@ ${siteConfig.name} is a brand of ${businessDetails.legalName} (GSTIN ${businessD
 - Website build: ${inr(0)}
 - GST: ${GST_LABEL}, included in every price
 - Billing: monthly, cancel anytime with no notice period
-- Managed Website: up to 10 pages built for you; live within 7 working days of your details and first payment; 2 edits a month of 15 minutes each; extra work is quoted first (${inr(hour)} an hour)
-- Social Media and Ads: ad management covers up to ${inr(adBudgetCap)} a month of your ad budget; ad spend is paid to Meta by you
-- Local SEO + AEO: 5 pages optimised a month; no guaranteed rankings or AI citations
+- Website Management: up to 10 pages built for you; live within 7 working days of your details and first payment; 2 edits a month of 15 minutes each; extra work is quoted first (${inr(hour)} an hour)
+- Social Media Management: AI content, captions and images; automated posting and scheduling on up to 4 platforms
+- Paid Ads Management: Meta ads with AI ad copy and creatives; covers up to ${inr(adBudgetCap)} a month of your ad budget; ad spend is paid to Meta by you
+- ${MONITORING.name}: included with all three plans, otherwise ${inr(monitoringPrice("INR"))} a month
 - The domain is registered in your name; the design and content we write are provided as a hosted service while you are subscribed
 - Package offer: ${PACKAGE_TERMS}
 

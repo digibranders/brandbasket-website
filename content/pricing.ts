@@ -4,7 +4,7 @@
 // never mentions a tax. The hero plan rows and basket labels live in content/basket.ts. Cancellation wording reuses
 // content/legal/cancellation.ts so pricing and legal agree.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { extrasFor, PACKAGES, PLANS, planPrice, planUsualPrice, type Package, type PlanId } from "@/lib/pricing";
+import { extrasFor, MONITORING, monitoringPrice, PACKAGES, PLANS, planPrice, planUsualPrice, type Package, type PlanId } from "@/lib/pricing";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -14,7 +14,7 @@ function packageById(id: Package["id"]): Package {
   return pkg;
 }
 /** The package for a business that already has a website. */
-const SOCIAL_SEO = packageById("growth-search");
+const SOCIAL_ADS = packageById("social-ads");
 
 /** Locked copy: change only with the owner's yes. The offer line is OFFER in content/home.ts. */
 export const PRICING_HERO = {
@@ -53,7 +53,7 @@ export function compareCopy(currency: Currency): CompareCopy {
   };
 }
 
-/** Order is the order on the page: Website, Social, Search. Numbers are built from lib/pricing, so a price change shows here. */
+/** Order is the order on the page: Website, Social, Ads. The lists follow the AI-powered plans (owner, 2026-11-06). Numbers are built from lib/pricing, so a price change shows here. */
 export function planColumns(currency: Currency): readonly PlanColumn[] {
   const { adBudgetCap, reel } = extrasFor(currency);
   const adCap = formatMoney(adBudgetCap, currency);
@@ -69,54 +69,50 @@ export function planColumns(currency: Currency): readonly PlanColumn[] {
       tag: "Free build",
       audience: "For businesses that want a website without the technical work.",
       does: [
-        "Up to 10 pages, built for you",
+        "Website setup, up to 10 pages, built free",
+        "Content updates, 2 a month, 15 minutes each",
+        "Hosting, SSL, security updates and backups",
+        "Performance and uptime monitoring",
+        "SEO monitoring",
         "Enquiry forms, click to call and WhatsApp",
-        "Hosting, SSL and backups",
-        "Security updates and uptime monitoring",
-        "Privacy and DPDP readiness support",
-        "Human support when you need it",
-        "2 edits a month, 15 minutes each",
+        "Technical support from a real person",
         "A monthly website health report",
       ],
-      excludes: ["Domain registration or renewal", "Extra pages or a redesign, quoted first", "Content writing, SEO or ads", "E-commerce or new features"],
+      excludes: ["Domain registration or renewal", "Extra pages or a redesign, quoted first", "Content writing or ads", "E-commerce or new features"],
     },
     {
-      id: "growth",
-      name: PLANS.growth.name,
-      price: formatMoney(planPrice("growth", currency), currency),
-      was: formatMoney(planUsualPrice("growth", currency), currency),
+      id: "social",
+      name: PLANS.social.name,
+      price: formatMoney(planPrice("social", currency), currency),
+      was: formatMoney(planUsualPrice("social", currency), currency),
       priceNote,
-      audience: "For businesses that want posts, reviews and ads handled for them.",
+      audience: "For businesses that want to post often without spending hours on content.",
       does: [
-        "Instagram and Facebook posts, planned with you",
-        "Captions written and posts scheduled",
-        "Google Business Profile posts and updates",
-        "Review monitoring and reply drafts",
-        "Facebook and Instagram ads: plan, setup and launch",
-        `Ad monitoring and budget pacing, up to ${adCap} a month of your budget`,
+        "AI content and caption generation",
+        "AI image and creative generation",
+        "Automated posting and scheduling",
+        "Up to 4 platforms managed",
+        "A monthly performance report",
         "Human support when you need it",
-        "A monthly posts, profile and ads report",
       ],
-      excludes: ["Ad spend, paid to Meta by you", `Reels and video editing, ${perReel} per reel`, "Guaranteed leads or sales"],
+      excludes: ["Ad campaigns, which are Paid Ads Management", `Reels and video editing, ${perReel} per reel`, "Guaranteed followers, leads or sales"],
     },
     {
-      id: "search",
-      name: PLANS.search.name,
-      price: formatMoney(planPrice("search", currency), currency),
-      was: formatMoney(planUsualPrice("search", currency), currency),
+      id: "ads",
+      name: PLANS.ads.name,
+      price: formatMoney(planPrice("ads", currency), currency),
+      was: formatMoney(planUsualPrice("ads", currency), currency),
       priceNote,
-      audience: "For businesses that want to be found on Google and in AI answers.",
+      audience: "For businesses that want ads that bring enquiries, run for them.",
       does: [
-        "Local keyword and competitor research",
-        "5 pages optimised a month: titles, descriptions, headings",
-        "Service area page optimisation",
-        "Name, address and phone consistency",
-        "Schema, citation and directory audit",
-        "AEO: your customers' questions shaped into direct answers",
-        "AI visibility tracking where measurable",
-        "A monthly report on rankings, traffic and enquiries",
+        "Meta ads on Facebook and Instagram",
+        "AI ad copy and creative generation",
+        "Campaign setup and optimisation",
+        `Budget and bidding management, up to ${adCap} a month of your budget`,
+        "A monthly performance report",
+        "Human support when you need it",
       ],
-      excludes: ["Guaranteed rankings or AI citations", "Paid backlinks or placements", "Unlimited writing, or new landing pages (quoted separately)"],
+      excludes: ["Ad spend, paid to Meta by you", "Guaranteed leads or sales"],
     },
   ];
 }
@@ -139,7 +135,7 @@ export const PRICING_FAQ_HEADING = "Questions about pricing.";
 /** The answers every page that shows them must word the same way: they are promises, so they come from one place. */
 export function adSpendAnswer(currency: Currency): string {
   const adCap = formatMoney(extrasFor(currency).adBudgetCap, currency);
-  return `No. You pay Meta directly for your own ads, and ${PLANS.growth.name} manages up to ${adCap} a month of it. Packages started together add our ad money on top.`;
+  return `No. You pay Meta directly for your own ads, and ${PLANS.ads.name} manages up to ${adCap} a month of it. Packages started together add our ad money on top.`;
 }
 export const NO_GUARANTEE_ANSWER = "No one honestly can. You see the work and the numbers in a report every month.";
 
@@ -156,7 +152,7 @@ export function pricingFaq(currency: Currency): readonly FaqItem[] {
     },
     {
       q: "Do I need the website plan?",
-      a: `No. Every plan can be bought on its own. If you already have a website, ${SOCIAL_SEO.name} is ${SOCIAL_SEO.percent}% off.`,
+      a: `No. Every plan can be bought on its own. If you already have a website, ${SOCIAL_ADS.name} is ${SOCIAL_ADS.percent}% off.`,
     },
     {
       q: "Can I add or drop a plan later?",
@@ -167,8 +163,36 @@ export function pricingFaq(currency: Currency): readonly FaqItem[] {
       a: adSpendAnswer(currency),
     },
     {
-      q: "Do you guarantee rankings or leads?",
+      q: "Do you guarantee leads or sales?",
       a: NO_GUARANTEE_ANSWER,
     },
   ];
+}
+
+/** Dedicated Expert Monitoring, shown under the plans on the homepage and the pricing page. New copy for the owner (2026-11-06). */
+export interface MonitoringCopy {
+  readonly title: string;
+  readonly price: string;
+  readonly priceNote: string;
+  readonly included: string;
+  readonly body: string;
+  readonly pillars: readonly string[];
+}
+
+export function monitoringCopy(currency: Currency): MonitoringCopy {
+  return {
+    title: MONITORING.name,
+    price: formatMoney(monitoringPrice(currency), currency),
+    priceNote: currency === "INR" ? "a month, incl. GST" : "a month",
+    included: "Free with all three plans",
+    body: "Our experts watch your website, social media and ads, fix what slips and help you grow.",
+    pillars: ["Monitor", "Optimise", "Support", "Growth"],
+  };
+}
+
+/** The basket's line about monitoring: included with all three plans, priced otherwise. */
+export function monitoringNote(allThree: boolean, currency: Currency): string {
+  return allThree
+    ? `${MONITORING.name} is included with all three plans.`
+    : `Pick all three plans and ${MONITORING.name} is included. Otherwise it is ${formatMoney(monitoringPrice(currency), currency)} a month.`;
 }

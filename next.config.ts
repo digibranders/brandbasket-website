@@ -26,8 +26,14 @@ const nextConfig: NextConfig = {
     },
   },
   // The ad landing page first went live at /start; anything still pointing there lands on its new address with its query string.
+  // The AI-powered plans (owner, 2026-11-06) replaced two service pages: Social Media and Ads became Social Media
+  // Management, and Local SEO + AEO is no longer sold, so its page sends visitors to the homepage.
   async redirects() {
-    return [{ source: "/start", destination: "/website-landing-page", permanent: false }];
+    return [
+      { source: "/start", destination: "/website-landing-page", permanent: false },
+      { source: "/services/social-media-and-ads", destination: "/services/social-media-management", permanent: true },
+      { source: "/services/local-seo-aeo", destination: "/", permanent: true },
+    ];
   },
   async headers() {
     return [

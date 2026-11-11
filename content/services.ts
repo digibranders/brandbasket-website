@@ -1,5 +1,6 @@
 // content/services.ts
-// Copy for the three service pages (/services/managed-website, /services/social-media-and-ads, /services/local-seo-aeo).
+// Copy for the three service pages (/services/managed-website, /services/social-media-management, /services/paid-ads-management).
+// The social and ads pages replaced Social Media and Ads and Local SEO + AEO with the AI-powered plans (owner, 2026-11-06).
 // New copy: it goes to the owner before it ships (2026-10-26). Every price, percentage and cap is built from lib/pricing.ts for the page's currency (rupees with GST included, dollars with no tax named),
 // and the lists of what is and is not included come from content/pricing.ts so the pricing cards and these pages agree.
 import { type Currency, formatMoney } from "@/lib/currency";
@@ -65,8 +66,8 @@ export interface ServicePageContent {
 }
 
 const WEBSITE = PLANS.website;
-const GROWTH = PLANS.growth;
-const SEARCH = PLANS.search;
+const SOCIAL = PLANS.social;
+const ADS = PLANS.ads;
 
 /** The words under "Not included" on the pricing card of a plan, so the two never differ. */
 function excludesOf(id: PlanId, currency: Currency): readonly string[] {
@@ -98,7 +99,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       id: "website",
       slug: "managed-website",
       path: "/services/managed-website",
-      metaTitle: "Managed Website: a free build, run for you | Brandbasket",
+      metaTitle: "Website Management: a free build, run for you | Brandbasket",
       metaDescription: "We build up to 10 pages free and put them live within 7 working days. Then we host, secure and update it every month, with 2 edits included.",
       h1: "A free website for your business, looked after every month.",
       lede: `We design up to 10 pages for ${FREE} and put them online. Then we keep them hosted, secure and up to date, so you never deal with the technical side.`,
@@ -161,45 +162,98 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       ],
     },
     {
-      id: "growth",
-      slug: "social-media-and-ads",
-      path: "/services/social-media-and-ads",
-      metaTitle: "Social Media and Ads for local business | Brandbasket",
-      metaDescription: "2 Instagram and Facebook posts a week, your Google Business Profile kept current, review replies drafted and your ads run. A monthly report in plain words.",
-      h1: "Posts, reviews and ads, handled for you.",
-      lede: `We plan your Instagram and Facebook posts with you, keep your Google Business Profile current and run your Facebook and Instagram ads. You get a report every month.`,
-      glance: ["Posts planned with you and scheduled", "Google Business Profile kept current", `Ads managed, up to ${adCap} a month of your budget`, "A monthly posts, profile and ads report"],
+      id: "social",
+      slug: "social-media-management",
+      path: "/services/social-media-management",
+      metaTitle: "Social Media Management with AI | Brandbasket",
+      metaDescription: "AI drafts your posts, captions and images, and they go out on schedule on up to 4 platforms. A monthly performance report in plain words.",
+      h1: "Posts that go out on time, made with AI.",
+      lede: "AI drafts your posts, captions and images, you approve them, and they go out on schedule on up to 4 platforms. You get a report every month.",
+      glance: ["AI posts, captions and images", "Automated posting and scheduling", "Up to 4 platforms managed", "A monthly performance report"],
       who: {
         heading: "Who it is for.",
         items: [
-          { title: "You know you should post, but never have the time", body: "We plan the month with you, write the captions and schedule the posts." },
-          { title: "Reviews and messages pile up unanswered", body: "We watch your reviews and draft replies, so customers see a business that answers." },
-          { title: "You have boosted posts and cannot tell what worked", body: "We plan, set up and launch your ads, watch your budget and show the result in a report." },
+          { title: "You know you should post, but never have the time", body: "AI drafts the month's posts and captions, and they go out on schedule." },
+          { title: "Your pages look quiet or out of date", body: "Fresh posts and images keep your channels active, so customers see a business that is open." },
+          { title: "You cannot tell what is working", body: "A monthly report shows what went out and how people responded." },
         ],
       },
       does: {
         heading: "What we do.",
-        lede: "Four jobs every month, so your business keeps showing up where customers look.",
+        lede: "Content made with AI, posted on time, and reported in plain words.",
         groups: [
-          { icon: "InstagramLogo", title: "Posts that go out on time", items: ["2 posts per week", "Instagram and Facebook posts, planned with you", "Captions written for you", "Posts scheduled"] },
-          { icon: "MapPin", title: "A Google Business Profile that is current", items: ["2 posts per week", "Posts and updates on your profile", "Your details kept consistent with your website"] },
-          { icon: "Star", title: "Reviews, watched", items: ["Review monitoring", "Reply drafts for you to approve"] },
-          { icon: "Megaphone", title: "Ads, planned and run", items: ["Facebook and Instagram ads: plan, setup and launch", `Monitoring and budget pacing, up to ${adCap} a month of your budget`] },
-          { icon: "ChartLineUp", title: "A report in plain words", items: ["Posts, profile and ads, once a month", "Human support when you need it"] },
+          { icon: "InstagramLogo", title: "Content made with AI", items: ["AI content and caption generation", "AI image and creative generation", "Posts for you to approve"] },
+          { icon: "Article", title: "Posting on time", items: ["Automated posting and scheduling", "Up to 4 platforms managed"] },
+          { icon: "ChartLineUp", title: "A report in plain words", items: ["A monthly performance report", "Human support when you need it"] },
+        ],
+      },
+      how: {
+        heading: "How it works.",
+        steps: [
+          { when: "Day 1", what: "A 15-minute call about your business and customers" },
+          { when: "Week 1", what: "We connect your platforms and plan the first posts" },
+          { when: "Every month", what: "AI drafts, you approve, posts go out and a report follows" },
+        ],
+      },
+      limits: {
+        heading: "What is not included.",
+        lede: "So there are no surprises.",
+        items: excludesOf("social", currency),
+      },
+      faq: [
+        {
+          q: "What does a reel cost?",
+          a: `Reels and video editing are not part of the plan. Each reel is ${perReel}, quoted before we start.`,
+        },
+        {
+          q: "Do I need the website plan?",
+          a: `No. Every plan can be bought on its own. Taken with ${WEBSITE.name} or ${ADS.name}, the prices drop.`,
+        },
+        {
+          q: "Do you guarantee followers, leads or sales?",
+          a: NO_GUARANTEE_ANSWER,
+        },
+        { q: "Can I cancel?", a: CANCEL_ANSWER },
+      ],
+    },
+    {
+      id: "ads",
+      slug: "paid-ads-management",
+      path: "/services/paid-ads-management",
+      metaTitle: "Paid Ads Management with AI | Brandbasket",
+      metaDescription: "Facebook and Instagram ads with AI ad copy and creatives, set up, optimised and kept within your budget, with a report in plain words every month.",
+      h1: "Ads that bring enquiries, run for you.",
+      lede: `We set up your Facebook and Instagram ads with AI copy and creatives, manage up to ${adCap} a month of your budget and show you the results every month.`,
+      glance: ["Meta ads on Facebook and Instagram", "AI ad copy and creatives", `Budget and bidding managed, up to ${adCap} a month`, "A monthly performance report"],
+      who: {
+        heading: "Who it is for.",
+        items: [
+          { title: "You have boosted posts and cannot tell what worked", body: "We plan, set up and launch campaigns with a clear goal, and show the result in a report." },
+          { title: "Making ads takes too long", body: "AI drafts ad copy and creatives for you to approve, so campaigns go live sooner." },
+          { title: "Your budget runs out early, or never gets spent", body: "We manage spend and bids so your budget lasts the month." },
+        ],
+      },
+      does: {
+        heading: "What we do.",
+        lede: "Campaigns built with AI, run carefully and reported every month.",
+        groups: [
+          { icon: "Megaphone", title: "Campaigns, set up and run", items: ["Meta ads on Facebook and Instagram", "Campaign setup and optimisation"] },
+          { icon: "Article", title: "Ads made with AI", items: ["AI ad copy and creative generation", "Ads for you to approve before they run"] },
+          { icon: "ChartLineUp", title: "Budget and results", items: [`Budget and bidding management, up to ${adCap} a month of your budget`, "A monthly performance report", "Human support when you need it"] },
         ],
       },
       how: {
         heading: "How it works.",
         steps: [
           { when: "Day 1", what: "A 15-minute call about your customers and budget" },
-          { when: "Week 1", what: "We plan your posts with you and set up your ads" },
-          { when: "Every month", what: "We post, watch reviews and ads, and send a report" },
+          { when: "Week 1", what: "We set up your ad account and first campaigns" },
+          { when: "Every month", what: "We optimise, manage the budget and send a report" },
         ],
       },
       limits: {
         heading: "What is not included.",
         lede: "So there are no surprises.",
-        items: excludesOf("growth", currency),
+        items: excludesOf("ads", currency),
       },
       faq: [
         {
@@ -207,85 +261,12 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
           a: adSpendAnswer(currency),
         },
         {
-          q: "What does a reel cost?",
-          a: `Reels and video editing are not part of the plan. Each reel is ${perReel}, quoted before we start.`,
-        },
-        {
           q: "Do I need the website plan?",
-          a: `No. Every plan can be bought on its own. Taken with ${WEBSITE.name} or ${SEARCH.name}, the prices drop.`,
+          a: `No. Every plan can be bought on its own. Taken with ${WEBSITE.name} or ${SOCIAL.name}, the prices drop.`,
         },
         {
           q: "Do you guarantee leads or sales?",
           a: NO_GUARANTEE_ANSWER,
-        },
-        { q: "Can I cancel?", a: CANCEL_ANSWER },
-      ],
-    },
-    {
-      id: "search",
-      slug: "local-seo-aeo",
-      path: "/services/local-seo-aeo",
-      metaTitle: "Local SEO + AEO for local business | Brandbasket",
-      metaDescription: "Local keyword research, 5 pages optimised a month and answers shaped for Google and AI tools like ChatGPT. A monthly report on rankings and enquiries.",
-      h1: "Be the answer when customers search near you.",
-      lede: "We improve how your business shows up on Google and in AI answers, with local research, 5 optimised pages a month and a report you can read.",
-      glance: ["Local keyword and competitor research", "5 pages optimised a month", "Your questions shaped into direct answers", "A monthly report on rankings, traffic and enquiries"],
-      who: {
-        heading: "Who it is for.",
-        items: [
-          { title: "Customers find your competitors first", body: "We find the searches your customers make near you, and fix your pages and listings to match them." },
-          { title: "Your details differ from one place to the next", body: "Name, address and phone number are checked across your website, Google and the directories." },
-          { title: "Customers now ask AI tools before they search", body: "We shape your pages into clear answers that Google and AI tools can use." },
-        ],
-      },
-      does: {
-        heading: "What we do.",
-        lede: "Research first, then a steady monthly routine.",
-        groups: [
-          { icon: "MagnifyingGlass", title: "Research", items: ["Local keyword and competitor research", "The questions your customers ask"] },
-          { icon: "Article", title: "5 pages a month", items: ["Titles, descriptions and headings", "Service area page optimisation"] },
-          { icon: "Buildings", title: "Your local footprint", items: ["Name, address and phone consistency", "Schema, citation and directory audit"] },
-          { icon: "Question", title: "Answers for AI search", items: ["AEO: your customers' questions shaped into direct answers", "AI visibility tracking where measurable"] },
-          { icon: "ChartLineUp", title: "A report you can read", items: ["Rankings, traffic and enquiries, once a month", "Human support when you need it"] },
-        ],
-      },
-      spotlight: {
-        kind: "explainer",
-        heading: "What is AEO?",
-        body: [
-          "AEO is answer engine optimisation. More people now ask Google's AI answers, ChatGPT or a voice assistant a question instead of scrolling a list of links.",
-          "AEO shapes your pages so those tools can quote your business: a clear answer to each question your customers really ask, set up so a machine can read it.",
-        ],
-      },
-      how: {
-        heading: "How it works.",
-        steps: [
-          { when: "Day 1", what: "A 15-minute call about your services and areas" },
-          { when: "Week 1", what: "We research your searches and audit your listings" },
-          { when: "Every month", what: "We optimise 5 pages, fix what the audit found and send a report" },
-        ],
-      },
-      limits: {
-        heading: "What is not included.",
-        lede: "So there are no surprises.",
-        items: excludesOf("search", currency),
-      },
-      faq: [
-        {
-          q: "What is the difference between SEO and AEO?",
-          a: "SEO helps your business rank in the list of results on Google. AEO helps your pages be used when Google's AI answers, ChatGPT or a voice assistant answer a question directly. We do both.",
-        },
-        {
-          q: "Do you guarantee rankings or AI citations?",
-          a: NO_GUARANTEE_ANSWER,
-        },
-        {
-          q: "Do you write new pages?",
-          a: "We optimise 5 pages a month: titles, descriptions and headings. New landing pages and unlimited writing are quoted separately, before we start.",
-        },
-        {
-          q: "Do I need the website plan?",
-          a: `No. Every plan can be bought on its own. Taken with ${WEBSITE.name} or ${GROWTH.name}, the prices drop.`,
         },
         { q: "Can I cancel?", a: CANCEL_ANSWER },
       ],

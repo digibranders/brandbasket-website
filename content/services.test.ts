@@ -12,8 +12,8 @@ describe("service pages", () => {
     expect(SERVICE_PAGES.map((page) => page.id)).toEqual([...PLAN_IDS]);
     expect(SERVICE_PAGES.map((page) => page.path)).toEqual([
       "/services/managed-website",
-      "/services/social-media-and-ads",
-      "/services/local-seo-aeo",
+      "/services/social-media-management",
+      "/services/paid-ads-management",
     ]);
     for (const ref of SERVICE_PAGES) expect(servicePageRefFor(ref.id)).toBe(ref);
     expect(JSON.stringify(SERVICE_PAGES)).not.toMatch(/[₹$]/);
@@ -57,22 +57,20 @@ describe("service pages", () => {
         expect(text).not.toContain("30 minutes");
       });
 
-      it("has no spotlight card on Social and Ads, and keeps one on the other two pages", () => {
-        expect(servicePageFor("growth", currency).spotlight).toBeUndefined();
+      it("keeps the free build card on the website page only", () => {
         expect(servicePageFor("website", currency).spotlight?.kind).toBe("offer");
-        expect(servicePageFor("search", currency).spotlight?.kind).toBe("explainer");
+        expect(servicePageFor("social", currency).spotlight).toBeUndefined();
+        expect(servicePageFor("ads", currency).spotlight).toBeUndefined();
       });
 
-      it("promises 2 posts per week on the Instagram and Facebook card and on the Google Business Profile card", () => {
-        const groups = servicePageFor("growth", currency).does.groups;
-        for (const title of ["Posts that go out on time", "A Google Business Profile that is current"]) {
-          expect(groups.find((group) => group.title === title)?.items).toContain("2 posts per week");
-        }
+      it("lists the social plan's AI work and its 4 platforms", () => {
+        const items = servicePageFor("social", currency).does.groups.flatMap((group) => group.items);
+        for (const item of ["AI content and caption generation", "AI image and creative generation", "Up to 4 platforms managed"]) expect(items).toContain(item);
       });
 
       it("keeps the same Not included lines as the pricing cards", () => {
-        expect(servicePageFor("growth", currency).limits.items).toContain("Ad spend, paid to Meta by you");
-        expect(servicePageFor("search", currency).limits.items).toContain("Guaranteed rankings or AI citations");
+        expect(servicePageFor("ads", currency).limits.items).toContain("Ad spend, paid to Meta by you");
+        expect(servicePageFor("social", currency).limits.items).toContain("Ad campaigns, which are Paid Ads Management");
       });
 
       it("leaves no dash in any visible copy", () => {
@@ -108,7 +106,7 @@ describe("service pages", () => {
     expect(text).not.toContain("₹");
     expect(text).not.toContain("DPDP");
     for (const price of ["$65", "$120", "$10 an hour"]) expect(text).toContain(price);
-    expect(servicePageFor("growth", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
+    expect(servicePageFor("social", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month", packagesLede: "Any two plans are 10% off and all three are 20% off." });
     expect(Object.values(PLANS).map((plan) => plan.name).every((name) => !NO_TAX.test(name))).toBe(true);
@@ -123,7 +121,7 @@ describe("service pages", () => {
   it("words the ad spend and no guarantee answers like the pricing page, whichever page they are on", () => {
     for (const currency of CURRENCIES) {
       const pricing = pricingFaq(currency);
-      const adSpend = servicePageFor("growth", currency).faq.find((item) => item.q === "Is ad spend included?")?.a;
+      const adSpend = servicePageFor("ads", currency).faq.find((item) => item.q === "Is ad spend included?")?.a;
       expect(adSpend).toBe(pricing.find((item) => item.q === "Is ad spend included?")?.a);
       for (const id of PLAN_IDS) {
         const guarantee = servicePageFor(id, currency).faq.find((item) => item.q.startsWith("Do you guarantee"));

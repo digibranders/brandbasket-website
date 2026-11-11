@@ -1,5 +1,5 @@
 "use client";
-import { Check, Globe, Megaphone, MagnifyingGlass, Minus, Plus, X } from "@phosphor-icons/react/dist/ssr";
+import { Check, Globe, InstagramLogo, Megaphone, Minus, Plus, X } from "@phosphor-icons/react/dist/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type CSSProperties, type ReactElement, useId, useState } from "react";
@@ -16,7 +16,7 @@ import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
 
-export const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: Megaphone, search: MagnifyingGlass };
+export const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 
 interface BasketSummaryProps {
   /** Reported with the checkout click, e.g. "basket_wall" or "basket_popover". */

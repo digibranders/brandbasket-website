@@ -41,7 +41,7 @@ export function slotLabel(id: PlanId, added: boolean): string {
   return added ? `Remove ${PLANS[id].name}` : `Add ${PLANS[id].name}`;
 }
 
-const ALL_PICK: BasketPick = { website: true, growth: true, search: true };
+const ALL_PICK: BasketPick = { website: true, social: true, ads: true };
 
 /** The owner's nudge line (docs/plans/24, 2026-10-26): "Add one more plan to get 10% off, save ₹1,299/month." */
 function nudge(percent: number, saving: number, plansToAdd: number, currency: Currency): string {

@@ -3,8 +3,8 @@ import { loginHref, signupHref, startHref } from "./signup";
 
 describe("signupHref", () => {
   it("sends the picked plans to the app's sign-in, in catalogue order", () => {
-    expect(signupHref({ website: true, growth: false, search: true })).toBe("https://app.brandbasket.in/login?plan=website%2Csearch");
-    expect(signupHref({ website: false, growth: true, search: true })).toBe("https://app.brandbasket.in/login?plan=growth%2Csearch");
+    expect(signupHref({ website: true, social: false, ads: true })).toBe("https://app.brandbasket.in/login?plan=website%2Cads");
+    expect(signupHref({ website: false, social: true, ads: true })).toBe("https://app.brandbasket.in/login?plan=social%2Cads");
   });
 });
 
@@ -16,11 +16,11 @@ describe("loginHref", () => {
 
 
 describe("startHref", () => {
-  it("opens the Managed Website sign-up with the sealed details", () => {
+  it("opens the Website Management sign-up with the sealed details", () => {
     expect(startHref("abc123")).toBe("https://app.brandbasket.in/login?plan=website&start=abc123");
   });
 
-  it("is the plain Managed Website sign-up with no token", () => {
+  it("is the plain Website Management sign-up with no token", () => {
     expect(startHref(null)).toBe("https://app.brandbasket.in/login?plan=website");
   });
 });

@@ -40,7 +40,7 @@ export const HOME_ROUTE: RouteMeta = {
 export const PRICING_ROUTE: RouteMeta = {
   path: "/pricing",
   title: `Pricing: a free website and monthly plans | ${tradeName}`,
-  description: `Your website is built free. Choose ${PLANS.website.name}, ${PLANS.growth.name} or ${PLANS.search.name}, on their own or together, and pay month to month.`,
+  description: `Your website is built free. Choose ${PLANS.website.name}, ${PLANS.social.name} or ${PLANS.ads.name}, on their own or together, and pay month to month.`,
   updated: UPDATED,
   priority: 0.9,
 };

@@ -38,7 +38,7 @@ export interface GuidePageContent {
 export const GUIDE_COPY = {
   faqHeading: "Common questions.",
   nextHeading: "Read next.",
-  planLink: { label: "See the Managed Website plan", href: "/services/managed-website" },
+  planLink: { label: "See the Website Management plan", href: "/services/managed-website" },
 } as const;
 
 const HOW_IT_GOES = {
@@ -89,7 +89,7 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       {
         heading: "Showing up when someone searches nearby",
         paragraphs: [
-          "The website is the base. The Local SEO + AEO plan adds the work that helps people find it: local keyword research, a name, address and phone that match everywhere, and your patients' questions shaped into direct answers.",
+          "The website is the base. Social Media Management keeps your pages active with posts made with AI, and Paid Ads Management puts Facebook and Instagram ads in front of people nearby.",
         ],
       },
       HOW_IT_GOES,
@@ -104,7 +104,7 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
     next: [
       { label: "Local SEO for clinics and dentists in India", href: "/blog/local-seo-for-clinics-and-dentists-india", summary: "Why clinics and dentists need local SEO, and how to get found on Google Maps." },
       { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india", summary: "Set up and verify your Google Business Profile so your listing shows in local search." },
-      { label: "Local SEO + AEO plan", href: "/services/local-seo-aeo", summary: "Our Local SEO and AEO plan: Google listing, local search and AI answers, managed monthly." },
+      { label: "Website Management plan", href: "/services/managed-website", summary: "Our website plan: built free, then hosted, secured and kept up to date every month." },
     ],
   },
   {
@@ -136,7 +136,7 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       {
         heading: "Posts, photos and reviews",
         paragraphs: [
-          "The Social Media and Ads plan covers Instagram and Facebook posts, Google Business Profile posts and updates, and review monitoring with reply drafts, so the website and your listing say the same thing.",
+          "Social Media Management covers posts, captions and images made with AI and scheduled on up to 4 platforms, so your pages and your website say the same thing.",
         ],
       },
       HOW_IT_GOES,
@@ -151,7 +151,7 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
     next: [
       { label: "Restaurants: your own website or Zomato and Swiggy?", href: "/blog/restaurant-own-website-or-zomato-swiggy", summary: "Your own website or Zomato and Swiggy: what each offers a restaurant, and how to choose." },
       { label: "How to get more Google reviews and reply to them", href: "/blog/get-more-google-reviews-and-reply", summary: "Simple ways to get more Google reviews, and how to reply to each one well." },
-      { label: "Social Media and Ads plan", href: "/services/social-media-and-ads", summary: "Our Social Media and Ads plan: posts and Facebook and Instagram ads, run for you monthly." },
+      { label: "Social Media Management plan", href: "/services/social-media-management", summary: "Our social media plan: AI posts, captions and images, scheduled on up to 4 platforms." },
     ],
   },
   {
@@ -186,7 +186,7 @@ export const GUIDE_PAGES: readonly GuidePageContent[] = [
       COST_FAQ,
       DOMAIN_FAQ,
       { q: "Can the site show our class timetable?", a: "Yes. You send us the timetable and we put it on the site. Changes after launch use your 2 edits a month." },
-      { q: "Can we also get Instagram posts and ads?", a: "Yes. The Social Media and Ads plan covers posts, Google Business Profile updates and Facebook and Instagram ads. It can be added to the website plan." },
+      { q: "Can we also get Instagram posts and ads?", a: "Yes. Social Media Management covers posts, and Paid Ads Management covers Facebook and Instagram ads. Either can be added to the website plan." },
       { q: "Can I cancel?", a: CANCEL_ANSWER },
     ],
     next: [
@@ -286,7 +286,7 @@ export const GLOSSARY = {
   next: [
     { label: "Local SEO and AEO: what is the difference, and which first?", href: "/blog/local-seo-vs-aeo-which-first", summary: "Local SEO and AEO solve different problems. Here is which one to start with." },
     { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india", summary: "Set up and verify your Google Business Profile so your listing shows in local search." },
-    { label: "Local SEO + AEO plan", href: "/services/local-seo-aeo", summary: "Our Local SEO and AEO plan: Google listing, local search and AI answers, managed monthly." },
+    { label: "Website Management plan", href: "/services/managed-website", summary: "Our website plan: built free, then hosted, secured and kept up to date every month." },
   ],
 } as const;
 
@@ -302,15 +302,10 @@ export const GUIDE_LINKS = {
     { label: "How much does a website cost for a small business in India?", href: "/blog/website-cost-small-business-india", summary: "What a small business website should cost in India, and what the price must include." },
     { label: "Free website, freelancer, agency or DIY builder?", href: "/compare/website-options", summary: "Free website, freelancer, agency or DIY builder: what each gives you and who it suits." },
   ],
-  growth: [
+  // No guide is about social media posting yet; the page shows no guides until one is written.
+  social: [],
+  ads: [
     { label: "How much should a local business spend on Facebook and Instagram ads?", href: "/blog/facebook-instagram-ads-budget-local-business", summary: "How much to spend on Facebook and Instagram ads, and how to tell if they bring enquiries." },
-    { label: "How to get more Google reviews and reply to them", href: "/blog/get-more-google-reviews-and-reply", summary: "Simple ways to get more Google reviews, and how to reply to each one well." },
-    { label: "How to set up and verify your Google Business Profile in India", href: "/blog/set-up-verify-google-business-profile-india", summary: "Set up and verify your Google Business Profile so your listing shows in local search." },
-  ],
-  search: [
-    { label: "Local SEO and AEO: what is the difference, and which first?", href: "/blog/local-seo-vs-aeo-which-first", summary: "Local SEO and AEO solve different problems. Here is which one to start with." },
-    { label: "How to get your local business recommended by ChatGPT and Google AI", href: "/blog/get-local-business-recommended-by-ai", summary: "How to get your business named when people ask ChatGPT or Google AI for a local pick." },
-    { label: "Website and search terms, in plain words", href: "/glossary", summary: "Plain meanings of the website and search terms local businesses hear most." },
   ],
 } as const satisfies Record<string, readonly GuideLink[]>;
 

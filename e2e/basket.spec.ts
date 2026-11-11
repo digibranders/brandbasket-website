@@ -42,7 +42,7 @@ test("the basket renders cast shadows as well as its main scene", async ({ page 
       return location;
     };
   });
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   await expect(stage.locator("canvas")).toBeVisible({ timeout: 20_000 });
@@ -58,10 +58,10 @@ test("the basket renders cast shadows as well as its main scene", async ({ page 
 });
 
 const PICKS: readonly BasketPick[] = [
-  { website: true, growth: false, search: false },
-  { website: true, growth: true, search: false },
-  { website: true, growth: false, search: true },
-  { website: true, growth: true, search: true },
+  { website: true, social: false, ads: false },
+  { website: true, social: true, ads: false },
+  { website: true, social: false, ads: true },
+  { website: true, social: true, ads: true },
 ];
 
 const pickTotal = (pick: BasketPick): string => formatMoney(packageTotal(pick, "INR"), "INR");
@@ -87,8 +87,8 @@ test("the expected totals match the owner's figures", () => {
 test("Social and SEO without the website is the 20% package", async ({ page }) => {
   await page.goto("/pricing");
   const hero = page.locator("section[aria-labelledby='h-pricing']");
-  await hero.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).click();
-  await hero.getByRole("switch", { name: PRICING_PLANS.search.switchLabel }).click();
+  await hero.getByRole("switch", { name: PRICING_PLANS.social.switchLabel }).click();
+  await hero.getByRole("switch", { name: PRICING_PLANS.ads.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
   await expect(hero.locator("[data-basket-total]").getByText("₹31,499", { exact: true })).toBeVisible();
 });
@@ -108,24 +108,24 @@ test("the last switch on cannot be turned off", async ({ page }) => {
 });
 
 test("the basket carries from home to pricing", async ({ page }) => {
-  await page.goto("/");
-  await page.locator("#basket-card").getByRole("button", { name: "Add Social Media and Ads", exact: true }).click();
+  await page.goto("/pricing");
+  await page.locator("#basket-card").getByRole("button", { name: "Add Social Media Management", exact: true }).click();
   // Phones show the shorter "Compare plans"; both say the same thing.
   await page.getByRole("link", { name: /^Compare (all )?plans$/ }).click();
   await expect(page).toHaveURL(/\/pricing/);
-  await expect(page.getByRole("switch", { name: PRICING_PLANS.growth.switchLabel }).first()).toHaveAttribute("aria-checked", "true");
+  await expect(page.getByRole("switch", { name: PRICING_PLANS.social.switchLabel }).first()).toHaveAttribute("aria-checked", "true");
 });
 
 test("the Basket Card adds plans and ticks what is in the basket", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/pricing");
   const card = page.locator("#basket-card");
-  await card.getByRole("button", { name: "Add Social Media and Ads", exact: true }).click();
+  await card.getByRole("button", { name: "Add Social Media Management", exact: true }).click();
   await expect(card.getByText("10% off and ₹1,500 a month for your ads.", { exact: true })).toBeVisible();
-  await expect(card.getByRole("button", { name: "Remove Social Media and Ads" })).toHaveAttribute("aria-pressed", "true");
-  await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Managed Website", "Social Media and Ads"]);
-  await card.getByRole("button", { name: "Add Local SEO + AEO", exact: true }).click();
+  await expect(card.getByRole("button", { name: "Remove Social Media Management" })).toHaveAttribute("aria-pressed", "true");
+  await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Website Management", "Social Media Management"]);
+  await card.getByRole("button", { name: "Add Paid Ads Management", exact: true }).click();
   await expect(card.getByText("Full basket. 20% off and ₹3,000 a month for your ads.", { exact: true })).toBeVisible();
-  await expect(card.getByText(formatMoney(packageTotal({ website: true, growth: true, search: true }, "INR"), "INR"), { exact: false }).first()).toBeVisible();
+  await expect(card.getByText(formatMoney(packageTotal({ website: true, social: true, ads: true }, "INR"), "INR"), { exact: false }).first()).toBeVisible();
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {
@@ -138,7 +138,7 @@ test("the live basket renders and rotates without WebGL errors", async ({ page }
       errors.push(message.text());
     }
   });
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   await expect(stage.locator("canvas")).toBeVisible({ timeout: 20_000 });
@@ -154,7 +154,7 @@ test("the live basket renders and rotates without WebGL errors", async ({ page }
 
 test("reduced motion keeps the basket poster visible", async ({ page }) => {
   await page.emulateMedia({ reducedMotion: "reduce" });
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   const poster = stage.locator("img");
@@ -165,7 +165,7 @@ test("reduced motion keeps the basket poster visible", async ({ page }) => {
 
 test("the website preview loads the original studio photograph", async ({ page }) => {
   const photograph = page.waitForResponse((response) => response.url().endsWith("/basket/studio-house.avif"), { timeout: 10_000 });
-  await page.goto("/");
+  await page.goto("/pricing");
   await page.getByRole("img", { name: /A woven.*basket/ }).first().scrollIntoViewIfNeeded();
   const response = await photograph;
   expect(response.ok()).toBe(true);
@@ -176,7 +176,7 @@ test("the studio preview still renders when its photograph is unavailable", asyn
   const errors: string[] = [];
   page.on("pageerror", (error) => errors.push(error.message));
   await page.route("**/basket/studio-house.avif", (route) => route.abort());
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   await expect(stage.locator("canvas")).toBeVisible({ timeout: 20_000 });
@@ -187,7 +187,7 @@ test("the studio preview still renders when its photograph is unavailable", asyn
 test("basket dragging releases after focus loss, cancellation, and a missed mouseup", async ({ page }) => {
   // Headless Chromium renders WebGL on the CPU. On a two-core CI runner each frame of this spec takes seconds and the spec drives dozens of them, so it gets a budget of its own.
   test.setTimeout(300_000);
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   await expect(stage.locator("canvas")).toBeVisible({ timeout: 20_000 });
@@ -248,7 +248,7 @@ test("a released basket keeps its momentum without keeping pointer capture", asy
       setMatrix.call(this, location, transpose, data);
     };
   });
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   await page.clock.runFor(1000);

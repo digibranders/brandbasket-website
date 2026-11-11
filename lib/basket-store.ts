@@ -1,7 +1,7 @@
 import { type BasketPick, PLAN_IDS, type PlanId, samePick } from "./pricing";
 
 /** What every "Start my plan" button starts from: the website plan on its own. */
-export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: true, growth: false, search: false });
+export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: true, social: false, ads: false });
 
 /** Where the page-wide basket is remembered in the browser. It holds plan ids only. */
 export const BASKET_STORAGE_KEY = "brandbasket-basket";
@@ -17,7 +17,7 @@ export function parseSavedBasket(raw: string | null): BasketPick | null {
   }
   if (!Array.isArray(value)) return null;
   const ids = new Set<unknown>(value);
-  const pick: BasketPick = { website: ids.has("website"), growth: ids.has("growth"), search: ids.has("search") };
+  const pick: BasketPick = { website: ids.has("website"), social: ids.has("social"), ads: ids.has("ads") };
   return PLAN_IDS.some((id) => pick[id]) ? Object.freeze(pick) : null;
 }
 

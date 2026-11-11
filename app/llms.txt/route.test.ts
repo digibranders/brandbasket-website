@@ -15,9 +15,9 @@ beforeEach(() => {
 describe("GET /llms.txt", () => {
   it("lists plan prices and the package terms", async () => {
     const body = await (await GET()).text();
-    expect(body).toContain("Managed Website: ₹2,999 a month, GST included");
-    expect(body).toContain("Social Media and Ads: ₹9,999 a month, GST included");
-    expect(body).toContain("Local SEO + AEO: ₹24,999 a month, GST included");
+    expect(body).toContain("Website Management: ₹2,999 a month, GST included");
+    expect(body).toContain("Social Media Management: ₹9,999 a month, GST included");
+    expect(body).toContain("Paid Ads Management: ₹24,999 a month, GST included");
     expect(body).toContain(`- Package offer: ${PACKAGE_TERMS}`);
     expect(body).not.toContain("chosen at sign-up");
   });
@@ -32,8 +32,8 @@ describe("GET /llms.txt", () => {
   it("lists the four packages with list price, package price, saving and the ad credit", async () => {
     const body = await (await GET()).text();
     expect(body).toContain("- Website + Social: ₹12,998 a month at list price; ₹11,699 a month as a package (10% off, you save ₹1,299). Bought together as you start: ₹1,500 a month of ad credit.");
-    expect(body).toContain("- Website + SEO: ₹27,998 a month at list price; ₹25,199 a month as a package (10% off, you save ₹2,799).\n");
-    expect(body).toContain("- Social + SEO: ₹34,998 a month at list price; ₹31,499 a month as a package (10% off, you save ₹3,499). Bought together as you start: ₹1,500 a month of ad credit.");
+    expect(body).toContain("- Website + Ads: ₹27,998 a month at list price; ₹25,199 a month as a package (10% off, you save ₹2,799).\n");
+    expect(body).toContain("- Social + Ads: ₹34,998 a month at list price; ₹31,499 a month as a package (10% off, you save ₹3,499). Bought together as you start: ₹1,500 a month of ad credit.");
     expect(body).toContain("- All three: ₹37,997 a month at list price; ₹30,398 a month as a package (20% off, you save ₹7,599). Bought together as you start: ₹3,000 a month of ad credit.");
   });
 
@@ -49,7 +49,7 @@ describe("GET /llms.txt", () => {
     expect(body).toContain("up to 10 pages built for you; live within 7 working days");
     expect(body).toContain("2 edits a month of 15 minutes each");
     expect(body).toContain("up to ₹10,000 a month of your ad budget");
-    expect(body).toContain("5 pages optimised a month");
+    expect(body).toContain("Dedicated Expert Monitoring: included with all three plans, otherwise ₹6,000 a month");
   });
 
   it("lists the newest posts with their summaries", async () => {

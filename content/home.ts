@@ -241,7 +241,7 @@ export const REPORT = {
   ariaLabel: "Example monthly report",
   chip: "Example report",
   title: "October report",
-  subtitle: "A dental clinic in Pune · Website, Social, SEO",
+  subtitle: "A dental clinic in Pune · Website, Social, Ads",
   chart: {
     title: "Enquiries a week",
     range: "Sep to Oct",
@@ -266,7 +266,7 @@ export function reportFor(currency: Currency): typeof REPORT & { readonly kpis: 
       { tone: "site", label: "Uptime", value: "99.97%", delta: "0 incidents" },
       { tone: "growth", label: "Profile views", value: "2,184", delta: "+18% on Sept" },
       { tone: "growth2", label: "Ad leads", value: "37", delta: `${formatMoney(SAMPLE_LEAD_COST[currency], currency)} a lead` },
-      { tone: "search", label: "Calls from search", value: "62", delta: "+9 on Sept" },
+      { tone: "search", label: "Calls from ads", value: "62", delta: "+9 on Sept" },
     ],
   };
 }

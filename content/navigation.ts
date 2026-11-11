@@ -18,8 +18,8 @@ export const SERVICES_LABEL = "Services";
 /** The Services menu: the three service pages, named as the plans are. Written out here so the menu does not ship the page copy to the browser; navigation.test.ts checks the addresses against content/services.ts. */
 export const SERVICES_NAV: readonly ServiceNavLink[] = [
   { id: "website", label: PLANS.website.name, href: "/services/managed-website" },
-  { id: "growth", label: PLANS.growth.name, href: "/services/social-media-and-ads" },
-  { id: "search", label: PLANS.search.name, href: "/services/local-seo-aeo" },
+  { id: "social", label: PLANS.social.name, href: "/services/social-media-management" },
+  { id: "ads", label: PLANS.ads.name, href: "/services/paid-ads-management" },
 ];
 
 export const PRIMARY_NAV: readonly NavLink[] = [

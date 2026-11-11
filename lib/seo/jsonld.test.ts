@@ -52,7 +52,7 @@ describe("planOffersJsonLd", () => {
   it("adds the four packages after the plans when asked", () => {
     const offers = planOffersJsonLd("INR", { packages: true }).hasOfferCatalog.itemListElement;
     expect(offers.slice(3).map((offer) => offer.priceSpecification.price)).toEqual([11699, 25199, 31499, 30398]);
-    expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + SEO", "Social + SEO", "All three"]);
+    expect(offers.slice(3).map((offer) => offer.name)).toEqual(["Website + Social", "Website + Ads", "Social + Ads", "All three"]);
     expect(offers[3].priceSpecification.unitText).toBe("MONTH");
     expect(offers[3].priceSpecification.valueAddedTaxIncluded).toBe(true);
   });

@@ -21,7 +21,7 @@ declare global {
   }
 }
 
-for (const route of ["/", "/pricing"]) {
+for (const route of ["/pricing"]) {
   for (const saved of [false, true]) {
     test(`${route} lifts the basket into view before dropping tiles${saved ? " with saved plans" : ""}`, async ({ page }) => {
       await page.addInitScript(({ saved, key }) => {
@@ -124,7 +124,7 @@ for (const route of ["/", "/pricing"]) {
 }
 
 test("a reclaimed WebGL context shows a decoded fallback and rebuilds the basket", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/pricing");
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await stage.scrollIntoViewIfNeeded();
   await expect(stage.locator("canvas")).toHaveCSS("opacity", "1", { timeout: 20_000 });
@@ -164,7 +164,7 @@ test("a slow static fallback stays hidden until its image is decoded", async ({ 
     await ready;
     await route.continue();
   });
-  await page.goto("/", { waitUntil: "domcontentloaded" });
+  await page.goto("/pricing", { waitUntil: "domcontentloaded" });
   const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
   await expect(stage.locator("img")).toHaveCSS("opacity", "0");
   release?.();
@@ -176,7 +176,7 @@ test("a slow static fallback stays hidden until its image is decoded", async ({ 
 test.describe("without JavaScript", () => {
   test.use({ javaScriptEnabled: false });
   test("the filled basket remains visible", async ({ page }) => {
-    await page.goto("/");
+    await page.goto("/pricing");
     const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
     const poster = stage.locator("img:visible");
     await expect(poster).toHaveCount(1);

@@ -4,7 +4,7 @@
 
 export type AboutIconKey = "Globe" | "Wrench" | "ShareNetwork" | "Megaphone" | "MapPin" | "Storefront" | "Buildings" | "Rocket" | "Package" | "Stack" | "ListChecks";
 
-/** Which plan colour tints a service tile: the website plan, Social Media and Ads, or Local SEO. */
+/** Which colour tints a service tile on About: the website plan, the social and ads plans, or local search. */
 export type AboutTone = "site" | "growth" | "search";
 
 export interface AboutItem {

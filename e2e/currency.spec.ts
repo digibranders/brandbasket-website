@@ -4,7 +4,7 @@ import { CURRENCY_COOKIE } from "@/lib/currency";
 const COUNTRY = "x-vercel-ip-country";
 /** Words a dollar page must never print. innerText keeps words apart, so "running" then "Start" is not read as "gst". */
 const NO_TAX_TALK = /\bgst\b|\btax(es)?\b|incl\./i;
-const PRICE_PAGES = ["/", "/pricing", "/services/managed-website", "/services/social-media-and-ads", "/services/local-seo-aeo"] as const;
+const PRICE_PAGES = ["/", "/pricing", "/services/managed-website", "/services/social-media-management", "/services/paid-ads-management"] as const;
 
 test.describe("a visitor in the United States", () => {
   test.use({ extraHTTPHeaders: { [COUNTRY]: "US" } });

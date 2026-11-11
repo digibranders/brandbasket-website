@@ -8,8 +8,11 @@ import { basketPlans, type PlanId } from "@/lib/pricing";
 
 const LABEL = { add: "Add to basket", added: "In your basket" } as const;
 
-/** Adds or removes a plan in the page-wide basket, the same one the hero card and the basket dock read. The last plan cannot be removed. */
-export function PlanBasketButton({ id }: { readonly id: PlanId }): ReactElement {
+/**
+ * Adds or removes a plan in the page-wide basket, the same one the hero card and the basket dock read. The last plan cannot
+ * be removed. `label` replaces "Add to basket" where a section names the plan (the homepage's "Choose Website Plan").
+ */
+export function PlanBasketButton({ id, label = LABEL.add }: { readonly id: PlanId; readonly label?: string }): ReactElement {
   const pick = useBasket();
   const on = pick[id];
   const onlyOne = on && basketPlans(pick).length === 1;
@@ -25,7 +28,7 @@ export function PlanBasketButton({ id }: { readonly id: PlanId }): ReactElement 
       <span aria-hidden="true" className={`grid size-6 place-items-center rounded-full ${on ? "bg-rattan text-ink" : "bg-rattan-wash text-rattan-ink"}`}>
         {on ? <Check weight="bold" className="size-3.5" /> : <Plus weight="bold" className="size-3.5" />}
       </span>
-      {on ? LABEL.added : LABEL.add}
+      {on ? LABEL.added : label}
     </button>
   );
 }

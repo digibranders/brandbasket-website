@@ -1,5 +1,5 @@
 import type { Icon } from "@phosphor-icons/react";
-import { ArrowDown, RocketLaunch, SlidersHorizontal, Stack } from "@phosphor-icons/react/dist/ssr";
+import { ArrowDown, RocketLaunch, SlidersHorizontal, Stack, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement, ReactNode } from "react";
 import { BasketCta } from "@/components/basket/BasketCta";
 import { Reveal } from "@/components/motion/Reveal";
@@ -25,7 +25,14 @@ const LOOKS: readonly StepLook[] = [
 const VISUALS: readonly ReactNode[] = [
   null,
   <div key="two" aria-hidden="true" className="how-two"><span>{MODES.diy.title}</span><span>{MODES.dfy.title}</span></div>,
-  <div key="climb" aria-hidden="true" className="how-climb"><span>Create</span><span>Publish</span><span>Improve</span></div>,
+  <ol key="path" aria-hidden="true" className="how-path">
+    {["Create", "Publish", "Improve"].map((word, i) => (
+      <li key={word} className={`how-path-step how-path-step-${i}`}>
+        {word}
+        {i === 2 ? <TrendUp weight="bold" className="size-4" /> : null}
+      </li>
+    ))}
+  </ol>,
 ];
 
 /** What each step lets the visitor do, in the order of HOW.steps: pick plans, read the two ways, start. */

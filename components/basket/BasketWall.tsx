@@ -61,7 +61,7 @@ export function BasketWall(): ReactElement | null {
     hiddenRef.current = hidden;
   }, [hidden]);
 
-  // The basket steps aside while the hero or a [data-dock-hide] section (the plans, a dark band) is on screen: those
+  // The basket steps aside while the hero, a [data-dock-hide] dark band or a [data-wall-hide] section (the homepage plans) is on screen: those
   // already show a basket or say what it says. Bound again on every page, as in BasketDock.
   useEffect(() => {
     if (!active) return;
@@ -71,7 +71,7 @@ export function BasketWall(): ReactElement | null {
       entries.forEach((e) => { if (e.isIntersecting) seen.add(e.target); else seen.delete(e.target); });
       update();
     });
-    const els = document.querySelectorAll("#hero, [data-dock-hide]");
+    const els = document.querySelectorAll("#hero, [data-dock-hide], [data-wall-hide]");
     els.forEach((el) => watched.observe(el));
     // Otherwise the first observer callback sets the state; updating now would flash the basket before it runs.
     if (els.length === 0) update();

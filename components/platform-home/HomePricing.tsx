@@ -62,19 +62,19 @@ function PlanCard({ plan }: { readonly plan: PlanColumn }): ReactElement {
 
 /**
  * "Grow Your Business with AI-Powered Management.": the three plans, each dropping into the woven basket beside them,
- * which keeps the running total and the monitoring line. The heading and the basket are one column that pins together
- * while the plans scroll past; Dedicated Expert Monitoring sits under the plans.
+ * which keeps the running total and the monitoring line. On laptops the heading and the basket are one column that pins together
+ * while the plans scroll past; on a phone the basket card is left out and the floating cart (BasketDock) answers instead; Dedicated Expert Monitoring sits under the plans.
  */
 export function HomePricing({ currency }: { readonly currency: Currency }): ReactElement {
   return (
-    <Section id="plans" labelledBy="h-plans" dockHide className="scroll-mt-24">
+    <Section id="plans" labelledBy="h-plans" wallHide className="scroll-mt-24">
       <div className="grid grid-cols-[minmax(0,1fr)] gap-6 min-[1000px]:grid-cols-[0.82fr_1.18fr] min-[1000px]:items-start min-[1000px]:gap-8">
         <Reveal className="min-w-0 min-[1000px]:sticky min-[1000px]:top-24">
           <div className="grid gap-5 min-[1000px]:gap-4">
             <h2 id="h-plans" className="font-display text-[clamp(32px,2.9vw,40px)] font-semibold leading-[1.04] tracking-[-0.042em]">
               {HOME_PRICING.heading} <em className="font-light not-italic text-rattan-text">{HOME_PRICING.headingAccent}</em>
             </h2>
-            <BasketPanel />
+            <div className="hidden min-[1000px]:block"><BasketPanel /></div>
           </div>
         </Reveal>
         <div className="grid min-w-0 gap-4">

@@ -15,7 +15,7 @@ const ICONS: readonly Icon[] = [Lightning, ClockCountdown, SlidersHorizontal, Tr
 export function WhySection(): ReactElement {
   return (
     <Band tone="ink">
-      <section id="why" data-dock-hide aria-labelledby="h-why" className="in-wrap py-[clamp(72px,9vw,128px)]">
+      <section id="why" data-dock-hide aria-labelledby="h-why" className="in-wrap py-[clamp(48px,9vw,128px)]">
         <Reveal>
           <h2 id="h-why" className="mx-auto max-w-[16ch] text-center font-display text-[clamp(44px,6vw,88px)] font-semibold leading-[0.98] tracking-[-0.05em]">
             {WHY.heading} <em className="font-light not-italic text-rattan">{WHY.headingAccent}</em>

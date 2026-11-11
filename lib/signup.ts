@@ -22,7 +22,7 @@ export function signupHref(pick: BasketPick): string {
  * sealed details in `token` (lib/start-token.ts). With no token (no shared secret set, as in local work) it is the plain sign-up.
  */
 export function startHref(token: string | null): string {
-  const url = new URL(signupHref({ website: true, growth: false, search: false }));
+  const url = new URL(signupHref({ website: true, social: false, ads: false }));
   if (token !== null) url.searchParams.set(START_PARAM, token);
   return url.toString();
 }

@@ -4,6 +4,7 @@ import { BASKET_COPY } from "@/content/basket";
 import { BASKET_CARD } from "@/content/basket-card";
 import { CONTACT_ERRORS, CONTACT_PAGE, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_PLACEHOLDERS } from "@/content/contact";
 import { PRIMARY_CTA } from "@/content/navigation";
+import { FINAL_CTA, MODES, PLATFORM_HERO } from "@/content/platform-home";
 
 /** Mocks the token and contact endpoints; resolves with the JSON body the form posted. */
 async function mockContactApi(page: Page): Promise<() => unknown> {
@@ -110,11 +111,18 @@ test("?plan=website,search posts no plans and no topic", async ({ page }) => {
   expect(posted()).not.toHaveProperty("topic");
 });
 
-for (const path of ["/", "/pricing"]) {
+// The homepage's main buttons carry the platform copy's labels (content/platform-home.ts); every other page says PRIMARY_CTA.
+const MAIN_BUTTONS: readonly { readonly path: string; readonly labels: readonly string[] }[] = [
+  { path: "/", labels: [PLATFORM_HERO.primary.label, MODES.diy.cta.label, FINAL_CTA.primary.label] },
+  { path: "/pricing", labels: [PRIMARY_CTA.label] },
+];
+
+for (const { path, labels } of MAIN_BUTTONS) {
   test(`every main button on ${path} opens the basket, and the basket leads to the app's sign-in`, async ({ page }) => {
     await page.goto(path);
-    await expect(page.getByRole("link", { name: PRIMARY_CTA.label })).toHaveCount(0);
-    const buttons = page.locator("main").getByRole("button", { name: PRIMARY_CTA.label });
+    const name = new RegExp(`^(${labels.join("|")})$`);
+    await expect(page.locator("main").getByRole("link", { name })).toHaveCount(0);
+    const buttons = page.locator("main").getByRole("button", { name });
     expect(await buttons.count()).toBeGreaterThan(0);
     for (let i = 0; i < (await buttons.count()); i += 1) {
       await buttons.nth(i).scrollIntoViewIfNeeded();
@@ -129,7 +137,7 @@ for (const path of ["/", "/pricing"]) {
 }
 
 test("the Basket Card's checkout button opens the basket, and the basket leads to the app's sign-in", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("/pricing");
   await page.locator("#basket-card").getByRole("button", { name: new RegExp(`^(${BASKET_CARD.checkoutCta}|${BASKET_CARD.checkoutCtaShort})$`) }).click();
   const basket = page.getByRole("dialog", { name: BASKET_COPY.dockLabel });
   await expect(basket).toBeVisible();

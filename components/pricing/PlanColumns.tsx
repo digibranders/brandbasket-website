@@ -1,5 +1,5 @@
 import type { Icon } from "@phosphor-icons/react";
-import { ArrowRight, Check, Globe, Megaphone, MagnifyingGlass, Minus } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, Check, Globe, InstagramLogo, Megaphone, Minus } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
@@ -12,9 +12,9 @@ import type { Currency } from "@/lib/currency";
 import type { PlanId } from "@/lib/pricing";
 import { PlanBasketButton } from "./PlanBasketButton";
 
-const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: Megaphone, search: MagnifyingGlass };
+const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 /** The plan colours already used by the plan details and the basket. */
-const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)", growth: "var(--c-growth)", search: "var(--c-search)" };
+const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)", social: "var(--c-growth)", ads: "var(--c-search)" };
 
 const LABEL = "mb-3 text-[13px] font-semibold leading-none text-ink-2";
 

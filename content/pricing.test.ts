@@ -17,7 +17,7 @@ describe("pricing content", () => {
   });
   it("keeps the Social ad money equal across the two-plan packages that include it", () => {
     // One amount covers both two-plan packages with Social, so they must stay equal.
-    expect(PACKAGES.find((p) => p.id === "website-growth")?.adCredit).toEqual(PACKAGES.find((p) => p.id === "growth-search")?.adCredit);
+    expect(PACKAGES.find((p) => p.id === "website-social")?.adCredit).toEqual(PACKAGES.find((p) => p.id === "social-ads")?.adCredit);
   });
 
   describe.each(CURRENCIES)("in %s", (currency) => {
@@ -30,7 +30,7 @@ describe("pricing content", () => {
       expect(everyPlan(currency).items).toHaveLength(4);
     });
     it("has one comparison column per plan, priced from lib/pricing", () => {
-      expect(columns.map((c) => c.id)).toEqual(["website", "growth", "search"]);
+      expect(columns.map((c) => c.id)).toEqual(["website", "social", "ads"]);
       for (const column of columns) {
         expect(column.name).toBe(PLANS[column.id].name);
         expect(column.price).toBe(formatMoney(planPrice(column.id, currency), currency));
@@ -39,20 +39,21 @@ describe("pricing content", () => {
     it("lists what each plan does and leaves out, and says it only once", () => {
       for (const column of columns) {
         expect(column.does.length).toBeGreaterThan(5);
-        expect(column.excludes.length).toBeGreaterThan(2);
+        expect(column.excludes.length).toBeGreaterThanOrEqual(2);
         const all = [...column.does, ...column.excludes];
         expect(new Set(all).size).toBe(all.length);
       }
     });
-    it("says up to 10 pages and the 2 edits on the website plan, and the 5 optimised pages on the search plan", () => {
-      const [website, , search] = columns;
-      expect(website?.does).toContain("Up to 10 pages, built for you");
-      expect(website?.does).toContain("2 edits a month, 15 minutes each");
-      expect(search?.does.join(" ")).toContain("5 pages optimised a month");
+    it("says up to 10 pages and the 2 edits on the website plan, and Meta ads on the ads plan", () => {
+      const [website, , ads] = columns;
+      expect(website?.does).toContain("Website setup, up to 10 pages, built free");
+      expect(website?.does).toContain("Content updates, 2 a month, 15 minutes each");
+      expect(ads?.does).toContain("Meta ads on Facebook and Instagram");
     });
-    it("builds the ad cap and the per-reel price into the social plan and the FAQ", () => {
-      const social = columns.find((c) => c.id === "growth");
-      expect(social?.does.join(" ")).toContain(`up to ${formatMoney(extras.adBudgetCap, currency)} a month of your budget`);
+    it("builds the ad cap into the ads plan, the per-reel price into the social plan, and both into the FAQ", () => {
+      const social = columns.find((c) => c.id === "social");
+      const ads = columns.find((c) => c.id === "ads");
+      expect(ads?.does.join(" ")).toContain(`up to ${formatMoney(extras.adBudgetCap, currency)} a month of your budget`);
       expect(social?.excludes.join(" ")).toContain(`${formatMoney(extras.reel, currency)} per reel`);
       expect(faq.find((f) => f.q === "Is ad spend included?")?.a).toContain(`up to ${formatMoney(extras.adBudgetCap, currency)} a month`);
     });
@@ -67,9 +68,9 @@ describe("pricing content", () => {
         "Do I need the website plan?",
         "Can I add or drop a plan later?",
         "Is ad spend included?",
-        "Do you guarantee rankings or leads?",
+        "Do you guarantee leads or sales?",
       ]);
-      expect(faq[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + SEO is 10% off.");
+      expect(faq[2]?.a).toBe("No. Every plan can be bought on its own. If you already have a website, Social + Ads is 10% off.");
     });
     it("has no em or en dashes", () => {
       expect(allCopy(currency)).not.toMatch(/[\u2013\u2014]/);

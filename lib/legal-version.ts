@@ -23,5 +23,8 @@
  *               that the person agreed to the policy.
  * 2026-10-28.2  Shipping policy: a website is usually live within 7 working days (was "about a week").
  * 2026-10-28.3  Privacy: names OyeChats as the provider of the chat on the contact page, when that chat is switched on.
+ * 2026-11-06.1  Terms: the plans are Website Management, Social Media Management and Paid Ads Management (Local SEO + AEO
+ *               is no longer sold), Paid Ads Management manages the ad budget, and Dedicated Expert Monitoring is
+ *               included with all three plans or priced monthly with one or two. Not yet published.
  */
-export const LEGAL_TEXT_VERSION = "2026-10-28.3";
+export const LEGAL_TEXT_VERSION = "2026-11-06.1";

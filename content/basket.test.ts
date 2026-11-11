@@ -4,7 +4,7 @@ import { CURRENCIES } from "@/lib/currency";
 import { type BasketPick, PLAN_IDS, PLANS } from "@/lib/pricing";
 import { BASKET_COPY, moneyCopy, offerNote, planCount, PRICING_PLANS, saveLine } from "./basket";
 
-const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
+const pick = (website: boolean, social: boolean, ads: boolean): BasketPick => ({ website, social, ads });
 
 describe("basket copy", () => {
   it("has one pricing row per plan", () => {
@@ -56,11 +56,11 @@ describe("offerNote in rupees", () => {
   it("prices Website + Social with its ad money for both", () => {
     expect(offerNote(pick(true, true, false), "INR")).toBe("Website + Social: 10% off, so you save ₹1,299 a month. Start with both and we add ₹1,500 a month to your ads.");
   });
-  it("prices Website + SEO without ad money", () => {
-    expect(offerNote(pick(true, false, true), "INR")).toBe("Website + SEO: 10% off, so you save ₹2,799 a month.");
+  it("prices Website + Ads without ad money", () => {
+    expect(offerNote(pick(true, false, true), "INR")).toBe("Website + Ads: 10% off, so you save ₹2,799 a month.");
   });
-  it("prices Social + SEO with its ad money for both", () => {
-    expect(offerNote(pick(false, true, true), "INR")).toBe("Social + SEO: 10% off, so you save ₹3,499 a month. Start with both and we add ₹1,500 a month to your ads.");
+  it("prices Social + Ads with its ad money for both", () => {
+    expect(offerNote(pick(false, true, true), "INR")).toBe("Social + Ads: 10% off, so you save ₹3,499 a month. Start with both and we add ₹1,500 a month to your ads.");
   });
   it("says all three for the full basket", () => {
     expect(offerNote(pick(true, true, true), "INR")).toBe("All three: 20% off, so you save ₹7,599 a month. Start with all three and we add ₹3,000 a month to your ads.");
@@ -74,11 +74,11 @@ describe("offerNote in dollars", () => {
   it("prices Website + Social with its ad money for both", () => {
     expect(offerNote(pick(true, true, false), "USD")).toBe("Website + Social: 10% off, so you save $21 a month. Start with both and we add $30 a month to your ads.");
   });
-  it("prices Website + SEO without ad money", () => {
-    expect(offerNote(pick(true, false, true), "USD")).toBe("Website + SEO: 10% off, so you save $41 a month.");
+  it("prices Website + Ads without ad money", () => {
+    expect(offerNote(pick(true, false, true), "USD")).toBe("Website + Ads: 10% off, so you save $41 a month.");
   });
-  it("prices Social + SEO with its ad money for both", () => {
-    expect(offerNote(pick(false, true, true), "USD")).toBe("Social + SEO: 10% off, so you save $50 a month. Start with both and we add $30 a month to your ads.");
+  it("prices Social + Ads with its ad money for both", () => {
+    expect(offerNote(pick(false, true, true), "USD")).toBe("Social + Ads: 10% off, so you save $50 a month. Start with both and we add $30 a month to your ads.");
   });
   it("says all three for the full basket", () => {
     expect(offerNote(pick(true, true, true), "USD")).toBe("All three: 20% off, so you save $113 a month. Start with all three and we add $60 a month to your ads.");

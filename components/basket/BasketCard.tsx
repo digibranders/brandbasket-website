@@ -1,6 +1,6 @@
 "use client";
 import type { Icon } from "@phosphor-icons/react";
-import { CalendarCheck, Check, Globe, Lightning, MagnifyingGlass, Megaphone, PiggyBank, TrendUp } from "@phosphor-icons/react/dist/ssr";
+import { CalendarCheck, Check, Globe, InstagramLogo, Lightning, Megaphone, PiggyBank } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import type { CSSProperties, ReactElement } from "react";
 import { BASKET_CARD, type BenefitKind, benefits, headline, nextStamp, oneTimeNote, type Rich, slotLabel } from "@/content/basket-card";
@@ -14,10 +14,10 @@ import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 
-const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: TrendUp, search: MagnifyingGlass };
+const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 const BENEFIT_ICON: Readonly<Record<BenefitKind, Icon>> = { saving: PiggyBank, ads: Megaphone, year: CalendarCheck };
 /** Each stamp lands at its own slight angle, as a hand stamp would. */
-const TILT: Readonly<Record<PlanId, string>> = { website: "-8deg", growth: "6deg", search: "-4deg" };
+const TILT: Readonly<Record<PlanId, string>> = { website: "-8deg", social: "6deg", ads: "-4deg" };
 
 /** Ink variables for a plan's stamp. */
 function inkStyle(id: PlanId): CSSProperties {

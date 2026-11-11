@@ -8,8 +8,12 @@ import type { Currency } from "@/lib/currency";
  * from inside it only for invoices. Dollar prices have no tax and the site never mentions one beside them.
  * Change a price or an offer here and nowhere else; brandbasket-platform holds the same numbers and is changed in the same release.
  */
-/** Every plan, in the order the site lists them. Each can be bought on its own. */
-export const PLAN_IDS = ["website", "growth", "search"] as const;
+/**
+ * Every plan, in the order the site lists them. Each can be bought on its own. The AI-powered plans (owner, 2026-11-06)
+ * replace Social Media and Ads ("growth") and Local SEO + AEO ("search"): Social and Ads are now separate plans and SEO
+ * is no longer sold. The ids go to the platform in ?plan=, so brandbasket-platform must know "social" and "ads" before release.
+ */
+export const PLAN_IDS = ["website", "social", "ads"] as const;
 export type PlanId = (typeof PLAN_IDS)[number];
 
 export interface Plan {
@@ -19,10 +23,9 @@ export interface Plan {
 }
 
 export const PLANS: Readonly<Record<PlanId, Plan>> = {
-  website: { id: "website", name: "Managed Website", short: "Website" },
-  // The id stays "growth" because ?plan=growth is what the platform reads.
-  growth: { id: "growth", name: "Social Media and Ads", short: "Social" },
-  search: { id: "search", name: "Local SEO + AEO", short: "SEO" },
+  website: { id: "website", name: "Website Management", short: "Website" },
+  social: { id: "social", name: "Social Media Management", short: "Social" },
+  ads: { id: "ads", name: "Paid Ads Management", short: "Ads" },
 };
 
 /**
@@ -31,8 +34,8 @@ export const PLANS: Readonly<Record<PlanId, Plan>> = {
  * and the customer pays 11699; owner, 2026-10-26). Every figure here is a whole number.
  */
 const PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, number>>>> = {
-  INR: { website: 2999, growth: 9999, search: 24999 },
-  USD: { website: 65, growth: 150, search: 350 },
+  INR: { website: 2999, social: 9999, ads: 24999 },
+  USD: { website: 65, social: 150, ads: 350 },
 };
 
 /** What one plan costs a month on its own. */
@@ -45,8 +48,8 @@ export function planPrice(id: PlanId, currency: Currency): number {
  * monthly price before the launch offer, and what building a website costs elsewhere. Display only; nothing is billed from them.
  */
 const USUAL_PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, number>>>> = {
-  INR: { website: 4999, growth: 14999, search: 39999 },
-  USD: { website: 99, growth: 225, search: 549 },
+  INR: { website: 4999, social: 14999, ads: 39999 },
+  USD: { website: 99, social: 225, ads: 549 },
 };
 const USUAL_BUILD_PRICES: Readonly<Record<Currency, number>> = { INR: 35000, USD: 1200 };
 
@@ -67,8 +70,8 @@ export const GST_LABEL = `${Math.round(GST_RATE * 100)}%`;
 
 /**
  * What the plans charge beyond their price, in each currency (owner, 2026-10-26 for rupees, 2026-10-27 for dollars):
- * an extra hour of changes, one reel edited, and the client's own Meta ad budget that Social Media and Ads manages each
- * month (ad credit comes on top of it).
+ * an extra hour of changes, one reel edited (Social Media Management), and the client's own Meta ad budget that Paid Ads
+ * Management manages each month (ad credit comes on top of it).
  */
 export interface Extras {
   readonly hour: number;
@@ -89,7 +92,7 @@ export function extrasFor(currency: Currency): Extras {
 export type BasketPick = Readonly<Record<PlanId, boolean>>;
 
 export interface Package {
-  readonly id: "website-growth" | "website-search" | "growth-search" | "everything";
+  readonly id: "website-social" | "website-ads" | "social-ads" | "everything";
   readonly name: string;
   readonly pick: BasketPick;
   /** Whole percent off the combined list price, for as long as every plan in it stays. */
@@ -98,11 +101,13 @@ export interface Package {
   readonly adCredit: Readonly<Record<Currency, number>>;
 }
 
+// Offers kept from the earlier plans, slot for slot (owner, 2026-11-06): the Social Media and Ads slot is now Social, the
+// Local SEO + AEO slot is now Ads.
 export const PACKAGES: readonly Package[] = [
-  { id: "website-growth", name: "Website + Social", pick: { website: true, growth: true, search: false }, percent: 10, adCredit: { INR: 1500, USD: 30 } },
-  { id: "website-search", name: "Website + SEO", pick: { website: true, growth: false, search: true }, percent: 10, adCredit: { INR: 0, USD: 0 } },
-  { id: "growth-search", name: "Social + SEO", pick: { website: false, growth: true, search: true }, percent: 10, adCredit: { INR: 1500, USD: 30 } },
-  { id: "everything", name: "All three", pick: { website: true, growth: true, search: true }, percent: 20, adCredit: { INR: 3000, USD: 60 } },
+  { id: "website-social", name: "Website + Social", pick: { website: true, social: true, ads: false }, percent: 10, adCredit: { INR: 1500, USD: 30 } },
+  { id: "website-ads", name: "Website + Ads", pick: { website: true, social: false, ads: true }, percent: 10, adCredit: { INR: 0, USD: 0 } },
+  { id: "social-ads", name: "Social + Ads", pick: { website: false, social: true, ads: true }, percent: 10, adCredit: { INR: 1500, USD: 30 } },
+  { id: "everything", name: "All three", pick: { website: true, social: true, ads: true }, percent: 20, adCredit: { INR: 3000, USD: 60 } },
 ];
 
 export function basketPlans(pick: BasketPick): Plan[] {
@@ -167,4 +172,23 @@ export function nextPlanToAdd(pick: BasketPick, currency: Currency): NextPlan | 
     if (!best || value > best.value) best = { plan, value };
   }
   return best?.plan ?? null;
+}
+
+/**
+ * Dedicated Expert Monitoring: our team watches, optimises and supports the client's plans (owner, 2026-11-06). It is the
+ * "Done For You" of the homepage: included at no extra cost with all three plans, otherwise a monthly add-on at this price
+ * (rupees with GST inside, dollars with no tax).
+ */
+export const MONITORING = { name: "Dedicated Expert Monitoring" } as const;
+
+const MONITORING_PRICES: Readonly<Record<Currency, number>> = { INR: 6000, USD: 75 };
+
+/** What monitoring costs a month as an add-on. */
+export function monitoringPrice(currency: Currency): number {
+  return MONITORING_PRICES[currency];
+}
+
+/** Whether the basket gets monitoring at no extra cost: every plan is in it. */
+export function monitoringIncluded(pick: BasketPick): boolean {
+  return PLAN_IDS.every((id) => pick[id]);
 }

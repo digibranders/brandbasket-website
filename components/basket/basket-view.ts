@@ -10,15 +10,15 @@ export function basketNames(pick: BasketPick): string {
 /** Background class for each plan's colour mark (tokens --c-site, --c-growth, --c-search). */
 export const PLAN_COLOUR = {
   website: "bg-[var(--c-site)]",
-  growth: "bg-[var(--c-growth)]",
-  search: "bg-[var(--c-search)]",
+  social: "bg-[var(--c-growth)]",
+  ads: "bg-[var(--c-search)]",
 } as const satisfies Readonly<Record<PlanId, string>>;
 
 /** Each plan's ink as a CSS colour, for stamps drawn in the plan's colour (mock: --c). */
 export const PLAN_INK = {
   website: "var(--c-site)",
-  growth: "var(--c-growth)",
-  search: "var(--c-search)",
+  social: "var(--c-growth)",
+  ads: "var(--c-search)",
 } as const satisfies Readonly<Record<PlanId, string>>;
 
 /** The phone dock's accessible name: what the basket holds and what it costs, since the dock shows the count as a mark, not words. */

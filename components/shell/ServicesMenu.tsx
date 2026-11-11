@@ -1,6 +1,6 @@
 "use client";
 
-import { CaretDown, GlobeHemisphereWest, MagnifyingGlass, Megaphone } from "@phosphor-icons/react";
+import { CaretDown, GlobeHemisphereWest, InstagramLogo, Megaphone } from "@phosphor-icons/react";
 import type { Icon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type ReactElement, useEffect, useId, useRef, useState } from "react";
@@ -8,7 +8,7 @@ import { SERVICES_LABEL, SERVICES_NAV } from "@/content/navigation";
 import type { PlanId } from "@/lib/pricing";
 
 /** One plain icon per service, in the ink colour, shared with the phone menu. */
-export const SERVICE_ICONS: Readonly<Record<PlanId, Icon>> = { website: GlobeHemisphereWest, growth: Megaphone, search: MagnifyingGlass };
+export const SERVICE_ICONS: Readonly<Record<PlanId, Icon>> = { website: GlobeHemisphereWest, social: InstagramLogo, ads: Megaphone };
 
 /**
  * The desktop Services menu. It opens on hover and on a press, closes on Escape, on a press outside and when focus leaves,

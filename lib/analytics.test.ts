@@ -9,19 +9,19 @@ describe("trackAttrs", () => {
 
 describe("clickEvent", () => {
   it("reads a main button's plans from the link it sends the visitor to", () => {
-    expect(clickEvent({ track: "cta_click", location: "closing" }, "https://brandbasket.in/contact?plan=website%2Csearch#start")).toEqual({
+    expect(clickEvent({ track: "cta_click", location: "closing" }, "https://brandbasket.in/contact?plan=website%2Cads#start")).toEqual({
       name: "cta_click",
-      properties: { location: "closing", plans: "website,search" },
+      properties: { location: "closing", plans: "website,ads" },
     });
-    expect(clickEvent({ track: "cta_click", location: "nav" }, "https://app.brandbasket.in/login?plan=website,growth")).toEqual({
+    expect(clickEvent({ track: "cta_click", location: "nav" }, "https://app.brandbasket.in/login?plan=website,social")).toEqual({
       name: "cta_click",
-      properties: { location: "nav", plans: "website,growth" },
+      properties: { location: "nav", plans: "website,social" },
     });
   });
 
   it("drops unknown plan ids and keeps the plans in the link", () => {
-    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=growth#start")?.properties).toEqual({ location: "hero", plans: "growth" });
-    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=website,phone-9876543210,search#start")?.properties).toEqual({ location: "hero", plans: "website,search" });
+    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=social#start")?.properties).toEqual({ location: "hero", plans: "social" });
+    expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact?plan=website,phone-9876543210,ads#start")?.properties).toEqual({ location: "hero", plans: "website,ads" });
     expect(clickEvent({ track: "cta_click", location: "hero" }, "/contact#start")?.properties).toEqual({ location: "hero", plans: "none" });
   });
 
@@ -43,13 +43,13 @@ describe("clickEvent", () => {
 
 describe("submitEvent", () => {
   it("names the plans a contact message was about, or none", () => {
-    expect(submitEvent(["website", "growth"])).toEqual({ name: "contact_submit", properties: { plans: "website,growth" } });
+    expect(submitEvent(["website", "social"])).toEqual({ name: "contact_submit", properties: { plans: "website,social" } });
     expect(submitEvent([])).toEqual({ name: "contact_submit", properties: { plans: "none" } });
   });
 });
 
 describe("planList", () => {
   it("keeps the order the sign-up link uses", () => {
-    expect(planList(["search", "website", "growth"])).toBe("website,growth,search");
+    expect(planList(["ads", "website", "social"])).toBe("website,social,ads");
   });
 });

@@ -13,9 +13,9 @@ export interface PlanCopy {
 
 /** Pricing hero rows (mock: .add). Names match `PLANS`. */
 export const PRICING_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
-  website: { name: "Managed Website", summary: "Built free, hosted and kept up to date", switchLabel: "Add Managed Website" },
-  growth: { name: "Social Media and Ads", summary: "Instagram, Facebook, Google profile and Meta ads", switchLabel: "Add Social Media and Ads" },
-  search: { name: "Local SEO + AEO", summary: "Google search and AI answers", switchLabel: "Add Local SEO + AEO" },
+  website: { name: "Website Management", summary: "Built free, hosted and kept up to date", switchLabel: "Add Website Management" },
+  social: { name: "Social Media Management", summary: "AI posts, captions and scheduling on up to 4 platforms", switchLabel: "Add Social Media Management" },
+  ads: { name: "Paid Ads Management", summary: "Meta ads with AI creatives, set up and optimised", switchLabel: "Add Paid Ads Management" },
 };
 
 /** The smallest offer on two plans, and the offer on all three, as printed: "20%" and "30%". */

@@ -1,0 +1,84 @@
+/* components/platform-home/platform-home.css
+   The homepage's motion and the hero picture's layout. Written as CSS because the timed entrance, the absolute
+   placement around the browser and the keyframes are easier to read here than as utilities. */
+
+/* ---------- hero picture ---------- */
+.presence-inner { position: relative; padding: 64px 18px 92px 30px; }
+.presence-browser {
+  position: relative; overflow: hidden; border-radius: 20px; background: var(--surface);
+  box-shadow: var(--shadow-float), 0 0 0 1px var(--line-2);
+}
+.presence-bar { display: flex; align-items: center; gap: 6px; height: 34px; padding: 0 14px; border-bottom: 1px solid var(--line); }
+.presence-bar i { width: 9px; height: 9px; border-radius: 99px; background: var(--line); }
+.presence-bar span { margin-left: 10px; padding: 2px 12px; border-radius: 99px; background: var(--bg); font-family: var(--font-red-hat-mono), ui-monospace, monospace; font-size: 11.5px; color: var(--ink-2); }
+.presence-shot { position: relative; }
+.presence-banner {
+  position: absolute; inset: 0 0 auto; z-index: 1; padding: 7px 10px; text-align: center;
+  background: var(--ink); color: var(--action-ink); font-size: clamp(11px, 1vw, 13px); font-weight: 600; letter-spacing: 0.01em;
+  animation: presence-drop 600ms var(--ease) var(--at) both;
+}
+
+.presence-ask {
+  position: absolute; top: 0; left: 0; z-index: 3; display: flex; align-items: center; gap: 12px;
+  width: min(86%, 440px); padding: 9px 9px 9px 14px; border-radius: 999px;
+  background: var(--surface); box-shadow: 0 24px 44px -26px rgba(40, 28, 14, 0.55), 0 0 0 1px var(--line-2);
+  font-size: clamp(14px, 1.15vw, 15.5px); font-weight: 500;
+}
+.presence-type { flex: 1; min-width: 0; white-space: nowrap; overflow: hidden; animation: presence-type 1300ms steps(38, end) 500ms both; }
+.presence-send {
+  display: grid; place-items: center; flex: none; width: 34px; height: 34px; border-radius: 999px;
+  background: var(--action); color: var(--action-ink); animation: presence-press 420ms var(--ease) 1850ms both;
+}
+
+.presence-card {
+  position: absolute; z-index: 2; display: grid; grid-template-columns: 38px 1fr auto; align-items: center; gap: 11px;
+  width: clamp(220px, 21vw, 262px); padding: 10px 12px 10px 10px; border-radius: 18px;
+  background: color-mix(in srgb, var(--surface) 92%, transparent);
+  -webkit-backdrop-filter: blur(14px); backdrop-filter: blur(14px);
+  box-shadow: 0 26px 46px -28px rgba(40, 28, 14, 0.6), 0 0 0 1px var(--line-2);
+  animation: presence-in 700ms var(--ease) var(--at) both;
+}
+.presence-card b { font-size: 14px; font-weight: 600; line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.presence-card small { font-size: 12.5px; color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.presence-icon { display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px; color: var(--tone); background: color-mix(in srgb, var(--tone) 12%, var(--surface)); }
+.presence-ok {
+  display: grid; place-items: center; width: 22px; height: 22px; border-radius: 99px; color: var(--surface); background: var(--sage);
+  animation: presence-pop 420ms var(--ease) calc(var(--at) + 450ms) both;
+}
+/* Placed clear of the offer banner along the top of the screenshot, which is the change the request made. */
+.presence-card-social { top: 33%; right: 0; }
+.presence-card-website { top: 52%; left: 0; }
+.presence-card-ads { bottom: 40px; left: 9%; }
+
+.presence-review {
+  position: absolute; right: 18px; bottom: 0; z-index: 3; display: flex; align-items: center; gap: 14px;
+  padding: 7px 7px 7px 18px; border-radius: 999px; background: var(--ink); color: var(--action-ink);
+  font-size: 13.5px; font-weight: 500; box-shadow: var(--shadow-bar);
+  animation: presence-in 700ms var(--ease) var(--at) both;
+}
+.presence-approve { padding: 7px 14px; border-radius: 999px; background: var(--rattan); color: var(--ink); font-weight: 600; }
+
+/* Narrow screens: the updates line up under the browser instead of floating round it. */
+@media (max-width: 680px) {
+  .presence-inner { display: grid; gap: 10px; padding: 0; }
+  .presence-ask { position: relative; width: 100%; order: -1; }
+  .presence-card { position: relative; inset: auto; width: 100%; }
+  .presence-review { position: relative; right: auto; justify-content: space-between; }
+}
+
+@keyframes presence-type { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0 0 0 0); } }
+@keyframes presence-press { 0% { transform: scale(1); } 45% { transform: scale(0.86); } 100% { transform: scale(1); } }
+@keyframes presence-in { from { opacity: 0; transform: translate3d(0, 16px, 0) scale(0.96); } to { opacity: 1; transform: none; } }
+@keyframes presence-drop { from { opacity: 0; transform: translate3d(0, -100%, 0); } to { opacity: 1; transform: none; } }
+@keyframes presence-pop { from { opacity: 0; transform: scale(0.4); } to { opacity: 1; transform: none; } }
+
+/* ---------- services showcase ---------- */
+.sp-autoscroll { animation: sp-scroll 26s var(--ease) infinite alternate; }
+@keyframes sp-scroll { 0%, 10% { transform: translateY(0); } 90%, 100% { transform: translateY(calc(-100% + clamp(240px, 30vw, 360px))); } }
+.sp-chart-line { stroke-dasharray: 420; animation: sp-draw 1600ms var(--ease) 300ms both; }
+@keyframes sp-draw { from { stroke-dashoffset: 420; } to { stroke-dashoffset: 0; } }
+
+/* Reduced motion: every picture shows its finished state and nothing moves. */
+@media (prefers-reduced-motion: reduce) {
+  .presence-inner *, .sp-autoscroll, .sp-chart-line { animation: none !important; }
+}

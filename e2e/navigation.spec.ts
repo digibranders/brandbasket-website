@@ -51,14 +51,14 @@ test.describe("Services menu", () => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Site", exact: true });
     const toggle = nav.getByRole("button", { name: "Services", exact: true });
-    const names = ["Managed Website", "Social Media and Ads", "Local SEO + AEO"];
+    const names = ["Website Management", "Social Media Management", "Paid Ads Management"];
 
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
     for (const name of names) await expect(nav.getByRole("link", { name, exact: true })).toBeHidden();
     await toggle.click();
     await expect(toggle).toHaveAttribute("aria-expanded", "true");
     for (const name of names) await expect(nav.getByRole("link", { name, exact: true })).toBeVisible();
-    await expect(nav.getByRole("link", { name: "Social Media and Ads", exact: true })).toHaveAttribute("href", "/services/social-media-and-ads");
+    await expect(nav.getByRole("link", { name: "Social Media Management", exact: true })).toHaveAttribute("href", "/services/social-media-management");
 
     await page.keyboard.press("Escape");
     await expect(toggle).toHaveAttribute("aria-expanded", "false");
@@ -69,8 +69,8 @@ test.describe("Services menu", () => {
     await page.goto("/");
     const nav = page.getByRole("navigation", { name: "Site", exact: true });
     await nav.getByRole("button", { name: "Services", exact: true }).hover();
-    await nav.getByRole("link", { name: "Local SEO + AEO", exact: true }).click();
-    await expect(page).toHaveURL(/\/services\/local-seo-aeo$/);
+    await nav.getByRole("link", { name: "Paid Ads Management", exact: true }).click();
+    await expect(page).toHaveURL(/\/services\/paid-ads-management$/);
   });
 });
 
@@ -78,7 +78,7 @@ test("the phone menu lists the three service pages under Services", async ({ pag
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
   await page.getByRole("button", { name: "Open menu" }).click();
-  const link = page.getByRole("link", { name: "Managed Website", exact: true });
+  const link = page.getByRole("link", { name: "Website Management", exact: true });
   await expect(link).toBeHidden();
   await page.getByRole("button", { name: "Services", exact: true }).click();
   await expect(link).toBeVisible();

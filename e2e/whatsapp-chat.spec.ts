@@ -1,14 +1,15 @@
 import AxeBuilder from "@axe-core/playwright";
 import { expect, test } from "@playwright/test";
 import { PRIMARY_CTA } from "@/content/navigation";
+import { PLATFORM_HERO } from "@/content/platform-home";
 import { businessDetails } from "@/lib/site-config";
 
 
-test("hero keeps its pricing CTA and navbar has one Pricing link", async ({ page }) => {
+test("hero keeps its two actions and navbar has one Pricing link", async ({ page }) => {
   await page.goto("/");
   const hero = page.locator("#hero");
-  await expect(hero.getByRole("button", { name: PRIMARY_CTA.label })).toBeVisible();
-  await expect(hero.getByRole("link", { name: "View pricing" })).toHaveAttribute("href", "/pricing");
+  await expect(hero.getByRole("button", { name: PLATFORM_HERO.primary.label })).toBeVisible();
+  await expect(hero.getByRole("link", { name: PLATFORM_HERO.secondary.label })).toHaveAttribute("href", PLATFORM_HERO.secondary.href);
   await expect(hero.locator('a[href*="wa.me"]')).toHaveCount(0);
   const nav = page.getByRole("navigation", { name: "Site", exact: true });
   if ((page.viewportSize()?.width ?? 0) < 1000) await page.getByRole("button", { name: "Open menu" }).click();

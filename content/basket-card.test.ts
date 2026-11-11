@@ -4,7 +4,7 @@ import { CURRENCIES } from "@/lib/currency";
 import type { BasketPick } from "@/lib/pricing";
 import { BASKET_CARD, benefits, headline, nextStamp, oneTimeNote, type Rich } from "./basket-card";
 
-const pick = (website: boolean, growth: boolean, search: boolean): BasketPick => ({ website, growth, search });
+const pick = (website: boolean, social: boolean, ads: boolean): BasketPick => ({ website, social, ads });
 const ALL_PICKS: readonly BasketPick[] = [pick(true, false, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(true, true, true)];
 const text = (rich: Rich | null): string | null => (rich ? `${rich.before}${rich.strong}${rich.after}` : null);
 
@@ -32,7 +32,7 @@ describe("Basket Card copy", () => {
 
 describe("headline", () => {
   it("asks a single plan to add one more, with the saving that brings (rupees)", () => {
-    // Website + Social saves 1,299 a month and Website + SEO saves 2,799 (docs/plans/25): the plan worth adding most is named.
+    // Website + Social saves 1,299 a month and Website + Ads saves 2,799 (docs/plans/25): the plan worth adding most is named.
     expect(headline(pick(true, false, false), "INR")).toBe("Add one more plan to get 10% off, save ₹1,299/month.");
     expect(headline(pick(false, false, true), "INR")).toBe("Add one more plan to get 10% off, save ₹2,799/month.");
   });
@@ -100,13 +100,13 @@ describe("nextStamp", () => {
   it("names the next plan and the full basket it leads to, in the owner's words", () => {
     // All three save 7,599 a month at 20% (docs/plans/25); in dollars 113.
     expect(nextStamp(pick(true, false, false), "INR")).toEqual({
-      id: "growth",
-      name: "Social Media and Ads",
+      id: "social",
+      name: "Social Media Management",
       body: "Add two more plans to get 20% off, save ₹7,599/month.",
     });
     expect(nextStamp(pick(true, false, false), "USD")).toEqual({
-      id: "growth",
-      name: "Social Media and Ads",
+      id: "social",
+      name: "Social Media Management",
       body: "Add two more plans to get 20% off, save $113/month.",
     });
     expect(nextStamp(pick(true, true, false), "INR")?.body).toBe("Add one more plan to get 20% off, save ₹7,599/month.");

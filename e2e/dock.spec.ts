@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-// The phone dock (owner, 2026-10-26): hidden over the hero and the dark section, there everywhere else, including over
+// The phone dock (owner, 2026-10-26): hidden over the hero and the dark sections, there everywhere else, including over
 // the Basket Card and the closing band. From 1000px up the Woven wall does the job, so these run at phone width.
 test.use({ viewport: { width: 390, height: 844 } });
 
@@ -10,12 +10,23 @@ async function scrollTo(page: import("@playwright/test").Page, selector: string,
   await page.locator(selector).first().evaluate((el, where) => el.scrollIntoView({ block: where as ScrollLogicalPosition }), block);
 }
 
-test("the phone dock hides over the hero and the dark section only", async ({ page }) => {
+test("on the homepage it hides over the hero only and shows down to the closing call", async ({ page }) => {
   await page.goto("/");
   await expect.poll(() => dockHidden(page)).toBe(true);
 
-  await scrollTo(page, "#basket-card", "center");
+  await scrollTo(page, "#services", "center");
   await expect.poll(() => dockHidden(page)).toBe(false);
+
+  await scrollTo(page, "#faq", "center");
+  await expect.poll(() => dockHidden(page)).toBe(false);
+
+  await scrollTo(page, "#h-final", "center");
+  await expect.poll(() => dockHidden(page)).toBe(false);
+});
+
+test("on the website page it hides over the hero and the dark care section, and shows over the closing band", async ({ page }) => {
+  await page.goto("/services/managed-website");
+  await expect.poll(() => dockHidden(page)).toBe(true);
 
   await scrollTo(page, "#responsibility", "center");
   await expect.poll(() => dockHidden(page)).toBe(true);

@@ -36,9 +36,9 @@ import { packageSaving, PACKAGES, packageTotal, PLANS, planPrice, planUsualPrice
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/jsonld";
 import { ServiceStartButton } from "./ServiceStartButton";
 
-const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, growth: Megaphone, search: MagnifyingGlass };
+const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 /** The plan colours already used by the pricing cards and the basket. */
-const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)", growth: "var(--c-growth)", search: "var(--c-search)" };
+const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)", social: "var(--c-growth)", ads: "var(--c-search)" };
 const GROUP_ICON: Readonly<Record<ServiceIconKey, Icon>> = {
   FileText,
   Phone,
@@ -136,7 +136,8 @@ function Who({ page }: { readonly page: ServicePageContent }): ReactElement {
   );
 }
 
-function Group({ group, id }: { readonly group: ServiceGroup; readonly id: PlanId }): ReactElement {
+/** One "what we do" card. Exported for the website page, which shows the list of pages on its own. */
+export function Group({ group, id }: { readonly group: ServiceGroup; readonly id: PlanId }): ReactElement {
   const GroupIcon = GROUP_ICON[group.icon];
   return (
     <article className={`grid content-start gap-4 rounded-[24px] bg-surface p-6 min-[760px]:[&:last-child:nth-child(odd)]:col-span-2 ${RING}`} style={colourOf(id)}>
@@ -200,7 +201,8 @@ function How({ page }: { readonly page: ServicePageContent }): ReactElement {
   );
 }
 
-function Limits({ page }: { readonly page: ServicePageContent }): ReactElement {
+/** "What is not included". Exported for the website page. */
+export function Limits({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-limits" tight>
       <Reveal>

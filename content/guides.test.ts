@@ -53,6 +53,6 @@ describe("guide links", () => {
   });
 
   it("gives the ads post an inbound link from a service page", () => {
-    expect(GUIDE_LINKS.growth.some((l) => l.href === "/blog/facebook-instagram-ads-budget-local-business")).toBe(true);
+    expect(GUIDE_LINKS.ads.some((l) => l.href === "/blog/facebook-instagram-ads-budget-local-business")).toBe(true);
   });
 });

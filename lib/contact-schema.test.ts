@@ -14,7 +14,7 @@ describe("contactSchema", () => {
   it("requires an email", () => expect(contactSchema.safeParse({ ...valid, email: "" }).success).toBe(false));
   it("no longer takes a basket: a plans field from an old page is dropped, not kept", () => {
     expect(Object.keys(contactSchema.shape)).not.toContain("plans");
-    const parsed = contactSchema.safeParse({ ...valid, plans: ["growth"] });
+    const parsed = contactSchema.safeParse({ ...valid, plans: ["social"] });
     expect(parsed.success).toBe(true);
     expect(parsed.success && "plans" in parsed.data).toBe(false);
   });
@@ -49,13 +49,13 @@ describe("contactSchema", () => {
 });
 
 describe("parsePlanParam", () => {
-  it("reads the signupHref format", () => expect(parsePlanParam("website,growth")).toEqual(["website", "growth"]));
+  it("reads the signupHref format", () => expect(parsePlanParam("website,social")).toEqual(["website", "social"]));
   it("keeps a basket without the website", () => {
-    expect(parsePlanParam("search")).toEqual(["search"]);
-    expect(parsePlanParam("search,website")).toEqual(["website", "search"]);
+    expect(parsePlanParam("ads")).toEqual(["ads"]);
+    expect(parsePlanParam("ads,website")).toEqual(["website", "ads"]);
     expect(parsePlanParam("nope")).toEqual([]);
   });
-  it("drops unknown and repeated ids", () => expect(parsePlanParam("website,seo,growth,growth")).toEqual(["website", "growth"]));
+  it("drops unknown and repeated ids", () => expect(parsePlanParam("website,seo,social,social")).toEqual(["website", "social"]));
   it("returns an empty basket for a missing or junk value", () => {
     expect(parsePlanParam(null)).toEqual([]);
     expect(parsePlanParam("seo")).toEqual([]);

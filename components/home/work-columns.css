@@ -56,9 +56,9 @@
 @media (min-width: 1000px) {
   .wc-row { display: flex; height: clamp(520px, 41vw, 620px); gap: 12px; }
   .wc-item { flex: 1 1 0; min-width: 0; transition: flex-grow 700ms var(--ease); }
-  .wc-item[data-open="true"] { flex-grow: 3.2; }
+  .wc-item[data-open="true"] { flex-grow: 2.4; }
   .wc-screen-desk { left: 22px; right: 22px; top: 22px; bottom: 132px; }
-  .wc-screen-phone { left: 50%; top: 22px; translate: -50% 0; height: calc(100cqh - 132px - 22px); width: min(calc(100cqw - 40px), calc((100cqh - 154px) * 0.4615)); }
+  .wc-screen-phone { left: 50%; top: 22px; translate: -50% 0; height: calc(100cqh - 132px - 22px); width: min(calc(100cqw - 32px), calc((100cqh - 154px) * 0.5)); }
   .wc-text { left: 22px; right: 22px; bottom: 22px; }
   .wc-text b { font-size: clamp(34px, 3.6vw, 56px); }
   .wc-item:not([data-open="true"]) .wc-text b { font-size: clamp(22px, 2vw, 30px); letter-spacing: -0.035em; }

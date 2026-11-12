@@ -3,10 +3,11 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Faq } from "@/components/ui/Faq";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { PLATFORM_FAQ, PLATFORM_FAQ_HEADING } from "@/content/platform-home";
+import { PLATFORM_FAQ_HEADING, platformFaqFor } from "@/content/platform-home";
+import type { Currency } from "@/lib/currency";
 
 /** Homepage FAQ. Faq renders the FAQPage JSON-LD. The head sticks below the fixed nav on wide screens. */
-export function PlatformFaq(): ReactElement {
+export function PlatformFaq({ currency }: { readonly currency: Currency }): ReactElement {
   return (
     <Section id="faq" labelledBy="h-faq" className="scroll-mt-24">
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 min-[980px]:grid-cols-[0.8fr_1.2fr] min-[980px]:gap-16">
@@ -16,7 +17,7 @@ export function PlatformFaq(): ReactElement {
           </Reveal>
         </div>
         <Reveal className="min-w-0">
-          <Faq items={PLATFORM_FAQ} id="home-faq" />
+          <Faq items={platformFaqFor(currency)} id="home-faq" />
         </Reveal>
       </div>
     </Section>

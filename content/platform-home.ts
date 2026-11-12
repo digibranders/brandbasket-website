@@ -4,9 +4,12 @@
 // The words inside the example pictures (the service previews, the review list) are sample UI text and go
 // to the owner before release. The main buttons open the basket, like every main button on the site, so they carry a
 // label and no address.
+import { type Currency, formatMoney } from "@/lib/currency";
+import { MONITORING, monitoringPrice, PLANS, type PlanId, planPrice } from "@/lib/pricing";
+import { homeFaqFor } from "./home";
+import { pricingFaq } from "./pricing";
 import { SERVICE_PAGES } from "./services";
 import type { FaqItem } from "./types";
-import type { PlanId } from "@/lib/pricing";
 
 /** Where "talk to a person" buttons go. There is no demo booking flow yet, so Book a Demo opens the contact page too. */
 const CONTACT_HREF = "/contact";
@@ -131,13 +134,34 @@ export const HOW = {
 
 export const PLATFORM_FAQ_HEADING = { lead: "Frequently Asked", accent: "Questions" } as const;
 
-export const PLATFORM_FAQ: readonly FaqItem[] = [
-  { q: "What is Brandbasket?", a: "An AI-powered platform that helps businesses manage their website, social media and paid advertising in one place." },
-  { q: "Can I manage everything myself?", a: "Yes. The platform gives you AI-powered tools to run your digital presence without an agency." },
-  { q: "Do you offer managed services?", a: "Yes. Our team can manage your digital presence for you. It's included at no extra cost with all three services, and available as a paid add-on for individual services." },
-  { q: "Can I use just one service?", a: "Yes. Choose one service or combine them, whatever suits your business." },
-  { q: "Do I need technical or marketing expertise?", a: "No. The platform is built for businesses without dedicated technical or marketing teams." },
-];
+/** The approved answer to a question the homepage or pricing FAQ already words, so the pages never give different answers. */
+function approved(items: readonly FaqItem[], question: string): FaqItem {
+  const item = items.find((candidate) => candidate.q === question);
+  if (item === undefined) throw new RangeError(`No approved FAQ answer for "${question}"`);
+  return item;
+}
+
+/** The homepage FAQ: ten questions at most, the ones a buyer asks before paying. The last six reuse the approved answers; the price answer is new copy for the owner. */
+export function platformFaqFor(currency: Currency): readonly FaqItem[] {
+  const home = homeFaqFor(currency);
+  const pricing = pricingFaq(currency);
+  const each = formatMoney(planPrice("website", currency), currency);
+  return [
+    { q: "What is Brandbasket?", a: "An AI-powered platform that helps businesses manage their website, social media and paid advertising in one place." },
+    { q: "Can I manage everything myself?", a: "Yes. The platform gives you AI-powered tools to run your digital presence without an agency." },
+    { q: "Do you offer managed services?", a: "Yes. Our team can manage your digital presence for you. It's included at no extra cost with all three services, and available as a paid add-on for individual services." },
+    { q: "Can I use just one service?", a: "Yes. Choose one service or combine them, whatever suits your business." },
+    {
+      q: "How much does it cost?",
+      a: `${PLANS.website.name}, ${PLANS.social.name} and ${PLANS.ads.name} are ${each} a month each${currency === "INR" ? ", GST included" : ""}, billed monthly. Take all three and ${MONITORING.name} is included. On its own it is ${formatMoney(monitoringPrice(currency), currency)} a month.`,
+    },
+    approved(home, "Is the website really free?"),
+    approved(home, "How long does it take to build my website?"),
+    approved(pricing, "Is ad spend included?"),
+    approved(home, "Who owns the domain and the content?"),
+    approved(home, "Can I cancel?"),
+  ];
+}
 
 export const FINAL_CTA = {
   heading: "Your Digital Presence",

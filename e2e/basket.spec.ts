@@ -2,7 +2,7 @@
 import { expect, test } from "@playwright/test";
 import { BASKET_COPY, PRICING_PLANS } from "@/content/basket";
 import { formatMoney } from "@/lib/currency";
-import { type BasketPick, monthlyTotal, PLAN_IDS } from "@/lib/pricing";
+import { type BasketPick, isPlanPaused, monthlyTotal, PAUSED_PLAN_IDS, PLAN_IDS, PLANS } from "@/lib/pricing";
 import { seedBasket } from "./seed-basket";
 
 test("the basket renders cast shadows as well as its main scene", async ({ page }) => {
@@ -68,7 +68,10 @@ const PICKS: readonly BasketPick[] = [
 
 const pickTotal = (pick: BasketPick): string => formatMoney(monthlyTotal(pick, "INR", false), "INR");
 
-for (const pick of PICKS) {
+/** Plans a visitor can put in the basket: a paused plan shows "Coming soon" instead (PAUSED_PLAN_IDS). */
+const SOLD_PLAN_IDS = PLAN_IDS.filter((id) => !isPlanPaused(id));
+
+for (const pick of PICKS.filter((candidate) => PAUSED_PLAN_IDS.every((id) => !candidate[id]))) {
   const total = pickTotal(pick);
   test(`pricing total with ${PLAN_IDS.filter((id) => pick[id]).join(" + ")} is ${total}`, async ({ page }) => {
     await page.goto("/pricing");
@@ -84,12 +87,11 @@ test("the expected totals match the owner's figures", () => {
   expect(PICKS.map(pickTotal)).toEqual(["₹2,999", "₹5,998", "₹5,998", "₹8,997"]);
 });
 
-test("Social and Ads without the website are the two plans added up", async ({ page }) => {
+test("a paused plan shows Coming soon in place of its switch, so it cannot be added", async ({ page }) => {
   await page.goto("/pricing");
   const hero = page.locator("section[aria-labelledby='h-pricing']");
-  await hero.getByRole("switch", { name: PRICING_PLANS.social.switchLabel }).click();
-  await hero.getByRole("switch", { name: PRICING_PLANS.ads.switchLabel }).click();
-  await expect(hero.locator("[data-basket-total]").getByText("₹5,998", { exact: true })).toBeVisible();
+  for (const id of PAUSED_PLAN_IDS) await expect(hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel })).toHaveCount(0);
+  await expect(hero.getByText(BASKET_COPY.comingSoon, { exact: true })).toHaveCount(PAUSED_PLAN_IDS.length);
 });
 
 test("a new visitor's basket starts empty, and the last plan can be taken out again", async ({ page }) => {
@@ -97,7 +99,7 @@ test("a new visitor's basket starts empty, and the last plan can be taken out ag
   const hero = page.locator("section[aria-labelledby='h-pricing']");
   const website = hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel });
   const empty = formatMoney(0, "INR");
-  for (const id of PLAN_IDS) await expect(hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel })).toHaveAttribute("aria-checked", "false");
+  for (const id of SOLD_PLAN_IDS) await expect(hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel })).toHaveAttribute("aria-checked", "false");
   await expect(hero.locator("[data-basket-total]").getByText(empty, { exact: true })).toBeVisible();
   await website.click();
   await expect(hero.locator("[data-basket-total]").getByText(pickTotal(PICKS[0]), { exact: true })).toBeVisible();
@@ -124,9 +126,8 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await expect(card.getByText("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is ₹6,000 a month.", { exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: "Remove Social Media Management" })).toHaveAttribute("aria-pressed", "true");
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Website Management", "Social Media Management"]);
-  await card.getByRole("button", { name: "Add Paid Ads Management", exact: true }).click();
-  await expect(card.getByText("Dedicated Expert Monitoring is included with all three plans.", { exact: true })).toBeVisible();
-  await expect(card.getByText(formatMoney(monthlyTotal({ website: true, social: true, ads: true }, "INR", false), "INR"), { exact: false }).first()).toBeVisible();
+  // Paid Ads is paused: its slot says Coming soon and cannot be pressed.
+  await expect(card.getByRole("button", { name: `${PLANS.ads.name}, ${BASKET_COPY.comingSoon.toLowerCase()}` })).toBeDisabled();
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {

@@ -2,7 +2,6 @@
 import type { ReactElement, ReactNode } from "react";
 import { BasketDock } from "@/components/basket/BasketDock";
 import { BasketPopover } from "@/components/basket/BasketPopover";
-import { BasketWall } from "@/components/basket/BasketWall";
 import { Closing } from "@/components/shell/Closing";
 import { ClosingGate } from "@/components/shell/ClosingGate";
 import { Footer } from "@/components/shell/Footer";
@@ -21,7 +20,6 @@ export default function SiteLayout({ children }: { readonly children: ReactNode 
       <Footer />
       <WhatsAppChat />
       <BasketDock />
-      <BasketWall />
       <BasketPopover />
     </>
   );

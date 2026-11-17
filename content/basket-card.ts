@@ -1,7 +1,7 @@
 // content/basket-card.ts
 // Copy for the Basket Card (docs/design/mock.html: .ox-card, .bsum; owner's pick, 2026-10-21). Money comes from lib/pricing.ts, in the page's currency. No package discounts or ad money (owner, 2026-11-11).
 import type { Currency } from "@/lib/currency";
-import { type BasketPick, monitoringIncluded, PLANS, type PlanId } from "@/lib/pricing";
+import { type BasketPick, MONITORING, monitoringIncluded, PLANS, type PlanId } from "@/lib/pricing";
 import { monitoringNote } from "./pricing";
 
 /** A line with one bold run, rendered as before<b>strong</b>after. */
@@ -30,6 +30,11 @@ export function slotLabel(id: PlanId, added: boolean): string {
 }
 
 /** The summary's headline: the one offer, Dedicated Expert Monitoring free with all three plans. */
-export function headline(pick: BasketPick, currency: Currency): string {
-  return monitoringNote(monitoringIncluded(pick), currency);
+export function headline(pick: BasketPick, currency: Currency, monitoring: boolean): string {
+  return monitoringNote(monitoringIncluded(pick), monitoring, currency);
+}
+
+/** Accessible name of the monitoring slot. */
+export function monitoringSlotLabel(added: boolean): string {
+  return added ? `Remove ${MONITORING.name}` : `Add ${MONITORING.name}`;
 }

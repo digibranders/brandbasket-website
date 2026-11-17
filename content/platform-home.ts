@@ -127,7 +127,6 @@ export const HOW = {
     { title: "Create, publish and improve", body: "Manage your activities with AI, track performance and keep getting better." },
   ] satisfies readonly HowStep[],
   /** Step 1's chips add plans to the basket; step 2 links to the two ways; step 3 opens the basket. New words for the owner. */
-  pickLabel: "Services in your basket",
   waysLink: "Compare both ways",
   start: "Get Started",
 } as const;

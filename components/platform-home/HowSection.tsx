@@ -5,7 +5,7 @@ import { BasketCta } from "@/components/basket/BasketCta";
 import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { HOW, MODES } from "@/content/platform-home";
-import { ServicePicker } from "./ServicePicker";
+import { ServiceTiles } from "./ServiceTiles";
 
 interface StepLook {
   readonly icon: Icon;
@@ -35,9 +35,9 @@ const VISUALS: readonly ReactNode[] = [
   </ol>,
 ];
 
-/** What each step lets the visitor do, in the order of HOW.steps: pick plans, read the two ways, start. */
+/** The foot of each step, in the order of HOW.steps: the three services (a picture), then the two links: read the two ways, start. */
 const ACTIONS: readonly ReactNode[] = [
-  <ServicePicker key="pick" />,
+  <ServiceTiles key="pick" />,
   <a key="ways" href="#ways" className="group inline-flex items-center gap-1.5 text-[15px] font-semibold text-ink underline decoration-ink decoration-2 underline-offset-[6px]">
     {HOW.waysLink}
     <ArrowDown aria-hidden="true" weight="bold" className="size-4 transition-transform duration-300 ease-[var(--ease)] group-hover:translate-y-[3px]" />
@@ -47,8 +47,8 @@ const ACTIONS: readonly ReactNode[] = [
 
 /**
  * "Up and Running in Three Steps.": a staircase. Three blocks rise left to right, pale, caramel, ink, and the heading
- * sits in the space above the low steps. The blocks are also the way in: step 1 adds plans to the basket, step 2 jumps
- * to "Do It Yourself / Done For You", step 3 opens the basket with what was picked. On a phone they stack, equal height.
+ * sits in the space above the low steps. Only the two calls to action can be clicked: step 2 jumps to "Do It Yourself /
+ * Done For You" and step 3 opens the basket. Step 1 shows the three services as a picture. On a phone they stack, equal height.
  */
 export function HowSection(): ReactElement {
   return (

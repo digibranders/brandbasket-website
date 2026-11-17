@@ -4,6 +4,7 @@ import { BASKET_COPY } from "@/content/basket";
 import { BASKET_CARD } from "@/content/basket-card";
 import { CONTACT_ERRORS, CONTACT_PAGE, CONTACT_FORM_COPY, CONTACT_LABELS, CONTACT_PLACEHOLDERS } from "@/content/contact";
 import { PRIMARY_CTA } from "@/content/navigation";
+import { seedBasket } from "./seed-basket";
 import { FINAL_CTA, MODES, PLATFORM_HERO } from "@/content/platform-home";
 
 /** Mocks the token and contact endpoints; resolves with the JSON body the form posted. */
@@ -119,6 +120,7 @@ const MAIN_BUTTONS: readonly { readonly path: string; readonly labels: readonly 
 
 for (const { path, labels } of MAIN_BUTTONS) {
   test(`every main button on ${path} opens the basket, and the basket leads to the app's sign-in`, async ({ page }) => {
+    await seedBasket(page, ["website"]);
     await page.goto(path);
     const name = new RegExp(`^(${labels.join("|")})$`);
     await expect(page.locator("main").getByRole("link", { name })).toHaveCount(0);
@@ -137,6 +139,7 @@ for (const { path, labels } of MAIN_BUTTONS) {
 }
 
 test("the Basket Card's checkout button opens the basket, and the basket leads to the app's sign-in", async ({ page }) => {
+  await seedBasket(page, ["website"]);
   await page.goto("/pricing");
   await page.locator("#basket-card").getByRole("button", { name: new RegExp(`^(${BASKET_CARD.checkoutCta}|${BASKET_CARD.checkoutCtaShort})$`) }).click();
   const basket = page.getByRole("dialog", { name: BASKET_COPY.dockLabel });

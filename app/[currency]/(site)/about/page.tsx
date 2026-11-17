@@ -1,6 +1,7 @@
 import type { Icon } from "@phosphor-icons/react";
-import { Buildings, Eye, Globe, ListChecks, MapPin, Megaphone, Package, Rocket, ShareNetwork, Stack, Storefront, Target, Wrench } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, Buildings, Eye, Globe, ListChecks, Megaphone, Package, Rocket, ShareNetwork, Stack, Storefront, Target, Wrench } from "@phosphor-icons/react/dist/ssr";
 import type { Metadata } from "next";
+import Link from "next/link";
 import type { CSSProperties, ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
 import "@/components/about/about.css";
@@ -8,15 +9,16 @@ import { Reveal } from "@/components/motion/Reveal";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { ABOUT, type AboutIconKey, type AboutItem, type AboutTone } from "@/content/about";
+import { servicePageRefFor } from "@/content/services";
 import { aboutPageJsonLd, breadcrumbJsonLd } from "@/lib/seo/jsonld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { ROUTES } from "@/lib/seo/routes";
 
 export const metadata: Metadata = pageMetadata(ROUTES.about);
 
-const ICON: Readonly<Record<AboutIconKey, Icon>> = { Globe, Wrench, ShareNetwork, Megaphone, MapPin, Storefront, Buildings, Rocket, Package, Stack, ListChecks };
+const ICON: Readonly<Record<AboutIconKey, Icon>> = { Globe, Wrench, ShareNetwork, Megaphone, Storefront, Buildings, Rocket, Package, Stack, ListChecks };
 /** The plan colours the pricing cards and the basket already use. */
-const TONE: Readonly<Record<AboutTone, string>> = { site: "var(--c-site)", growth: "var(--c-growth)", search: "var(--c-search)" };
+const TONE: Readonly<Record<AboutTone, string>> = { site: "var(--c-site)", growth: "var(--c-growth)" };
 const RING = "shadow-[0_0_0_1px_rgba(21,22,26,0.06),0_40px_70px_-52px_rgba(40,28,14,0.4)]";
 const PANEL = "rounded-[32px] px-[clamp(22px,4vw,48px)] py-[clamp(28px,4vw,48px)]";
 
@@ -59,14 +61,14 @@ function Who(): ReactElement {
 }
 
 /**
- * The five services as tags hung on a rod, the way the Brandbasket covers show them. Each tag wears its plan's colour, so the page
+ * The three services as tags hung on a rod, the way the Brandbasket covers show them. Each tag wears its plan's colour, so the page
  * matches the pricing cards and the basket. From 1100px they hang in a row from a rod across the top and swing when hovered.
  * Below that the rod runs down the left and each service hangs off it as a name-tag with its text underneath.
  */
 function What(): ReactElement {
   const { what } = ABOUT;
-  const DROP = [0, 26, 8, 34, 14];
-  const TILT = [-1.6, 1.2, -0.8, 1.6, -1.2];
+  const DROP = [0, 26, 10];
+  const TILT = [-1.6, 1.2, -0.8];
   return (
     <Section id="what" labelledBy="h-what" tight className="about-section">
       <Reveal><SectionHead id="h-what" title={what.heading} lede={what.lede} /></Reveal>
@@ -83,6 +85,10 @@ function What(): ReactElement {
                     <h3 className="font-display text-[19px] font-medium leading-[1.15] tracking-[-0.03em] min-[1100px]:text-[21px]">{item.title}</h3>
                   </div>
                   <p className="about-tag-body text-[16px] leading-[1.6] text-ink-2 min-[1100px]:text-[15.5px]">{item.body}</p>
+                  <Link href={servicePageRefFor(item.plan).path} className="about-tag-link group">
+                    {item.link}
+                    <ArrowRight aria-hidden="true" weight="bold" className="size-4 transition-transform duration-300 ease-[var(--ease)] group-hover:translate-x-[3px]" />
+                  </Link>
                 </article>
               </li>
             );

@@ -18,28 +18,33 @@ describe("Basket Card copy", () => {
   it("has no em or en dashes", () => {
     const all: unknown[] = [BASKET_CARD];
     for (const currency of CURRENCIES) {
-      for (const p of ALL_PICKS) all.push([headline(p, currency)]);
+      for (const p of ALL_PICKS) all.push([headline(p, currency, false)]);
     }
     expect(JSON.stringify(all)).not.toMatch(/[\u2013\u2014]/);
   });
   it("never mentions tax in dollars", () => {
     const all: unknown[] = [BASKET_CARD];
-    for (const p of ALL_PICKS) all.push([headline(p, "USD")]);
+    for (const p of ALL_PICKS) all.push([headline(p, "USD", false)]);
     expect(JSON.stringify(all)).not.toMatch(/gst|tax|incl\./i);
   });
 });
 
 describe("headline", () => {
   it("says the one offer: monitoring comes with all three plans, otherwise it is priced (rupees)", () => {
-    expect(headline(pick(true, true, true), "INR")).toBe("Dedicated Expert Monitoring is included with all three plans.");
-    expect(headline(pick(true, false, false), "INR")).toBe("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is ₹6,000 a month.");
-    expect(headline(pick(true, true, false), "INR")).toBe(headline(pick(true, false, false), "INR"));
+    expect(headline(pick(true, true, true), "INR", false)).toBe("Dedicated Expert Monitoring is included with all three plans.");
+    expect(headline(pick(true, false, false), "INR", false)).toBe("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is ₹6,000 a month.");
+    expect(headline(pick(true, true, false), "INR", false)).toBe(headline(pick(true, false, false), "INR", false));
   });
   it("says the same in dollars, at $99", () => {
-    expect(headline(pick(true, true, true), "USD")).toBe("Dedicated Expert Monitoring is included with all three plans.");
-    expect(headline(pick(false, false, true), "USD")).toBe("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is $99 a month.");
+    expect(headline(pick(true, true, true), "USD", false)).toBe("Dedicated Expert Monitoring is included with all three plans.");
+    expect(headline(pick(false, false, true), "USD", false)).toBe("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is $99 a month.");
+  });
+  it("says monitoring is in the basket at its price once added, and included again with all three plans", () => {
+    expect(headline(pick(true, true, false), "INR", true)).toBe("Dedicated Expert Monitoring is in your basket at ₹6,000 a month. Pick all three plans and it is included.");
+    expect(headline(pick(true, false, false), "USD", true)).toBe("Dedicated Expert Monitoring is in your basket at $99 a month. Pick all three plans and it is included.");
+    expect(headline(pick(true, true, true), "INR", true)).toBe("Dedicated Expert Monitoring is included with all three plans.");
   });
   it("offers no discount and no ad money", () => {
-    for (const currency of CURRENCIES) for (const p of ALL_PICKS) expect(headline(p, currency)).not.toMatch(/% off|save|ad money|for your ads/i);
+    for (const currency of CURRENCIES) for (const p of ALL_PICKS) for (const added of [false, true]) expect(headline(p, currency, added)).not.toMatch(/% off|save|ad money|for your ads/i);
   });
 });

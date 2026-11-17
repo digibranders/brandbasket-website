@@ -3,11 +3,12 @@ import type { ReactElement } from "react";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BasketCta } from "@/components/basket/BasketCta";
 import { useBasket } from "@/components/basket/useBasket";
+import { useMonitoring } from "@/components/basket/useMonitoring";
 import { Band } from "@/components/ui/Band";
 import { WhatsAppButton } from "@/components/ui/WhatsAppButton";
 import { BASKET_COPY, moneyCopy, offerNote } from "@/content/basket";
 import { formatMoney } from "@/lib/currency";
-import { basketPlans, monthlyTotal } from "@/lib/pricing";
+import { basketPlans, MONITORING, monitoringBilled, monthlyTotal } from "@/lib/pricing";
 
 /**
  * A dark band in the middle of the long pricing page: the basket as it stands (plans, monthly total, what it saves) and
@@ -16,8 +17,9 @@ import { basketPlans, monthlyTotal } from "@/lib/pricing";
  */
 export function BasketBand(): ReactElement {
   const pick = useBasket();
+  const withMonitoring = useMonitoring();
   const currency = useCurrency();
-  const names = basketPlans(pick).map((plan) => plan.name).join(" + ");
+  const names = [...basketPlans(pick).map((plan) => plan.name), ...(monitoringBilled(pick, withMonitoring) ? [MONITORING.name] : [])].join(" + ");
   return (
     <Band tone="ink" className="mb-[clamp(56px,7vw,96px)]">
       <section data-dock-hide aria-labelledby="h-basket-band" className="in-wrap py-[clamp(48px,6vw,80px)]">
@@ -27,10 +29,10 @@ export function BasketBand(): ReactElement {
               {BASKET_COPY.basketPrefix} {names}
             </h2>
             <p aria-live="polite" aria-atomic="true" className="num mt-2.5 font-display text-[clamp(40px,5vw,72px)] font-bold leading-none tracking-[-0.045em]">
-              {formatMoney(monthlyTotal(pick, currency), currency)}
+              {formatMoney(monthlyTotal(pick, currency, withMonitoring), currency)}
               <small className="ml-2 font-sans text-[clamp(15px,1.4vw,18px)] font-medium tracking-normal text-action-ink/68">{moneyCopy(currency).inclGst}</small>
             </p>
-            <p className="mt-4 max-w-[52ch] text-[15.5px] leading-[1.55] text-action-ink/74">{offerNote(pick, currency)}</p>
+            <p className="mt-4 max-w-[52ch] text-[15.5px] leading-[1.55] text-action-ink/74">{offerNote(pick, currency, withMonitoring)}</p>
           </div>
           <div className="cta-pair">
             <BasketCta location="pricing_band" tone="inverse" label={BASKET_COPY.startPlan} anchor="dock" />

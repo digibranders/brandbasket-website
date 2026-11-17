@@ -51,7 +51,7 @@
 }
 
 /* What we do. Below 1100px: a rod runs down the left and each service hangs off it on a short string as a name-tag, its text written
-   plainly underneath (no boxes, nothing to swipe). From 1100px: all five hang as tall tags from a rod across the top, and each
+   plainly underneath (no boxes, nothing to swipe). From 1100px: all three hang as tall tags from a rod across the top, and each
    swings a little when hovered. */
 .about-tags {
   position: relative;
@@ -115,10 +115,17 @@
 }
 
 .about-tag-body { max-width: 52ch; padding-left: 4px; }
+/* The way on to the service's own page. */
+.about-tag-link {
+  display: inline-flex; align-items: center; justify-self: start; gap: 8px; padding-left: 4px;
+  font-family: var(--font-red-hat-display), sans-serif; font-size: 15.5px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink);
+  text-decoration: underline; text-decoration-color: color-mix(in srgb, var(--c) 55%, transparent); text-decoration-thickness: 2px; text-underline-offset: 5px;
+}
+.about-tag-link svg { color: var(--c); }
 
 @media (width >= 1100px) {
   .about-tags {
-    grid-template-columns: repeat(5, minmax(0, 1fr));
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     align-items: start;
     gap: 18px;
     padding: 22px 0 34px;
@@ -184,6 +191,7 @@
   }
 
   .about-tag-body { padding-left: 0; margin-top: 14px; }
+  .about-tag-link { padding-left: 0; margin-top: 20px; }
 }
 
 @media (prefers-reduced-motion: no-preference) {

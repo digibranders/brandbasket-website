@@ -22,10 +22,11 @@ declare global {
 }
 
 for (const route of ["/pricing"]) {
-  for (const saved of [false, true]) {
-    test(`${route} lifts the basket into view before dropping tiles${saved ? " with saved plans" : ""}`, async ({ page }) => {
-      await page.addInitScript(({ saved, key }) => {
-        if (saved) localStorage.setItem(key, JSON.stringify(["website", "growth", "search"]));
+  // A new visitor's basket is empty (owner, 2026-11-17), so only a returning visitor's saved plans have tiles to drop.
+  {
+    test(`${route} lifts the basket into view before dropping tiles with saved plans`, async ({ page }) => {
+      await page.addInitScript(({ key }) => {
+        localStorage.setItem(key, JSON.stringify(["website", "growth", "search"]));
         const state: EntryState = { frames: [], draws: [], duringEntrance: [] };
         window.basketEntry = state;
         const prototype = WebGL2RenderingContext.prototype;
@@ -82,7 +83,7 @@ for (const route of ["/pricing"]) {
           requestAnimationFrame(sample);
         }
         requestAnimationFrame(sample);
-      }, { saved, key: BASKET_STORAGE_KEY });
+      }, { key: BASKET_STORAGE_KEY });
       await page.goto(route);
       const stage = page.getByRole("img", { name: /A woven.*basket/ }).first();
       await stage.scrollIntoViewIfNeeded();

@@ -1,4 +1,4 @@
-import { ArrowRight } from "@phosphor-icons/react/dist/ssr";
+import { ArrowRight, Check } from "@phosphor-icons/react/dist/ssr";
 import Link from "next/link";
 import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
@@ -50,7 +50,7 @@ export function ServicesShowcase(): ReactElement {
                 </h3>
                 <p className="svc-body">{service.body}</p>
                 <ul aria-label={`${service.name} includes`} className="svc-caps">
-                  {service.capabilities.map((c) => <li key={c}>{c}</li>)}
+                  {service.capabilities.map((c) => <li key={c}><Check aria-hidden="true" weight="bold" />{c}</li>)}
                 </ul>
                 <Link href={service.href} className="svc-cta group">
                   {service.cta}

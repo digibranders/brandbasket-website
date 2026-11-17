@@ -2,6 +2,7 @@ import type { Icon } from "@phosphor-icons/react";
 import { ChartBar, Headset, Lifebuoy, Target, TrendUp } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { monitoringCopy } from "@/content/pricing";
+import { MonitoringBasketButton } from "./MonitoringBasketButton";
 import type { Currency } from "@/lib/currency";
 
 /** One icon per pillar, in the order of monitoringCopy().pillars. */
@@ -9,7 +10,7 @@ const PILLAR_ICONS: readonly Icon[] = [ChartBar, Target, Lifebuoy, TrendUp];
 
 /**
  * Dedicated Expert Monitoring under the plans (homepage and pricing page): what it costs, that all three plans include
- * it, and its four parts. A dark panel, so it reads as the one extra beside the three plans.
+ * it, its four parts, and the button that adds it to the basket. A dark panel, so it reads as the one extra beside the three plans.
  */
 export function MonitoringBand({ currency, headingId }: { readonly currency: Currency; readonly headingId: string }): ReactElement {
   const copy = monitoringCopy(currency);
@@ -23,6 +24,7 @@ export function MonitoringBand({ currency, headingId }: { readonly currency: Cur
           <span className="ml-3 inline-block rounded-full bg-rattan/20 px-3 py-1 align-middle font-sans text-[13px] font-semibold text-rattan">{copy.included}</span>
         </p>
         <p className="max-w-[52ch] text-[15.5px] leading-[1.55] text-action-ink/72">{copy.body}</p>
+        <div className="mt-3"><MonitoringBasketButton /></div>
       </div>
       <ul className="grid grid-cols-2 gap-2 min-[560px]:grid-cols-4" aria-label={`${copy.title} covers`}>
         {copy.pillars.map((pillar, i) => {

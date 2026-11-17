@@ -71,6 +71,6 @@ export function planCount(pick: BasketPick): string {
 }
 
 /** The strip under the plan rows: the one offer, Dedicated Expert Monitoring free with all three plans. */
-export function offerNote(pick: BasketPick, currency: Currency): string {
-  return monitoringNote(monitoringIncluded(pick), currency);
+export function offerNote(pick: BasketPick, currency: Currency, monitoring: boolean): string {
+  return monitoringNote(monitoringIncluded(pick), monitoring, currency);
 }

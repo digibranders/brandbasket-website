@@ -1,10 +1,12 @@
 // e2e/basket.spec.ts
 import { expect, test } from "@playwright/test";
-import { PRICING_PLANS } from "@/content/basket";
+import { BASKET_COPY, PRICING_PLANS } from "@/content/basket";
 import { formatMoney } from "@/lib/currency";
 import { type BasketPick, monthlyTotal, PLAN_IDS } from "@/lib/pricing";
+import { seedBasket } from "./seed-basket";
 
 test("the basket renders cast shadows as well as its main scene", async ({ page }) => {
+  await seedBasket(page, ["website"]);
   await page.addInitScript(() => {
     const state = { offscreenDraws: 0, shadowReceivers: 0, minFilter: 0, magFilter: 0 };
     (window as Window & { basketShadows?: typeof state }).basketShadows = state;
@@ -64,17 +66,15 @@ const PICKS: readonly BasketPick[] = [
   { website: true, social: true, ads: true },
 ];
 
-const pickTotal = (pick: BasketPick): string => formatMoney(monthlyTotal(pick, "INR"), "INR");
+const pickTotal = (pick: BasketPick): string => formatMoney(monthlyTotal(pick, "INR", false), "INR");
 
 for (const pick of PICKS) {
   const total = pickTotal(pick);
   test(`pricing total with ${PLAN_IDS.filter((id) => pick[id]).join(" + ")} is ${total}`, async ({ page }) => {
     await page.goto("/pricing");
     const hero = page.locator("section[aria-labelledby='h-pricing']");
-    for (const id of PLAN_IDS) {
-      // The website starts on; flip every plan that differs from the pick.
-      if (pick[id] !== (id === "website")) await hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel }).click();
-    }
+    // The basket starts empty: switch on every plan in the pick.
+    for (const id of PLAN_IDS) if (pick[id]) await hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel }).click();
     await expect(hero.locator("[data-basket-total]").getByText(total, { exact: true })).toBeVisible();
   });
 }
@@ -89,22 +89,21 @@ test("Social and Ads without the website are the two plans added up", async ({ p
   const hero = page.locator("section[aria-labelledby='h-pricing']");
   await hero.getByRole("switch", { name: PRICING_PLANS.social.switchLabel }).click();
   await hero.getByRole("switch", { name: PRICING_PLANS.ads.switchLabel }).click();
-  await hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel }).click();
   await expect(hero.locator("[data-basket-total]").getByText("₹5,998", { exact: true })).toBeVisible();
 });
 
-test("the last switch on cannot be turned off", async ({ page }) => {
+test("a new visitor's basket starts empty, and the last plan can be taken out again", async ({ page }) => {
   await page.goto("/pricing");
   const hero = page.locator("section[aria-labelledby='h-pricing']");
   const website = hero.getByRole("switch", { name: PRICING_PLANS.website.switchLabel });
-  const total = pickTotal(PICKS[0]);
-  await expect(website).toHaveAttribute("aria-disabled", "true");
-  // Keyboard activation: Playwright will not click aria-disabled, and a forced click can land on the phone total bar.
-  await website.focus();
-  await page.keyboard.press("Space");
-  await expect(website).toHaveAttribute("aria-checked", "true");
-  await expect(hero.locator("[data-basket-total]").getByText(total, { exact: true })).toBeVisible();
-  await expect(website).toBeFocused();
+  const empty = formatMoney(0, "INR");
+  for (const id of PLAN_IDS) await expect(hero.getByRole("switch", { name: PRICING_PLANS[id].switchLabel })).toHaveAttribute("aria-checked", "false");
+  await expect(hero.locator("[data-basket-total]").getByText(empty, { exact: true })).toBeVisible();
+  await website.click();
+  await expect(hero.locator("[data-basket-total]").getByText(pickTotal(PICKS[0]), { exact: true })).toBeVisible();
+  await website.click();
+  await expect(website).toHaveAttribute("aria-checked", "false");
+  await expect(hero.locator("[data-basket-total]").getByText(empty, { exact: true })).toBeVisible();
 });
 
 test("the basket carries from home to pricing", async ({ page }) => {
@@ -119,6 +118,7 @@ test("the basket carries from home to pricing", async ({ page }) => {
 test("the Basket Card adds plans and ticks what is in the basket", async ({ page }) => {
   await page.goto("/pricing");
   const card = page.locator("#basket-card");
+  await card.getByRole("button", { name: "Add Website Management", exact: true }).click();
   await card.getByRole("button", { name: "Add Social Media Management", exact: true }).click();
   // Two plans are just the two plans added up: no discount, no ad money.
   await expect(card.getByText("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is ₹6,000 a month.", { exact: true })).toBeVisible();
@@ -126,7 +126,7 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Website Management", "Social Media Management"]);
   await card.getByRole("button", { name: "Add Paid Ads Management", exact: true }).click();
   await expect(card.getByText("Dedicated Expert Monitoring is included with all three plans.", { exact: true })).toBeVisible();
-  await expect(card.getByText(formatMoney(monthlyTotal({ website: true, social: true, ads: true }, "INR"), "INR"), { exact: false }).first()).toBeVisible();
+  await expect(card.getByText(formatMoney(monthlyTotal({ website: true, social: true, ads: true }, "INR", false), "INR"), { exact: false }).first()).toBeVisible();
 });
 
 test("the live basket renders and rotates without WebGL errors", async ({ page }) => {
@@ -283,4 +283,27 @@ test("a released basket keeps its momentum without keeping pointer capture", asy
   const rightAngle = await page.evaluate(() => (window as Window & { basketAngle?: number }).basketAngle ?? releasedAngle);
   const hoverTurn = Math.abs(Math.atan2(Math.sin(rightAngle - leftAngle), Math.cos(rightAngle - leftAngle)));
   expect(hoverTurn).toBeLessThan(0.025); // Allows only the existing gentle idle animation.
+});
+
+test("Dedicated Expert Monitoring is added from its card, priced in the basket and sent to checkout", async ({ page }) => {
+  await page.goto("/pricing");
+  await page.locator("#basket-card").getByRole("button", { name: "Add Website Management", exact: true }).click();
+  await page.locator("main").getByRole("button", { name: "Add Dedicated Expert Monitoring" }).first().click();
+  await expect(page.locator("main").getByRole("button", { name: "Remove Dedicated Expert Monitoring" }).first()).toHaveAttribute("aria-pressed", "true");
+  await page.locator("main").getByRole("button", { name: "Start my plan" }).first().click();
+  const basket = page.getByRole("dialog", { name: BASKET_COPY.dockLabel });
+  await expect(basket).toBeVisible();
+  await expect(basket.getByText(formatMoney(monthlyTotal({ website: true, social: false, ads: false }, "INR", true), "INR"))).toBeVisible();
+  await expect(basket.getByRole("link", { name: BASKET_COPY.proceed })).toHaveAttribute("href", /\/login\?plan=website%2Cmonitoring$/);
+});
+
+test("checkout waits for a plan: with an empty basket the button is switched off", async ({ page }) => {
+  await page.goto("/pricing");
+  await page.locator("main").getByRole("button", { name: "Start my plan" }).first().click();
+  const basket = page.getByRole("dialog", { name: BASKET_COPY.dockLabel });
+  await expect(basket.getByRole("button", { name: BASKET_COPY.proceed })).toBeDisabled();
+  await expect(basket.getByRole("link", { name: BASKET_COPY.proceed })).toHaveCount(0);
+  await basket.getByRole("button", { name: "Add Website Management", exact: true }).click();
+  await expect(basket.getByRole("button", { name: "Remove Website Management", exact: true })).toHaveAttribute("aria-pressed", "true");
+  await expect(basket.getByRole("link", { name: BASKET_COPY.proceed })).toHaveAttribute("href", /\/login\?plan=website$/);
 });

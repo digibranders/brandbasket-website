@@ -15,6 +15,7 @@ import { FLY_MS, flyDot } from "./fly";
 import { basketPanel } from "./basket-panel";
 import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
+import { useMonitoring } from "./useMonitoring";
 import { useBasketPanel } from "./useBasketPanel";
 
 /** One change to the basket, for the motion: which way it went and how long to wait for a flying dot to land. */
@@ -31,7 +32,7 @@ const CLICK_WINDOW_MS = 600;
  * The floating basket, like the cart on a shop: how many plans are picked, what they cost each month (GST included on rupee pages), and the
  * way to start. The ink island (owner's pick, 2026-10-26; docs/design/phone-dock-options.html) at the foot of the screen on
  * phones and tablets: a rattan basket with its count, the total and one bar per plan in its colour, and a white button.
- * From 1000px up the Woven basket (BasketWall) does this job.
+ * From 1000px up there is no floating basket: the Woven basket (BasketWall) did this job until the owner hid it (2026-11-17).
  * It is always there below the top of the page (owner, 2026-10-26): hidden only while the hero or a [data-dock-hide] dark
  * section (the homepage's "We Take Responsibility", the pricing page's basket band) is on screen, which already say it. It stays over the
  * Basket Card, the closing band and everything else. Inert while hidden, so its link leaves the tab order.
@@ -44,6 +45,7 @@ const CLICK_WINDOW_MS = 600;
 export function BasketDock(): ReactElement | null {
   const pathname = usePagePath();
   const pick = useBasket();
+  const withMonitoring = useMonitoring();
   const currency = useCurrency();
   const panel = useBasketPanel();
   const [hidden, setHidden] = useState(true);
@@ -111,7 +113,7 @@ export function BasketDock(): ReactElement | null {
   const dir = pulse?.dir ?? 1;
   const delay = pulse?.delay ?? 0;
   const delayStyle = { "--d": `${delay}ms` } as CSSProperties;
-  const total = formatMoney(monthlyTotal(pick, currency), currency);
+  const total = formatMoney(monthlyTotal(pick, currency, withMonitoring), currency);
   return (
     <div
       data-basket-dock

@@ -1,4 +1,4 @@
-import { type BasketPick, PLAN_IDS } from "./pricing";
+import { type BasketPick, monitoringBilled, PLAN_IDS } from "./pricing";
 import { siteConfig } from "./site-config";
 import { START_PARAM } from "./start-attribution";
 
@@ -8,21 +8,27 @@ export function loginHref(): string {
 }
 
 /**
- * Where every "Start my plan" button goes: the app's sign-in, with the picked plans. The plan list format must match
- * what brandbasket-platform reads from `?plan=` (docs/plans/16, Task P2.4); change it here only.
+ * Where every "Start my plan" button goes: the app's sign-in, with the picked plans and, when it is billed, Dedicated
+ * Expert Monitoring. The list format and ids must match what brandbasket-platform reads from `?plan=`
+ * (apps/customer/src/features/entry/rules/account-entry.ts); change it here only.
  */
-export function signupHref(pick: BasketPick): string {
+export function signupHref(pick: BasketPick, monitoring: boolean): string {
   const url = new URL("/login", siteConfig.appUrl);
-  url.searchParams.set("plan", PLAN_IDS.filter((id) => pick[id]).join(","));
+  const ids: string[] = PLAN_IDS.filter((id) => pick[id]);
+  if (monitoringBilled(pick, monitoring)) ids.push(MONITORING_LINK_ID);
+  url.searchParams.set("plan", ids.join(","));
   return url.toString();
 }
+
+/** Monitoring's id in the plan list. */
+const MONITORING_LINK_ID = "monitoring";
 
 /**
  * Where the ad landing page's "Continue to payment" goes: the Managed Website sign-up, opening already filled in from the
  * sealed details in `token` (lib/start-token.ts). With no token (no shared secret set, as in local work) it is the plain sign-up.
  */
 export function startHref(token: string | null): string {
-  const url = new URL(signupHref({ website: true, social: false, ads: false }));
+  const url = new URL(signupHref({ website: true, social: false, ads: false }, false));
   if (token !== null) url.searchParams.set(START_PARAM, token);
   return url.toString();
 }

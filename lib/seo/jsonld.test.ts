@@ -49,6 +49,10 @@ describe("planOffersJsonLd", () => {
       expect(offer.priceSpecification).not.toHaveProperty("valueAddedTaxIncluded");
     }
   });
+  it("marks the paused Paid Ads plan out of stock and the plans on sale in stock", () => {
+    const offers = planOffersJsonLd("INR").hasOfferCatalog.itemListElement;
+    expect(offers.map((offer) => offer.availability)).toEqual(["https://schema.org/InStock", "https://schema.org/InStock", "https://schema.org/OutOfStock"]);
+  });
   it("lists only the three plans, with no package offers", () => {
     const offers = planOffersJsonLd("INR").hasOfferCatalog.itemListElement;
     expect(offers.map((offer) => offer.name)).toEqual(["Website Management", "Social Media Management", "Paid Ads Management"]);

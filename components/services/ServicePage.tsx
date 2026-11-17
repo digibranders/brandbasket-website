@@ -25,6 +25,7 @@ import { Reveal } from "@/components/motion/Reveal";
 import { PlanBasketButton } from "@/components/pricing/PlanBasketButton";
 import { Faq } from "@/components/ui/Faq";
 import { OfferLine } from "@/components/ui/OfferLine";
+import { ComingSoonChip } from "@/components/ui/ComingSoonChip";
 import { OutlineButton } from "@/components/ui/OutlineButton";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
@@ -32,7 +33,7 @@ import { StepsList } from "@/components/ui/StepsList";
 import { BASKET_COPY } from "@/content/basket";
 import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent, serviceMoneyCopy } from "@/content/services";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
+import { isPlanPaused, PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
 import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/jsonld";
 import { ServiceStartButton } from "./ServiceStartButton";
 
@@ -65,7 +66,8 @@ function colourOf(id: PlanId): CSSProperties {
   return { "--c": PLAN_COLOUR[id] } as CSSProperties;
 }
 
-function Hero({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
+/** The plan's hero: headline, buttons and the price card. Exported for the social page. */
+export function Hero({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
   const PlanIcon = PLAN_ICON[page.id];
   const plan = PLANS[page.id];
   return (
@@ -85,7 +87,7 @@ function Hero({ page, currency }: { readonly page: ServicePageContent; readonly 
             <p className="max-w-[48ch] text-lg text-ink-2">{page.lede}</p>
           </div>
           <div className="cta-pair">
-            <ServiceStartButton id={page.id} location={`service_${page.id}`} label={SERVICE_COPY.start} />
+            {isPlanPaused(page.id) ? null : <ServiceStartButton id={page.id} location={`service_${page.id}`} label={SERVICE_COPY.start} />}
             <OutlineButton href="/pricing" location={`service_${page.id}_pricing`}>{SERVICE_COPY.compare}</OutlineButton>
           </div>
         </div>
@@ -95,6 +97,7 @@ function Hero({ page, currency }: { readonly page: ServicePageContent; readonly 
             <div>
               <p className="font-display text-[21px] font-semibold leading-[1.15] tracking-[-0.03em]">{plan.name}</p>
               {page.id === "website" ? <span className="mt-1 inline-block rounded-full bg-rattan-wash px-2.5 py-[3px] text-xs font-semibold leading-[1.4] text-rattan-ink">{SERVICE_COPY.freeBuild}</span> : null}
+              {isPlanPaused(page.id) ? <ComingSoonChip className="mt-1" /> : null}
             </div>
             <p className="num col-span-full mt-3.5 font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
               <s className="mb-1.5 block text-[clamp(20px,2vw,24px)] leading-none tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(planUsualPrice(page.id, currency), currency)}</s>
@@ -116,7 +119,8 @@ function Hero({ page, currency }: { readonly page: ServicePageContent; readonly 
   );
 }
 
-function Who({ page }: { readonly page: ServicePageContent }): ReactElement {
+/** Exported for the social page. */
+export function Who({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-who" tight>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 min-[980px]:grid-cols-[0.8fr_1.2fr] min-[980px]:gap-16">
@@ -157,20 +161,23 @@ export function Group({ group, id }: { readonly group: ServiceGroup; readonly id
   );
 }
 
-function Does({ page }: { readonly page: ServicePageContent }): ReactElement {
+function Does({ page }: { readonly page: ServicePageContent }): ReactElement | null {
+  if (page.does === undefined) return null;
+  const { does } = page;
   return (
     <Section labelledBy="h-does" tight>
-      <Reveal><SectionHead id="h-does" title={page.does.heading} lede={page.does.lede} /></Reveal>
+      <Reveal><SectionHead id="h-does" title={does.heading} lede={does.lede} /></Reveal>
       <Reveal>
         <div className="grid grid-cols-[minmax(0,1fr)] gap-5 min-[760px]:grid-cols-2">
-          {page.does.groups.map((group) => <Group key={group.title} group={group} id={page.id} />)}
+          {does.groups.map((group) => <Group key={group.title} group={group} id={page.id} />)}
         </div>
       </Reveal>
     </Section>
   );
 }
 
-function Spotlight({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement | null {
+/** Exported for the social page. */
+export function Spotlight({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement | null {
   const { spotlight } = page;
   if (spotlight === undefined) return null;
   const body = spotlight.body.map((paragraph) => <p key={paragraph} className="max-w-[54ch] text-[17px] text-ink-2">{paragraph}</p>);
@@ -192,11 +199,13 @@ function Spotlight({ page, currency }: { readonly page: ServicePageContent; read
   );
 }
 
-function How({ page }: { readonly page: ServicePageContent }): ReactElement {
+function How({ page }: { readonly page: ServicePageContent }): ReactElement | null {
+  if (page.how === undefined) return null;
+  const { how } = page;
   return (
     <Section labelledBy="h-how" tight>
-      <Reveal><SectionHead id="h-how" title={page.how.heading} /></Reveal>
-      <Reveal><StepsList steps={page.how.steps} layout="columns" /></Reveal>
+      <Reveal><SectionHead id="h-how" title={how.heading} /></Reveal>
+      <Reveal><StepsList steps={how.steps} layout="columns" /></Reveal>
     </Section>
   );
 }
@@ -222,7 +231,8 @@ export function Limits({ page }: { readonly page: ServicePageContent }): ReactEl
   );
 }
 
-function ServiceFaq({ page }: { readonly page: ServicePageContent }): ReactElement {
+/** Exported for the social page. */
+export function ServiceFaq({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-service-faq" tight>
       <div className="grid grid-cols-[minmax(0,1fr)] gap-10 min-[980px]:grid-cols-[0.8fr_1.2fr] min-[980px]:gap-16">

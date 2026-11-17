@@ -1,0 +1,9 @@
+/* Social Media Management hero (SocialHero in SocialPage.tsx): the scene's cards drift slowly. No entrance animation: the
+   hero paints at once, like the homepage hero, and a drift never hides anything. */
+.sh-float { animation: sh-float var(--t, 7s) cubic-bezier(0.45, 0, 0.55, 1) var(--d, 0ms) infinite alternate; }
+
+@keyframes sh-float { from { translate: 0 0; } to { translate: 0 -10px; } }
+
+@media (prefers-reduced-motion: reduce) {
+  .sh-float { animation: none !important; }
+}

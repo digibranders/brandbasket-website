@@ -57,15 +57,16 @@ describe("service pages", () => {
         expect(text).not.toContain("30 minutes");
       });
 
-      it("keeps the free build card on the website page only", () => {
+      it("keeps the free build card on the website page only, and the facts-only explainer on the social page", () => {
         expect(servicePageFor("website", currency).spotlight?.kind).toBe("offer");
-        expect(servicePageFor("social", currency).spotlight).toBeUndefined();
+        expect(servicePageFor("social", currency).spotlight?.kind).toBe("explainer");
         expect(servicePageFor("ads", currency).spotlight).toBeUndefined();
       });
 
-      it("lists the social plan's AI work and its 4 platforms", () => {
-        const items = servicePageFor("social", currency).does.groups.flatMap((group) => group.items);
-        for (const item of ["AI content and caption generation", "AI image and creative generation", "Up to 4 platforms managed"]) expect(items).toContain(item);
+      it("names the four social platforms (owner, 2026-11-17)", () => {
+        const social = JSON.stringify(servicePageFor("social", currency));
+        for (const platform of ["Instagram", "Facebook", "LinkedIn", "Google Business Profile"]) expect(social).toContain(platform);
+        expect(social).not.toMatch(/YouTube|X \(Twitter\)/i);
       });
 
       it("keeps the same Not included lines as the pricing cards", () => {
@@ -103,16 +104,16 @@ describe("service pages", () => {
     expect(text).not.toContain("₹");
     expect(text).not.toContain("DPDP");
     for (const price of ["$59", "$120", "$10 an hour"]) expect(text).toContain(price);
-    expect(servicePageFor("social", "USD").faq.find((item) => item.q === "What does a reel cost?")?.a).toContain("$10");
+    expect(servicePageFor("social", "USD").faq.find((item) => item.q === "Are reels included?")?.a).toContain("$10");
     expect(servicePageFor("website", "USD").lede).toContain("for $0");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month" });
     expect(Object.values(PLANS).map((plan) => plan.name).every((name) => !NO_TAX.test(name))).toBe(true);
   });
 
   it("lists DPDP readiness on the rupee Managed Website page only, matching the pricing page", () => {
-    const privacy = servicePageFor("website", "INR").does.groups.find((group) => group.title === "Privacy done properly");
+    const privacy = servicePageFor("website", "INR").does?.groups.find((group) => group.title === "Privacy done properly");
     expect(privacy?.items).toContain("DPDP Act readiness support");
-    expect(servicePageFor("website", "USD").does.groups.find((group) => group.title === "Privacy done properly")?.items.join(" ")).not.toContain("DPDP");
+    expect(servicePageFor("website", "USD").does?.groups.find((group) => group.title === "Privacy done properly")?.items.join(" ")).not.toContain("DPDP");
   });
 
   it("words the ad spend and no guarantee answers like the pricing page, whichever page they are on", () => {

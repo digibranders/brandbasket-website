@@ -3,7 +3,7 @@ import type { ServicePageContent } from "@/content/services";
 import type { Currency } from "@/lib/currency";
 import type { FaqItem } from "@/content/types";
 import type { AuthorProfile, Post } from "@/lib/cms/schema";
-import { PLAN_IDS, planPrice, PLANS } from "@/lib/pricing";
+import { isPlanPaused, PLAN_IDS, type PlanId, planPrice, PLANS } from "@/lib/pricing";
 import { businessDetails, siteConfig, socialLinks } from "@/lib/site-config";
 
 /** One node id for the organization, so other entities can point at it instead of repeating it. */
@@ -97,6 +97,8 @@ export interface ServiceLd {
       readonly "@type": "Offer";
       readonly name: string;
       readonly url: string;
+      /** A paused plan (shown as "Coming soon") is out of stock, so search results never offer what checkout refuses. */
+      readonly availability: "https://schema.org/InStock" | "https://schema.org/OutOfStock";
       readonly priceSpecification: {
         readonly "@type": "UnitPriceSpecification";
         readonly price: number;
@@ -109,12 +111,13 @@ export interface ServiceLd {
   };
 }
 
-function monthlyOffer(name: string, price: number, currency: Currency): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
+function monthlyOffer(id: PlanId, currency: Currency): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
   return {
     "@type": "Offer",
-    name,
+    name: PLANS[id].name,
     url: `${siteConfig.url}/pricing`,
-    priceSpecification: { "@type": "UnitPriceSpecification", price, priceCurrency: currency, unitText: "MONTH", ...(currency === "INR" ? { valueAddedTaxIncluded: true as const } : {}) },
+    availability: isPlanPaused(id) ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
+    priceSpecification: { "@type": "UnitPriceSpecification", price: planPrice(id, currency), priceCurrency: currency, unitText: "MONTH", ...(currency === "INR" ? { valueAddedTaxIncluded: true as const } : {}) },
   };
 }
 
@@ -130,7 +133,7 @@ export function planOffersJsonLd(currency: Currency): ServiceLd {
       "@type": "OfferCatalog",
       name: "Brandbasket plans",
       itemListElement: [
-        ...PLAN_IDS.map((id) => monthlyOffer(PLANS[id].name, planPrice(id, currency), currency)),
+        ...PLAN_IDS.map((id) => monthlyOffer(id, currency)),
       ],
     },
   };
@@ -158,7 +161,7 @@ export function serviceJsonLd(page: ServicePageContent, currency: Currency): Ser
     url: `${siteConfig.url}${page.path}`,
     provider: { "@id": ORGANIZATION_ID },
     areaServed: { "@type": "Country", name: "India" },
-    offers: { ...monthlyOffer(plan.name, planPrice(page.id, currency), currency), url: `${siteConfig.url}${page.path}` },
+    offers: { ...monthlyOffer(page.id, currency), url: `${siteConfig.url}${page.path}` },
   };
 }
 

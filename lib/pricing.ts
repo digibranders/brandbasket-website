@@ -30,6 +30,16 @@ export const PLANS: Readonly<Record<PlanId, Plan>> = {
 };
 
 /**
+ * Plans shown as "Coming soon" and never put in the basket (2026-11-17). brandbasket-platform stopped selling Paid Ads on
+ * 2026-11-16 (PAUSED_ADD_ON_IDS) and its checkout drops it, so the two lists change together.
+ */
+export const PAUSED_PLAN_IDS: readonly PlanId[] = ["ads"];
+
+export function isPlanPaused(id: PlanId): boolean {
+  return PAUSED_PLAN_IDS.includes(id);
+}
+
+/**
  * Plan prices are whole units of the currency (rupees with GST inside, dollars with none). A basket costs the plans added up,
  * with nothing taken off. Every figure here is a whole number.
  */
@@ -70,7 +80,7 @@ export const GST_LABEL = `${Math.round(GST_RATE * 100)}%`;
 
 /**
  * What the plans charge beyond their price, in each currency (owner, 2026-10-26 for rupees, 2026-10-27 for dollars):
- * an extra hour of changes, one reel edited (Social Media Management), and the client's own Meta ad budget that Paid Ads
+ * an extra hour of changes, one extra reel beyond the plan's one a week (Social Media Management), and the client's own Meta ad budget that Paid Ads
  * Management manages each month.
  */
 export interface Extras {

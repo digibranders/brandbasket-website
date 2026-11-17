@@ -1,13 +1,15 @@
 import type { ReactElement } from "react";
-import { BasketCta } from "@/components/basket/BasketCta";
 import { BasketStage } from "@/components/basket/BasketStage";
 import { OfferLine } from "@/components/ui/OfferLine";
 import { PricingButton } from "@/components/ui/PricingButton";
+import { ServiceStartButton } from "@/components/services/ServiceStartButton";
 import { HERO } from "@/content/home";
+import { PRIMARY_CTA } from "@/content/navigation";
 import type { Currency } from "@/lib/currency";
 
 /**
- * Homepage hero (mock: #hero). Copy is locked. No Reveal here: the hero paints at once.
+ * The Website Management page's hero (mock: #hero). Copy is locked. No Reveal here: the hero paints at once. Its main button
+ * puts the website plan in the basket before opening it, as the other service pages do: a new visitor's basket is empty.
  * The glow spans the full width (clipped to the 1280px column its right edge showed as a hard line on wide screens) and
  * fades out at the bottom, so it does not end on a hard edge above the facts strip.
  */
@@ -22,7 +24,7 @@ export function HomeHero({ currency }: { readonly currency: Currency }): ReactEl
           </h1>
           <OfferLine currency={currency} />
           <div className="cta-pair">
-            <BasketCta location="hero" />
+            <ServiceStartButton id="website" location="hero" label={PRIMARY_CTA.label} />
             <PricingButton />
           </div>
         </div>

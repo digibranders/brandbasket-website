@@ -44,7 +44,7 @@ export default async function HomePage({ params }: { readonly params: Promise<{ 
         <DecorIcon icon={MapPin} size={126} rotate={12} faint className="right-[3%] top-[70px]" />
         <WorkColumns />
       </Band>
-      <PlatformFaq />
+      <PlatformFaq currency={currency} />
       <FinalCta />
       <JsonLd data={webSiteJsonLd()} />
       <JsonLd data={planOffersJsonLd(currency)} />

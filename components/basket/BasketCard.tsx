@@ -8,11 +8,12 @@ import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { basketPlans, type BasketPick, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
+import { basketPlans, type BasketPick, MONITORING, monitoringBilled, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
+import { useMonitoring } from "./useMonitoring";
 
 const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 /** Each stamp lands at its own slight angle, as a hand stamp would. */
@@ -28,7 +29,7 @@ export function RichText({ line }: { readonly line: Rich }): ReactElement {
 }
 
 /** One plan slot: tapping it adds or removes the plan. */
-function Slot({ id, pick, onlyOne, currency }: { readonly id: PlanId; readonly pick: BasketPick; readonly onlyOne: boolean; readonly currency: Currency }): ReactElement {
+function Slot({ id, pick, currency }: { readonly id: PlanId; readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
   const on = pick[id];
   const SlotIcon = ICON[id];
   return (
@@ -36,10 +37,9 @@ function Slot({ id, pick, onlyOne, currency }: { readonly id: PlanId; readonly p
       type="button"
       aria-pressed={on}
       aria-label={slotLabel(id, on)}
-      aria-disabled={on && onlyOne ? true : undefined}
       onClick={() => basket.set(id, !on)}
       style={inkStyle(id)}
-      className="group grid cursor-pointer content-start justify-items-center gap-1 rounded-[18px] p-1.5 text-center text-ink aria-disabled:cursor-not-allowed"
+      className="group grid cursor-pointer content-start justify-items-center gap-1 rounded-[18px] p-1.5 text-center text-ink"
     >
       <span className="relative grid aspect-square w-[clamp(84px,11vw,116px)] place-items-center rounded-full border-2 border-dashed border-rattan-ink/40 bg-surface/60 transition-colors duration-300 ease-[var(--ease)] group-hover:border-rattan-ink/70 group-hover:bg-surface group-aria-pressed:border-transparent group-aria-pressed:bg-surface">
         <span aria-hidden="true" className="max-w-[9ch] font-mono text-[11px] leading-[1.3] tracking-[0.06em] text-rattan-ink group-aria-pressed:opacity-0">{BASKET_CARD.tapHint}</span>
@@ -63,7 +63,6 @@ function Slot({ id, pick, onlyOne, currency }: { readonly id: PlanId; readonly p
 
 /** The loyalty card: a stamp per plan, then the basket actions (mock: .bcard). The reward track and fine print were removed at the owner's request, 2026-10-22. */
 function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
-  const count = basketPlans(pick).length;
   return (
     <div className="basket-weave relative grid gap-[22px] self-start overflow-hidden rounded-3xl border border-rattan/30 px-[26px] py-[26px] max-[560px]:px-4 max-[560px]:py-[22px]">
       <div className="flex items-start justify-between gap-4">
@@ -74,7 +73,7 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
         <Image src="/brand/brandbasket-mark.svg" alt="" width={40} height={40} className="size-10 flex-none" />
       </div>
       <div className="grid grid-cols-3 gap-3 max-[560px]:gap-1.5">
-        {PLAN_IDS.map((id) => <Slot key={id} id={id} pick={pick} onlyOne={count === 1} currency={currency} />)}
+        {PLAN_IDS.map((id) => <Slot key={id} id={id} pick={pick} currency={currency} />)}
       </div>
       <div className="cta-pair pt-1">
         <BasketCta location="plans" label={BASKET_CARD.checkoutCta} short={BASKET_CARD.checkoutCtaShort} anchor="dock" />
@@ -85,8 +84,8 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
 }
 
 /** A receipt: the plans and the one offer, then the total at the foot, level with the Basket Card's actions (mock: .bsum; owner picked the receipt layout, 2026-10-22). */
-function Summary({ pick, currency }: { readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
-  const monthly = monthlyTotal(pick, currency);
+function Summary({ pick, currency, withMonitoring }: { readonly pick: BasketPick; readonly currency: Currency; readonly withMonitoring: boolean }): ReactElement {
+  const monthly = monthlyTotal(pick, currency, withMonitoring);
   return (
     <div className="flex flex-col items-start gap-3.5 rounded-3xl border border-line bg-surface p-[26px] max-[560px]:px-[18px] max-[560px]:py-[22px]">
       <div className="grid gap-2">
@@ -98,9 +97,15 @@ function Summary({ pick, currency }: { readonly pick: BasketPick; readonly curre
               {plan.name}
             </li>
           ))}
+          {monitoringBilled(pick, withMonitoring) ? (
+            <li className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg py-1 pl-1.5 pr-3 text-[13.5px] font-semibold">
+              <span aria-hidden="true" className="grid size-[18px] place-items-center rounded-full bg-ink text-surface"><Check weight="bold" className="size-3" /></span>
+              {MONITORING.name}
+            </li>
+          ) : null}
         </ul>
       </div>
-      <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick, currency)}</p>
+      <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick, currency, withMonitoring)}</p>
       <div data-basket-total className="mt-auto grid w-full gap-1 border-t border-line pt-4">
         <span className="text-[13px] text-ink-2">{BASKET_CARD.totalLabel}</span>
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">
@@ -115,10 +120,11 @@ function Summary({ pick, currency }: { readonly pick: BasketPick; readonly curre
 /** The homepage receipt and Basket Card, side by side (mock: .ox-card; owner's pick, 2026-10-21). */
 export function BasketCard(): ReactElement {
   const pick = useBasket();
+  const withMonitoring = useMonitoring();
   const currency = useCurrency();
   return (
     <div id={BASKET_CARD.id} className="grid scroll-mt-28 gap-7 min-[1000px]:grid-cols-[1fr_1.4fr] min-[1000px]:gap-12">
-      <Summary pick={pick} currency={currency} />
+      <Summary pick={pick} currency={currency} withMonitoring={withMonitoring} />
       <StampCard pick={pick} currency={currency} />
     </div>
   );

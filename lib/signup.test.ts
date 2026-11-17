@@ -3,8 +3,12 @@ import { loginHref, signupHref, startHref } from "./signup";
 
 describe("signupHref", () => {
   it("sends the picked plans to the app's sign-in, in catalogue order", () => {
-    expect(signupHref({ website: true, social: false, ads: true })).toBe("https://app.brandbasket.in/login?plan=website%2Cads");
-    expect(signupHref({ website: false, social: true, ads: true })).toBe("https://app.brandbasket.in/login?plan=social%2Cads");
+    expect(signupHref({ website: true, social: false, ads: true }, false)).toBe("https://app.brandbasket.in/login?plan=website%2Cads");
+    expect(signupHref({ website: false, social: true, ads: true }, false)).toBe("https://app.brandbasket.in/login?plan=social%2Cads");
+  });
+  it("names monitoring last when it is billed, the id brandbasket-platform reads (account-entry.ts)", () => {
+    expect(signupHref({ website: true, social: true, ads: false }, true)).toBe("https://app.brandbasket.in/login?plan=website%2Csocial%2Cmonitoring");
+    expect(signupHref({ website: true, social: true, ads: true }, true)).toBe("https://app.brandbasket.in/login?plan=website%2Csocial%2Cads");
   });
 });
 

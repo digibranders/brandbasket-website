@@ -1,5 +1,5 @@
 import Image from "next/image";
-import type { ReactElement } from "react";
+import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { WHO } from "@/content/platform-home";
 
@@ -9,16 +9,18 @@ interface Tile {
   /** Place in the mosaic (components/platform-home/platform-home.css, .who-*). */
   readonly area: "a" | "b" | "c" | "d" | "e" | "f";
   readonly sizes: string;
+  /** The plan colour that tints the photo (owner, 2026-11-17: the bright, whitish photos were too light). */
+  readonly tint: "var(--c-site)" | "var(--c-growth-2)" | "var(--c-search-2)";
 }
 
 /** One tile per kind of business, in the order of WHO.segments. Tall: a, c, e. Wide: f. */
 const TILES: readonly Tile[] = [
-  { photo: "startups-2", area: "a", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "small-businesses-2", area: "b", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "professional-services-2", area: "c", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "retail-ecommerce-2", area: "d", sizes: "(min-width: 1000px) 300px, 46vw" },
-  { photo: "restaurants-hospitality-2", area: "f", sizes: "(min-width: 1000px) 600px, 92vw" },
-  { photo: "growing-companies-2", area: "e", sizes: "(min-width: 1000px) 300px, 46vw" },
+  { photo: "startups-2", area: "a", sizes: "(min-width: 1000px) 300px, 46vw", tint: "var(--c-growth-2)" },
+  { photo: "small-businesses-2", area: "b", sizes: "(min-width: 1000px) 300px, 46vw", tint: "var(--c-site)" },
+  { photo: "professional-services-2", area: "c", sizes: "(min-width: 1000px) 300px, 46vw", tint: "var(--c-search-2)" },
+  { photo: "retail-ecommerce-2", area: "d", sizes: "(min-width: 1000px) 300px, 46vw", tint: "var(--c-site)" },
+  { photo: "restaurants-hospitality-2", area: "f", sizes: "(min-width: 1000px) 600px, 92vw", tint: "var(--c-growth-2)" },
+  { photo: "growing-companies-2", area: "e", sizes: "(min-width: 1000px) 300px, 46vw", tint: "var(--c-search-2)" },
 ];
 
 /**
@@ -40,8 +42,9 @@ export function WhoSection(): ReactElement {
           const tile = TILES[i];
           if (!tile) return null;
           return (
-            <li key={segment} className={`who-tile who-${tile.area} group`}>
+            <li key={segment} style={{ "--tint": tile.tint } as CSSProperties} className={`who-tile who-${tile.area} group`}>
               <Image src={`/home/who/${tile.photo}.jpg`} alt="" fill sizes={tile.sizes} className="object-cover transition-transform duration-700 ease-[var(--ease)] group-hover:scale-[1.04]" />
+              <span aria-hidden="true" className="who-tint" />
               <span className="absolute inset-x-0 bottom-0 h-1/3 bg-[linear-gradient(to_top,rgba(21,22,26,0.4),transparent)]" aria-hidden="true" />
               <span className="absolute bottom-3 left-3 max-w-[calc(100%-24px)] rounded-[14px] bg-ink/75 px-3.5 py-2 font-display text-[clamp(14px,1.25vw,17px)] font-semibold leading-[1.2] tracking-[-0.01em] text-action-ink shadow-[0_8px_20px_-10px_rgba(0,0,0,0.6)] backdrop-blur-md">
                 {segment.replace("-", "‑")}

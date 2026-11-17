@@ -1,12 +1,12 @@
 import { type BasketPick, PLAN_IDS, type PlanId, samePick } from "./pricing";
 
-/** What every "Start my plan" button starts from: the website plan on its own. */
-export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: true, social: false, ads: false });
+/** What a new visitor's basket holds: nothing. They pick the plans they want (owner, 2026-11-17). */
+export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: false, social: false, ads: false });
 
 /** Where the page-wide basket is remembered in the browser. It holds plan ids only. */
 export const BASKET_STORAGE_KEY = "brandbasket-basket";
 
-/** A saved basket: a JSON list of plan ids. Anything unexpected, or an empty list, gives null so the default applies. */
+/** A saved basket: a JSON list of plan ids, possibly empty. Anything that is not a list gives null so the default applies. */
 export function parseSavedBasket(raw: string | null): BasketPick | null {
   if (!raw) return null;
   let value: unknown;
@@ -17,8 +17,7 @@ export function parseSavedBasket(raw: string | null): BasketPick | null {
   }
   if (!Array.isArray(value)) return null;
   const ids = new Set<unknown>(value);
-  const pick: BasketPick = { website: ids.has("website"), social: ids.has("social"), ads: ids.has("ads") };
-  return PLAN_IDS.some((id) => pick[id]) ? Object.freeze(pick) : null;
+  return Object.freeze({ website: ids.has("website"), social: ids.has("social"), ads: ids.has("ads") });
 }
 
 export function serialiseBasket(pick: BasketPick): string {
@@ -27,6 +26,43 @@ export function serialiseBasket(pick: BasketPick): string {
 
 export interface BasketPersistence {
   save(pick: BasketPick): void;
+}
+
+/** Where Dedicated Expert Monitoring's place in the basket is remembered: "1" when added. Beside the plans, not among them. */
+export const MONITORING_STORAGE_KEY = "brandbasket-monitoring";
+
+export function serialiseFlag(on: boolean): string {
+  return on ? "1" : "0";
+}
+
+/** A saved flag: only "1" is on, so anything missing or unexpected leaves monitoring out. */
+export function parseSavedFlag(raw: string | null): boolean {
+  return raw === "1";
+}
+
+export interface FlagStore {
+  get(): boolean;
+  set(on: boolean): void;
+  subscribe(listener: () => void): () => void;
+}
+
+/** One on or off choice shared by every client island, like the basket: Dedicated Expert Monitoring. */
+export function createFlagStore(initial: boolean, persistence?: { save(on: boolean): void }): FlagStore {
+  let state = initial;
+  const listeners = new Set<() => void>();
+  return {
+    get: () => state,
+    set(on) {
+      if (on === state) return;
+      state = on;
+      persistence?.save(on);
+      listeners.forEach((listener) => listener());
+    },
+    subscribe(listener) {
+      listeners.add(listener);
+      return () => { listeners.delete(listener); };
+    },
+  };
 }
 
 export interface BasketStore {
@@ -40,8 +76,6 @@ export function createBasketStore(initial: BasketPick = DEFAULT_BASKET, persiste
   let state: BasketPick = Object.freeze({ ...initial });
   const listeners = new Set<() => void>();
   const commit = (next: BasketPick): void => {
-    // A basket always holds at least one plan, so the last switch on cannot turn off.
-    if (!PLAN_IDS.some((id) => next[id])) return;
     if (samePick(next, state)) return;
     state = Object.freeze({ ...next });
     persistence?.save(state);
@@ -94,9 +128,34 @@ const inBrowser = typeof window !== "undefined";
  */
 export const basket = createBasketStore((inBrowser ? savedBasket() : null) ?? DEFAULT_BASKET, inBrowser ? browserPersistence : undefined);
 
+function savedMonitoring(): boolean {
+  try {
+    return parseSavedFlag(browserStorage()?.getItem(MONITORING_STORAGE_KEY) ?? null);
+  } catch {
+    return false;
+  }
+}
+
+const monitoringPersistence = {
+  save(on: boolean): void {
+    try {
+      browserStorage()?.setItem(MONITORING_STORAGE_KEY, serialiseFlag(on));
+    } catch {
+      // Full or blocked storage: the choice still holds for this visit.
+    }
+  },
+};
+
+/** Whether Dedicated Expert Monitoring is in the page-wide basket. Off on the server and the first render (useMonitoring). */
+export const monitoring = createFlagStore(inBrowser && savedMonitoring(), inBrowser ? monitoringPersistence : undefined);
+
 // Another tab changed the basket: follow it.
 if (inBrowser) {
   window.addEventListener("storage", (event) => {
+    if (event.key === MONITORING_STORAGE_KEY) {
+      monitoring.set(parseSavedFlag(event.newValue));
+      return;
+    }
     if (event.key !== BASKET_STORAGE_KEY) return;
     const next = parseSavedBasket(event.newValue);
     if (next) basket.setAll(next);

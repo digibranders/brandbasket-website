@@ -1,10 +1,10 @@
 import { describe, expect, it, vi } from "vitest";
-import { BASKET_STORAGE_KEY, createBasketStore, DEFAULT_BASKET, parseSavedBasket, serialiseBasket } from "./basket-store";
+import { BASKET_STORAGE_KEY, createBasketStore, createFlagStore, DEFAULT_BASKET, MONITORING_STORAGE_KEY, parseSavedBasket, parseSavedFlag, serialiseBasket, serialiseFlag } from "./basket-store";
 
 describe("basket store", () => {
-  it("starts with the website plan only", () => {
-    expect(createBasketStore().get()).toEqual({ website: true, social: false, ads: false });
-    expect(DEFAULT_BASKET).toEqual({ website: true, social: false, ads: false });
+  it("starts empty: a new visitor picks the plans they want (owner, 2026-11-17)", () => {
+    expect(createBasketStore().get()).toEqual({ website: false, social: false, ads: false });
+    expect(DEFAULT_BASKET).toEqual({ website: false, social: false, ads: false });
   });
 
   it("notifies once per real change and keeps snapshots immutable", () => {
@@ -16,38 +16,37 @@ describe("basket store", () => {
     store.set("social", true);
     expect(listener).toHaveBeenCalledTimes(1);
     expect(before).toEqual(DEFAULT_BASKET);
-    expect(store.get()).toEqual({ website: true, social: true, ads: false });
+    expect(store.get()).toEqual({ website: false, social: true, ads: false });
   });
 
   it("lets the website go when another plan is in the basket", () => {
     const store = createBasketStore();
+    store.set("website", true);
     store.set("ads", true);
     store.set("website", false);
     expect(store.get()).toEqual({ website: false, social: false, ads: true });
   });
 
-  it("never empties the basket", () => {
+  it("lets the last plan go, so the basket can be empty again", () => {
     const store = createBasketStore();
-    const listener = vi.fn();
-    store.subscribe(listener);
+    store.set("website", true);
     store.set("website", false);
     expect(store.get()).toEqual(DEFAULT_BASKET);
-    expect(listener).not.toHaveBeenCalled();
   });
 
-  it("replaces the whole pick for a package, and ignores an empty one", () => {
+  it("replaces the whole pick, an empty one included", () => {
     const store = createBasketStore();
     store.setAll({ website: true, social: true, ads: true });
     expect(store.get()).toEqual({ website: true, social: true, ads: true });
     store.setAll({ website: false, social: false, ads: false });
-    expect(store.get()).toEqual({ website: true, social: true, ads: true });
+    expect(store.get()).toEqual({ website: false, social: false, ads: false });
   });
 
   it("treats an equal pick as no change", () => {
     const store = createBasketStore();
     const listener = vi.fn();
     store.subscribe(listener);
-    store.setAll({ website: true, social: false, ads: false });
+    store.setAll({ website: false, social: false, ads: false });
     expect(listener).not.toHaveBeenCalled();
   });
 
@@ -70,7 +69,11 @@ describe("saved basket", () => {
   });
 
   it("ignores anything that is not a usable list", () => {
-    for (const raw of [null, "", "not json", "{}", "42", '"website"', "[]", '["nothing"]', "[1,2]"]) expect(parseSavedBasket(raw)).toBeNull();
+    for (const raw of [null, "", "not json", "{}", "42", '"website"']) expect(parseSavedBasket(raw)).toBeNull();
+  });
+
+  it("keeps a basket the visitor emptied", () => {
+    for (const raw of ["[]", '["nothing"]', "[1,2]"]) expect(parseSavedBasket(raw)).toEqual({ website: false, social: false, ads: false });
   });
 
   it("keeps the known plans and drops the rest", () => {
@@ -82,9 +85,31 @@ describe("saved basket", () => {
     const store = createBasketStore(DEFAULT_BASKET, { save });
     store.set("social", true);
     store.set("social", true);
-    store.setAll({ website: false, social: false, ads: false });
+    store.setAll({ website: false, social: true, ads: false });
     expect(save).toHaveBeenCalledTimes(1);
-    expect(save).toHaveBeenLastCalledWith({ website: true, social: true, ads: false });
+    expect(save).toHaveBeenLastCalledWith({ website: false, social: true, ads: false });
   });
 });
 
+
+describe("monitoring in the basket", () => {
+  it("starts off, turns on and off, and tells its listeners once per real change", () => {
+    const save = vi.fn();
+    const store = createFlagStore(false, { save });
+    const listener = vi.fn();
+    store.subscribe(listener);
+    store.set(true);
+    store.set(true);
+    store.set(false);
+    expect(store.get()).toBe(false);
+    expect(listener).toHaveBeenCalledTimes(2);
+    expect(save.mock.calls).toEqual([[true], [false]]);
+  });
+
+  it("round-trips through storage under its own key, and reads anything unexpected as off", () => {
+    expect(MONITORING_STORAGE_KEY).toBe("brandbasket-monitoring");
+    expect(parseSavedFlag(serialiseFlag(true))).toBe(true);
+    expect(parseSavedFlag(serialiseFlag(false))).toBe(false);
+    for (const raw of [null, "", "yes", "[]", "2"]) expect(parseSavedFlag(raw)).toBe(false);
+  });
+});

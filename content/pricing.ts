@@ -182,9 +182,14 @@ export function monitoringCopy(currency: Currency): MonitoringCopy {
   };
 }
 
-/** The basket's line about monitoring: included with all three plans, priced otherwise. */
-export function monitoringNote(allThree: boolean, currency: Currency): string {
-  return allThree
-    ? `${MONITORING.name} is included with all three plans.`
-    : `Pick all three plans and ${MONITORING.name} is included. Otherwise it is ${formatMoney(monitoringPrice(currency), currency)} a month.`;
+/** The words on the monitoring card's basket button: the same as a plan's, and a line when all three plans include it. */
+export const MONITORING_BUTTON = { add: "Add to basket", added: "In your basket", included: "Included in your basket" } as const;
+
+/** The basket's line about monitoring: included with all three plans, in the basket at its price, or how to get it free. */
+export function monitoringNote(allThree: boolean, added: boolean, currency: Currency): string {
+  if (allThree) return `${MONITORING.name} is included with all three plans.`;
+  const price = formatMoney(monitoringPrice(currency), currency);
+  return added
+    ? `${MONITORING.name} is in your basket at ${price} a month. Pick all three plans and it is included.`
+    : `Pick all three plans and ${MONITORING.name} is included. Otherwise it is ${price} a month.`;
 }

@@ -100,9 +100,13 @@ export function samePick(a: BasketPick, b: BasketPick): boolean {
   return PLAN_IDS.every((id) => a[id] === b[id]);
 }
 
-/** What the basket costs a month: the plans added up (rupees with GST inside, dollars with none). */
-export function monthlyTotal(pick: BasketPick, currency: Currency): number {
-  return basketPlans(pick).reduce((sum, plan) => sum + planPrice(plan.id, currency), 0);
+/**
+ * What the basket costs a month: the plans added up, plus Dedicated Expert Monitoring when it is billed (monitoringBilled).
+ * Rupees with GST inside, dollars with none.
+ */
+export function monthlyTotal(pick: BasketPick, currency: Currency, monitoring: boolean): number {
+  const plans = basketPlans(pick).reduce((sum, plan) => sum + planPrice(plan.id, currency), 0);
+  return monitoringBilled(pick, monitoring) ? plans + monitoringPrice(currency) : plans;
 }
 
 /**
@@ -122,4 +126,12 @@ export function monitoringPrice(currency: Currency): number {
 /** Whether the basket gets monitoring at no extra cost: every plan is in it. */
 export function monitoringIncluded(pick: BasketPick): boolean {
   return PLAN_IDS.every((id) => pick[id]);
+}
+
+/**
+ * Whether monitoring is charged: the visitor added it and the basket does not already include it. The choice is kept while
+ * all three plans include it, so dropping back to fewer plans charges it again (owner, 2026-11-17).
+ */
+export function monitoringBilled(pick: BasketPick, monitoring: boolean): boolean {
+  return monitoring && !monitoringIncluded(pick);
 }

@@ -51,17 +51,17 @@ describe("money copy", () => {
 
 describe("offerNote", () => {
   it.each(CURRENCIES)("says monitoring is included only when all three plans are in the basket (%s)", (currency) => {
-    expect(offerNote(pick(true, true, true), currency)).toBe("Dedicated Expert Monitoring is included with all three plans.");
+    expect(offerNote(pick(true, true, true), currency, false)).toBe("Dedicated Expert Monitoring is included with all three plans.");
     for (const p of [pick(true, false, false), pick(false, true, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(false, true, true)]) {
-      expect(offerNote(p, currency)).toMatch(/^Pick all three plans and Dedicated Expert Monitoring is included\. Otherwise it is /);
+      expect(offerNote(p, currency, false)).toMatch(/^Pick all three plans and Dedicated Expert Monitoring is included\. Otherwise it is /);
     }
   });
   it("prices monitoring in the page's currency", () => {
-    expect(offerNote(pick(true, false, false), "INR")).toContain("₹6,000 a month");
-    expect(offerNote(pick(true, false, false), "USD")).toContain("$99 a month");
+    expect(offerNote(pick(true, false, false), "INR", false)).toContain("₹6,000 a month");
+    expect(offerNote(pick(true, false, false), "USD", false)).toContain("$99 a month");
   });
   it("offers no discount and no ad money", () => {
-    for (const currency of CURRENCIES) expect(offerNote(pick(true, true, false), currency)).not.toMatch(/% off|save|ad money|for your ads/i);
+    for (const currency of CURRENCIES) expect(offerNote(pick(true, true, false), currency, false)).not.toMatch(/% off|save|ad money|for your ads/i);
   });
 });
 
@@ -69,7 +69,7 @@ describe("dollar copy never mentions tax", () => {
   it("has no GST, tax or incl. in any dollar string", () => {
     const picks = [pick(true, false, false), pick(false, true, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(false, true, true), pick(true, true, true)];
     // Values only: the key names (inclGst) are code, not copy.
-    const all = [Object.values(moneyCopy("USD")), Object.values(BASKET_COPY), Object.values(PRICING_PLANS).map((p) => Object.values(p)), picks.map((p) => offerNote(p, "USD"))];
+    const all = [Object.values(moneyCopy("USD")), Object.values(BASKET_COPY), Object.values(PRICING_PLANS).map((p) => Object.values(p)), picks.map((p) => offerNote(p, "USD", false))];
     expect(JSON.stringify(all)).not.toMatch(/gst|tax|incl\./i);
   });
 });

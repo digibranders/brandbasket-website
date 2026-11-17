@@ -8,6 +8,7 @@ import {
   extrasFor,
   GST_LABEL,
   GST_RATE,
+  monitoringBilled,
   monitoringIncluded,
   monitoringPrice,
   monthlyTotal,
@@ -79,11 +80,11 @@ describe("baskets", () => {
   ];
 
   it.each(CASES)("prices %s %o at the plans added up", (currency, basket, total) => {
-    expect(monthlyTotal(basket, currency)).toBe(total);
+    expect(monthlyTotal(basket, currency, false)).toBe(total);
   });
 
   it("gives an empty basket no price", () => {
-    expect(monthlyTotal(pick(false, false, false), "INR")).toBe(0);
+    expect(monthlyTotal(pick(false, false, false), "INR", false)).toBe(0);
   });
 
   it("lists plans in catalogue order", () => {
@@ -99,6 +100,20 @@ describe("offers", () => {
   it("includes monitoring only when every plan is in the basket", () => {
     expect(monitoringIncluded(pick(true, true, true))).toBe(true);
     for (const basket of [pick(true, false, false), pick(true, true, false), pick(false, true, true)]) expect(monitoringIncluded(basket)).toBe(false);
+  });
+  it("bills monitoring only when it is added and the basket does not hold all three plans", () => {
+    expect(monitoringBilled(pick(true, true, false), true)).toBe(true);
+    expect(monitoringBilled(pick(true, true, true), true)).toBe(false);
+    expect(monitoringBilled(pick(true, false, false), false)).toBe(false);
+  });
+  it("adds monitoring to the total when it is billed, and never beside all three plans", () => {
+    expect(monthlyTotal(pick(true, true, false), "INR", true)).toBe(5998 + 6000);
+    expect(monthlyTotal(pick(true, false, false), "USD", true)).toBe(59 + 99);
+    expect(monthlyTotal(pick(true, true, true), "INR", true)).toBe(8997);
+  });
+  it("keeps added monitoring through all three plans, so dropping a plan charges it again (owner, 2026-11-17)", () => {
+    expect(monthlyTotal(pick(true, true, true), "INR", true)).toBe(8997);
+    expect(monthlyTotal(pick(true, false, true), "INR", true)).toBe(5998 + 6000);
   });
   it("prices monitoring at 6,000 rupees or $99 (owner, 2026-11-11)", () => {
     expect(monitoringPrice("INR")).toBe(6000);

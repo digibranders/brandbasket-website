@@ -18,25 +18,10 @@
 .poster-accent { font-weight: 300; color: var(--rattan-text); }
 @keyframes poster-pan { from { background-position: 0 50%, 0 50%; } to { background-position: 0 50%, -9.85em 50%; } }
 
-.poster-badge {
-  /* Centred on the first line ("Your Entire", about 0.9 of the headline size tall) and smaller than it, so it never reaches the
-     photo-filled line under it. Its right edge is level with the site column's, like the "Start my plan" button above. */
-  position: absolute; right: clamp(18px, 4vw, 56px); top: calc(112px + min(4.6vw, 70px) - min(3.9vw, 58px)); display: grid; place-items: center; width: clamp(72px, 7.8vw, 116px); aspect-ratio: 1;
-  border-radius: 999px; background: var(--ink); color: var(--action-ink); box-shadow: var(--shadow-float); rotate: 8deg;
-}
-.poster-ring { position: absolute; inset: 0; width: 100%; height: 100%; animation: poster-spin 18s linear infinite; }
-.poster-ring text { fill: currentColor; font: 600 10.4px var(--font-red-hat-text), sans-serif; letter-spacing: 0.06em; text-transform: uppercase; }
-@keyframes poster-spin { to { transform: rotate(360deg); } }
-.poster-icons { display: flex; gap: 2px; color: var(--rattan); font-size: clamp(16px, 1.7vw, 26px); }
 .poster-foot { display: grid; gap: 22px; }
 @media (max-width: 899px) {
   /* The headline fills the width of a phone ("Digital Presence." is about 6.8em wide). */
   .poster-title { font-size: 12.4vw; line-height: 0.95; }
-  /* A phone has no room for the ring of words (it would be unreadable at this size), so the badge becomes a small pill of
-     the three service icons, level with the short first line, "Your Entire", and clear of "Digital Presence." under it. */
-  .poster-ring { display: none; }
-  .poster-badge { top: calc(112px + 5.9vw - 18px); right: clamp(18px, 3vw, 48px); width: auto; height: 36px; aspect-ratio: auto; padding: 0 12px; rotate: -4deg; }
-  .poster-icons { gap: 9px; font-size: 18px; }
 }
 @media (min-width: 900px) {
   /* Text and buttons together on the left: the basket dock sits on the right edge and must not cover the buttons. */
@@ -51,7 +36,7 @@
 
 /* Reduced motion: every picture shows its finished state and nothing moves. */
 @media (prefers-reduced-motion: reduce) {
-  .poster-fill, .poster-ring, .sp-autoscroll, .sp-chart-line { animation: none !important; }
+  .poster-fill, .sp-autoscroll, .sp-chart-line { animation: none !important; }
 }
 
 /* ---------- who it is for: a photo mosaic ----------
@@ -59,7 +44,9 @@
    Wide screens: four columns by three rows, the headline in the top-left tile. */
 .who-bento { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 168px; grid-auto-flow: dense; gap: 12px; }
 .who-head { grid-column: span 2; grid-row: span 1; align-self: end; padding-bottom: 6px; }
-.who-tile { position: relative; overflow: hidden; border-radius: 24px; background: var(--sunken); }
+.who-tile { position: relative; isolation: isolate; overflow: hidden; border-radius: 24px; background: var(--sunken); }
+/* A plan colour multiplied over each photo, with a slight fall to dark at the foot, so the bright photos sit in the palette. */
+.who-tint { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(to bottom, var(--tint), color-mix(in srgb, var(--tint) 70%, var(--ink))); mix-blend-mode: multiply; opacity: 0.45; }
 .who-a { grid-row: span 2; }
 .who-f { grid-column: span 2; }
 @media (min-width: 1000px) {
@@ -85,8 +72,11 @@
 .svc-name { margin: 0; font-family: var(--font-red-hat-display), sans-serif; font-weight: 700; font-size: clamp(44px, 6.6vw, 92px); line-height: 0.92; letter-spacing: -0.058em; }
 .svc-name span { display: block; margin-top: 0.12em; font-weight: 300; font-size: 0.4em; line-height: 1; letter-spacing: -0.035em; color: rgba(255, 255, 255, 0.78); }
 .svc-body { margin: 0; max-width: 40ch; font-size: clamp(17px, 1.4vw, 20px); line-height: 1.55; color: rgba(255, 255, 255, 0.86); }
-.svc-caps { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
-.svc-caps li { padding: 7px 15px; border-radius: 999px; border: 1px solid rgba(255, 255, 255, 0.34); background: rgba(255, 255, 255, 0.1); font-size: 14.5px; font-weight: 600; }
+/* What each service includes, as a checklist in two columns (one on a phone). */
+.svc-caps { display: grid; grid-template-columns: repeat(2, max-content); gap: 12px 32px; margin: 0; padding: 0; list-style: none; }
+.svc-caps li { display: flex; align-items: center; gap: 10px; font-size: 15.5px; font-weight: 600; color: rgba(255, 255, 255, 0.92); }
+.svc-caps svg { flex: none; width: 22px; height: 22px; padding: 4px; border-radius: 999px; background: rgba(255, 255, 255, 0.16); color: var(--surface); }
+@media (max-width: 480px) { .svc-caps { grid-template-columns: 1fr; gap: 10px; } }
 .svc-cta {
   display: inline-flex; align-items: center; gap: 10px; height: 52px; padding: 0 22px; margin-top: 4px; max-width: 100%; white-space: nowrap; border-radius: 999px; background: var(--surface); color: var(--ink);
   font-family: var(--font-red-hat-display), sans-serif; font-size: 15.5px; font-weight: 700; letter-spacing: -0.01em; transition: transform 300ms var(--ease), box-shadow 300ms var(--ease);
@@ -103,6 +93,11 @@
   .svc-stack { gap: 28px; padding-bottom: 0; }
   .svc-panel { position: sticky; top: calc(92px + var(--i) * 22px); grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr); align-items: center; gap: clamp(24px, 3vw, 56px); height: clamp(520px, calc(100dvh - 210px), 600px); }
   .svc-stage { display: grid; min-height: 0; height: 100%; }
+  /* When the stack reaches its end the panels let go together and rise with the steps between them still showing. Each panel
+     keeps its offset as a bottom margin (a sticky panel stops at the end of the stack by its margin box), and the next panel
+     pulls up by the same amount so the space between panels in the page stays the same. Three panels, 22px a step. */
+  .svc-panel { margin-bottom: calc((2 - var(--i)) * 22px); }
+  .svc-panel:not(:first-child) { margin-top: calc((var(--i) - 3) * 22px); }
 }
 
 /* ---------- three steps: a staircase ---------- */
@@ -182,22 +177,11 @@
 /* Step 1's service tiles. */
 .pick-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .pick-tile {
-  position: relative; display: grid; align-content: space-between; justify-items: start; gap: 14px; min-width: 0; min-height: 92px; padding: 12px 10px 10px; border-radius: 18px; cursor: pointer; text-align: left;
-  border: 1.5px dashed color-mix(in srgb, var(--ink) 26%, transparent); background: var(--surface); color: var(--ink);
-  transition: background-color 300ms var(--ease), color 300ms var(--ease), border-color 300ms var(--ease), transform 300ms var(--ease), box-shadow 300ms var(--ease);
+  display: grid; align-content: space-between; justify-items: start; gap: 14px; min-width: 0; min-height: 92px; padding: 12px 10px 10px; border-radius: 18px;
+  background: var(--deep); color: var(--action-ink); box-shadow: 0 18px 28px -18px rgba(40, 28, 14, 0.6);
 }
-.pick-tile:hover { transform: translateY(-2px); border-color: var(--deep); box-shadow: 0 16px 26px -18px rgba(40, 28, 14, 0.5); }
-.pick-tile:active { transform: scale(0.97); }
-.pick-tile:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
-.pick-tile[aria-pressed="true"] { border: 1.5px solid var(--deep); background: var(--deep); color: var(--action-ink); box-shadow: 0 18px 28px -18px rgba(40, 28, 14, 0.6); }
-.pick-tile[aria-pressed="true"]:hover { transform: none; }
-.pick-tile[aria-disabled="true"] { cursor: not-allowed; }
-.pick-icon { width: 26px; height: 26px; color: var(--deep); transition: color 300ms var(--ease); }
-.pick-tile[aria-pressed="true"] .pick-icon { color: var(--action-ink); }
+.pick-icon { width: 26px; height: 26px; }
 .pick-name { font-size: 13.5px; font-weight: 700; line-height: 1.15; letter-spacing: -0.01em; }
-.pick-state { position: absolute; top: 9px; right: 9px; display: grid; place-items: center; width: 20px; height: 20px; border-radius: 99px; border: 1.5px solid color-mix(in srgb, var(--ink) 30%, transparent); color: color-mix(in srgb, var(--ink) 55%, transparent); transition: background-color 300ms var(--ease), color 300ms var(--ease), border-color 300ms var(--ease); }
-.pick-tile[aria-pressed="true"] .pick-state { border-color: var(--action-ink); background: var(--action-ink); color: var(--deep); }
-@media (prefers-reduced-motion: reduce) { .pick-tile { transition: none; } }
 
 /* The plans section's basket card: short enough to stay whole on a laptop while it is pinned beside the plans. The stage
    takes the height left under the pinned heading (the screen's height minus 520px, between 130 and 330px) and the basket is drawn to fit it. */

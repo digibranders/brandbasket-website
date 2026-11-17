@@ -1,20 +1,22 @@
 "use client";
-import { Check, Globe, InstagramLogo, Megaphone, Minus, Plus, X } from "@phosphor-icons/react/dist/ssr";
+import { Check, Globe, Headset, InstagramLogo, Megaphone, Plus, X } from "@phosphor-icons/react/dist/ssr";
 import type { Icon } from "@phosphor-icons/react";
 import Link from "next/link";
 import { type CSSProperties, type ReactElement, useId, useState } from "react";
 import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
 import { BASKET_COPY, moneyCopy, offerNote, planCount } from "@/content/basket";
-import { slotLabel } from "@/content/basket-card";
+import { monitoringSlotLabel, slotLabel } from "@/content/basket-card";
+import { monitoringCopy } from "@/content/pricing";
 import { trackAttrs } from "@/lib/analytics";
-import { basket } from "@/lib/basket-store";
-import { formatMoney } from "@/lib/currency";
-import { basketPlans, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
+import { basket, monitoring } from "@/lib/basket-store";
+import { type Currency, formatMoney } from "@/lib/currency";
+import { basketPlans, MONITORING, monitoringIncluded, monitoringPrice, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
 import { signupHref } from "@/lib/signup";
 import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
+import { useMonitoring } from "./useMonitoring";
 
 export const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 
@@ -40,6 +42,7 @@ interface Change {
  */
 export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactElement {
   const pick = useBasket();
+  const withMonitoring = useMonitoring();
   const currency = useCurrency();
   const titleId = useId();
   const [seen, setSeen] = useState(pick);
@@ -50,7 +53,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
     setChange({ n: change.n + 1, added: PLAN_IDS.find((id) => pick[id] && !seen[id]) ?? null, dir: grew ? 1 : -1 });
     setSeen(pick);
   }
-  const onlyOne = basketPlans(pick).length === 1;
+  const empty = basketPlans(pick).length === 0;
   return (
     <section aria-labelledby={titleId} className="bc-core">
       <div className="bc-head bc-rise" style={{ "--i": 0 } as CSSProperties}>
@@ -67,11 +70,10 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
       <div aria-hidden="true" className="bc-meter bc-rise" style={{ "--i": 1 } as CSSProperties}>
         {PLAN_IDS.map((id) => <i key={id} className={pick[id] ? "is-on" : undefined} style={{ "--c": PLAN_INK[id] } as CSSProperties} />)}
       </div>
-      <p className="bc-nudge bc-rise" style={{ "--i": 2 } as CSSProperties}>{offerNote(pick, currency)}</p>
+      <p className="bc-nudge bc-rise" style={{ "--i": 2 } as CSSProperties}>{offerNote(pick, currency, withMonitoring)}</p>
       <ul className="bc-rows bc-rise" style={{ "--i": 3 } as CSSProperties}>
         {PLAN_IDS.map((id) => {
           const on = pick[id];
-          const locked = on && onlyOne;
           const PlanIcon = PLAN_ICON[id];
           const stamp = on && change.added === id;
           return (
@@ -87,26 +89,61 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
                 type="button"
                 aria-pressed={on}
                 aria-label={slotLabel(id, on)}
-                aria-disabled={locked ? true : undefined}
-                onClick={() => { if (!locked) basket.set(id, !on); }}
+                onClick={() => basket.set(id, !on)}
                 className="bc-toggle"
               >
-                {locked ? <Check aria-hidden="true" weight="bold" className="size-4" /> : on ? <Minus aria-hidden="true" weight="light" className="size-4" /> : <Plus aria-hidden="true" weight="light" className="size-4" />}
+                {on ? <Check aria-hidden="true" weight="bold" className="size-4" /> : <Plus aria-hidden="true" weight="light" className="size-4" />}
               </button>
             </li>
           );
         })}
+        <MonitoringRow included={monitoringIncluded(pick)} added={withMonitoring} currency={currency} />
       </ul>
       <div className="bc-total bc-rise" style={{ "--i": 4 } as CSSProperties}>
         <div>
-          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(monthlyTotal(pick, currency), currency)} dir={change.dir} /></p>
+          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(monthlyTotal(pick, currency, withMonitoring), currency)} dir={change.dir} /></p>
           <small>{moneyCopy(currency).phoneBarCaption}</small>
         </div>
       </div>
-      <Link href={signupHref(pick)} {...trackAttrs("cta_click", location)} style={{ "--i": 5 } as CSSProperties} className={`${pillClasses("md", "action")} bc-rise w-full`}>
-        {BASKET_COPY.proceed}
-        <Arrow size="md" />
-      </Link>
+      {empty ? (
+        // Nothing to buy yet: the same button, switched off until a plan is picked.
+        <button type="button" disabled style={{ "--i": 5 } as CSSProperties} className={`${pillClasses("md", "action")} bc-rise w-full cursor-not-allowed opacity-45`}>
+          {BASKET_COPY.proceed}
+          <Arrow size="md" />
+        </button>
+      ) : (
+        <Link href={signupHref(pick, withMonitoring)} {...trackAttrs("cta_click", location)} style={{ "--i": 5 } as CSSProperties} className={`${pillClasses("md", "action")} bc-rise w-full`}>
+          {BASKET_COPY.proceed}
+          <Arrow size="md" />
+        </Link>
+      )}
     </section>
+  );
+}
+
+/**
+ * Dedicated Expert Monitoring under the plans: added or removed like a plan, or ticked and fixed while all three plans are
+ * in the basket, which include it at no cost.
+ */
+function MonitoringRow({ included, added, currency }: { readonly included: boolean; readonly added: boolean; readonly currency: Currency }): ReactElement {
+  const on = included || added;
+  return (
+    <li className={`bc-row ${on ? "is-on" : ""}`} style={{ "--c": "var(--ink)" } as CSSProperties}>
+      <span aria-hidden="true" className="bc-row-icon"><Headset weight="fill" className="size-[19px]" /></span>
+      <div className="min-w-0">
+        <b>{MONITORING.name}</b>
+        <small className="num">{included ? monitoringCopy(currency).included : `${formatMoney(monitoringPrice(currency), currency)} ${BASKET_COPY.perMonth}`}</small>
+      </div>
+      <button
+        type="button"
+        aria-pressed={on}
+        aria-label={monitoringSlotLabel(on)}
+        aria-disabled={included ? true : undefined}
+        onClick={() => { if (!included) monitoring.set(!added); }}
+        className="bc-toggle"
+      >
+        {on ? <Check aria-hidden="true" weight="bold" className="size-4" /> : <Plus aria-hidden="true" weight="light" className="size-4" />}
+      </button>
+    </li>
   );
 }

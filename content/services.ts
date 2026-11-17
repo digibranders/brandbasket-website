@@ -4,10 +4,9 @@
 // New copy: it goes to the owner before it ships (2026-10-26). Every price, percentage and cap is built from lib/pricing.ts for the page's currency (rupees with GST included, dollars with no tax named),
 // and the lists of what is and is not included come from content/pricing.ts so the pricing cards and these pages agree.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { extrasFor, planPrice, type PlanId } from "@/lib/pricing";
+import { extrasFor, planPrice, type PlanId, PLANS } from "@/lib/pricing";
 import { CANCEL_ANSWER } from "./legal/cancellation";
 import { adSpendAnswer, NO_GUARANTEE_ANSWER, planColumns } from "./pricing";
-import type { Step } from "./home";
 import type { FaqItem } from "./types";
 
 export type ServiceIconKey =
@@ -54,15 +53,11 @@ export interface ServicePageContent {
   readonly metaDescription: string;
   readonly h1: string;
   readonly lede: string;
-  /** The facts shown in the card beside the headline. */
-  readonly glance: readonly string[];
   readonly who: { readonly heading: string; readonly items: readonly ServiceSituation[] };
-  /** Left out by Social, whose page shows how the AI works and what the owner controls instead (content/social-page.ts). */
+  /** The website page's list of pages. Social and Ads show how the work runs instead (content/social-page.ts, content/ads-page.ts). */
   readonly does?: { readonly heading: string; readonly lede: string; readonly groups: readonly ServiceGroup[] };
   /** Left out when a service has nothing to set apart (Ads). */
   readonly spotlight?: ServiceSpotlight;
-  /** Left out by Social, whose page walks through the weekly cycle instead. */
-  readonly how?: { readonly heading: string; readonly steps: readonly Step[] };
   readonly limits: { readonly heading: string; readonly lede: string; readonly items: readonly string[] };
   readonly faq: readonly FaqItem[];
 }
@@ -97,7 +92,6 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       metaDescription: "We build up to 10 pages free and put them live within 7 working days. Then we host, secure and update it every month, with 2 edits included.",
       h1: "A free website for your business, looked after every month.",
       lede: `We design up to 10 pages for ${FREE} and put them online. Then we keep them hosted, secure and up to date, so you never deal with the technical side.`,
-      glance: ["Up to 10 pages, built for you", "Live within 7 working days", "2 edits a month, 15 minutes each", "A monthly website health report"],
       who: {
         heading: "Who it is for.",
         items: [
@@ -121,14 +115,6 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
         kind: "offer",
         heading: "The build is free.",
         body: [`We design and build your website for ${FREE}. The monthly plan keeps it online, safe and up to date.`, "You can cancel anytime."],
-      },
-      how: {
-        heading: "How it works.",
-        steps: [
-          { when: "Day 1", what: "A 15-minute call" },
-          { when: "Week 1", what: "We build it and you approve it" },
-          { when: "Every month", what: "We run it and send a report" },
-        ],
       },
       limits: {
         heading: "What is not included.",
@@ -163,7 +149,6 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       metaDescription: "AI writes your posts and pictures from your own website. You approve them, they go out every week on Instagram, Facebook, LinkedIn and Google.",
       h1: "Posts that go out on time, made with AI.",
       lede: "AI learns your business from your website and writes a week of posts at a time. You approve them, and they go out on Instagram, Facebook, LinkedIn and Google.",
-      glance: ["Posts and pictures written with AI", "3 posts, a carousel and a reel every week", "Instagram, Facebook, LinkedIn and Google Business Profile", "A monthly performance report"],
       who: {
         heading: "Who it is for.",
         items: [
@@ -225,7 +210,6 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       metaDescription: "Facebook and Instagram ads with AI ad copy and creatives, set up, optimised and kept within your budget, with a report in plain words every month.",
       h1: "Ads that bring enquiries, run for you.",
       lede: `We set up your Facebook and Instagram ads with AI copy and creatives, manage up to ${adCap} a month of your budget and show you the results every month.`,
-      glance: ["Meta ads on Facebook and Instagram", "AI ad copy and creatives", `Budget and bidding managed, up to ${adCap} a month`, "A monthly performance report"],
       who: {
         heading: "Who it is for.",
         items: [
@@ -234,29 +218,24 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
           { title: "Your budget runs out early, or never gets spent", body: "We manage spend and bids so your budget lasts the month." },
         ],
       },
-      does: {
-        heading: "What we do.",
-        lede: "Campaigns built with AI, run carefully and reported every month.",
-        groups: [
-          { icon: "Megaphone", title: "Campaigns, set up and run", items: ["Meta ads on Facebook and Instagram", "Campaign setup and optimisation"] },
-          { icon: "Article", title: "Ads made with AI", items: ["AI ad copy and creative generation", "Ads for you to approve before they run"] },
-          { icon: "ChartLineUp", title: "Budget and results", items: [`Budget and bidding management, up to ${adCap} a month of your budget`, "A monthly performance report", "Human support when you need it"] },
-        ],
-      },
-      how: {
-        heading: "How it works.",
-        steps: [
-          { when: "Day 1", what: "A 15-minute call about your customers and budget" },
-          { when: "Week 1", what: "We set up your ad account and first campaigns" },
-          { when: "Every month", what: "We optimise, manage the budget and send a report" },
-        ],
-      },
       limits: {
         heading: "What is not included.",
         lede: "So there are no surprises.",
         items: excludesOf("ads", currency),
       },
       faq: [
+        {
+          q: "When can I start?",
+          a: `${PLANS.ads.name} opens soon. Message us on WhatsApp and we will tell you when it does.`,
+        },
+        {
+          q: "Which platforms do you run ads on?",
+          a: "Facebook and Instagram, through Meta's own ad system.",
+        },
+        {
+          q: "Do I see the ads before they run?",
+          a: "Yes. Every ad comes to you first, and nothing goes live until you say yes.",
+        },
         {
           q: "Is ad spend included?",
           a: adSpendAnswer(currency),
@@ -317,8 +296,6 @@ export function servicePageRefFor(id: PlanId): ServicePageRef {
 /** Copy around the sections that is the same on every service page and in both currencies. */
 export const SERVICE_COPY = {
   breadcrumb: "Services",
-  glanceLabel: "At a glance",
-  freeBuild: "Free build",
   start: "Start my plan",
   /** The site's own "View pricing" label, short enough to sit beside the main button on a phone. */
   compare: "View pricing",

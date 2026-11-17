@@ -5,7 +5,6 @@ import {
   ChartLineUp,
   Check,
   FileText,
-  Globe,
   Headset,
   InstagramLogo,
   LockKey,
@@ -18,28 +17,20 @@ import {
   ShieldCheck,
   Star,
 } from "@phosphor-icons/react/dist/ssr";
-import Link from "next/link";
-import type { CSSProperties, ReactElement } from "react";
-import { JsonLd } from "@/components/JsonLd";
+import type { ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
-import { PlanBasketButton } from "@/components/pricing/PlanBasketButton";
 import { Faq } from "@/components/ui/Faq";
 import { OfferLine } from "@/components/ui/OfferLine";
-import { ComingSoonChip } from "@/components/ui/ComingSoonChip";
-import { OutlineButton } from "@/components/ui/OutlineButton";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { StepsList } from "@/components/ui/StepsList";
-import { BASKET_COPY } from "@/content/basket";
-import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent, serviceMoneyCopy } from "@/content/services";
-import { type Currency, formatMoney } from "@/lib/currency";
-import { isPlanPaused, PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
-import { breadcrumbJsonLd, serviceJsonLd } from "@/lib/seo/jsonld";
-import { ServiceStartButton } from "./ServiceStartButton";
+import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent } from "@/content/services";
+import type { Currency } from "@/lib/currency";
+import type { PlanId } from "@/lib/pricing";
+import { colourOf } from "./blocks";
 
-const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
-/** The plan colours already used by the pricing cards and the basket. */
-const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)", social: "var(--c-growth)", ads: "var(--c-search)" };
+// Sections every service page shares: who it is for, the website's page list card, the explainer, what is not included and
+// the questions. Each page composes them with its own hero and sections (WebsitePage, SocialPage, AdsPage).
+
 const GROUP_ICON: Readonly<Record<ServiceIconKey, Icon>> = {
   FileText,
   Phone,
@@ -62,64 +53,7 @@ const LONG_GROUP = 6;
 
 const RING = "shadow-[0_0_0_1px_rgba(21,22,26,0.06),0_40px_70px_-52px_rgba(40,28,14,0.4)]";
 
-function colourOf(id: PlanId): CSSProperties {
-  return { "--c": PLAN_COLOUR[id] } as CSSProperties;
-}
-
-/** The plan's hero: headline, buttons and the price card. Exported for the social page. */
-export function Hero({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
-  const PlanIcon = PLAN_ICON[page.id];
-  const plan = PLANS[page.id];
-  return (
-    <section aria-labelledby="h-service" style={colourOf(page.id)} className="relative">
-      <div aria-hidden="true" className="pointer-events-none absolute inset-0 [background:var(--hero)] [mask-image:linear-gradient(to_bottom,#000_55%,transparent)]" />
-      <div className="in-wrap relative grid gap-10 pb-16 pt-32 min-[980px]:grid-cols-[1.1fr_0.9fr] min-[980px]:items-center min-[980px]:gap-14">
-        <div className="grid justify-items-start gap-7">
-          <nav aria-label="Breadcrumb" className="text-sm text-ink-2">
-            <ol className="flex flex-wrap items-center gap-2">
-              <li><Link href="/pricing" className="underline-offset-4 hover:text-ink hover:underline">Pricing</Link></li>
-              <li aria-hidden="true">/</li>
-              <li aria-current="page" className="text-ink">{plan.name}</li>
-            </ol>
-          </nav>
-          <div className="grid gap-[18px]">
-            <h1 id="h-service" className="max-w-[19ch] font-display text-[clamp(36px,4.6vw,60px)] font-normal leading-[1.03] tracking-[-0.045em]">{page.h1}</h1>
-            <p className="max-w-[48ch] text-lg text-ink-2">{page.lede}</p>
-          </div>
-          <div className="cta-pair">
-            {isPlanPaused(page.id) ? null : <ServiceStartButton id={page.id} location={`service_${page.id}`} label={SERVICE_COPY.start} />}
-            <OutlineButton href="/pricing" location={`service_${page.id}_pricing`}>{SERVICE_COPY.compare}</OutlineButton>
-          </div>
-        </div>
-        <aside aria-label={SERVICE_COPY.glanceLabel} className={`grid overflow-clip rounded-[28px] bg-surface ${RING}`}>
-          <div className="grid grid-cols-[auto_1fr] content-start items-center gap-x-3.5 gap-y-1 bg-[linear-gradient(180deg,color-mix(in_srgb,var(--c)_11%,var(--surface)),var(--surface))] px-[26px] pb-[22px] pt-[26px]">
-            <span aria-hidden="true" className="grid size-[46px] place-items-center rounded-full bg-[var(--c)] text-action-ink"><PlanIcon weight="fill" className="size-6" /></span>
-            <div>
-              <p className="font-display text-[21px] font-semibold leading-[1.15] tracking-[-0.03em]">{plan.name}</p>
-              {page.id === "website" ? <span className="mt-1 inline-block rounded-full bg-rattan-wash px-2.5 py-[3px] text-xs font-semibold leading-[1.4] text-rattan-ink">{SERVICE_COPY.freeBuild}</span> : null}
-              {isPlanPaused(page.id) ? <ComingSoonChip className="mt-1" /> : null}
-            </div>
-            <p className="num col-span-full mt-3.5 font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
-              <s className="mb-1.5 block text-[clamp(20px,2vw,24px)] leading-none tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(planUsualPrice(page.id, currency), currency)}</s>
-              {formatMoney(planPrice(page.id, currency), currency)}<small className="ml-1 font-sans text-sm font-medium tracking-normal text-ink-2">{serviceMoneyCopy(currency).perMonth}</small>
-            </p>
-          </div>
-          <ul className="grid gap-2.5 border-t border-line px-[26px] py-5">
-            {page.glance.map((fact) => (
-              <li key={fact} className="grid grid-cols-[20px_1fr] items-start gap-2.5 text-[15px] leading-[1.4]">
-                <Check aria-hidden="true" className="mt-px size-[18px] text-sage" />
-                {fact}
-              </li>
-            ))}
-          </ul>
-          <div className="border-t border-line px-[26px] py-5"><PlanBasketButton id={page.id} /></div>
-        </aside>
-      </div>
-    </section>
-  );
-}
-
-/** Exported for the social page. */
+/** Who the plan is for. */
 export function Who({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-who" tight>
@@ -140,7 +74,7 @@ export function Who({ page }: { readonly page: ServicePageContent }): ReactEleme
   );
 }
 
-/** One "what we do" card. Exported for the website page, which shows the list of pages on its own. */
+/** One card of grouped items. The website page shows its list of pages with it. */
 export function Group({ group, id }: { readonly group: ServiceGroup; readonly id: PlanId }): ReactElement {
   const GroupIcon = GROUP_ICON[group.icon];
   return (
@@ -161,22 +95,7 @@ export function Group({ group, id }: { readonly group: ServiceGroup; readonly id
   );
 }
 
-function Does({ page }: { readonly page: ServicePageContent }): ReactElement | null {
-  if (page.does === undefined) return null;
-  const { does } = page;
-  return (
-    <Section labelledBy="h-does" tight>
-      <Reveal><SectionHead id="h-does" title={does.heading} lede={does.lede} /></Reveal>
-      <Reveal>
-        <div className="grid grid-cols-[minmax(0,1fr)] gap-5 min-[760px]:grid-cols-2">
-          {does.groups.map((group) => <Group key={group.title} group={group} id={page.id} />)}
-        </div>
-      </Reveal>
-    </Section>
-  );
-}
-
-/** Exported for the social page. */
+/** What sets a plan apart: the free build offer or an explainer. */
 export function Spotlight({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement | null {
   const { spotlight } = page;
   if (spotlight === undefined) return null;
@@ -199,18 +118,7 @@ export function Spotlight({ page, currency }: { readonly page: ServicePageConten
   );
 }
 
-function How({ page }: { readonly page: ServicePageContent }): ReactElement | null {
-  if (page.how === undefined) return null;
-  const { how } = page;
-  return (
-    <Section labelledBy="h-how" tight>
-      <Reveal><SectionHead id="h-how" title={how.heading} /></Reveal>
-      <Reveal><StepsList steps={how.steps} layout="columns" /></Reveal>
-    </Section>
-  );
-}
-
-/** "What is not included". Exported for the website page. */
+/** "What is not included". */
 export function Limits({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-limits" tight>
@@ -231,7 +139,7 @@ export function Limits({ page }: { readonly page: ServicePageContent }): ReactEl
   );
 }
 
-/** Exported for the social page. */
+/** The plan's questions. */
 export function ServiceFaq({ page }: { readonly page: ServicePageContent }): ReactElement {
   return (
     <Section labelledBy="h-service-faq" tight>
@@ -242,26 +150,5 @@ export function ServiceFaq({ page }: { readonly page: ServicePageContent }): Rea
         <Reveal className="min-w-0"><Faq items={page.faq} id={`${page.slug}-faq`} /></Reveal>
       </div>
     </Section>
-  );
-}
-
-/**
- * One service page: who it is for, what we do, what sets it apart, how it works, what is left out
- * and its questions. The closing section comes from the root layout. Prices come from lib/pricing in the page's currency,
- * the lists from the pricing cards, so a page never repeats a number it could drift from.
- */
-export function ServicePage({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
-  return (
-    <>
-      <Hero page={page} currency={currency} />
-      <Who page={page} />
-      <Does page={page} />
-      <Spotlight page={page} currency={currency} />
-      <How page={page} />
-      <Limits page={page} />
-      <ServiceFaq page={page} />
-      <JsonLd data={serviceJsonLd(page, currency)} />
-      <JsonLd data={breadcrumbJsonLd([{ name: "Home", path: "/" }, { name: "Pricing", path: "/pricing" }, { name: PLANS[page.id].name, path: page.path }])} />
-    </>
   );
 }

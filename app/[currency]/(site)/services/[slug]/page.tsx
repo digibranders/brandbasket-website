@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import type { ReactElement } from "react";
 import { GuideLinks } from "@/components/guides/GuideLinks";
-import { ServicePage } from "@/components/services/ServicePage";
+import { AdsPage } from "@/components/services/AdsPage";
 import { SocialPage } from "@/components/services/SocialPage";
 import { WebsitePage } from "@/components/services/WebsitePage";
 import { GUIDE_LINKS } from "@/content/guides";
@@ -32,8 +32,8 @@ export async function generateMetadata({ params }: ServicePageParams): Promise<M
 
 /**
  * /services/managed-website, /services/social-media-management and /services/paid-ads-management, in rupees or dollars. The
- * website page is the old website-first homepage (owner, 2026-11-06), the social page adds how the AI works (2026-11-17), and
- * the ads page uses the shared service layout.
+ * website page is the old website-first homepage (owner, 2026-11-06); the social and ads pages (2026-11-17) share the parts
+ * in components/services/blocks.tsx.
  */
 export default async function ServiceRoute({ params }: ServicePageParams): Promise<ReactElement> {
   const currency = await currencyParam(params);
@@ -41,7 +41,7 @@ export default async function ServiceRoute({ params }: ServicePageParams): Promi
   if (page === undefined) notFound();
   return (
     <>
-      {page.id === "website" ? <WebsitePage page={page} currency={currency} /> : page.id === "social" ? <SocialPage page={page} currency={currency} /> : <ServicePage page={page} currency={currency} />}
+      {page.id === "website" ? <WebsitePage page={page} currency={currency} /> : page.id === "social" ? <SocialPage page={page} currency={currency} /> : <AdsPage page={page} currency={currency} />}
       {GUIDE_LINKS[page.id].length > 0 ? <GuideLinks links={GUIDE_LINKS[page.id]} /> : null}
     </>
   );

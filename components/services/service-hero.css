@@ -1,4 +1,4 @@
-/* Social Media Management hero (SocialHero in SocialPage.tsx): the scene's cards drift slowly. No entrance animation: the
+/* Service page heroes (PlanHero and FloatCard in blocks.tsx): the scene cards drift slowly. No entrance animation: the
    hero paints at once, like the homepage hero, and a drift never hides anything. */
 .sh-float { animation: sh-float var(--t, 7s) cubic-bezier(0.45, 0, 0.55, 1) var(--d, 0ms) infinite alternate; }
 

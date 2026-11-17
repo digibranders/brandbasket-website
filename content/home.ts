@@ -28,7 +28,9 @@ export type HomeIconKey =
   | "LockOpen"
   | "CalendarCheck"
   | "ShareNetwork"
-  | "ThumbsUp";
+  | "ThumbsUp"
+  | "Megaphone"
+  | "Wallet";
 
 export interface OfferLineContent {
   readonly ariaLabel: string;

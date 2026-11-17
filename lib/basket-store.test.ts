@@ -22,9 +22,9 @@ describe("basket store", () => {
   it("lets the website go when another plan is in the basket", () => {
     const store = createBasketStore();
     store.set("website", true);
-    store.set("ads", true);
+    store.set("social", true);
     store.set("website", false);
-    expect(store.get()).toEqual({ website: false, social: false, ads: true });
+    expect(store.get()).toEqual({ website: false, social: true, ads: false });
   });
 
   it("lets the last plan go, so the basket can be empty again", () => {
@@ -36,8 +36,8 @@ describe("basket store", () => {
 
   it("replaces the whole pick, an empty one included", () => {
     const store = createBasketStore();
-    store.setAll({ website: true, social: true, ads: true });
-    expect(store.get()).toEqual({ website: true, social: true, ads: true });
+    store.setAll({ website: true, social: true, ads: false });
+    expect(store.get()).toEqual({ website: true, social: true, ads: false });
     store.setAll({ website: false, social: false, ads: false });
     expect(store.get()).toEqual({ website: false, social: false, ads: false });
   });
@@ -50,12 +50,25 @@ describe("basket store", () => {
     expect(listener).not.toHaveBeenCalled();
   });
 
+  it("never holds a paused plan (Paid Ads, coming soon), even from a basket saved before the pause", () => {
+    const save = vi.fn();
+    const store = createBasketStore({ website: true, social: false, ads: true }, { save });
+    expect(store.get()).toEqual({ website: true, social: false, ads: false });
+    const listener = vi.fn();
+    store.subscribe(listener);
+    store.set("ads", true);
+    store.setAll({ website: true, social: false, ads: true });
+    expect(listener).not.toHaveBeenCalled();
+    expect(save).not.toHaveBeenCalled();
+    expect(store.get().ads).toBe(false);
+  });
+
   it("stops notifying after unsubscribe", () => {
     const store = createBasketStore();
     const listener = vi.fn();
     const off = store.subscribe(listener);
     off();
-    store.set("ads", true);
+    store.set("social", true);
     expect(listener).not.toHaveBeenCalled();
   });
 });

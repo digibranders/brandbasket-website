@@ -57,10 +57,12 @@ export interface ServicePageContent {
   /** The facts shown in the card beside the headline. */
   readonly glance: readonly string[];
   readonly who: { readonly heading: string; readonly items: readonly ServiceSituation[] };
-  readonly does: { readonly heading: string; readonly lede: string; readonly groups: readonly ServiceGroup[] };
-  /** Left out when a service has nothing to set apart (Social and Ads). */
+  /** Left out by Social, whose page shows how the AI works and what the owner controls instead (content/social-page.ts). */
+  readonly does?: { readonly heading: string; readonly lede: string; readonly groups: readonly ServiceGroup[] };
+  /** Left out when a service has nothing to set apart (Ads). */
   readonly spotlight?: ServiceSpotlight;
-  readonly how: { readonly heading: string; readonly steps: readonly Step[] };
+  /** Left out by Social, whose page walks through the weekly cycle instead. */
+  readonly how?: { readonly heading: string; readonly steps: readonly Step[] };
   readonly limits: { readonly heading: string; readonly lede: string; readonly items: readonly string[] };
   readonly faq: readonly FaqItem[];
 }
@@ -158,33 +160,24 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       slug: "social-media-management",
       path: "/services/social-media-management",
       metaTitle: "Social Media Management with AI | Brandbasket",
-      metaDescription: "AI drafts your posts, captions and images, and they go out on schedule on up to 4 platforms. A monthly performance report in plain words.",
+      metaDescription: "AI writes your posts and pictures from your own website. You approve them, they go out every week on Instagram, Facebook, LinkedIn and Google.",
       h1: "Posts that go out on time, made with AI.",
-      lede: "AI drafts your posts, captions and images, you approve them, and they go out on schedule on up to 4 platforms. You get a report every month.",
-      glance: ["AI posts, captions and images", "Automated posting and scheduling", "Up to 4 platforms managed", "A monthly performance report"],
+      lede: "AI learns your business from your website and writes a week of posts at a time. You approve them, and they go out on Instagram, Facebook, LinkedIn and Google.",
+      glance: ["Posts and pictures written with AI", "3 posts, a carousel and a reel every week", "Instagram, Facebook, LinkedIn and Google Business Profile", "A monthly performance report"],
       who: {
         heading: "Who it is for.",
         items: [
-          { title: "You know you should post, but never have the time", body: "AI drafts the month's posts and captions, and they go out on schedule." },
-          { title: "Your pages look quiet or out of date", body: "Fresh posts and images keep your channels active, so customers see a business that is open." },
-          { title: "You cannot tell what is working", body: "A monthly report shows what went out and how people responded." },
+          { title: "You know you should post, but never have the time", body: "AI writes a week of posts at a time, and they go out on the days you choose." },
+          { title: "Your pages look quiet or out of date", body: "Fresh posts and pictures every week show customers a business that is open." },
+          { title: "You cannot tell what is working", body: "Numbers for every post update each day, and a monthly report says what worked." },
         ],
       },
-      does: {
-        heading: "What we do.",
-        lede: "Content made with AI, posted on time, and reported in plain words.",
-        groups: [
-          { icon: "InstagramLogo", title: "Content made with AI", items: ["AI content and caption generation", "AI image and creative generation", "Posts for you to approve"] },
-          { icon: "Article", title: "Posting on time", items: ["Automated posting and scheduling", "Up to 4 platforms managed"] },
-          { icon: "ChartLineUp", title: "A report in plain words", items: ["A monthly performance report", "Human support when you need it"] },
-        ],
-      },
-      how: {
-        heading: "How it works.",
-        steps: [
-          { when: "Day 1", what: "A 15-minute call about your business and customers" },
-          { when: "Week 1", what: "We connect your platforms and plan the first posts" },
-          { when: "Every month", what: "AI drafts, you approve, posts go out and a report follows" },
+      spotlight: {
+        kind: "explainer",
+        heading: "Only true things about your business.",
+        body: [
+          "Every fact AI finds on your website comes to you first. You confirm it or remove it before it is used in a post.",
+          "Claims such as awards, ratings or numbers wait until you can back them up, so your posts stick to what you have confirmed.",
         ],
       },
       limits: {
@@ -194,8 +187,24 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       },
       faq: [
         {
-          q: "What does a reel cost?",
-          a: `Reels and video editing are not part of the plan. Each reel is ${perReel}, quoted before we start.`,
+          q: "Where do the posts come from?",
+          a: "From your own website. AI reads your public pages once, learns what you sell and how you talk about it, and writes posts from that. You confirm the facts it found before they are used.",
+        },
+        {
+          q: "Which platforms do you post to?",
+          a: "Four: Instagram (a business or creator account), your Facebook Page, LinkedIn and your Google Business Profile. You connect them once and choose which ones to use.",
+        },
+        {
+          q: "Can I post about an offer or a festival?",
+          a: "Yes. Each week you can add one topic of your own, such as a sale, a new product or a festival greeting. It is written and drawn like the rest.",
+        },
+        {
+          q: "What if I do not like a post?",
+          a: "Send it back with a note, or ask for a new picture. You can also drop a topic before anything is made for it.",
+        },
+        {
+          q: "Are reels included?",
+          a: `Yes. One reel a week is part of the plan. Extra reels or longer video edits are ${perReel} per reel, quoted before we start.`,
         },
         {
           q: "Do I need the website plan?",

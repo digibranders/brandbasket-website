@@ -1,4 +1,9 @@
-import { type BasketPick, PLAN_IDS, type PlanId, samePick } from "./pricing";
+import { type BasketPick, PAUSED_PLAN_IDS, PLAN_IDS, type PlanId, samePick } from "./pricing";
+
+/** A paused plan never sits in the basket, even from a basket saved before it was paused. */
+function withoutPaused(pick: BasketPick): BasketPick {
+  return Object.freeze({ ...pick, ...Object.fromEntries(PAUSED_PLAN_IDS.map((id) => [id, false])) });
+}
 
 /** What a new visitor's basket holds: nothing. They pick the plans they want (owner, 2026-11-17). */
 export const DEFAULT_BASKET: BasketPick = Object.freeze({ website: false, social: false, ads: false });
@@ -73,11 +78,12 @@ export interface BasketStore {
 }
 
 export function createBasketStore(initial: BasketPick = DEFAULT_BASKET, persistence?: BasketPersistence): BasketStore {
-  let state: BasketPick = Object.freeze({ ...initial });
+  let state: BasketPick = withoutPaused(initial);
   const listeners = new Set<() => void>();
-  const commit = (next: BasketPick): void => {
+  const commit = (wanted: BasketPick): void => {
+    const next = withoutPaused(wanted);
     if (samePick(next, state)) return;
-    state = Object.freeze({ ...next });
+    state = next;
     persistence?.save(state);
     listeners.forEach((listener) => listener());
   };

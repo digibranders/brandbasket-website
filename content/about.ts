@@ -53,7 +53,7 @@ export const ABOUT: About = {
     lede: "Website and digital marketing services designed for the online needs of local businesses and growing companies.",
     items: [
       { icon: "Globe", tone: "site", plan: "website", title: "Website build and management", body: "We design up to 10 pages for free and put them live within 7 working days. Then we host, secure and update the site every month, so it stays correct and you never deal with the technical side.", link: "See Website Management" },
-      { icon: "ShareNetwork", tone: "growth", plan: "social", title: "Social media management", body: "AI drafts your posts, captions and images, you approve them, and they go out on schedule on up to 4 platforms. A monthly report shows what went out and how people responded.", link: "See Social Media Management" },
+      { icon: "ShareNetwork", tone: "growth", plan: "social", title: "Social media management", body: "AI writes your posts and pictures from your own website, you approve them, and they go out every week on Instagram, Facebook, LinkedIn and Google. A monthly report shows what went out and how people responded.", link: "See Social Media Management" },
       { icon: "Megaphone", tone: "growth", plan: "ads", title: "Paid ads management", body: "We set up and run your Facebook and Instagram ads with AI copy and creatives, and manage spend so your budget lasts the month. Your ad budget is paid separately. Results depend on your offer, competition and budget.", link: "See Paid Ads Management" },
     ],
   },

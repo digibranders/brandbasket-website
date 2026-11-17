@@ -8,7 +8,7 @@ import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { basketPlans, type BasketPick, MONITORING, monitoringBilled, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
+import { basketPlans, type BasketPick, isPlanPaused, MONITORING, monitoringBilled, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
@@ -31,18 +31,20 @@ export function RichText({ line }: { readonly line: Rich }): ReactElement {
 /** One plan slot: tapping it adds or removes the plan. */
 function Slot({ id, pick, currency }: { readonly id: PlanId; readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
   const on = pick[id];
+  const paused = isPlanPaused(id);
   const SlotIcon = ICON[id];
   return (
     <button
       type="button"
-      aria-pressed={on}
-      aria-label={slotLabel(id, on)}
+      disabled={paused}
+      aria-pressed={paused ? undefined : on}
+      aria-label={paused ? `${PLANS[id].name}, ${BASKET_COPY.comingSoon.toLowerCase()}` : slotLabel(id, on)}
       onClick={() => basket.set(id, !on)}
       style={inkStyle(id)}
-      className="group grid cursor-pointer content-start justify-items-center gap-1 rounded-[18px] p-1.5 text-center text-ink"
+      className="group grid cursor-pointer content-start justify-items-center gap-1 rounded-[18px] p-1.5 text-center text-ink disabled:pointer-events-none"
     >
-      <span className="relative grid aspect-square w-[clamp(84px,11vw,116px)] place-items-center rounded-full border-2 border-dashed border-rattan-ink/40 bg-surface/60 transition-colors duration-300 ease-[var(--ease)] group-hover:border-rattan-ink/70 group-hover:bg-surface group-aria-pressed:border-transparent group-aria-pressed:bg-surface">
-        <span aria-hidden="true" className="max-w-[9ch] font-mono text-[11px] leading-[1.3] tracking-[0.06em] text-rattan-ink group-aria-pressed:opacity-0">{BASKET_CARD.tapHint}</span>
+      <span className="relative grid aspect-square w-[clamp(84px,11vw,116px)] place-items-center rounded-full border-2 border-dashed border-rattan-ink/40 bg-surface/60 transition-colors duration-300 ease-[var(--ease)] group-hover:border-rattan-ink/70 group-hover:bg-surface group-aria-pressed:border-transparent group-aria-pressed:bg-surface group-disabled:border-rattan-ink/20">
+        <span aria-hidden="true" className="max-w-[9ch] font-mono text-[11px] leading-[1.3] tracking-[0.06em] text-rattan-ink group-aria-pressed:opacity-0">{paused ? BASKET_COPY.comingSoon : BASKET_CARD.tapHint}</span>
         {on ? (
           <span aria-hidden="true" className="stamp-in absolute inset-[6%] grid content-center place-items-center gap-0.5 rounded-full border-4 border-double border-[var(--c)] bg-[color-mix(in_srgb,var(--c)_7%,transparent)] text-[var(--c)] mix-blend-multiply">
             <SlotIcon weight="duotone" className="size-[clamp(26px,3vw,34px)]" />

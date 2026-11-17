@@ -16,7 +16,7 @@ export interface PlanCopy {
 /** Pricing hero rows (mock: .add). Names match `PLANS`. */
 export const PRICING_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
   website: { name: "Website Management", summary: "Built free, hosted and kept up to date", switchLabel: "Add Website Management" },
-  social: { name: "Social Media Management", summary: "AI posts, captions and scheduling on up to 4 platforms", switchLabel: "Add Social Media Management" },
+  social: { name: "Social Media Management", summary: "AI posts, pictures and a weekly reel on 4 platforms", switchLabel: "Add Social Media Management" },
   ads: { name: "Paid Ads Management", summary: "Meta ads with AI creatives, set up and optimised", switchLabel: "Add Paid Ads Management" },
 };
 
@@ -42,6 +42,8 @@ export const BASKET_COPY = {
   rowLast: "In basket",
   planOne: "plan",
   planMany: "plans",
+  /** In place of the add control of a plan that is not sold yet (PAUSED_PLAN_IDS in lib/pricing.ts). */
+  comingSoon: "Coming soon",
 } as const;
 
 /** The three lines that sit beside a basket total. */

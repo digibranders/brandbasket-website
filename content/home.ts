@@ -25,7 +25,10 @@ export type HomeIconKey =
   | "Headset"
   | "PencilSimple"
   | "ChartBar"
-  | "LockOpen";
+  | "LockOpen"
+  | "CalendarCheck"
+  | "ShareNetwork"
+  | "ThumbsUp";
 
 export interface OfferLineContent {
   readonly ariaLabel: string;

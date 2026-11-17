@@ -2,18 +2,27 @@
 import { Check, Plus } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { useBasket } from "@/components/basket/useBasket";
+import { BASKET_COPY } from "@/content/basket";
 import { slotLabel } from "@/content/basket-card";
 import { basket } from "@/lib/basket-store";
-import type { PlanId } from "@/lib/pricing";
+import { isPlanPaused, type PlanId } from "@/lib/pricing";
 
 const LABEL = { add: "Add to basket", added: "In your basket" } as const;
 
 /**
  * Adds or removes a plan in the page-wide basket, the same one the hero card and the basket dock read. `label` replaces "Add to basket" where a section names the plan (the homepage's "Choose Website Plan").
+ * A paused plan gets the same pill, switched off, saying "Coming soon".
  */
 export function PlanBasketButton({ id, label = LABEL.add }: { readonly id: PlanId; readonly label?: string }): ReactElement {
   const pick = useBasket();
   const on = pick[id];
+  if (isPlanPaused(id)) {
+    return (
+      <button type="button" disabled className="inline-flex h-[52px] w-full cursor-not-allowed items-center justify-center rounded-full border-[1.5px] border-ink/10 px-6 font-display text-[15.5px] font-semibold tracking-[-0.01em] text-ink-2">
+        {BASKET_COPY.comingSoon}
+      </button>
+    );
+  }
   return (
     <button
       type="button"

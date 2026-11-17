@@ -11,7 +11,8 @@ import { monitoringCopy } from "@/content/pricing";
 import { trackAttrs } from "@/lib/analytics";
 import { basket, monitoring } from "@/lib/basket-store";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { basketPlans, MONITORING, monitoringIncluded, monitoringPrice, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
+import { basketPlans, isPlanPaused, MONITORING, monitoringIncluded, monitoringPrice, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
+import { ComingSoonChip } from "../ui/ComingSoonChip";
 import { signupHref } from "@/lib/signup";
 import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
@@ -85,15 +86,17 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
                 <b>{PLANS[id].name}</b>
                 <small className="num">{formatMoney(planPrice(id, currency), currency)} {BASKET_COPY.perMonth}</small>
               </div>
-              <button
-                type="button"
-                aria-pressed={on}
-                aria-label={slotLabel(id, on)}
-                onClick={() => basket.set(id, !on)}
-                className="bc-toggle"
-              >
-                {on ? <Check aria-hidden="true" weight="bold" className="size-4" /> : <Plus aria-hidden="true" weight="light" className="size-4" />}
-              </button>
+              {isPlanPaused(id) ? <ComingSoonChip /> : (
+                <button
+                  type="button"
+                  aria-pressed={on}
+                  aria-label={slotLabel(id, on)}
+                  onClick={() => basket.set(id, !on)}
+                  className="bc-toggle"
+                >
+                  {on ? <Check aria-hidden="true" weight="bold" className="size-4" /> : <Plus aria-hidden="true" weight="light" className="size-4" />}
+                </button>
+              )}
             </li>
           );
         })}

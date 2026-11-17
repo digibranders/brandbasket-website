@@ -81,7 +81,7 @@ describe("pricing content", () => {
       expect(everyPlan("INR").items).toContain("Billed monthly, GST included");
       expect(pricingFaq("INR")[0]?.a).toBe("Yes. We design and build it for ₹0. The ₹2,999 monthly plan keeps it hosted, secure and up to date.");
       expect(pricingFaq("INR")[4]?.a).toContain("up to ₹10,000 a month");
-      expect(planColumns("INR")[1]?.excludes).toContain("Reels and video editing, ₹500 per reel");
+      expect(planColumns("INR")[1]?.excludes).toContain("Extra reels and video editing, ₹500 per reel");
     });
   });
 
@@ -93,7 +93,7 @@ describe("pricing content", () => {
       expect(compareCopy("USD").lede).toBe("Three plans, each on its own. Prices are monthly. Every plan costs the same.");
       expect(pricingFaq("USD")[0]?.a).toBe("Yes. We design and build it for $0. The $59 monthly plan keeps it hosted, secure and up to date.");
       expect(pricingFaq("USD")[4]?.a).toContain("up to $120 a month");
-      expect(planColumns("USD")[1]?.excludes).toContain("Reels and video editing, $10 per reel");
+      expect(planColumns("USD")[1]?.excludes).toContain("Extra reels and video editing, $10 per reel");
     });
     it("never mentions GST, tax or inclusive prices, and prints no rupee", () => {
       const text = allCopy("USD");

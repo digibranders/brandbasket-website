@@ -14,6 +14,7 @@ import { Band } from "@/components/ui/Band";
 import { DecorIcon } from "@/components/ui/DecorIcon";
 import { Section } from "@/components/ui/Section";
 import type { ServicePageContent } from "@/content/services";
+import { factsFor } from "@/content/home";
 import type { FaqItem } from "@/content/types";
 import type { Currency } from "@/lib/currency";
 import { PLANS } from "@/lib/pricing";
@@ -37,12 +38,12 @@ function pick<T>(items: readonly T[], match: (item: T) => boolean, what: string)
  * included, the two FAQ answers the homepage lacked, and the service and breadcrumb structured data.
  */
 export function WebsitePage({ page, currency }: { readonly page: ServicePageContent; readonly currency: Currency }): ReactElement {
-  const pageList = pick(page.does.groups, (g) => g.title === PAGE_LIST_TITLE, PAGE_LIST_TITLE);
+  const pageList = pick(page.does?.groups ?? [], (g) => g.title === PAGE_LIST_TITLE, PAGE_LIST_TITLE);
   const moreFaq: readonly FaqItem[] = EXTRA_FAQ.map((q) => pick(page.faq, (item) => item.q === q, q));
   return (
     <>
       <HomeHero currency={currency} />
-      <FactsStrip currency={currency} />
+      <FactsStrip facts={factsFor(currency)} />
       <Responsibility />
       <WhatYouGet />
       <Section labelledBy="h-page-list" tight>

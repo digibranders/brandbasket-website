@@ -25,7 +25,7 @@ export async function GET(): Promise<Response> {
   const { locality, region } = businessDetails.postalAddress;
   const plans = Object.values(PLANS).map((p) => `- ${p.name}: ${inr(planPrice(p.id, "INR"))} a month, GST included`).join("\n");
   const pages = indexableRoutes().map((r) => `- [${r.title}](${routeUrl(r.path)}): ${r.description}`).join("\n");
-  const { hour, adBudgetCap } = extrasFor("INR");
+  const { hour, adBudgetCap, reel } = extrasFor("INR");
   const posts = await latestPosts();
   const body = `# ${siteConfig.name}
 
@@ -38,7 +38,7 @@ ${siteConfig.name} is a brand of ${businessDetails.legalName} (GSTIN ${businessD
 - GST: ${GST_LABEL}, included in every price
 - Billing: monthly, cancel anytime with no notice period
 - Website Management: up to 10 pages built for you; live within 7 working days of your details and first payment; 2 edits a month of 15 minutes each; extra work is quoted first (${inr(hour)} an hour)
-- Social Media Management: AI content, captions and images; automated posting and scheduling on up to 4 platforms
+- Social Media Management: AI posts, captions and pictures written from your own website; 3 posts, a carousel and 1 reel a week on 4 platforms (Instagram, Facebook, LinkedIn and Google Business Profile), approved by you; extra reels ${inr(reel)} each
 - Paid Ads Management: Meta ads with AI ad copy and creatives; covers up to ${inr(adBudgetCap)} a month of your ad budget; ad spend is paid to Meta by you
 - ${MONITORING.name}: included with all three plans, otherwise ${inr(monitoringPrice("INR"))} a month
 - The domain is registered in your name; the design and content we write are provided as a hosted service while you are subscribed

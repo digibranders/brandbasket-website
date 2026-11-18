@@ -28,7 +28,7 @@ test.describe("a visitor in the United States", () => {
     await expect(page).toHaveURL(/\/pricing$/);
     const main = page.locator("main");
     for (const price of ["$59", "$99"]) await expect(main.getByText(price).first()).toBeVisible();
-    await expect(page).toHaveTitle(/^Pricing: a free website and monthly plans/);
+    await expect(page).toHaveTitle(/^Pricing: Website, Social Media and Ads Plans/);
     await expect(page).not.toHaveTitle(/[₹$]/);
   });
 

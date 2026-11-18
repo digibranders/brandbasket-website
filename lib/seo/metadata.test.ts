@@ -1,6 +1,6 @@
 // lib/seo/metadata.test.ts
 import { describe, expect, it, vi } from "vitest";
-import { pageMetadata } from "./metadata";
+import { HOME_SHARE_IMAGE_META, pageMetadata, SOCIAL_SHARE_IMAGE_META } from "./metadata";
 
 const base = { title: "t", description: "d", path: "/" };
 
@@ -36,6 +36,14 @@ describe("pageMetadata", () => {
     const meta = pageMetadata({ ...base, path: "/pricing" });
     expect(meta.alternates?.canonical).toBe("/pricing");
     expect(meta.openGraph).toMatchObject({ url: "https://www.brandbasket.in/pricing" });
+  });
+
+  it("names the homepage and Social Media cards when a page passes them, without a price", () => {
+    for (const image of [HOME_SHARE_IMAGE_META, SOCIAL_SHARE_IMAGE_META]) {
+      expect(pageMetadata(base, { image }).openGraph).toMatchObject({ images: [image] });
+      expect(pageMetadata(base, { image }).twitter).toMatchObject({ images: [image] });
+      expect(`${image.url} ${image.alt}`).not.toMatch(/[₹$]|\d/);
+    }
   });
 
   it("makes an article of a post, with its own share image", () => {

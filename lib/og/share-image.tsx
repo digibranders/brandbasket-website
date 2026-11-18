@@ -1,5 +1,6 @@
 // lib/og/share-image.tsx
-// The share-image design (1200x630). flapShareImage: the site's default card, a headline over four split-flap tiles with an italic line and the logo underneath.
+// The share-image designs (1200x630), all on the split-flap tiles. flapShareImage: the site's default card, a headline over four tiles with an italic line and the logo underneath.
+// servicesShareImage: the homepage card, three wide tiles (Web, Social, Ads). platformsShareImage: the Social Media page card, four letter tiles with the platform names under them.
 import { readFile } from "node:fs/promises";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
@@ -22,6 +23,9 @@ const RATTAN = "#c48a47";
 const FLAP_TOP = "#2b2c33";
 const FLAP_BOTTOM = "#1d1e23";
 const FLAP_HINGE = "#0d0e11";
+// The accent tile: rattan flaps with ink lettering (--rim-light and --rim-deep in app/globals.css).
+const HOT_TOP = "#d9a465";
+const HOT_BOTTOM = "#b6793a";
 
 const root = process.cwd();
 const [lockup, redHatDisplay, redHatDisplaySemiBold, redHatDisplayLightItalic, rupeeFallback] = await Promise.all([
@@ -51,20 +55,31 @@ export interface FlapCopy {
   readonly lineAccent: string;
 }
 
-/** One split-flap tile: two halves, a hinge line with a notch at each end, and the letter centred over both. */
-function Flap({ letter }: { readonly letter: string }): ReactElement {
+interface FlapSize {
+  readonly width: number;
+  readonly height: number;
+  readonly fontSize: number;
+}
+
+const FLAP_LETTER: FlapSize = { width: 190, height: 250, fontSize: 214 };
+
+/** One split-flap tile: two halves, a hinge line with a notch at each end, and the label centred over both. `hot` is the rattan accent tile. */
+function Flap({ label, size = FLAP_LETTER, hot = false }: { readonly label: string; readonly size?: FlapSize; readonly hot?: boolean }): ReactElement {
+  const hinge = Math.round(size.height / 2) - 3;
+  const top = hot ? HOT_TOP : FLAP_TOP;
+  const bottom = hot ? HOT_BOTTOM : FLAP_BOTTOM;
   return (
     <div
       style={{
-        position: "relative", width: 190, height: 250, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 18,
-        backgroundImage: `linear-gradient(180deg, ${FLAP_TOP} 0%, ${FLAP_TOP} 50%, ${FLAP_BOTTOM} 50%, ${FLAP_BOTTOM} 100%)`,
-        boxShadow: "0 30px 40px -24px rgba(21, 22, 26, 0.55)", color: RATTAN, fontSize: 214, fontWeight: 600, lineHeight: 1, letterSpacing: "-0.02em",
+        position: "relative", width: size.width, height: size.height, display: "flex", alignItems: "center", justifyContent: "center", overflow: "hidden", borderRadius: 18,
+        backgroundImage: `linear-gradient(180deg, ${top} 0%, ${top} 50%, ${bottom} 50%, ${bottom} 100%)`,
+        boxShadow: "0 30px 40px -24px rgba(21, 22, 26, 0.55)", color: hot ? INK : RATTAN, fontSize: size.fontSize, fontWeight: 600, lineHeight: 1, letterSpacing: "-0.02em",
       }}
     >
-      <div style={{ display: "flex", transform: "translateY(-6px)", textShadow: "0 6px 0 rgba(0, 0, 0, 0.25)" }}>{letter}</div>
-      <div style={{ position: "absolute", left: 0, right: 0, top: 122, height: 5, background: FLAP_HINGE }} />
-      <div style={{ position: "absolute", left: -6, top: 119, width: 12, height: 12, borderRadius: 6, background: FLAP_HINGE }} />
-      <div style={{ position: "absolute", right: -6, top: 119, width: 12, height: 12, borderRadius: 6, background: FLAP_HINGE }} />
+      <div style={{ display: "flex", transform: "translateY(-6px)", textShadow: "0 6px 0 rgba(0, 0, 0, 0.25)" }}>{label}</div>
+      <div style={{ position: "absolute", left: 0, right: 0, top: hinge, height: 5, background: FLAP_HINGE }} />
+      <div style={{ position: "absolute", left: -6, top: hinge - 3, width: 12, height: 12, borderRadius: 6, background: FLAP_HINGE }} />
+      <div style={{ position: "absolute", right: -6, top: hinge - 3, width: 12, height: 12, borderRadius: 6, background: FLAP_HINGE }} />
     </div>
   );
 }
@@ -78,7 +93,7 @@ export function flapShareImage({ lead, word, line, lineAccent }: FlapCopy): Imag
         <div style={{ display: "flex", marginTop: 30 }}>
           {[...word].map((letter, i) => (
             <div key={i} style={{ display: "flex", marginLeft: i === 0 ? 0 : 22 }}>
-              <Flap letter={letter} />
+              <Flap label={letter} />
             </div>
           ))}
         </div>
@@ -91,6 +106,83 @@ export function flapShareImage({ lead, word, line, lineAccent }: FlapCopy): Imag
           <img src={lockupSrc} width={202} height={34} alt="" />
           <div style={{ display: "flex", fontSize: 24, fontWeight: 600, letterSpacing: "-0.01em", color: INK_2 }}>{domain}</div>
         </div>
+      </div>
+    ),
+    { ...SHARE_IMAGE_SIZE, fonts: [...FONTS] },
+  );
+}
+
+const FRAME_BACKGROUND = `radial-gradient(ellipse 60% 70% at 50% 42%, #ffffff, ${BONE} 75%)`;
+
+/** The footer every card shares: the logo on the left, the domain on the right. */
+function Footer(): ReactElement {
+  const domain = new URL(siteConfig.url).hostname.replace(/^www\./, "");
+  return (
+    <div style={{ position: "absolute", left: 64, right: 64, bottom: 44, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img src={lockupSrc} width={202} height={34} alt="" />
+      <div style={{ display: "flex", fontSize: 24, fontWeight: 600, letterSpacing: "-0.01em", color: INK_2 }}>{domain}</div>
+    </div>
+  );
+}
+
+export interface ServicesCopy {
+  readonly lead: string;
+  /** Three short words, one per wide tile; the last is the accent tile. */
+  readonly tiles: readonly [string, string, string];
+  readonly line: string;
+  readonly lineAccent: string;
+}
+
+const FLAP_WIDE: FlapSize = { width: 340, height: 210, fontSize: 104 };
+
+/** The homepage card: a headline over three wide tiles, one per service, then an italic line. */
+export function servicesShareImage({ lead, tiles, line, lineAccent }: ServicesCopy): ImageResponse {
+  return new ImageResponse(
+    (
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", background: FRAME_BACKGROUND, color: INK, fontFamily: "Red Hat Display" }}>
+        <div style={{ display: "flex", marginTop: 54, fontSize: 60, fontWeight: 600, letterSpacing: "-0.035em", lineHeight: 1.05 }}>{lead}</div>
+        <div style={{ display: "flex", marginTop: 30 }}>
+          {tiles.map((tile, i) => (
+            <div key={tile} style={{ display: "flex", marginLeft: i === 0 ? 0 : 20 }}>
+              <Flap label={tile} size={FLAP_WIDE} hot={i === tiles.length - 1} />
+            </div>
+          ))}
+        </div>
+        <div style={{ display: "flex", marginTop: 30, fontSize: 40, fontStyle: "italic", fontWeight: 300, letterSpacing: "-0.02em" }}>
+          {line}
+          <span style={{ marginLeft: 10, color: RATTAN_TEXT }}>{lineAccent}</span>
+        </div>
+        <Footer />
+      </div>
+    ),
+    { ...SHARE_IMAGE_SIZE, fonts: [...FONTS] },
+  );
+}
+
+export interface PlatformsCopy {
+  readonly lead: string;
+  /** One entry per tile: the letter on the tile and the platform name under it. The last is the accent tile. */
+  readonly platforms: readonly { readonly letter: string; readonly name: string }[];
+}
+
+const FLAP_PLATFORM: FlapSize = { width: 170, height: 228, fontSize: 196 };
+
+/** The Social Media page card: a headline over one letter tile per platform, each with its name underneath. */
+export function platformsShareImage({ lead, platforms }: PlatformsCopy): ImageResponse {
+  return new ImageResponse(
+    (
+      <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", position: "relative", background: FRAME_BACKGROUND, color: INK, fontFamily: "Red Hat Display" }}>
+        <div style={{ display: "flex", marginTop: 70, fontSize: 60, fontWeight: 600, letterSpacing: "-0.035em", lineHeight: 1.05 }}>{lead}</div>
+        <div style={{ display: "flex", marginTop: 44 }}>
+          {platforms.map((platform, i) => (
+            <div key={platform.name} style={{ display: "flex", flexDirection: "column", alignItems: "center", marginLeft: i === 0 ? 0 : 22 }}>
+              <Flap label={platform.letter} size={FLAP_PLATFORM} hot={i === platforms.length - 1} />
+              <div style={{ display: "flex", marginTop: 18, fontSize: 26, fontWeight: 600, color: INK_2 }}>{platform.name}</div>
+            </div>
+          ))}
+        </div>
+        <Footer />
       </div>
     ),
     { ...SHARE_IMAGE_SIZE, fonts: [...FONTS] },

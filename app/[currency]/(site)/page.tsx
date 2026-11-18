@@ -17,11 +17,11 @@ import { Band } from "@/components/ui/Band";
 import { DecorIcon } from "@/components/ui/DecorIcon";
 import { currencyParam } from "@/lib/currency";
 import { planOffersJsonLd, webSiteJsonLd } from "@/lib/seo/jsonld";
-import { pageMetadata } from "@/lib/seo/metadata";
+import { HOME_SHARE_IMAGE_META, pageMetadata } from "@/lib/seo/metadata";
 import { HOME_ROUTE } from "@/lib/seo/routes";
 
 // The page's title, description and structured data are unchanged from the website-first homepage (owner, 2026-11-06).
-export const metadata: Metadata = pageMetadata(HOME_ROUTE);
+export const metadata: Metadata = pageMetadata(HOME_ROUTE, { image: HOME_SHARE_IMAGE_META });
 
 /**
  * The AI-platform homepage (copy: content/platform-home.ts). The real work stays as proof and keeps its #work anchor

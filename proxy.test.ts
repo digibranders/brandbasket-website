@@ -11,6 +11,6 @@ describe("proxy matcher", () => {
   });
 
   it("leaves the API, built assets, the feed, the share image and files with an extension alone", () => {
-    for (const path of ["/api/contact", "/_next/static/chunks/app.js", "/opengraph-image", "/blog/feed.xml", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/llms.txt", "/blog/preview-notes.txt", "/blog/other/file.png"]) expect(matches(path)).toBe(false);
+    for (const path of ["/api/contact", "/_next/static/chunks/app.js", "/opengraph-image", "/share/home", "/share/social", "/blog/feed.xml", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/llms.txt", "/blog/preview-notes.txt", "/blog/other/file.png"]) expect(matches(path)).toBe(false);
   });
 });

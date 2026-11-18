@@ -9,10 +9,10 @@ import { Band } from "@/components/ui/Band";
 import { barNoteFor, START_PAY_LABEL } from "@/content/start";
 import { currencyParam, formatMoney } from "@/lib/currency";
 import { planPrice } from "@/lib/pricing";
-import { pageMetadata } from "@/lib/seo/metadata";
+import { pageMetadata, WEBSITE_SHARE_IMAGE_META } from "@/lib/seo/metadata";
 import { ROUTES } from "@/lib/seo/routes";
 
-export const metadata: Metadata = pageMetadata(ROUTES.start);
+export const metadata: Metadata = pageMetadata(ROUTES.start, { image: WEBSITE_SHARE_IMAGE_META });
 
 /**
  * The page ads land on (docs/design/ads-landing-mock.html): one offer, one form, proof, what the monthly price covers, the

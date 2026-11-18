@@ -8,7 +8,7 @@ import { WebsitePage } from "@/components/services/WebsitePage";
 import { GUIDE_LINKS } from "@/content/guides";
 import { SERVICE_PAGES, servicePageBySlug } from "@/content/services";
 import { currencyParam } from "@/lib/currency";
-import { pageMetadata } from "@/lib/seo/metadata";
+import { pageMetadata, SOCIAL_SHARE_IMAGE_META } from "@/lib/seo/metadata";
 import { serviceRoute } from "@/lib/seo/routes";
 
 interface ServicePageParams {
@@ -27,7 +27,8 @@ export async function generateMetadata({ params }: ServicePageParams): Promise<M
   const currency = await currencyParam(params);
   const page = servicePageBySlug((await params).slug, currency);
   if (page === undefined) notFound();
-  return pageMetadata(serviceRoute(page));
+  // Website and Paid Ads keep the site default card; Social Media has its own.
+  return pageMetadata(serviceRoute(page), page.id === "social" ? { image: SOCIAL_SHARE_IMAGE_META } : {});
 }
 
 /**

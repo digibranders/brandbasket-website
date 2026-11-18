@@ -12,7 +12,7 @@ const DEFAULT_SHARE_IMAGE = { url: "/opengraph-image", ...SHARE_IMAGE_META };
 /** The homepage card: the same image as the default, kept at its own address because links were shared with it (app/share/home/route.tsx). */
 export const HOME_SHARE_IMAGE_META = { url: "/share/home", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: SHARE_IMAGE_META.alt } as const;
 
-/** The "website for FREE" card, served by app/share/website/route.tsx: the Website service page and the website landing page. */
+/** The "website for FREE" card, served by app/share/website/route.tsx: the Website service page only. */
 export const WEBSITE_SHARE_IMAGE_META = { url: "/share/website", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: `Get your business website for FREE. Built for you. Live in 7 working days. ${siteConfig.name}.` } as const;
 
 /** The Social Media Management page card, served by app/share/social/route.tsx. */

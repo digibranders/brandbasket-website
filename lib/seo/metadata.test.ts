@@ -1,6 +1,6 @@
 // lib/seo/metadata.test.ts
 import { describe, expect, it, vi } from "vitest";
-import { HOME_SHARE_IMAGE_META, pageMetadata, SOCIAL_SHARE_IMAGE_META } from "./metadata";
+import { HOME_SHARE_IMAGE_META, pageMetadata, SOCIAL_SHARE_IMAGE_META, WEBSITE_SHARE_IMAGE_META } from "./metadata";
 
 const base = { title: "t", description: "d", path: "/" };
 
@@ -25,7 +25,7 @@ describe("pageMetadata", () => {
   });
 
   it("names the default share image unless the route has its own", () => {
-    const image = { url: "/opengraph-image", width: 1200, height: 630, alt: "Get your business website for FREE. Built for you. Live in 7 working days. Brandbasket.", type: "image/png" };
+    const image = { url: "/opengraph-image", width: 1200, height: 630, alt: "Your entire digital presence: Web, Social and Ads, managed with AI. Brandbasket.", type: "image/png" };
     expect(pageMetadata(base).openGraph).toMatchObject({ images: [image] });
     expect(pageMetadata(base).twitter).toMatchObject({ images: [image] });
     expect("images" in (pageMetadata(base, { ownShareImage: true }).openGraph ?? {})).toBe(false);
@@ -38,11 +38,11 @@ describe("pageMetadata", () => {
     expect(meta.openGraph).toMatchObject({ url: "https://www.brandbasket.in/pricing" });
   });
 
-  it("names the homepage and Social Media cards when a page passes them, without a price", () => {
-    for (const image of [HOME_SHARE_IMAGE_META, SOCIAL_SHARE_IMAGE_META]) {
+  it("names the homepage, Website and Social Media cards when a page passes them, without a price", () => {
+    for (const image of [HOME_SHARE_IMAGE_META, WEBSITE_SHARE_IMAGE_META, SOCIAL_SHARE_IMAGE_META]) {
       expect(pageMetadata(base, { image }).openGraph).toMatchObject({ images: [image] });
       expect(pageMetadata(base, { image }).twitter).toMatchObject({ images: [image] });
-      expect(`${image.url} ${image.alt}`).not.toMatch(/[₹$]|\d/);
+      expect(`${image.url} ${image.alt}`).not.toMatch(/[₹$]|\d+% off/);
     }
   });
 

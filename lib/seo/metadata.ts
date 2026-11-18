@@ -9,6 +9,12 @@ export const SHARE_IMAGE_META = { width: 1200, height: 630, alt: `Get your busin
 /** The site default share image, served by app/opengraph-image.tsx. */
 const DEFAULT_SHARE_IMAGE = { url: "/opengraph-image", ...SHARE_IMAGE_META };
 
+/** The homepage card, served by app/share/home/route.tsx. */
+export const HOME_SHARE_IMAGE_META = { url: "/share/home", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: `Your entire digital presence: Web, Social and Ads, managed with AI. ${siteConfig.name}.` } as const;
+
+/** The Social Media Management page card, served by app/share/social/route.tsx. */
+export const SOCIAL_SHARE_IMAGE_META = { url: "/share/social", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: `One price, four platforms: Instagram, Facebook, LinkedIn and Google. ${siteConfig.name}.` } as const;
+
 /** Blog posts: OpenGraph "article" with its times, author and section. */
 export interface ArticleMeta {
   readonly publishedTime?: string;

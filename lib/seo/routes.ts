@@ -30,7 +30,7 @@ const GUIDES_UPDATED = "2026-10-28";
 /** The home page's entry. Titles and descriptions never carry a price, so one entry serves both currencies. */
 export const HOME_ROUTE: RouteMeta = {
   path: "/",
-  title: `Get your business website free | ${tradeName}`,
+  title: `Website, Social Media and Ads, Managed with AI | ${tradeName}`,
   description: "A professional website for your local business, built free and live in 7 working days. We host, secure and update it for you every month.",
   updated: UPDATED,
   priority: 1,
@@ -39,7 +39,7 @@ export const HOME_ROUTE: RouteMeta = {
 /** The pricing page's entry. No price here either: a shared link or a search result shows the words, not the amounts. */
 export const PRICING_ROUTE: RouteMeta = {
   path: "/pricing",
-  title: `Pricing: a free website and monthly plans | ${tradeName}`,
+  title: `Pricing: Website, Social Media and Ads Plans | ${tradeName}`,
   description: `Your website is built free. Choose ${PLANS.website.name}, ${PLANS.social.name} or ${PLANS.ads.name}, on their own or together, and pay month to month.`,
   updated: UPDATED,
   priority: 0.9,
@@ -51,7 +51,7 @@ export const ROUTES = {
   pricing: PRICING_ROUTE,
   contact: {
     path: "/contact",
-    title: `Contact ${tradeName}: free websites for local business`,
+    title: `Contact ${tradeName}: Talk to Our Team`,
     description: `Talk to ${tradeName} about a free website for your local business, a monthly plan or the site you already have. WhatsApp, call, email or send a message.`,
     updated: UPDATED,
     priority: 0.7,
@@ -74,7 +74,7 @@ export const ROUTES = {
   },
   about: {
     path: "/about",
-    title: `About ${tradeName}, a brand of Digibranders`,
+    title: `About ${tradeName}: Digital Services for Local Business`,
     description: `${tradeName} is a brand of ${legalName}, ${postalAddress.locality}. We build local business websites for free, then run them for you every month.`,
     updated: UPDATED,
     priority: 0.6,

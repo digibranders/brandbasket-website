@@ -3,14 +3,17 @@ import type { Metadata } from "next";
 import { isProductionSite, siteConfig } from "@/lib/site-config";
 import type { RouteMeta } from "./routes";
 
-/** Size and alt text shared by every opengraph-image file (lib/og/share-image.tsx). */
-export const SHARE_IMAGE_META = { width: 1200, height: 630, alt: `Get your business website for FREE. Built for you. Live in 7 working days. ${siteConfig.name}.`, type: "image/png" } as const;
+/** Size and alt text of the default share image, shared with every other card (lib/og/share-image.tsx). */
+export const SHARE_IMAGE_META = { width: 1200, height: 630, alt: `Your entire digital presence: Web, Social and Ads, managed with AI. ${siteConfig.name}.`, type: "image/png" } as const;
 
 /** The site default share image, served by app/opengraph-image.tsx. */
 const DEFAULT_SHARE_IMAGE = { url: "/opengraph-image", ...SHARE_IMAGE_META };
 
-/** The homepage card, served by app/share/home/route.tsx. */
-export const HOME_SHARE_IMAGE_META = { url: "/share/home", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: `Your entire digital presence: Web, Social and Ads, managed with AI. ${siteConfig.name}.` } as const;
+/** The homepage card: the same image as the default, kept at its own address because links were shared with it (app/share/home/route.tsx). */
+export const HOME_SHARE_IMAGE_META = { url: "/share/home", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: SHARE_IMAGE_META.alt } as const;
+
+/** The "website for FREE" card, served by app/share/website/route.tsx: the Website service page only. */
+export const WEBSITE_SHARE_IMAGE_META = { url: "/share/website", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: `Get your business website for FREE. Built for you. Live in 7 working days. ${siteConfig.name}.` } as const;
 
 /** The Social Media Management page card, served by app/share/social/route.tsx. */
 export const SOCIAL_SHARE_IMAGE_META = { url: "/share/social", width: SHARE_IMAGE_META.width, height: SHARE_IMAGE_META.height, alt: `One price, four platforms: Instagram, Facebook, LinkedIn and Google. ${siteConfig.name}.` } as const;

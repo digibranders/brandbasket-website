@@ -26,6 +26,8 @@ export default defineConfig({
   // at random (a different set of specs each run). Two workers and a longer timeout leave each page enough CPU.
   workers: process.env.CI ? 2 : undefined,
   timeout: process.env.CI ? 60_000 : 30_000,
+  // expect.poll and web-first assertions default to 5 s. Software WebGL frames take seconds on CI, so the basket polls need the same 20 s the basket specs already give their canvas checks.
+  expect: { timeout: process.env.CI ? 20_000 : 5_000 },
   use: { baseURL: BASE_URL, trace: "retain-on-failure", storageState: answeredConsent },
   webServer: [
     // Stands in for the CMS, so the blog is tested without one (e2e/cms-fixture-server.mjs).

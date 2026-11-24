@@ -1,5 +1,6 @@
 // components/contact/ContactFaq.tsx
 import type { ReactElement } from "react";
+import { FaqAllLink } from "@/components/faq/FaqAllLink";
 import { Reveal } from "@/components/motion/Reveal";
 import { Faq } from "@/components/ui/Faq";
 import { Section } from "@/components/ui/Section";
@@ -16,7 +17,10 @@ export function ContactFaq({ currency }: { readonly currency: Currency }): React
         <div className="min-[980px]:sticky min-[980px]:top-28 min-[980px]:self-start">
           <Reveal><SectionHead id="h-contact-faq" title={HOME_FAQ_HEADING} step /></Reveal>
         </div>
-        <Reveal className="min-w-0"><Faq items={contactFaqFor(currency)} id="contact-faq" /></Reveal>
+        <Reveal className="min-w-0">
+          <Faq items={contactFaqFor(currency)} id="contact-faq" />
+          <FaqAllLink currency={currency} />
+        </Reveal>
       </div>
     </Section>
   );

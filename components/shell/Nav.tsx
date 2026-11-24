@@ -20,11 +20,11 @@ export function Nav(): ReactElement {
         <ul className="ml-auto hidden gap-0.5 min-[1000px]:flex">
           <ServicesMenu />
           {PRIMARY_NAV.map((link) => (
-            <li key={link.href}><Link href={link.href} className="nav-link block px-3.5 py-2 text-[14.5px] text-ink-2 transition-colors duration-300 hover:text-ink">{link.label}</Link></li>
+            <li key={link.href}><Link href={link.href} className="nav-link block whitespace-nowrap px-2.5 py-2 min-[1180px]:px-3.5 text-[14.5px] text-ink-2 transition-colors duration-300 hover:text-ink">{link.label}</Link></li>
           ))}
         </ul>
         <div className="ml-auto flex items-center gap-1.5 min-[1000px]:ml-0">
-          <a href={LOGIN_LINK.href} className="hidden items-center gap-2 px-3.5 py-2 text-[14.5px] text-ink-2 transition-colors duration-300 hover:text-ink sm:inline-flex"><UserCircle aria-hidden="true" className="size-[19px] text-ink" />{LOGIN_LINK.label}</a>
+          <a href={LOGIN_LINK.href} className="hidden items-center gap-2 whitespace-nowrap px-2.5 py-2 text-[14.5px] min-[1180px]:px-3.5 text-ink-2 transition-colors duration-300 hover:text-ink sm:inline-flex"><UserCircle aria-hidden="true" className="size-[19px] text-ink" />{LOGIN_LINK.label}</a>
           <span className="hidden sm:inline-flex"><BasketTrigger anchor="nav" location="nav" size="sm" label={BASKET_COPY.startPlan} /></span>
           <MobileMenu />
         </div>

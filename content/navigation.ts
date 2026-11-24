@@ -24,6 +24,7 @@ export const SERVICES_NAV: readonly ServiceNavLink[] = [
 
 export const PRIMARY_NAV: readonly NavLink[] = [
   { label: "Pricing", href: "/pricing" },
+  { label: "FAQ", href: "/faq" },
   { label: "Our work", href: "/#work" },
   { label: "Blog", href: "/blog" },
   { label: "About", href: "/about" },

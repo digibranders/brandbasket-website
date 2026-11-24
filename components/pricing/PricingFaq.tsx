@@ -1,4 +1,5 @@
 import type { ReactElement } from "react";
+import { FaqAllLink } from "@/components/faq/FaqAllLink";
 import { Reveal } from "@/components/motion/Reveal";
 import { Faq } from "@/components/ui/Faq";
 import { Section } from "@/components/ui/Section";
@@ -21,6 +22,7 @@ export function PricingFaq({ currency }: { readonly currency: Currency }): React
         </div>
         <Reveal className="min-w-0">
           <Faq items={pricingFaq(currency)} id="pricing-faq" />
+          <FaqAllLink currency={currency} />
         </Reveal>
       </div>
     </Section>

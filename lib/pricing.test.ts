@@ -5,6 +5,7 @@ import {
   basketPlans,
   type BasketPick,
   buildUsualPrice,
+  domainCostRange,
   extrasFor,
   GST_LABEL,
   GST_RATE,
@@ -16,6 +17,7 @@ import {
   planPrice,
   planUsualPrice,
   samePick,
+  sourceTransferFee,
 } from "./pricing";
 
 const pick = (website: boolean, social: boolean, ads: boolean): BasketPick => ({ website, social, ads });
@@ -145,5 +147,14 @@ describe("formatMoney", () => {
     expect(formatMoney(3538.82, "INR")).toBe("₹3,538.82");
     expect(formatMoney(3538.8, "INR")).toBe("₹3,538.80");
     expect(formatMoney(64.5, "USD")).toBe("$64.50");
+  });
+});
+
+describe("source transfer and domain estimates", () => {
+  it("are set for rupees only, so dollar pages print no invented figure", () => {
+    expect(sourceTransferFee("INR")).toBe(15000);
+    expect(sourceTransferFee("USD")).toBeNull();
+    expect(domainCostRange("INR")).toEqual({ low: 1000, high: 10000 });
+    expect(domainCostRange("USD")).toBeNull();
   });
 });

@@ -98,6 +98,31 @@ export function extrasFor(currency: Currency): Extras {
   return EXTRAS[currency];
 }
 
+/**
+ * What taking the website's source code costs, one time (owner's client FAQ, 2026-11-24). No dollar fee is set, so dollar pages say we
+ * confirm the fee before we start rather than print a number.
+ */
+const SOURCE_TRANSFER_FEES: Readonly<Record<Currency, number | null>> = { INR: 15000, USD: null };
+
+export function sourceTransferFee(currency: Currency): number | null {
+  return SOURCE_TRANSFER_FEES[currency];
+}
+
+/**
+ * A typical yearly price for a domain name, paid to the registrar and never to us. It is an estimate shown in the FAQ; no dollar range is set,
+ * so dollar pages print none.
+ */
+export interface CostRange {
+  readonly low: number;
+  readonly high: number;
+}
+
+const DOMAIN_COST_RANGES: Readonly<Record<Currency, CostRange | null>> = { INR: { low: 1000, high: 10000 }, USD: null };
+
+export function domainCostRange(currency: Currency): CostRange | null {
+  return DOMAIN_COST_RANGES[currency];
+}
+
 /** Which plans are in the basket. The basket store never lets it go empty. */
 export type BasketPick = Readonly<Record<PlanId, boolean>>;
 

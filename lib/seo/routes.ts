@@ -56,6 +56,13 @@ export const ROUTES = {
     updated: UPDATED,
     priority: 0.7,
   },
+  faq: {
+    path: "/faq",
+    title: `Questions about your website plan | ${tradeName}`,
+    description: `Answers on price, delivery, ownership, edits, SEO and cancelling for the ${PLANS.website.name} plan. Search all the questions or pick a topic.`,
+    updated: "2026-11-24",
+    priority: 0.8,
+  },
   start: {
     path: "/website-landing-page",
     title: `Start your free business website | ${tradeName}`,

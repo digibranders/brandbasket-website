@@ -63,7 +63,7 @@ export function ServicesMenu(): ReactElement {
           if (openedByHover.current) { openedByHover.current = false; return; }
           setOpen((value) => !value);
         }}
-        className={`flex cursor-pointer items-center gap-1 px-3.5 py-2 text-[14.5px] transition-colors duration-300 hover:text-ink ${open ? "text-ink" : "text-ink-2"}`}
+        className={`flex cursor-pointer items-center gap-1 whitespace-nowrap px-2.5 py-2 min-[1180px]:px-3.5 text-[14.5px] transition-colors duration-300 hover:text-ink ${open ? "text-ink" : "text-ink-2"}`}
       >
         {SERVICES_LABEL}
         <CaretDown aria-hidden="true" weight="bold" className={`size-3 transition-transform duration-300 ease-[var(--ease)] ${open ? "rotate-180" : ""}`} />

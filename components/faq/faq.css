@@ -1,0 +1,26 @@
+/* components/faq/faq.css: the FAQ page's answer entrance. Everything else is Tailwind in the components. */
+@media (prefers-reduced-motion: no-preference) {
+  .faq-q[open] .faq-ans,
+  .faq-panel-in {
+    animation: faq-rise 360ms var(--ease) both;
+  }
+}
+
+@keyframes faq-rise {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.faq-strip {
+  scrollbar-width: none;
+}
+
+.faq-strip::-webkit-scrollbar {
+  display: none;
+}

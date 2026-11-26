@@ -37,9 +37,9 @@ describe("tools and purposes", () => {
     expect(toolsOf(null)).toEqual([]);
   });
 
-  it("runs Google Analytics and Clarity only, as the owner decided on 2026-10-21", () => {
-    expect(toolsOf("GTM-ABC1234")).toEqual(["ga4", "clarity"]);
-    expect(purposesOf(toolsOf("GTM-ABC1234"))).toEqual(["measurement"]);
+  it("runs Google Analytics, Clarity and the Meta pixel, which sits in the container since 2026-11-26", () => {
+    expect(toolsOf("GTM-ABC1234")).toEqual(["ga4", "clarity", "metaPixel"]);
+    expect(purposesOf(toolsOf("GTM-ABC1234"))).toEqual(["measurement", "advertising"]);
   });
 
   it("lists the container's tools in display order", () => {

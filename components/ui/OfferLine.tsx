@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import { BASKET_COPY } from "@/content/basket";
-import { offerFor } from "@/content/home";
+import { type OfferLineContent, offerFor } from "@/content/home";
 import type { Currency } from "@/lib/currency";
 
 /** The usual price, struck through beside the offer price. */
@@ -14,13 +14,12 @@ function Usual({ children }: { readonly children: string }): ReactElement {
 }
 
 /** The approved offer: ₹0 to build + ₹2,999/month to keep it running, incl. GST (dollars: $0 + $65/month, no tax wording), each with its usual price struck through beside it. Copy is locked and lives in offerFor. */
-export function OfferLine({ currency }: { readonly currency: Currency }): ReactElement {
-  const offer = offerFor(currency);
+export function OfferLine({ currency, offer = offerFor(currency) }: { readonly currency: Currency; readonly offer?: OfferLineContent }): ReactElement {
   return (
     <div aria-label={offer.ariaLabel} className="inline-flex max-w-full items-stretch rounded-[18px] border border-line bg-surface shadow-[var(--shadow-offer)] max-[520px]:grid max-[520px]:w-full">
       <div className="grid min-w-0 content-center gap-1 px-5 py-3.5 max-[420px]:px-4 max-[420px]:py-3">
         <p className="flex flex-wrap items-baseline gap-x-2.5 gap-y-1">
-          <Usual>{offer.build.was}</Usual>
+          {offer.build.was !== undefined && <Usual>{offer.build.was}</Usual>}
           <b className="num font-display text-[clamp(28px,2.7vw,34px)] font-medium leading-none tracking-[-0.035em] text-rattan-text">{offer.build.price}</b>
         </p>
         <span className="text-[13px] text-ink-2">{offer.build.label}</span>

@@ -9,6 +9,7 @@ import { ComingSoonChip } from "../ui/ComingSoonChip";
 import { Switch } from "../ui/Switch";
 import { PLAN_COLOUR } from "./basket-view";
 import { useBasket } from "./useBasket";
+import { useSiteKind } from "./useSiteKind";
 
 /**
  * Pricing hero plan rows (mock: .phc-act .adds). A click anywhere on a row toggles it; the row is not focusable
@@ -17,6 +18,7 @@ import { useBasket } from "./useBasket";
 export function AddonRows(): ReactElement {
   const pick = useBasket();
   const currency = useCurrency();
+  const kind = useSiteKind();
   return (
     <div>
       <p className="mb-2 text-sm text-ink-2">{BASKET_COPY.heroIntro}</p>
@@ -34,7 +36,7 @@ export function AddonRows(): ReactElement {
               <b className="block font-display text-[19px] font-medium tracking-[-0.02em]">{copy.name}</b>
               <span className="text-[13.5px] text-ink-2">{copy.summary}</span>
             </span>
-            <span className="num whitespace-nowrap font-display text-lg">{formatMoney(planPrice(id, currency), currency)}</span>
+            <span className="num whitespace-nowrap font-display text-lg">{formatMoney(planPrice(id, currency, kind), currency)}</span>
             {paused ? <ComingSoonChip /> : <Switch checked={pick[id]} label={copy.switchLabel} onChange={() => basket.set(id, !basket.get()[id])} />}
           </div>
         );

@@ -3,20 +3,21 @@ import { Phone, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
 import type { ReactElement } from "react";
+import { WebsiteOffer } from "@/components/home/WebsiteOffer";
 import { Reveal } from "@/components/motion/Reveal";
 import { Logo } from "@/components/shell/Logo";
 import { ArrowButton } from "@/components/ui/ArrowButton";
 import { Faq } from "@/components/ui/Faq";
-import { OfferLine } from "@/components/ui/OfferLine";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
-import { homeFaqFor, offerFor } from "@/content/home";
-import { CARE, START, START_CLOSING, START_FAQ_HEADING, START_FAQ_QUESTIONS, START_PAY_LABEL, START_STEPS, startFactsFor, SUPPORT_HOURS } from "@/content/start";
+import { homeFaqFor } from "@/content/home";
+import { CARE, START, START_CLOSING, START_FAQ_HEADING, START_FAQ_QUESTIONS, START_PAY_LABEL, START_STEPS, SUPPORT_HOURS } from "@/content/start";
 import type { Currency } from "@/lib/currency";
 import { businessDetails } from "@/lib/site-config";
 import "@/components/shell/footer.css";
 import { START_ICONS } from "./icons";
 import { StartForm } from "./StartForm";
+import { StartPrice } from "./StartPrice";
 
 /** The only things to click above the form: the logo (no link out), a call and WhatsApp. No navigation. */
 export function StartHeader(): ReactElement {
@@ -48,7 +49,7 @@ export function StartHero({ currency }: { readonly currency: Currency }): ReactE
             {START.headline} <em className="block font-light not-italic text-rattan-text">{START.headlineAccent}</em>
           </h1>
           <p className="max-w-[44ch] text-[clamp(17px,1.5vw,19.5px)] text-ink-2">{START.lede}</p>
-          <OfferLine currency={currency} />
+          <WebsiteOffer currency={currency} />
         </div>
         <div id="start" className="relative scroll-mt-4 rounded-3xl border border-line bg-surface p-[clamp(20px,2.4vw,32px)] shadow-[var(--shadow-float)]">
           <StartForm />
@@ -58,27 +59,8 @@ export function StartHero({ currency }: { readonly currency: Currency }): ReactE
   );
 }
 
-export function StartFacts({ currency }: { readonly currency: Currency }): ReactElement {
-  return (
-    <section aria-label="The basics" className="border-y border-line bg-surface">
-      <ul className="in-wrap grid grid-cols-2 gap-x-4 gap-y-[18px] py-[22px] min-[760px]:grid-cols-4">
-        {startFactsFor(currency).map((fact) => {
-          const Icon = START_ICONS[fact.icon];
-          return (
-            <li key={fact.text} className="flex items-center gap-3 font-display text-base font-medium leading-tight tracking-[-0.015em]">
-              <span aria-hidden="true" className="grid size-[42px] flex-none place-items-center rounded-full bg-rattan-wash text-rattan-ink"><Icon className="size-[22px]" /></span>
-              {fact.text}
-            </li>
-          );
-        })}
-      </ul>
-    </section>
-  );
-}
-
 /** The monthly plan's twelve points in four groups, beside a sticky price card that repeats the offer and the one button. */
 export function CareSection({ currency }: { readonly currency: Currency }): ReactElement {
-  const offer = offerFor(currency);
   return (
     <Section id="care" labelledBy="h-care" tight>
       <Reveal>
@@ -88,22 +70,7 @@ export function CareSection({ currency }: { readonly currency: Currency }): Reac
         <Reveal className="min-[980px]:sticky min-[980px]:top-6">
           <aside aria-label="The price" className="grid gap-[22px] rounded-3xl bg-action p-[clamp(22px,2.4vw,32px)] text-action-ink shadow-[var(--shadow-float)]">
             <h3 className="font-display text-[22px] font-medium leading-[1.15] tracking-[-0.025em] text-action-ink/78">{CARE.priceTitle}</h3>
-            <div className="grid gap-1">
-              <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <s className="num font-display text-[22px] leading-none text-action-ink/60 decoration-rattan"><span className="sr-only">Usually </span>{offer.build.was}</s>
-                <b className="num font-display text-[clamp(40px,4.4vw,56px)] font-medium leading-none tracking-[-0.045em] text-[#e0b277]">{offer.build.price}</b>
-              </p>
-              <span className="text-sm text-action-ink/78">{offer.build.label}</span>
-            </div>
-            <div aria-hidden="true" className="border-t border-dashed border-action-ink/30" />
-            <div className="grid gap-1">
-              <p className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-                <s className="num font-display text-[22px] leading-none text-action-ink/60 decoration-rattan"><span className="sr-only">Usually </span>{offer.run.was}</s>
-                <b className="num font-display text-[clamp(40px,4.4vw,56px)] font-medium leading-none tracking-[-0.045em]">{offer.run.price}</b>
-                <small className="font-sans text-[15px] font-medium text-action-ink/78">{offer.run.unit}</small>
-              </p>
-              <span className="text-sm text-action-ink/78">{offer.run.label}</span>
-            </div>
+            <StartPrice currency={currency} />
             <ArrowButton href="#start" tone="inverse" location="start_price" short={START_PAY_LABEL} centered>{START_PAY_LABEL}</ArrowButton>
             <p className="text-center text-[13px] text-action-ink/78">{CARE.priceNote}</p>
           </aside>

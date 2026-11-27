@@ -48,9 +48,12 @@ const PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, number>>>> 
   USD: { website: 59, social: 59, ads: 59 },
 };
 
-/** What one plan costs a month on its own. */
-export function planPrice(id: PlanId, currency: Currency): number {
-  return PLAN_PRICES[currency][id];
+/**
+ * What one plan costs a month on its own. Only the website plan depends on the kind of site: an ecommerce store costs more a
+ * month than a B2B website (owner, 2026-11-27). Every other plan ignores `kind`.
+ */
+export function planPrice(id: PlanId, currency: Currency, kind: SiteKind = "b2b"): number {
+  return id === "website" && kind === "ecommerce" ? ECOMMERCE_MONTHLY_PRICES[currency] : PLAN_PRICES[currency][id];
 }
 
 /**
@@ -63,9 +66,27 @@ const USUAL_PLAN_PRICES: Readonly<Record<Currency, Readonly<Record<PlanId, numbe
 };
 const USUAL_BUILD_PRICES: Readonly<Record<Currency, number>> = { INR: 35000, USD: 1200 };
 
-/** The struck-through "usually" monthly price of one plan. */
-export function planUsualPrice(id: PlanId, currency: Currency): number {
-  return USUAL_PLAN_PRICES[currency][id];
+/** The two kinds of website a build can be (owner, 2026-11-27): a B2B website, or an ecommerce store. */
+export type SiteKind = "b2b" | "ecommerce";
+export const SITE_KINDS: readonly SiteKind[] = ["b2b", "ecommerce"];
+
+/** What building the website costs, shown plain (not struck) on every price surface (owner, 2026-11-27). Show only: checkout does not charge it yet. */
+const SITE_BUILD_PRICES: Readonly<Record<Currency, Readonly<Record<SiteKind, number>>>> = {
+  INR: { b2b: 35000, ecommerce: 65000 },
+  USD: { b2b: 1200, ecommerce: 4500 },
+};
+
+export function siteBuildPrice(kind: SiteKind, currency: Currency): number {
+  return SITE_BUILD_PRICES[currency][kind];
+}
+
+/** The ecommerce store's monthly price, with its struck-through "usually" price beside it (owner, 2026-11-27). */
+const ECOMMERCE_MONTHLY_PRICES: Readonly<Record<Currency, number>> = { INR: 3999, USD: 99 };
+const ECOMMERCE_USUAL_MONTHLY_PRICES: Readonly<Record<Currency, number>> = { INR: 5999, USD: 120 };
+
+/** The struck-through "usually" monthly price of one plan (the website plan's depends on the kind of site, like planPrice). */
+export function planUsualPrice(id: PlanId, currency: Currency, kind: SiteKind = "b2b"): number {
+  return id === "website" && kind === "ecommerce" ? ECOMMERCE_USUAL_MONTHLY_PRICES[currency] : USUAL_PLAN_PRICES[currency][id];
 }
 
 /** The struck-through "usually" price of building a website, beside the free build. */
@@ -136,18 +157,18 @@ export function samePick(a: BasketPick, b: BasketPick): boolean {
 }
 
 /**
- * What the basket costs a month: the plans added up, plus Dedicated Expert Monitoring when it is billed (monitoringBilled).
+ * What the basket costs a month: the plans added up, plus Dedicated Expert Monitoring when the visitor has added it.
  * Rupees with GST inside, dollars with none.
  */
-export function monthlyTotal(pick: BasketPick, currency: Currency, monitoring: boolean): number {
-  const plans = basketPlans(pick).reduce((sum, plan) => sum + planPrice(plan.id, currency), 0);
-  return monitoringBilled(pick, monitoring) ? plans + monitoringPrice(currency) : plans;
+export function monthlyTotal(pick: BasketPick, currency: Currency, monitoring: boolean, kind: SiteKind = "b2b"): number {
+  const plans = basketPlans(pick).reduce((sum, plan) => sum + planPrice(plan.id, currency, kind), 0);
+  return monitoring ? plans + monitoringPrice(currency) : plans;
 }
 
 /**
  * Dedicated Expert Monitoring: our team watches, optimises and supports the client's plans (owner, 2026-11-06). It is the
- * "Done For You" of the homepage: included at no extra cost with all three plans, otherwise a monthly add-on at this price
- * (rupees with GST inside, dollars with no tax).
+ * "Done For You" of the homepage: a monthly add-on at this price, for any basket (rupees with GST inside, dollars with no
+ * tax). It is no longer free with all three plans (owner, 2026-11-27).
  */
 export const MONITORING = { name: "Dedicated Expert Monitoring" } as const;
 
@@ -158,15 +179,3 @@ export function monitoringPrice(currency: Currency): number {
   return MONITORING_PRICES[currency];
 }
 
-/** Whether the basket gets monitoring at no extra cost: every plan is in it. */
-export function monitoringIncluded(pick: BasketPick): boolean {
-  return PLAN_IDS.every((id) => pick[id]);
-}
-
-/**
- * Whether monitoring is charged: the visitor added it and the basket does not already include it. The choice is kept while
- * all three plans include it, so dropping back to fewer plans charges it again (owner, 2026-11-17).
- */
-export function monitoringBilled(pick: BasketPick, monitoring: boolean): boolean {
-  return monitoring && !monitoringIncluded(pick);
-}

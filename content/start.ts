@@ -1,7 +1,7 @@
 // content/start.ts
 // Copy for the ad landing page (/start). The headline is the owner's own wording (2026-10-31); the rest is proposed and goes to the owner before it ships.
 // Prices, the offer line and the FAQ answers are built from content/home.ts and lib/pricing.ts, so they cannot drift from the site.
-import { type Currency, formatMoney } from "@/lib/currency";
+import type { SiteKind } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 
 export type StartIconKey =
@@ -29,7 +29,7 @@ export type StartIconKey =
 export const START = {
   headline: "Your Website.",
   headlineAccent: "Our Responsibility.",
-  lede: "We build your business website free. For one flat monthly price, we host it, secure it and look after it.",
+  lede: "We build your business website. For one flat monthly price, we host it, secure it and look after it.",
   reach: { call: "Call us", whatsapp: "Chat on WhatsApp" },
 } as const;
 
@@ -71,9 +71,7 @@ export const START_ERRORS = {
 export const START_PAY_NOTE = "Cancel anytime.";
 
 /** The phone bar's small line under the monthly price. The GST wording stays on the offer line and the form's note, so the bar fits one tidy row. */
-export function barNoteFor(currency: Currency): string {
-  return `${formatMoney(0, currency)} to build`;
-}
+export const BAR_NOTE = "to keep it running";
 
 /** The support team's hours, said once: the closing band. */
 export const SUPPORT_HOURS = businessDetails.hours;
@@ -83,10 +81,11 @@ export interface StartFact {
   readonly text: string;
 }
 
-export function startFactsFor(currency: Currency): readonly StartFact[] {
+/** The four basics under the start hero. Only the launch time depends on the kind of website (owner, 2026-11-27). */
+export function startFactsFor(kind: SiteKind): readonly StartFact[] {
   return [
-    { icon: currency === "INR" ? "CurrencyInr" : "CurrencyDollar", text: `${formatMoney(0, currency)} to build` },
-    { icon: "RocketLaunch", text: "Live in 7 working days" },
+    { icon: "RocketLaunch", text: kind === "ecommerce" ? "Live in 21 days" : "Live in 7 working days" },
+    { icon: "ShieldCheck", text: "Hosting and security included" },
     { icon: "FileText", text: "Up to 10 pages" },
     { icon: "LockOpen", text: "Cancel anytime" },
   ];
@@ -113,7 +112,7 @@ export const CARE = {
     {
       title: "Your website",
       items: [
-        { icon: "Browser", title: "Up to 10 professional pages", text: "A modern website for your business, products and services. Built once, free." },
+        { icon: "Browser", title: "Up to 10 professional pages", text: "A modern website for your business, products and services. Built once." },
         { icon: "MagnifyingGlass", title: "SEO-friendly", text: "Search-engine-friendly structure and the essential technical SEO foundations." },
         { icon: "Devices", title: "Phone, tablet and desktop", text: "Looks great and works smoothly on every screen." },
       ],

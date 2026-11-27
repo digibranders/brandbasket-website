@@ -20,7 +20,7 @@ import {
 import type { ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
 import { Faq } from "@/components/ui/Faq";
-import { OfferLine } from "@/components/ui/OfferLine";
+import { WebsiteOffer } from "@/components/home/WebsiteOffer";
 import { Section } from "@/components/ui/Section";
 import { SectionHead } from "@/components/ui/SectionHead";
 import { SERVICE_COPY, type ServiceGroup, type ServiceIconKey, type ServicePageContent } from "@/content/services";
@@ -110,7 +110,7 @@ export function Spotlight({ page, currency }: { readonly page: ServicePageConten
           </div>
           {spotlight.kind === "explainer" ? <div className="grid gap-4">{body}</div> : null}
           {spotlight.kind === "offer" ? (
-            <div className="grid justify-items-start min-[980px]:justify-items-end"><OfferLine currency={currency} /></div>
+            <div className="grid justify-items-start min-[980px]:justify-items-end"><WebsiteOffer currency={currency} /></div>
           ) : null}
         </div>
       </Reveal>

@@ -5,6 +5,7 @@
 // content/legal/cancellation.ts so pricing and legal agree.
 import { type Currency, formatMoney } from "@/lib/currency";
 import { extrasFor, MONITORING, monitoringPrice, PLANS, planPrice, planUsualPrice, type PlanId } from "@/lib/pricing";
+import { buildPricesLine, monthlyPricesLine } from "./home";
 import { CANCEL_ANSWER, PLAN_CHANGE_ANSWER } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -58,10 +59,9 @@ export function planColumns(currency: Currency): readonly PlanColumn[] {
       price: formatMoney(planPrice("website", currency), currency),
       was: formatMoney(planUsualPrice("website", currency), currency),
       priceNote,
-      tag: "Free build",
       audience: "For businesses that want a website without the technical work.",
       does: [
-        "Website setup, up to 10 pages, built free",
+        "Website setup, up to 10 pages",
         "Content updates, 2 a month, 15 minutes each",
         "Hosting, SSL, security updates and backups",
         "Performance and uptime monitoring",
@@ -133,11 +133,10 @@ export function adSpendAnswer(currency: Currency): string {
 export const NO_GUARANTEE_ANSWER = "No one honestly can. You see the work and the numbers in a report every month.";
 
 export function pricingFaq(currency: Currency): readonly FaqItem[] {
-  const managedMonthly = formatMoney(planPrice("website", currency), currency);
   return [
     {
       q: "Is the website build really free?",
-      a: `Yes. We design and build it for ${formatMoney(0, currency)}. The ${managedMonthly} monthly plan keeps it hosted, secure and up to date.`,
+      a: `No. Building it is a one-time price: ${buildPricesLine(currency)}. The monthly plan, ${monthlyPricesLine(currency)}, keeps it hosted, secure and up to date.`,
     },
     {
       q: "Can I cancel?",
@@ -167,7 +166,6 @@ export interface MonitoringCopy {
   readonly title: string;
   readonly price: string;
   readonly priceNote: string;
-  readonly included: string;
   readonly body: string;
   readonly pillars: readonly string[];
 }
@@ -177,20 +175,16 @@ export function monitoringCopy(currency: Currency): MonitoringCopy {
     title: MONITORING.name,
     price: formatMoney(monitoringPrice(currency), currency),
     priceNote: currency === "INR" ? "a month, incl. GST" : "a month",
-    included: "Free with all three plans",
     body: "Our experts watch your website, social media and ads, fix what slips and help you grow.",
     pillars: ["Monitor", "Optimise", "Support", "Growth"],
   };
 }
 
-/** The words on the monitoring card's basket button: the same as a plan's, and a line when all three plans include it. */
-export const MONITORING_BUTTON = { add: "Add to basket", added: "In your basket", included: "Included in your basket" } as const;
+/** The words on the monitoring card's basket button: the same as a plan's. */
+export const MONITORING_BUTTON = { add: "Add to basket", added: "In your basket" } as const;
 
-/** The basket's line about monitoring: included with all three plans, in the basket at its price, or how to get it free. */
-export function monitoringNote(allThree: boolean, added: boolean, currency: Currency): string {
-  if (allThree) return `${MONITORING.name} is included with all three plans.`;
+/** The basket's line about monitoring: in the basket at its price, or what it costs as an extra. New copy for the owner (2026-11-27). */
+export function monitoringNote(added: boolean, currency: Currency): string {
   const price = formatMoney(monitoringPrice(currency), currency);
-  return added
-    ? `${MONITORING.name} is in your basket at ${price} a month. Pick all three plans and it is included.`
-    : `Pick all three plans and ${MONITORING.name} is included. Otherwise it is ${price} a month.`;
+  return added ? `${MONITORING.name} is in your basket at ${price} a month.` : `${MONITORING.name} is an optional extra at ${price} a month.`;
 }

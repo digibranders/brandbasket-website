@@ -2,11 +2,14 @@
 // components/start/StartBar.tsx
 import { type ReactElement, useEffect, useState } from "react";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
+import { useSiteKind } from "@/components/basket/useSiteKind";
 import { trackAttrs } from "@/lib/analytics";
+import { formatMoney, type Currency } from "@/lib/currency";
+import { planPrice } from "@/lib/pricing";
 
 interface StartBarProps {
-  /** The monthly price as printed, such as "₹2,999". */
-  readonly price: string;
+  /** The monthly website price is printed in this currency, for the chosen kind of website. */
+  readonly currency: Currency;
   readonly unit: string;
   readonly note: string;
   readonly label: string;
@@ -16,7 +19,8 @@ interface StartBarProps {
  * The main site's phone dock, for this page: the dark floating island (dock-isle, components/basket/dock.css) with the price and a
  * white pay button, shown only while the form is off screen. Wide screens keep the form in view and never show it.
  */
-export function StartBar({ price, unit, note, label }: StartBarProps): ReactElement {
+export function StartBar({ currency, unit, note, label }: StartBarProps): ReactElement {
+  const price = formatMoney(planPrice("website", currency, useSiteKind()), currency);
   const [away, setAway] = useState(false);
 
   useEffect(() => {

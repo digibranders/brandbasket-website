@@ -3,4 +3,4 @@
 
 /** Shared by the terms and /llms.txt: how plans are priced and billed. */
 export const PLAN_BILLING_TERMS =
-  "Every plan is billed at its own listed price. Adding or dropping a plan changes your bill from the next bill after the change. Dedicated Expert Monitoring is included at no extra cost for as long as all three plans are on your subscription.";
+  "Every plan is billed at its own listed price. Adding or dropping a plan changes your bill from the next bill after the change. Dedicated Expert Monitoring, if you add it, is billed at its own listed price.";

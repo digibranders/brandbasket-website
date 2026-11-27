@@ -105,7 +105,7 @@ describe("service pages", () => {
     expect(text).not.toContain("DPDP");
     for (const price of ["$59", "$120", "$10 an hour"]) expect(text).toContain(price);
     expect(servicePageFor("social", "USD").faq.find((item) => item.q === "Are reels included?")?.a).toContain("$10");
-    expect(servicePageFor("website", "USD").lede).toContain("for $0");
+    expect(servicePageFor("website", "USD").spotlight?.body[0]).toContain("$1,200 for a B2B website or $4,500 for an ecommerce store");
     expect(serviceMoneyCopy("USD")).toEqual({ perMonth: "a month" });
     expect(Object.values(PLANS).map((plan) => plan.name).every((name) => !NO_TAX.test(name))).toBe(true);
   });

@@ -3,6 +3,7 @@ import { ArrowRight, Check, Globe, InstagramLogo, Megaphone } from "@phosphor-ic
 import Link from "next/link";
 import type { CSSProperties, ReactElement } from "react";
 import { Reveal } from "@/components/motion/Reveal";
+import { SiteKindSwitch } from "@/components/basket/SiteKindSwitch";
 import { MonitoringBand } from "@/components/pricing/MonitoringBand";
 import { PlanBasketButton } from "@/components/pricing/PlanBasketButton";
 import { Section } from "@/components/ui/Section";
@@ -13,12 +14,13 @@ import { servicePageRefFor } from "@/content/services";
 import type { Currency } from "@/lib/currency";
 import type { PlanId } from "@/lib/pricing";
 import { BasketPanel } from "./BasketPanel";
+import { HomeWebsitePrice } from "./HomeWebsitePrice";
 
 const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 /** The plan colours the pricing page and the basket already use. */
 const PLAN_COLOUR: Readonly<Record<PlanId, string>> = { website: "var(--c-site)", social: "var(--c-growth)", ads: "var(--c-search)" };
 
-function PlanCard({ plan }: { readonly plan: PlanColumn }): ReactElement {
+function PlanCard({ plan, currency }: { readonly plan: PlanColumn; readonly currency: Currency }): ReactElement {
   const PlanIcon = PLAN_ICON[plan.id];
   const headingId = `home-plan-${plan.id}`;
   return (
@@ -28,18 +30,23 @@ function PlanCard({ plan }: { readonly plan: PlanColumn }): ReactElement {
       className="grid gap-5 rounded-[28px] bg-surface p-[clamp(20px,2.4vw,30px)] shadow-[0_0_0_1px_rgba(21,22,26,0.06),0_40px_70px_-52px_rgba(40,28,14,0.4)]"
     >
       <header className="flex flex-wrap items-start justify-between gap-x-6 gap-y-3">
-        <div className="flex items-center gap-3.5">
-          <span aria-hidden="true" className="grid size-12 flex-none place-items-center rounded-2xl bg-[var(--c)] text-action-ink"><PlanIcon weight="fill" className="size-6" /></span>
-          <div>
-            <p className="text-[13px] font-semibold text-[var(--c)]">{HOME_PRICING.planPrefix}</p>
-            <h3 id={headingId} className="font-display text-[clamp(21px,1.9vw,25px)] font-semibold leading-[1.15] tracking-[-0.03em]">{plan.name}</h3>
+        <div className="grid gap-3.5">
+          <div className="flex items-center gap-3.5">
+            <span aria-hidden="true" className="grid size-12 flex-none place-items-center rounded-2xl bg-[var(--c)] text-action-ink"><PlanIcon weight="fill" className="size-6" /></span>
+            <div>
+              <p className="text-[13px] font-semibold text-[var(--c)]">{HOME_PRICING.planPrefix}</p>
+              <h3 id={headingId} className="font-display text-[clamp(21px,1.9vw,25px)] font-semibold leading-[1.15] tracking-[-0.03em]">{plan.name}</h3>
+            </div>
           </div>
+          {plan.id === "website" ? <SiteKindSwitch className="justify-self-start" /> : null}
         </div>
-        <p className="num text-right font-display text-[clamp(32px,3vw,42px)] font-semibold leading-none tracking-[-0.045em] max-[560px]:text-left">
-          <s className="mr-2 text-[17px] font-medium tracking-[-0.01em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{plan.was}</s>
-          {plan.price}
-          <small className="mt-1.5 block font-sans text-[13.5px] font-medium tracking-normal text-ink-2">{plan.priceNote}</small>
-        </p>
+        {plan.id === "website" ? <HomeWebsitePrice currency={currency} priceNote={plan.priceNote} /> : (
+          <p className="num text-right font-display text-[clamp(32px,3vw,42px)] font-semibold leading-none tracking-[-0.045em] max-[560px]:text-left">
+            <s className="mr-2 text-[17px] font-medium tracking-[-0.01em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{plan.was}</s>
+            {plan.price}
+            <small className="mt-1.5 block font-sans text-[13.5px] font-medium tracking-normal text-ink-2">{plan.priceNote}</small>
+          </p>
+        )}
       </header>
       <ul className="grid gap-x-6 gap-y-2.5 border-t border-line pt-5 min-[640px]:grid-cols-2">
         {plan.does.map((line) => (
@@ -80,7 +87,7 @@ export function HomePricing({ currency }: { readonly currency: Currency }): Reac
         <div className="grid min-w-0 gap-4">
           {planColumns(currency).map((plan, i) => (
             <Reveal key={plan.id} delay={i * 90}>
-              <PlanCard plan={plan} />
+              <PlanCard plan={plan} currency={currency} />
             </Reveal>
           ))}
         </div>

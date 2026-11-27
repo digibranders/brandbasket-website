@@ -4,7 +4,7 @@ import { BasketCta } from "@/components/basket/BasketCta";
 import { BasketStage } from "@/components/basket/BasketStage";
 import { BasketTotal } from "@/components/basket/BasketTotal";
 import { OfferNote } from "@/components/basket/OfferNote";
-import { OfferLine } from "@/components/ui/OfferLine";
+import { WebsiteOffer } from "@/components/home/WebsiteOffer";
 import { BASKET_COPY } from "@/content/basket";
 import { HERO } from "@/content/home";
 import { PRICING_HERO } from "@/content/pricing";
@@ -24,7 +24,7 @@ export function PricingHero({ currency }: { readonly currency: Currency }): Reac
           <h1 id="h-pricing" className="font-display text-[clamp(40px,5.2vw,72px)] font-normal leading-none tracking-[-0.05em] min-[1000px]:text-[clamp(44px,4.4vw,60px)]">
             {PRICING_HERO.title} <em className="font-light not-italic text-rattan-text min-[760px]:block">{PRICING_HERO.accent}</em>
           </h1>
-          <OfferLine currency={currency} />
+          <WebsiteOffer currency={currency} />
         </div>
         <div className="min-w-0 self-center [grid-area:stage]">
           <BasketStage priority label={HERO.stageLabel} />

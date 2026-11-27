@@ -4,11 +4,11 @@ import type { ReactElement } from "react";
 import { WorkShowcase } from "@/components/home/WorkShowcase";
 import { StartBar } from "@/components/start/StartBar";
 import { WorkHand } from "@/components/start/WorkHand";
-import { CareSection, StartClosing, StartFacts, StartFaq, StartHero, StepsSection } from "@/components/start/StartSections";
+import { StartFacts } from "@/components/start/StartFacts";
+import { CareSection, StartClosing, StartFaq, StartHero, StepsSection } from "@/components/start/StartSections";
 import { Band } from "@/components/ui/Band";
-import { barNoteFor, START_PAY_LABEL } from "@/content/start";
-import { currencyParam, formatMoney } from "@/lib/currency";
-import { planPrice } from "@/lib/pricing";
+import { BAR_NOTE, START_PAY_LABEL } from "@/content/start";
+import { currencyParam } from "@/lib/currency";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { ROUTES } from "@/lib/seo/routes";
 
@@ -24,7 +24,7 @@ export default async function StartPage({ params }: { readonly params: Promise<{
   return (
     <>
       <StartHero currency={currency} />
-      <StartFacts currency={currency} />
+      <StartFacts />
       <Band tone="sunken" className="py-[clamp(56px,8vw,112px)]">
         <div className="max-[639px]:hidden">
           <WorkShowcase />
@@ -35,7 +35,7 @@ export default async function StartPage({ params }: { readonly params: Promise<{
       <StepsSection />
       <StartFaq currency={currency} />
       <StartClosing />
-      <StartBar price={formatMoney(planPrice("website", currency), currency)} unit="/month" note={barNoteFor(currency)} label={START_PAY_LABEL} />
+      <StartBar currency={currency} unit="/month" note={BAR_NOTE} label={START_PAY_LABEL} />
     </>
   );
 }

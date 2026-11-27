@@ -7,17 +7,17 @@ import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { Arrow, pillClasses } from "@/components/ui/ArrowButton";
 import { BASKET_COPY, moneyCopy, offerNote, planCount } from "@/content/basket";
 import { monitoringSlotLabel, slotLabel } from "@/content/basket-card";
-import { monitoringCopy } from "@/content/pricing";
 import { trackAttrs } from "@/lib/analytics";
 import { basket, monitoring } from "@/lib/basket-store";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { basketPlans, isPlanPaused, MONITORING, monitoringIncluded, monitoringPrice, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
+import { basketPlans, isPlanPaused, MONITORING, monitoringPrice, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice, samePick } from "@/lib/pricing";
 import { ComingSoonChip } from "../ui/ComingSoonChip";
 import { signupHref } from "@/lib/signup";
 import { PLAN_INK } from "./basket-view";
 import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
 import { useMonitoring } from "./useMonitoring";
+import { useSiteKind } from "./useSiteKind";
 
 export const PLAN_ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 
@@ -44,6 +44,7 @@ interface Change {
 export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactElement {
   const pick = useBasket();
   const withMonitoring = useMonitoring();
+  const kind = useSiteKind();
   const currency = useCurrency();
   const titleId = useId();
   const [seen, setSeen] = useState(pick);
@@ -71,7 +72,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
       <div aria-hidden="true" className="bc-meter bc-rise" style={{ "--i": 1 } as CSSProperties}>
         {PLAN_IDS.map((id) => <i key={id} className={pick[id] ? "is-on" : undefined} style={{ "--c": PLAN_INK[id] } as CSSProperties} />)}
       </div>
-      <p className="bc-nudge bc-rise" style={{ "--i": 2 } as CSSProperties}>{offerNote(pick, currency, withMonitoring)}</p>
+      <p className="bc-nudge bc-rise" style={{ "--i": 2 } as CSSProperties}>{offerNote(currency, withMonitoring)}</p>
       <ul className="bc-rows bc-rise" style={{ "--i": 3 } as CSSProperties}>
         {PLAN_IDS.map((id) => {
           const on = pick[id];
@@ -84,7 +85,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
               </span>
               <div className="min-w-0">
                 <b>{PLANS[id].name}</b>
-                <small className="num">{formatMoney(planPrice(id, currency), currency)} {BASKET_COPY.perMonth}</small>
+                <small className="num">{formatMoney(planPrice(id, currency, kind), currency)} {BASKET_COPY.perMonth}</small>
               </div>
               {isPlanPaused(id) ? <ComingSoonChip /> : (
                 <button
@@ -100,11 +101,11 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
             </li>
           );
         })}
-        <MonitoringRow included={monitoringIncluded(pick)} added={withMonitoring} currency={currency} />
+        <MonitoringRow added={withMonitoring} currency={currency} />
       </ul>
       <div className="bc-total bc-rise" style={{ "--i": 4 } as CSSProperties}>
         <div>
-          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(monthlyTotal(pick, currency, withMonitoring), currency)} dir={change.dir} /></p>
+          <p aria-live="polite" aria-atomic="true" className="num"><Roll value={formatMoney(monthlyTotal(pick, currency, withMonitoring, kind), currency)} dir={change.dir} /></p>
           <small>{moneyCopy(currency).phoneBarCaption}</small>
         </div>
       </div>
@@ -125,24 +126,22 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
 }
 
 /**
- * Dedicated Expert Monitoring under the plans: added or removed like a plan, or ticked and fixed while all three plans are
- * in the basket, which include it at no cost.
+ * Dedicated Expert Monitoring under the plans: added or removed like a plan, at its own price.
  */
-function MonitoringRow({ included, added, currency }: { readonly included: boolean; readonly added: boolean; readonly currency: Currency }): ReactElement {
-  const on = included || added;
+function MonitoringRow({ added, currency }: { readonly added: boolean; readonly currency: Currency }): ReactElement {
+  const on = added;
   return (
     <li className={`bc-row ${on ? "is-on" : ""}`} style={{ "--c": "var(--ink)" } as CSSProperties}>
       <span aria-hidden="true" className="bc-row-icon"><Headset weight="fill" className="size-[19px]" /></span>
       <div className="min-w-0">
         <b>{MONITORING.name}</b>
-        <small className="num">{included ? monitoringCopy(currency).included : `${formatMoney(monitoringPrice(currency), currency)} ${BASKET_COPY.perMonth}`}</small>
+        <small className="num">{`${formatMoney(monitoringPrice(currency), currency)} ${BASKET_COPY.perMonth}`}</small>
       </div>
       <button
         type="button"
         aria-pressed={on}
         aria-label={monitoringSlotLabel(on)}
-        aria-disabled={included ? true : undefined}
-        onClick={() => { if (!included) monitoring.set(!added); }}
+        onClick={() => monitoring.set(!added)}
         className="bc-toggle"
       >
         {on ? <Check aria-hidden="true" weight="bold" className="size-4" /> : <Plus aria-hidden="true" weight="light" className="size-4" />}

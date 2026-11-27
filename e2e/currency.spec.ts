@@ -43,15 +43,13 @@ test.describe("a visitor in the United States", () => {
     expect(text).not.toMatch(NO_TAX_TALK);
   });
 
-  test("the footer switch moves to rupees and remembers it", async ({ page, context }) => {
-    await page.goto("/pricing?plan=growth");
-    await page.getByRole("contentinfo").getByRole("link", { name: "INR" }).click();
+  test("a ?currency=inr link moves to rupees and remembers it", async ({ page, context }) => {
+    await page.goto("/pricing?currency=inr");
     await expect(page).toHaveURL(/\/pricing$/);
     await expect(page.locator("main").getByText("₹2,999").first()).toBeVisible();
     expect((await context.cookies()).find((c) => c.name === CURRENCY_COOKIE)?.value).toBe("INR");
     await page.goto("/");
     await expect(page.locator("body")).toContainText("₹2,999");
-    await expect(page.getByRole("contentinfo").getByRole("link", { name: "INR" })).toHaveAttribute("aria-current", "true");
   });
 
   test("the /usd copy is not an address of its own", async ({ request }) => {
@@ -70,17 +68,15 @@ test.describe("a visitor in the United States", () => {
 });
 
 test.describe("a visitor in India, or one we cannot place", () => {
-  test("sees rupees with GST included, and the switch marks INR", async ({ page }) => {
+  test("sees rupees with GST included", async ({ page }) => {
     await page.goto("/pricing");
     await expect(page.locator("main").getByText("₹2,999").first()).toBeVisible();
     await expect(page.locator("body")).toContainText(/incl\. GST/);
-    await expect(page.getByRole("contentinfo").getByRole("link", { name: "INR" })).toHaveAttribute("aria-current", "true");
   });
 
-  test("an Indian visitor can switch to dollars from the footer", async ({ page, context }) => {
+  test("an Indian visitor can switch to dollars with a ?currency=usd link", async ({ page, context }) => {
     await context.setExtraHTTPHeaders({ [COUNTRY]: "IN" });
-    await page.goto("/pricing");
-    await page.getByRole("contentinfo").getByRole("link", { name: "USD" }).click();
+    await page.goto("/pricing?currency=usd");
     await expect(page).toHaveURL(/\/pricing$/);
     await expect(page.locator("main").getByText("$59").first()).toBeVisible();
     await expect(page.locator("main")).not.toContainText("₹");

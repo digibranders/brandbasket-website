@@ -1,9 +1,9 @@
 // content/basket.ts
 // Copy for the basket controls, word for word from the mock (docs/design/mock.html: .phc-act .adds, #h-plans .addpanel,
 // .offer-note, .pbar). Money comes from lib/pricing.ts, in the page's currency. There are no package discounts or ad money
-// (owner, 2026-11-11); the one offer is Dedicated Expert Monitoring free with all three plans.
+// (owner, 2026-11-11); there is no offer, and Dedicated Expert Monitoring is no longer free with all three plans (owner, 2026-11-27).
 import type { Currency } from "@/lib/currency";
-import { type BasketPick, basketPlans, monitoringIncluded, PLAN_IDS, type PlanId } from "@/lib/pricing";
+import { type BasketPick, basketPlans, PLAN_IDS, type PlanId } from "@/lib/pricing";
 import { monitoringNote } from "./pricing";
 
 export interface PlanCopy {
@@ -15,13 +15,13 @@ export interface PlanCopy {
 
 /** Pricing hero rows (mock: .add). Names match `PLANS`. */
 export const PRICING_PLANS: Readonly<Record<PlanId, PlanCopy>> = {
-  website: { name: "Website Management", summary: "Built free, hosted and kept up to date", switchLabel: "Add Website Management" },
+  website: { name: "Website Management", summary: "Built, hosted and kept up to date", switchLabel: "Add Website Management" },
   social: { name: "Social Media Management", summary: "AI posts, pictures and a weekly reel on 4 platforms", switchLabel: "Add Social Media Management" },
   ads: { name: "Paid Ads Management", summary: "Meta ads with AI creatives, set up and optimised", switchLabel: "Add Paid Ads Management" },
 };
 
 export const BASKET_COPY = {
-  heroIntro: "Build your basket. Take all three plans and Dedicated Expert Monitoring is included.",
+  heroIntro: "Build your basket. Pick the plans you want.",
   perMonth: "a month",
   basketPrefix: "Your basket:",
   /** Read before the struck list price. */
@@ -72,7 +72,7 @@ export function planCount(pick: BasketPick): string {
   return `${basketPlans(pick).length} of ${PLAN_IDS.length} plans`;
 }
 
-/** The strip under the plan rows: the one offer, Dedicated Expert Monitoring free with all three plans. */
-export function offerNote(pick: BasketPick, currency: Currency, monitoring: boolean): string {
-  return monitoringNote(monitoringIncluded(pick), monitoring, currency);
+/** The strip under the plan rows: what Dedicated Expert Monitoring costs, or that it is in the basket. */
+export function offerNote(currency: Currency, monitoring: boolean): string {
+  return monitoringNote(monitoring, currency);
 }

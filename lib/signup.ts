@@ -1,4 +1,4 @@
-import { type BasketPick, monitoringBilled, PLAN_IDS } from "./pricing";
+import { type BasketPick, PLAN_IDS } from "./pricing";
 import { siteConfig } from "./site-config";
 import { START_PARAM } from "./start-attribution";
 
@@ -8,14 +8,14 @@ export function loginHref(): string {
 }
 
 /**
- * Where every "Start my plan" button goes: the app's sign-in, with the picked plans and, when it is billed, Dedicated
+ * Where every "Start my plan" button goes: the app's sign-in, with the picked plans and, when it was added, Dedicated
  * Expert Monitoring. The list format and ids must match what brandbasket-platform reads from `?plan=`
  * (apps/customer/src/features/entry/rules/account-entry.ts); change it here only.
  */
 export function signupHref(pick: BasketPick, monitoring: boolean): string {
   const url = new URL("/login", siteConfig.appUrl);
   const ids: string[] = PLAN_IDS.filter((id) => pick[id]);
-  if (monitoringBilled(pick, monitoring)) ids.push(MONITORING_LINK_ID);
+  if (monitoring) ids.push(MONITORING_LINK_ID);
   url.searchParams.set("plan", ids.join(","));
   return url.toString();
 }

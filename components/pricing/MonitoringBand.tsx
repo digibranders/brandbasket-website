@@ -9,8 +9,7 @@ import type { Currency } from "@/lib/currency";
 const PILLAR_ICONS: readonly Icon[] = [ChartBar, Target, Lifebuoy, TrendUp];
 
 /**
- * Dedicated Expert Monitoring under the plans (homepage and pricing page): what it costs, that all three plans include
- * it, its four parts, and the button that adds it to the basket. A dark panel, so it reads as the one extra beside the three plans.
+ * Dedicated Expert Monitoring under the plans (homepage and pricing page): what it costs, its four parts, and the button that adds it to the basket. A dark panel, so it reads as the one extra beside the three plans.
  */
 export function MonitoringBand({ currency, headingId }: { readonly currency: Currency; readonly headingId: string }): ReactElement {
   const copy = monitoringCopy(currency);
@@ -21,7 +20,6 @@ export function MonitoringBand({ currency, headingId }: { readonly currency: Cur
         <h3 id={headingId} className="font-display text-[clamp(24px,2.4vw,32px)] font-semibold leading-[1.1] tracking-[-0.03em]">{copy.title}</h3>
         <p className="num font-display text-[19px] font-medium tracking-[-0.01em]">
           {copy.price} <span className="font-sans text-[15px] text-action-ink/70">{copy.priceNote}</span>
-          <span className="ml-3 inline-block rounded-full bg-rattan/20 px-3 py-1 align-middle font-sans text-[13px] font-semibold text-rattan">{copy.included}</span>
         </p>
         <p className="max-w-[52ch] text-[15.5px] leading-[1.55] text-action-ink/72">{copy.body}</p>
         <div className="mt-3"><MonitoringBasketButton /></div>

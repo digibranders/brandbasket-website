@@ -17,6 +17,7 @@ import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
 import { useMonitoring } from "./useMonitoring";
 import { useBasketPanel } from "./useBasketPanel";
+import { useSiteKind } from "./useSiteKind";
 
 /** One change to the basket, for the motion: which way it went and how long to wait for a flying dot to land. */
 interface Pulse {
@@ -46,6 +47,7 @@ export function BasketDock(): ReactElement | null {
   const pathname = usePagePath();
   const pick = useBasket();
   const withMonitoring = useMonitoring();
+  const kind = useSiteKind();
   const currency = useCurrency();
   const panel = useBasketPanel();
   const [hidden, setHidden] = useState(true);
@@ -113,7 +115,7 @@ export function BasketDock(): ReactElement | null {
   const dir = pulse?.dir ?? 1;
   const delay = pulse?.delay ?? 0;
   const delayStyle = { "--d": `${delay}ms` } as CSSProperties;
-  const total = formatMoney(monthlyTotal(pick, currency, withMonitoring), currency);
+  const total = formatMoney(monthlyTotal(pick, currency, withMonitoring, kind), currency);
   return (
     <div
       data-basket-dock

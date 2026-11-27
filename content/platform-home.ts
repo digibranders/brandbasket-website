@@ -10,6 +10,7 @@ import { homeFaqFor } from "./home";
 import { pricingFaq } from "./pricing";
 import { SERVICE_PAGES } from "./services";
 import type { FaqItem } from "./types";
+import { buildPricesLine } from "./home";
 
 /** Where "talk to a person" buttons go. There is no demo booking flow yet, so Book a Demo opens the contact page too. */
 const CONTACT_HREF = "/contact";
@@ -148,11 +149,11 @@ export function platformFaqFor(currency: Currency): readonly FaqItem[] {
   return [
     { q: "What is Brandbasket?", a: "An AI-powered platform that helps businesses manage their website, social media and paid advertising in one place." },
     { q: "Can I manage everything myself?", a: "Yes. The platform gives you AI-powered tools to run your digital presence without an agency." },
-    { q: "Do you offer managed services?", a: "Yes. Our team can manage your digital presence for you. It's included at no extra cost with all three services, and available as a paid add-on for individual services." },
+    { q: "Do you offer managed services?", a: "Yes. Our team can manage your digital presence for you. It's available as a paid add-on." },
     { q: "Can I use just one service?", a: "Yes. Choose one service or combine them, whatever suits your business." },
     {
       q: "How much does it cost?",
-      a: `${PLANS.website.name}, ${PLANS.social.name} and ${PLANS.ads.name} are ${each} a month each${currency === "INR" ? ", GST included" : ""}, billed monthly. Take all three and ${MONITORING.name} is included. On its own it is ${formatMoney(monitoringPrice(currency), currency)} a month.`,
+      a: `${PLANS.website.name}, ${PLANS.social.name} and ${PLANS.ads.name} are ${each} a month each${currency === "INR" ? ", GST included" : ""}, billed monthly, except an ecommerce store, which is ${formatMoney(planPrice("website", currency, "ecommerce"), currency)} a month. Building a website is a one-time price: ${buildPricesLine(currency)}. ${MONITORING.name} is an optional extra at ${formatMoney(monitoringPrice(currency), currency)} a month.`,
     },
     approved(home, "Is the website really free?"),
     approved(home, "How long does it take to build my website?"),

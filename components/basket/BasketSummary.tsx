@@ -116,7 +116,7 @@ export function BasketSummary({ location, onClose }: BasketSummaryProps): ReactE
           <Arrow size="md" />
         </button>
       ) : (
-        <Link href={signupHref(pick, withMonitoring)} {...trackAttrs("cta_click", location)} style={{ "--i": 5 } as CSSProperties} className={`${pillClasses("md", "action")} bc-rise w-full`}>
+        <Link href={signupHref(pick, withMonitoring, kind)} {...trackAttrs("cta_click", location)} style={{ "--i": 5 } as CSSProperties} className={`${pillClasses("md", "action")} bc-rise w-full`}>
           {BASKET_COPY.proceed}
           <Arrow size="md" />
         </Link>

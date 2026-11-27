@@ -1,7 +1,7 @@
 // content/legal/terms.ts
 import { LEGAL_TEXT_VERSION } from "@/lib/legal-version";
 import { formatMoney } from "@/lib/currency";
-import { extrasFor, GST_RATE, MONITORING, monitoringPrice, planPrice, PLANS } from "@/lib/pricing";
+import { extrasFor, GST_RATE, MONITORING, monitoringPrice, planPrice, PLANS, siteBuildPrice } from "@/lib/pricing";
 import { businessDetails } from "@/lib/site-config";
 import { PLAN_CHANGE, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "./cancellation";
 import { PLAN_BILLING_TERMS } from "./fees";
@@ -27,7 +27,7 @@ export const termsOfService: LegalDocument = {
     {
       heading: "2. Services",
       paragraphs: [
-        `We build your website free of charge. You can take ${website.name} at ${rupees("website")} a month, ${social.name} at ${rupees("social")} a month and ${ads.name} at ${rupees("ads")} a month; each plan can be bought on its own. ${MONITORING.name} can be added to any plan at ${formatMoney(monitoringPrice("INR"), "INR")} a month.`,
+        `Building your website is a one-time fee, paid with your first payment: ${formatMoney(siteBuildPrice("b2b", "INR"), "INR")} for a B2B website or ${formatMoney(siteBuildPrice("ecommerce", "INR"), "INR")} for an ecommerce store. We may agree a different fee with you, which we then state on your payment link and your invoice. When we agree the fee with you, you pay part of it as an advance before we start work, and the balance together with your first plan payment when your website is ready to go live; your website goes live after that payment. When you sign up on this website without a payment link, you pay the whole fee with your first payment. You can take ${website.name} at ${rupees("website")} a month (${formatMoney(planPrice("website", "INR", "ecommerce"), "INR")} for an ecommerce store), ${social.name} at ${rupees("social")} a month and ${ads.name} at ${rupees("ads")} a month; each plan can be bought on its own. ${MONITORING.name} can be added to any plan at ${formatMoney(monitoringPrice("INR"), "INR")} a month.`,
         `The ${website.name} plan includes 2 edits a month of up to 15 minutes each. We quote any other work before we start it, at ${formatMoney(hour, "INR")} an hour, and do it only once you agree.`,
         `${ads.name} manages Facebook and Instagram ad budgets of up to ${formatMoney(adBudgetCap, "INR")} a month of your own money. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
         "What each plan includes is shown on our Pricing page when you sign up. If we agree a written proposal with you, it governs that engagement where it differs from these terms.",

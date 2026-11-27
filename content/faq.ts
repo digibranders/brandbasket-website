@@ -4,7 +4,8 @@
 // goes to the owner first. Rupee pages print GST; dollar pages never do (e2e/currency.spec.ts).
 import { CANCEL_ANSWER, CANCELLATION_RULE, HOSTED_SERVICE, PAYMENT_FAILURE, RENEWAL_REMINDER } from "@/content/legal/cancellation";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { buildUsualPrice, domainCostRange, extrasFor, GST_LABEL, planPrice, sourceTransferFee } from "@/lib/pricing";
+import { domainCostRange, extrasFor, GST_LABEL, planPrice, siteBuildPrice, sourceTransferFee } from "@/lib/pricing";
+import { buildPricesLine, monthlyPricesLine } from "./home";
 import { businessDetails } from "@/lib/site-config";
 import type { FaqItem } from "./types";
 
@@ -78,9 +79,9 @@ const TOPICS: readonly FaqTopicDef[] = [
       {
         heading: "What you pay",
         entries: [
-          { id: "10-10", q: "Why should I pay {plan} a month instead of building a website once and maintaining it myself?", a: "Building a website is only one part of keeping a professional online presence. You also need reliable hosting, SSL management, backups, security updates, technical monitoring and ongoing support. With Brandbasket you do not pay around {build} up front for a website build, and you do not have to manage the technical side yourself. For {plan} a month you get a professionally built website with hosting, maintenance and technical support, so you can run your business while we look after the website." },
-          { id: "1-1", q: "Is the website genuinely free, or are there any hidden charges?", a: "Yes. Website design and development are completely free for up to 10 pages. You only pay the monthly subscription of {plan}, which covers website hosting, maintenance and ongoing technical management. There are no hidden charges for the services included in your subscription.", chip: "yes" },
-          { id: "1-2", q: "Why are you offering website development for free?", a: "Our mission is to help more local businesses establish a professional online presence without the burden of a large upfront investment. We believe every business deserves a quality website, regardless of its size or budget. Our subscription model allows us to make this possible while taking care of your website over the long term." },
+          { id: "10-10", q: "Why should I pay {plan} a month instead of building a website once and maintaining it myself?", a: "Building a website is only one part of keeping a professional online presence. You also need reliable hosting, SSL management, backups, security updates, technical monitoring and ongoing support. With Brandbasket you do not have to manage the technical side yourself. For {plan} a month you get hosting, maintenance and technical support for your professionally built website, so you can run your business while we look after the website." },
+          { id: "1-1", q: "Is the website genuinely free, or are there any hidden charges?", a: "No hidden charges. Website design and development for up to 10 pages is a one-time price: {buildPrices}. Then you pay the monthly subscription ({monthlyPrices}), which covers website hosting, maintenance and ongoing technical management. There are no hidden charges for the services included in your subscription.", chip: "yes" },
+          { id: "1-2", q: "Why is there a one-time build price?", a: "The build price pays for the design and development of your website, up to 10 pages. The monthly subscription then covers hosting, maintenance and technical management, so your website stays secure and up to date." },
           { id: "1-3", q: "Is {plan} a fixed monthly charge, or can it increase?", a: "Your monthly subscription is fixed at {plan}{gstIncl}. Extra charges apply only if you ask for work outside the plan, such as more pages, longer edits or special functionality. We tell you the price and get your approval before we start." },
           { id: "1-4", q: "Does {plan} include GST?", a: "Yes. {plan} already includes {gst} GST, so you do not pay GST on top.", chip: "yes", inrOnly: true },
           { id: "1-12", q: "Will the monthly subscription price remain the same for existing customers?", a: "We aim to maintain consistent pricing for our existing subscribers. Any changes to subscription pricing or service terms will be communicated in advance and handled in accordance with the applicable terms and conditions." },
@@ -423,7 +424,8 @@ function tokensFor(currency: Currency): Readonly<Record<string, string>> {
   return {
     plan: `${formatMoney(planPrice("website", currency), currency)}`,
     hour: formatMoney(extrasFor(currency).hour, currency),
-    build: formatMoney(buildUsualPrice(currency), currency),
+    buildPrices: buildPricesLine(currency),
+    monthlyPrices: monthlyPricesLine(currency),
     gst: GST_LABEL,
     gstIncl: inr ? ", inclusive of GST" : "",
     transfer: fee === null ? "a one-time transfer fee that we confirm before we start" : `a one-time transfer fee of ${formatMoney(fee, currency)}`,
@@ -517,8 +519,8 @@ export function faqPlanFor(currency: Currency): {
 } {
   const inr = currency === "INR";
   return {
-    build: { figure: formatMoney(0, currency), note: "to design and build your website, up to 10 pages" },
-    monthly: { figure: formatMoney(planPrice("website", currency), currency), note: inr ? "a month to keep it running, GST included" : "a month to keep it running" },
+    build: { figure: formatMoney(siteBuildPrice("b2b", currency), currency), note: `to design and build a B2B website, up to 10 pages (${formatMoney(siteBuildPrice("ecommerce", currency), currency)} for an ecommerce store)` },
+    monthly: { figure: formatMoney(planPrice("website", currency), currency), note: `${inr ? "a month to keep it running, GST included" : "a month to keep it running"} (${formatMoney(planPrice("website", currency, "ecommerce"), currency)} for an ecommerce store)` },
     facts: [
       { icon: "Timer", title: "Live in 7 working days", note: "Once we have your content" },
       { icon: "ShieldCheck", title: "Care is included", note: "Hosting, SSL, backups and monitoring" },
@@ -544,7 +546,7 @@ export function faqScopeFor(currency: Currency): {
   const domain = domainCostRange(currency);
   return {
     includedTitle: "Included in your plan",
-    includedNote: `The build is free. ${tokens.plan} a month keeps it running.`,
+    includedNote: `The build is a one-time price. ${tokens.plan} a month (${formatMoney(planPrice("website", currency, "ecommerce"), currency)} for an ecommerce store) keeps it running.`,
     included: [
       "Design and build of up to 10 pages",
       "Custom design with two rounds of revisions",

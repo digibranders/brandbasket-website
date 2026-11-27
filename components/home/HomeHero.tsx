@@ -1,6 +1,6 @@
 import type { ReactElement } from "react";
 import { BasketStage } from "@/components/basket/BasketStage";
-import { OfferLine } from "@/components/ui/OfferLine";
+import { WebsiteOffer } from "@/components/home/WebsiteOffer";
 import { PricingButton } from "@/components/ui/PricingButton";
 import { ServiceStartButton } from "@/components/services/ServiceStartButton";
 import { HERO } from "@/content/home";
@@ -8,7 +8,7 @@ import { PRIMARY_CTA } from "@/content/navigation";
 import type { Currency } from "@/lib/currency";
 
 /**
- * The Website Management page's hero (mock: #hero). Copy is locked. No Reveal here: the hero paints at once. Its main button
+ * The Website Management page's hero (mock: #hero), its price card switching between a B2B website and an ecommerce store. Copy is locked. No Reveal here: the hero paints at once. Its main button
  * puts the website plan in the basket before opening it, as the other service pages do: a new visitor's basket is empty.
  * The glow spans the full width (clipped to the 1280px column its right edge showed as a hard line on wide screens) and
  * fades out at the bottom, so it does not end on a hard edge above the facts strip.
@@ -22,7 +22,7 @@ export function HomeHero({ currency }: { readonly currency: Currency }): ReactEl
           <h1 id="h-hero" className="font-display text-[clamp(40px,5.6vw,82px)] font-medium leading-[0.96] tracking-[-0.052em]">
             {HERO.headline} <em className="font-light not-italic text-rattan-text">{HERO.headlineAccent}</em>
           </h1>
-          <OfferLine currency={currency} />
+          <WebsiteOffer currency={currency} />
           <div className="cta-pair">
             <ServiceStartButton id="website" location="hero" label={PRIMARY_CTA.label} />
             <PricingButton />

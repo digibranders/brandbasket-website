@@ -13,8 +13,8 @@ describe("basket copy", () => {
   it("names the pricing rows as the plans", () => {
     for (const id of PLAN_IDS) expect(PRICING_PLANS[id].name).toBe(PLANS[id].name);
   });
-  it("states the one offer, monitoring with all three plans (owner, 2026-11-11)", () => {
-    expect(BASKET_COPY.heroIntro).toBe("Build your basket. Take all three plans and Dedicated Expert Monitoring is included.");
+  it("states no offer: monitoring is no longer free with all three plans (owner, 2026-11-27)", () => {
+    expect(BASKET_COPY.heroIntro).toBe("Build your basket. Pick the plans you want.");
     expect(BASKET_COPY.startPlan).toBe("Start my plan");
     expect(BASKET_COPY.proceed).toBe("Proceed to checkout");
   });
@@ -50,26 +50,23 @@ describe("money copy", () => {
 });
 
 describe("offerNote", () => {
-  it.each(CURRENCIES)("says monitoring is included only when all three plans are in the basket (%s)", (currency) => {
-    expect(offerNote(pick(true, true, true), currency, false)).toBe("Dedicated Expert Monitoring is included with all three plans.");
-    for (const p of [pick(true, false, false), pick(false, true, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(false, true, true)]) {
-      expect(offerNote(p, currency, false)).toMatch(/^Pick all three plans and Dedicated Expert Monitoring is included\. Otherwise it is /);
-    }
+  it.each(CURRENCIES)("prices monitoring as an optional extra, whatever is in the basket (%s)", (currency) => {
+    expect(offerNote(currency, false)).toMatch(/^Dedicated Expert Monitoring is an optional extra at /);
+    expect(offerNote(currency, true)).toMatch(/^Dedicated Expert Monitoring is in your basket at /);
   });
   it("prices monitoring in the page's currency", () => {
-    expect(offerNote(pick(true, false, false), "INR", false)).toContain("₹6,000 a month");
-    expect(offerNote(pick(true, false, false), "USD", false)).toContain("$99 a month");
+    expect(offerNote("INR", false)).toContain("₹6,000 a month");
+    expect(offerNote("USD", false)).toContain("$99 a month");
   });
   it("offers no discount and no ad money", () => {
-    for (const currency of CURRENCIES) expect(offerNote(pick(true, true, false), currency, false)).not.toMatch(/% off|save|ad money|for your ads/i);
+    for (const currency of CURRENCIES) expect(offerNote(currency, false)).not.toMatch(/% off|save|ad money|for your ads/i);
   });
 });
 
 describe("dollar copy never mentions tax", () => {
   it("has no GST, tax or incl. in any dollar string", () => {
-    const picks = [pick(true, false, false), pick(false, true, false), pick(false, false, true), pick(true, true, false), pick(true, false, true), pick(false, true, true), pick(true, true, true)];
     // Values only: the key names (inclGst) are code, not copy.
-    const all = [Object.values(moneyCopy("USD")), Object.values(BASKET_COPY), Object.values(PRICING_PLANS).map((p) => Object.values(p)), picks.map((p) => offerNote(p, "USD", false))];
+    const all = [Object.values(moneyCopy("USD")), Object.values(BASKET_COPY), Object.values(PRICING_PLANS).map((p) => Object.values(p)), offerNote("USD", false), offerNote("USD", true)];
     expect(JSON.stringify(all)).not.toMatch(/gst|tax|incl\./i);
   });
 });

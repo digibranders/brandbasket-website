@@ -1,4 +1,4 @@
-import { type BasketPick, PAUSED_PLAN_IDS, PLAN_IDS, type PlanId, samePick } from "./pricing";
+import { type BasketPick, PAUSED_PLAN_IDS, PLAN_IDS, type PlanId, samePick, type SiteKind } from "./pricing";
 
 /** A paused plan never sits in the basket, even from a basket saved before it was paused. */
 function withoutPaused(pick: BasketPick): BasketPick {
@@ -155,9 +155,41 @@ const monitoringPersistence = {
 /** Whether Dedicated Expert Monitoring is in the page-wide basket. Off on the server and the first render (useMonitoring). */
 export const monitoring = createFlagStore(inBrowser && savedMonitoring(), inBrowser ? monitoringPersistence : undefined);
 
+/** Where the kind of website is remembered: "1" when it is an ecommerce store, anything else a B2B website. */
+export const ECOMMERCE_STORAGE_KEY = "brandbasket-ecommerce";
+
+function savedEcommerce(): boolean {
+  try {
+    return parseSavedFlag(browserStorage()?.getItem(ECOMMERCE_STORAGE_KEY) ?? null);
+  } catch {
+    return false;
+  }
+}
+
+const ecommercePersistence = {
+  save(on: boolean): void {
+    try {
+      browserStorage()?.setItem(ECOMMERCE_STORAGE_KEY, serialiseFlag(on));
+    } catch {
+      // Full or blocked storage: the choice still holds for this visit.
+    }
+  },
+};
+
+/** Whether the visitor's website is an ecommerce store (otherwise a B2B website). B2B on the server and the first render (useSiteKind). */
+export const ecommerce = createFlagStore(inBrowser && savedEcommerce(), inBrowser ? ecommercePersistence : undefined);
+
+export function siteKindOf(isEcommerce: boolean): SiteKind {
+  return isEcommerce ? "ecommerce" : "b2b";
+}
+
 // Another tab changed the basket: follow it.
 if (inBrowser) {
   window.addEventListener("storage", (event) => {
+    if (event.key === ECOMMERCE_STORAGE_KEY) {
+      ecommerce.set(parseSavedFlag(event.newValue));
+      return;
+    }
     if (event.key === MONITORING_STORAGE_KEY) {
       monitoring.set(parseSavedFlag(event.newValue));
       return;

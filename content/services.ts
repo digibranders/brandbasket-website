@@ -5,6 +5,7 @@
 // and the lists of what is and is not included come from content/pricing.ts so the pricing cards and these pages agree.
 import { type Currency, formatMoney } from "@/lib/currency";
 import { extrasFor, planPrice, type PlanId, PLANS } from "@/lib/pricing";
+import { buildPricesLine, monthlyPricesLine } from "./home";
 import { CANCEL_ANSWER } from "./legal/cancellation";
 import { adSpendAnswer, NO_GUARANTEE_ANSWER, planColumns } from "./pricing";
 import type { FaqItem } from "./types";
@@ -76,7 +77,6 @@ function gstNote(currency: Currency): string {
 
 function buildServicePages(currency: Currency): readonly ServicePageContent[] {
   const WEBSITE_PRICE = formatMoney(planPrice("website", currency), currency);
-  const FREE = formatMoney(0, currency);
   const GST_NOTE = gstNote(currency);
   const extras = extrasFor(currency);
   const adCap = formatMoney(extras.adBudgetCap, currency);
@@ -91,7 +91,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       metaTitle: "Website Management: a free build, run for you | Brandbasket",
       metaDescription: "We build up to 10 pages free and put them live within 7 working days. Then we host, secure and update it every month, with 2 edits included.",
       h1: "A free website for your business, looked after every month.",
-      lede: `We design up to 10 pages for ${FREE} and put them online. Then we keep them hosted, secure and up to date, so you never deal with the technical side.`,
+      lede: `We design up to 10 pages and put them online. Then we keep them hosted, secure and up to date, so you never deal with the technical side.`,
       who: {
         heading: "Who it is for.",
         items: [
@@ -102,7 +102,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       },
       does: {
         heading: "What we do.",
-        lede: "What the free build covers, and what the monthly plan keeps doing.",
+        lede: "What the build covers, and what the monthly plan keeps doing.",
         groups: [
           { icon: "Phone", title: "Ways for customers to reach you", items: ["Contact and enquiry forms", "Click-to-call buttons", "WhatsApp click-to-chat", "Every enquiry emailed to you"] },
           { icon: "ShieldCheck", title: "Kept safe and online", items: ["Hosting and SSL that stays valid", "Regular backups", "Security updates", "Uptime monitoring"] },
@@ -113,8 +113,8 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       },
       spotlight: {
         kind: "offer",
-        heading: "The build is free.",
-        body: [`We design and build your website for ${FREE}. The monthly plan keeps it online, safe and up to date.`, "You can cancel anytime."],
+        heading: "One price to build it.",
+        body: [`We design and build your website for a one-time price: ${buildPricesLine(currency)}. The monthly plan keeps it online, safe and up to date.`, "You can cancel anytime."],
       },
       limits: {
         heading: "What is not included.",
@@ -124,7 +124,7 @@ function buildServicePages(currency: Currency): readonly ServicePageContent[] {
       faq: [
         {
           q: "Is the build really free?",
-          a: `Yes. We design and build it for ${FREE}. The ${WEBSITE_PRICE} monthly plan keeps it hosted, secure and up to date.`,
+          a: `No. Building it is a one-time price: ${buildPricesLine(currency)}. The monthly plan, ${monthlyPricesLine(currency)}, keeps it hosted, secure and up to date.`,
         },
         {
           q: "What counts as an edit?",

@@ -3,7 +3,7 @@
 // Prices and rates are built from lib/pricing.ts, per currency: rupees keep their GST wording, dollars never mention tax. The basket panel and button labels live in content/basket.ts and
 // content/navigation.ts (PRIMARY_CTA); they are not repeated here.
 import { type Currency, formatMoney } from "@/lib/currency";
-import { buildUsualPrice, GST_LABEL, planPrice, planUsualPrice } from "@/lib/pricing";
+import { buildUsualPrice, GST_LABEL, planPrice, planUsualPrice, type SiteKind, siteBuildPrice } from "@/lib/pricing";
 import { CANCEL_ANSWER, HOSTED_SERVICE, PAYMENT_FAILURE } from "./legal/cancellation";
 import type { FaqItem } from "./types";
 
@@ -34,7 +34,7 @@ export type HomeIconKey =
 
 export interface OfferLineContent {
   readonly ariaLabel: string;
-  readonly build: { readonly was: string; readonly price: string; readonly label: string };
+  readonly build: { readonly was?: string; readonly price: string; readonly label: string };
   readonly run: { readonly was: string; readonly price: string; readonly unit: string; readonly label: string };
 }
 
@@ -49,6 +49,35 @@ export function offerFor(currency: Currency): OfferLineContent {
     ariaLabel: `${zero} to build your website, usually ${usualBuild}, plus ${monthly} a month${inr ? ", GST included," : ""} to keep it running, usually ${usualMonthly}`,
     build: { was: usualBuild, price: zero, label: "to build your website" },
     run: { was: usualMonthly, price: monthly, unit: "/month", label: inr ? "to keep it running, incl. GST" : "to keep it running" },
+  };
+}
+
+/** The build prices in a sentence: "₹35,000 for a B2B website or ₹65,000 for an ecommerce store". New copy for the owner (2026-11-27). */
+export function buildPricesLine(currency: Currency): string {
+  return `${formatMoney(siteBuildPrice("b2b", currency), currency)} for a B2B website or ${formatMoney(siteBuildPrice("ecommerce", currency), currency)} for an ecommerce store`;
+}
+
+/** The monthly prices in a sentence: "₹2,999 a month (₹3,999 for an ecommerce store)". */
+export function monthlyPricesLine(currency: Currency): string {
+  return `${formatMoney(planPrice("website", currency), currency)} a month (${formatMoney(planPrice("website", currency, "ecommerce"), currency)} for an ecommerce store)`;
+}
+
+/** What each kind of website is called on the Website Management page, and what its build price is the price of. */
+export const SITE_KIND_COPY: Readonly<Record<SiteKind, { readonly tab: string; readonly label: string }>> = {
+  b2b: { tab: "B2B website", label: "to build your website" },
+  ecommerce: { tab: "Ecommerce store", label: "to build your online store" },
+};
+
+/** The offer card on the Website Management page: the build and monthly prices are by kind, the build one shown plain (not struck). */
+export function websiteOfferFor(kind: SiteKind, currency: Currency): OfferLineContent {
+  const price = formatMoney(siteBuildPrice(kind, currency), currency);
+  const monthly = formatMoney(planPrice("website", currency, kind), currency);
+  const usualMonthly = formatMoney(planUsualPrice("website", currency, kind), currency);
+  const { label } = SITE_KIND_COPY[kind];
+  return {
+    ariaLabel: `${price} ${label}, plus ${monthly} a month${currency === "INR" ? ", GST included," : ""} to keep it running, usually ${usualMonthly}`,
+    build: { price, label },
+    run: { was: usualMonthly, price: monthly, unit: "/month", label: currency === "INR" ? "to keep it running, incl. GST" : "to keep it running" },
   };
 }
 
@@ -72,10 +101,14 @@ export interface Fact {
   readonly text: string;
 }
 
-export function factsFor(currency: Currency): readonly Fact[] {
+/** How long the build takes, by kind of website (owner, 2026-11-27: ecommerce takes 21 days). */
+const LIVE_IN: Readonly<Record<SiteKind, string>> = { b2b: "Live in 7 working days", ecommerce: "Live in 21 days" };
+
+/** The four short facts under the Website Management hero. Only the launch time depends on the kind of website. */
+export function websiteFactsFor(kind: SiteKind): readonly Fact[] {
   return [
-    { icon: currency === "INR" ? "CurrencyInr" : "CurrencyDollar", text: `${formatMoney(0, currency)} to build` },
-    { icon: "RocketLaunch", text: "Live in 7 working days" },
+    { icon: "RocketLaunch", text: LIVE_IN[kind] },
+    { icon: "ShieldCheck", text: "Hosting and security included" },
     { icon: "Wrench", text: "No technical work" },
     { icon: "FileText", text: "One report a month" },
   ];
@@ -103,13 +136,13 @@ export interface IncludedPanel {
   readonly items: readonly IncludedItem[];
 }
 
-/** "What you get": the free build, then the monthly run. Page limit and edit allowance wait on owner decisions 1 and 2 (docs/plans/19). */
+/** "What you get": the one-time build, then the monthly run. Page limit and edit allowance wait on owner decisions 1 and 2 (docs/plans/19). */
 export const WHAT_YOU_GET = {
-  small: "Built free. Looked after every month.",
+  small: "Built once. Looked after every month.",
   heading: "What you get.",
   build: {
     title: "Built for you",
-    pill: "Free",
+    pill: "One time",
     items: [
       { icon: "FileText", text: "Up to 10 pages, built for you" },
       { icon: "DeviceMobile", text: "Works on every phone" },
@@ -295,15 +328,15 @@ export function homeFaqFor(currency: Currency): readonly FaqItem[] {
   return [
     {
       q: "Is the website really free?",
-      a: `Yes. There is no design or build fee: you pay nothing for us to build your website. You pay the monthly plan, ${formatMoney(planPrice("website", currency), currency)} a month${inr ? ", GST included" : ""}, which keeps it hosted, secure and up to date.`,
+      a: `No. Building your website is a one-time price: ${buildPricesLine(currency)}. Then you pay the monthly plan, ${monthlyPricesLine(currency)}${inr ? ", GST included" : ""}, which keeps it hosted, secure and up to date.`,
     },
     {
       q: "What do I pay for every month?",
-      a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 15 minutes each and a monthly health report. The build itself is free.",
+      a: "Keeping your website running: hosting and SSL, security, backups, updates and upkeep, monitoring all month, 2 edits a month of 15 minutes each and a monthly health report. The build is a one-time price, paid once.",
     },
     {
       q: "Is there anything to pay up front?",
-      a: inr ? `Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.` : "Just your first month. After that you pay monthly.",
+      a: inr ? `The one-time build price (${buildPricesLine(currency)}) and your first month. The prices already include ${GST_LABEL} GST. After that you pay monthly.` : `The one-time build price (${buildPricesLine(currency)}) and your first month. After that you pay monthly.`,
     },
     {
       q: "How long does it take to build my website?",

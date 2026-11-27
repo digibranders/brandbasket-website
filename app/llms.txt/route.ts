@@ -1,7 +1,7 @@
 // app/llms.txt/route.ts
 import { formatMoney } from "@/lib/currency";
 import { getPostsPage } from "@/lib/cms/blog";
-import { extrasFor, GST_LABEL, MONITORING, monitoringPrice, planPrice, PLANS } from "@/lib/pricing";
+import { extrasFor, GST_LABEL, MONITORING, monitoringPrice, planPrice, PLANS, siteBuildPrice } from "@/lib/pricing";
 import { indexableRoutes, routeUrl } from "@/lib/seo/routes";
 import { businessDetails, siteConfig } from "@/lib/site-config";
 
@@ -34,15 +34,15 @@ export async function GET(): Promise<Response> {
 ${siteConfig.name} is a brand of ${businessDetails.legalName} (GSTIN ${businessDetails.gstNumber}), ${locality}, ${region}, India.
 
 ## Key facts
-- Website build: ${inr(0)}
 - GST: ${GST_LABEL}, included in every price
 - Billing: monthly, cancel anytime with no notice period
-- Website Management: up to 10 pages built for you; live within 7 working days of your details and first payment; 2 edits a month of 15 minutes each; extra work is quoted first (${inr(hour)} an hour)
+- Website build: a one-time price, ${inr(siteBuildPrice("b2b", "INR"))} for a B2B website or ${inr(siteBuildPrice("ecommerce", "INR"))} for an ecommerce store; an ecommerce store is ${inr(planPrice("website", "INR", "ecommerce"))} a month
+- Website Management: up to 10 pages built for you; live within 7 working days of your details and first payment (21 days for an ecommerce store); 2 edits a month of 15 minutes each; extra work is quoted first (${inr(hour)} an hour)
 - Social Media Management: AI posts, captions and pictures written from your own website; 3 posts, a carousel and 1 reel a week on 4 platforms (Instagram, Facebook, LinkedIn and Google Business Profile), approved by you; extra reels ${inr(reel)} each
 - Paid Ads Management: Meta ads with AI ad copy and creatives; covers up to ${inr(adBudgetCap)} a month of your ad budget; ad spend is paid to Meta by you
-- ${MONITORING.name}: included with all three plans, otherwise ${inr(monitoringPrice("INR"))} a month
+- ${MONITORING.name}: optional, ${inr(monitoringPrice("INR"))} a month
 - The domain is registered in your name; the design and content we write are provided as a hosted service while you are subscribed
-- Offers: none. Every plan costs the same and is billed at its own price. The only offer is ${MONITORING.name}, included with all three plans
+- Offers: none. Every plan costs the same and is billed at its own price
 
 ## Plans
 ${plans}

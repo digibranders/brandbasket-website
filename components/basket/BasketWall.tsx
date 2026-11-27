@@ -15,6 +15,7 @@ import { FLY_MS, flyDot } from "./fly";
 import { Roll } from "./Roll";
 import { useBasket } from "./useBasket";
 import { useMonitoring } from "./useMonitoring";
+import { useSiteKind } from "./useSiteKind";
 
 /** A plan landing in the basket: which plans, and how long to wait for their dots to arrive. */
 interface Landing {
@@ -41,6 +42,7 @@ export function BasketWall(): ReactElement | null {
   const pathname = usePagePath();
   const pick = useBasket();
   const withMonitoring = useMonitoring();
+  const kind = useSiteKind();
   const currency = useCurrency();
   const cardId = useId();
   const [open, setOpen] = useState(false);
@@ -143,7 +145,7 @@ export function BasketWall(): ReactElement | null {
   if (!active) return null;
 
   const count = basketPlans(pick).length;
-  const total = formatMoney(monthlyTotal(pick, currency, withMonitoring), currency);
+  const total = formatMoney(monthlyTotal(pick, currency, withMonitoring, kind), currency);
   const swung = landing !== null && landing.added.length > 0;
   const delayStyle = { "--d": `${landing?.delay ?? 0}ms` } as CSSProperties;
 

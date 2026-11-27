@@ -5,12 +5,12 @@ import { type Currency, formatMoney } from "@/lib/currency";
 import { GST_LABEL, planPrice } from "@/lib/pricing";
 import { CLOSING_COPY } from "./closing";
 import { CANCEL_ANSWER, PAYMENT_FAILURE } from "./legal/cancellation";
-import { factsFor, HERO, homeFaqFor, offerFor, PROMISES, REPORT, reportFor, RESPONSIBILITY, SHARE_IMAGE, STEPS, WHAT_YOU_GET, WORK } from "./home";
+import { HERO, homeFaqFor, offerFor, PROMISES, REPORT, reportFor, RESPONSIBILITY, SHARE_IMAGE, STEPS, websiteFactsFor, websiteOfferFor, WHAT_YOU_GET, WORK } from "./home";
 
 const CURRENCIES: readonly Currency[] = ["INR", "USD"];
 const TAX_WORDS = /gst|tax|incl\./i;
 const HOME_FAQ = homeFaqFor("INR");
-const FACTS = factsFor("INR");
+const FACTS = websiteFactsFor("b2b");
 
 describe("home content", () => {
   it("keeps the locked hero copy", () => {
@@ -44,6 +44,20 @@ describe("home content", () => {
       build: { was: "$1,200", price: "$0", label: "to build your website" },
       run: { was: "$79", price: "$59", unit: "/month", label: "to keep it running" },
     });
+  });
+  it("prices the website build and the monthly price by kind", () => {
+    expect(websiteOfferFor("b2b", "INR").build).toEqual({ price: "₹35,000", label: "to build your website" });
+    expect(websiteOfferFor("ecommerce", "INR").build).toEqual({ price: "₹65,000", label: "to build your online store" });
+    expect(websiteOfferFor("b2b", "INR").run).toEqual(offerFor("INR").run);
+    expect(websiteOfferFor("ecommerce", "INR").run).toEqual({ ...offerFor("INR").run, was: "₹5,999", price: "₹3,999" });
+    expect(websiteOfferFor("ecommerce", "USD").build).toEqual({ price: "$4,500", label: "to build your online store" });
+  });
+  it("prices the dollar ecommerce store at $4,500 to build and $99 a month, usually $120", () => {
+    expect(websiteOfferFor("ecommerce", "USD").run).toEqual({ ...offerFor("USD").run, was: "$120", price: "$99" });
+  });
+  it("says an ecommerce store is live in 21 days and a B2B website in 7 working days", () => {
+    expect(websiteFactsFor("b2b")[0]?.text).toBe("Live in 7 working days");
+    expect(websiteFactsFor("ecommerce")[0]?.text).toBe("Live in 21 days");
   });
   it("has the section counts of the mock", () => {
     expect(FACTS).toHaveLength(4);
@@ -88,19 +102,17 @@ describe("home content", () => {
     expect(text).not.toContain("small edits");
   });
   it("builds the FAQ prices from lib/pricing", () => {
-    expect(HOME_FAQ[0]?.a).toContain(`${formatMoney(planPrice("website", "INR"), "INR")} a month, GST included, which keeps`);
-    expect(HOME_FAQ[2]?.a).toBe(`Just your first month. The price already includes ${GST_LABEL} GST. After that you pay monthly.`);
-    expect(homeFaqFor("USD")[0]?.a).toContain("$59 a month, which keeps it hosted");
-    expect(homeFaqFor("USD")[2]?.a).toBe("Just your first month. After that you pay monthly.");
+    expect(HOME_FAQ[0]?.a).toContain(`${formatMoney(planPrice("website", "INR"), "INR")} a month (${formatMoney(planPrice("website", "INR", "ecommerce"), "INR")} for an ecommerce store), GST included, which keeps`);
+    expect(HOME_FAQ[2]?.a).toBe(`The one-time build price (₹35,000 for a B2B website or ₹65,000 for an ecommerce store) and your first month. The prices already include ${GST_LABEL} GST. After that you pay monthly.`);
+    expect(homeFaqFor("USD")[0]?.a).toContain("$59 a month ($99 for an ecommerce store), which keeps it hosted");
+    expect(homeFaqFor("USD")[2]?.a).toBe("The one-time build price ($1,200 for a B2B website or $4,500 for an ecommerce store) and your first month. After that you pay monthly.");
   });
-  it("shows the facts and the sample report in dollars for USD", () => {
-    expect(factsFor("INR")[0]).toEqual({ icon: "CurrencyInr", text: "₹0 to build" });
-    expect(factsFor("USD")[0]).toEqual({ icon: "CurrencyDollar", text: "$0 to build" });
+  it("shows the sample report in dollars for USD", () => {
     expect(reportFor("INR").kpis[2]?.delta).toBe("₹214 a lead");
     expect(reportFor("USD").kpis[2]?.delta).toBe("$5 a lead");
   });
   it("never mentions tax in the dollar copy", () => {
-    expect(JSON.stringify({ offer: offerFor("USD"), facts: factsFor("USD"), report: reportFor("USD"), faq: homeFaqFor("USD") })).not.toMatch(TAX_WORDS);
+    expect(JSON.stringify({ offer: offerFor("USD"), facts: websiteFactsFor("ecommerce"), report: reportFor("USD"), faq: homeFaqFor("USD") })).not.toMatch(TAX_WORDS);
   });
   it("answers cancel and failed payment with the shared policy and says only the domain stays the customer's", () => {
     const answer = (q: string): string | undefined => HOME_FAQ.find((f) => f.q === q)?.a;
@@ -113,7 +125,7 @@ describe("home content", () => {
     for (const key of keys) expect(Phosphor).toHaveProperty(key);
   });
   it("has no em or en dashes", () => {
-    const text = CURRENCIES.map((c) => JSON.stringify({ HERO, offer: offerFor(c), facts: factsFor(c), RESPONSIBILITY, WHAT_YOU_GET, PROMISES, WORK, report: reportFor(c), STEPS, faq: homeFaqFor(c) }));
+    const text = CURRENCIES.map((c) => JSON.stringify({ HERO, offer: offerFor(c), facts: websiteFactsFor("ecommerce"), RESPONSIBILITY, WHAT_YOU_GET, PROMISES, WORK, report: reportFor(c), STEPS, faq: homeFaqFor(c) }));
     for (const t of text) expect(t).not.toMatch(/[\u2013\u2014]/);
   });
 });

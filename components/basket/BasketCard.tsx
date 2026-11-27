@@ -8,12 +8,13 @@ import { useCurrency } from "@/components/currency/CurrencyProvider";
 import { BASKET_COPY, moneyCopy } from "@/content/basket";
 import { basket } from "@/lib/basket-store";
 import { type Currency, formatMoney } from "@/lib/currency";
-import { basketPlans, type BasketPick, isPlanPaused, MONITORING, monitoringBilled, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
+import { basketPlans, type BasketPick, isPlanPaused, MONITORING, monthlyTotal, PLAN_IDS, PLANS, type PlanId, planPrice } from "@/lib/pricing";
 import { OutlineButton } from "../ui/OutlineButton";
 import { PLAN_INK } from "./basket-view";
 import { BasketCta } from "./BasketCta";
 import { useBasket } from "./useBasket";
 import { useMonitoring } from "./useMonitoring";
+import { useSiteKind } from "./useSiteKind";
 
 const ICON: Readonly<Record<PlanId, Icon>> = { website: Globe, social: InstagramLogo, ads: Megaphone };
 /** Each stamp lands at its own slight angle, as a hand stamp would. */
@@ -31,6 +32,7 @@ export function RichText({ line }: { readonly line: Rich }): ReactElement {
 /** One plan slot: tapping it adds or removes the plan. */
 function Slot({ id, pick, currency }: { readonly id: PlanId; readonly pick: BasketPick; readonly currency: Currency }): ReactElement {
   const on = pick[id];
+  const kind = useSiteKind();
   const paused = isPlanPaused(id);
   const SlotIcon = ICON[id];
   return (
@@ -58,7 +60,7 @@ function Slot({ id, pick, currency }: { readonly id: PlanId; readonly pick: Bask
         ) : null}
       </span>
       <b className="mt-2 font-display text-base font-medium tracking-[-0.015em]">{PLANS[id].name}</b>
-      <small className="num text-[13px] text-ink-2">{formatMoney(planPrice(id, currency), currency)} {BASKET_COPY.perMonth}</small>
+      <small className="num text-[13px] text-ink-2">{formatMoney(planPrice(id, currency, kind), currency)} {BASKET_COPY.perMonth}</small>
     </button>
   );
 }
@@ -87,7 +89,8 @@ function StampCard({ pick, currency }: { readonly pick: BasketPick; readonly cur
 
 /** A receipt: the plans and the one offer, then the total at the foot, level with the Basket Card's actions (mock: .bsum; owner picked the receipt layout, 2026-10-22). */
 function Summary({ pick, currency, withMonitoring }: { readonly pick: BasketPick; readonly currency: Currency; readonly withMonitoring: boolean }): ReactElement {
-  const monthly = monthlyTotal(pick, currency, withMonitoring);
+  const kind = useSiteKind();
+  const monthly = monthlyTotal(pick, currency, withMonitoring, kind);
   return (
     <div className="flex flex-col items-start gap-3.5 rounded-3xl border border-line bg-surface p-[26px] max-[560px]:px-[18px] max-[560px]:py-[22px]">
       <div className="grid gap-2">
@@ -99,7 +102,7 @@ function Summary({ pick, currency, withMonitoring }: { readonly pick: BasketPick
               {plan.name}
             </li>
           ))}
-          {monitoringBilled(pick, withMonitoring) ? (
+          {withMonitoring ? (
             <li className="inline-flex items-center gap-1.5 rounded-full border border-line bg-bg py-1 pl-1.5 pr-3 text-[13.5px] font-semibold">
               <span aria-hidden="true" className="grid size-[18px] place-items-center rounded-full bg-ink text-surface"><Check weight="bold" className="size-3" /></span>
               {MONITORING.name}
@@ -107,7 +110,7 @@ function Summary({ pick, currency, withMonitoring }: { readonly pick: BasketPick
           ) : null}
         </ul>
       </div>
-      <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(pick, currency, withMonitoring)}</p>
+      <p aria-live="polite" className="text-balance font-display text-[clamp(24px,2.4vw,30px)] leading-[1.1] tracking-[-0.035em]">{headline(currency, withMonitoring)}</p>
       <div data-basket-total className="mt-auto grid w-full gap-1 border-t border-line pt-4">
         <span className="text-[13px] text-ink-2">{BASKET_CARD.totalLabel}</span>
         <p className="num flex flex-wrap items-baseline gap-x-3 gap-y-1 font-display">

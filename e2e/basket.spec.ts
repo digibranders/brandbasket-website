@@ -123,7 +123,7 @@ test("the Basket Card adds plans and ticks what is in the basket", async ({ page
   await card.getByRole("button", { name: "Add Website Management", exact: true }).click();
   await card.getByRole("button", { name: "Add Social Media Management", exact: true }).click();
   // Two plans are just the two plans added up: no discount, no ad money.
-  await expect(card.getByText("Pick all three plans and Dedicated Expert Monitoring is included. Otherwise it is ₹6,000 a month.", { exact: true })).toBeVisible();
+  await expect(card.getByText("Dedicated Expert Monitoring is an optional extra at ₹6,000 a month.", { exact: true })).toBeVisible();
   await expect(card.getByRole("button", { name: "Remove Social Media Management" })).toHaveAttribute("aria-pressed", "true");
   await expect(card.getByRole("list", { name: "In your basket" }).getByRole("listitem")).toHaveText(["Website Management", "Social Media Management"]);
   // Paid Ads is paused: its slot says Coming soon and cannot be pressed.

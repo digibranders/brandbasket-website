@@ -41,7 +41,7 @@ describe("pricing content", () => {
     });
     it("says up to 10 pages and the 2 edits on the website plan, and Meta ads on the ads plan", () => {
       const [website, , ads] = columns;
-      expect(website?.does).toContain("Website setup, up to 10 pages, built free");
+      expect(website?.does).toContain("Website setup, up to 10 pages");
       expect(website?.does).toContain("Content updates, 2 a month, 15 minutes each");
       expect(ads?.does).toContain("Meta ads on Facebook and Instagram");
     });
@@ -79,7 +79,7 @@ describe("pricing content", () => {
       expect(planColumns("INR").every((c) => c.priceNote === "a month, incl. GST")).toBe(true);
       expect(compareCopy("INR").lede).toBe("Three plans, each on its own. Prices are monthly, GST included. Every plan costs the same.");
       expect(everyPlan("INR").items).toContain("Billed monthly, GST included");
-      expect(pricingFaq("INR")[0]?.a).toBe("Yes. We design and build it for ₹0. The ₹2,999 monthly plan keeps it hosted, secure and up to date.");
+      expect(pricingFaq("INR")[0]?.a).toBe("No. Building it is a one-time price: ₹35,000 for a B2B website or ₹65,000 for an ecommerce store. The monthly plan, ₹2,999 a month (₹3,999 for an ecommerce store), keeps it hosted, secure and up to date.");
       expect(pricingFaq("INR")[4]?.a).toContain("up to ₹10,000 a month");
       expect(planColumns("INR")[1]?.excludes).toContain("Extra reels and video editing, ₹500 per reel");
     });
@@ -91,7 +91,7 @@ describe("pricing content", () => {
       expect(planColumns("USD").map((c) => c.was)).toEqual(["$79", "$79", "$79"]);
       expect(planColumns("USD").every((c) => c.priceNote === "a month")).toBe(true);
       expect(compareCopy("USD").lede).toBe("Three plans, each on its own. Prices are monthly. Every plan costs the same.");
-      expect(pricingFaq("USD")[0]?.a).toBe("Yes. We design and build it for $0. The $59 monthly plan keeps it hosted, secure and up to date.");
+      expect(pricingFaq("USD")[0]?.a).toBe("No. Building it is a one-time price: $1,200 for a B2B website or $4,500 for an ecommerce store. The monthly plan, $59 a month ($99 for an ecommerce store), keeps it hosted, secure and up to date.");
       expect(pricingFaq("USD")[4]?.a).toContain("up to $120 a month");
       expect(planColumns("USD")[1]?.excludes).toContain("Extra reels and video editing, $10 per reel");
     });

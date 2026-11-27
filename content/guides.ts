@@ -56,7 +56,7 @@ const DOMAIN_FAQ: FaqItem = {
 
 const COST_FAQ: FaqItem = {
   q: "Is the website really free?",
-  a: "The build is free. You pay a monthly plan that keeps the site hosted, secure and up to date. The plans and their prices are on the pricing page.",
+  a: "No. The build is a one-time price, then you pay a monthly plan that keeps the site hosted, secure and up to date. The plans and their prices are on the pricing page.",
 };
 
 export const GUIDE_PAGES: readonly GuidePageContent[] = [

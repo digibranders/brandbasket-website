@@ -9,14 +9,13 @@ import {
   extrasFor,
   GST_LABEL,
   GST_RATE,
-  monitoringBilled,
-  monitoringIncluded,
   monitoringPrice,
   monthlyTotal,
   PLAN_IDS,
   planPrice,
   planUsualPrice,
   samePick,
+  siteBuildPrice,
   sourceTransferFee,
 } from "./pricing";
 
@@ -51,6 +50,28 @@ describe("usual prices", () => {
   });
   it("keeps every usual price above the real one", () => {
     for (const currency of CURRENCIES) for (const id of PLAN_IDS) expect(planUsualPrice(id, currency)).toBeGreaterThan(planPrice(id, currency));
+  });
+});
+
+describe("website prices by kind", () => {
+  it("holds the build prices by kind (owner, 2026-11-27)", () => {
+    expect(siteBuildPrice("b2b", "INR")).toBe(35000);
+    expect(siteBuildPrice("ecommerce", "INR")).toBe(65000);
+    expect(siteBuildPrice("b2b", "USD")).toBe(1200);
+    expect(siteBuildPrice("ecommerce", "USD")).toBe(4500);
+  });
+  it("prices the website plan by kind and leaves the other plans alone", () => {
+    expect(planPrice("website", "INR")).toBe(2999);
+    expect(planPrice("website", "INR", "ecommerce")).toBe(3999);
+    expect(planUsualPrice("website", "INR", "ecommerce")).toBe(5999);
+    expect(planPrice("website", "USD", "ecommerce")).toBe(99);
+    expect(planUsualPrice("website", "USD", "ecommerce")).toBe(120);
+    expect(planPrice("social", "INR", "ecommerce")).toBe(2999);
+    expect(planUsualPrice("ads", "USD", "ecommerce")).toBe(79);
+  });
+  it("totals the basket with the ecommerce website price", () => {
+    expect(monthlyTotal(pick(true, true, false), "INR", false, "ecommerce")).toBe(3999 + 2999);
+    expect(monthlyTotal(pick(false, true, false), "INR", false, "ecommerce")).toBe(2999);
   });
 });
 
@@ -99,23 +120,11 @@ describe("offers", () => {
     const pricing = await import("./pricing");
     for (const name of ["PACKAGES", "packageFor", "packageTotal", "packageSaving", "adCreditFor", "nextPlanToAdd"]) expect(pricing).not.toHaveProperty(name);
   });
-  it("includes monitoring only when every plan is in the basket", () => {
-    expect(monitoringIncluded(pick(true, true, true))).toBe(true);
-    for (const basket of [pick(true, false, false), pick(true, true, false), pick(false, true, true)]) expect(monitoringIncluded(basket)).toBe(false);
-  });
-  it("bills monitoring only when it is added and the basket does not hold all three plans", () => {
-    expect(monitoringBilled(pick(true, true, false), true)).toBe(true);
-    expect(monitoringBilled(pick(true, true, true), true)).toBe(false);
-    expect(monitoringBilled(pick(true, false, false), false)).toBe(false);
-  });
-  it("adds monitoring to the total when it is billed, and never beside all three plans", () => {
+  it("adds monitoring to the total whenever it is added, beside any number of plans (owner, 2026-11-27)", () => {
     expect(monthlyTotal(pick(true, true, false), "INR", true)).toBe(5998 + 6000);
     expect(monthlyTotal(pick(true, false, false), "USD", true)).toBe(59 + 99);
-    expect(monthlyTotal(pick(true, true, true), "INR", true)).toBe(8997);
-  });
-  it("keeps added monitoring through all three plans, so dropping a plan charges it again (owner, 2026-11-17)", () => {
-    expect(monthlyTotal(pick(true, true, true), "INR", true)).toBe(8997);
-    expect(monthlyTotal(pick(true, false, true), "INR", true)).toBe(5998 + 6000);
+    expect(monthlyTotal(pick(true, true, true), "INR", true)).toBe(8997 + 6000);
+    expect(monthlyTotal(pick(true, true, true), "INR", false)).toBe(8997);
   });
   it("prices monitoring at 6,000 rupees or $99 (owner, 2026-11-11)", () => {
     expect(monitoringPrice("INR")).toBe(6000);

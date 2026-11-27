@@ -1,9 +1,9 @@
 import { ChartLineUp, CursorClick, Envelope, MapPin, Star } from "@phosphor-icons/react/dist/ssr";
 import type { ReactElement } from "react";
 import { JsonLd } from "@/components/JsonLd";
-import { FactsStrip } from "@/components/home/FactsStrip";
 import { HomeFaq } from "@/components/home/HomeFaq";
 import { HomeHero } from "@/components/home/HomeHero";
+import { WebsiteFacts } from "@/components/home/WebsiteFacts";
 import { Promises } from "@/components/home/Promises";
 import { ReportSection } from "@/components/home/ReportSection";
 import { Responsibility } from "@/components/home/Responsibility";
@@ -14,7 +14,6 @@ import { Band } from "@/components/ui/Band";
 import { DecorIcon } from "@/components/ui/DecorIcon";
 import { Section } from "@/components/ui/Section";
 import type { ServicePageContent } from "@/content/services";
-import { factsFor } from "@/content/home";
 import type { FaqItem } from "@/content/types";
 import type { Currency } from "@/lib/currency";
 import { PLANS } from "@/lib/pricing";
@@ -43,7 +42,7 @@ export function WebsitePage({ page, currency }: { readonly page: ServicePageCont
   return (
     <>
       <HomeHero currency={currency} />
-      <FactsStrip facts={factsFor(currency)} />
+      <WebsiteFacts />
       <Responsibility />
       <WhatYouGet />
       <Section labelledBy="h-page-list" tight>

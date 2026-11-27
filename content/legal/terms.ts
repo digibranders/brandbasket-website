@@ -27,7 +27,7 @@ export const termsOfService: LegalDocument = {
     {
       heading: "2. Services",
       paragraphs: [
-        `We build your website free of charge. You can take ${website.name} at ${rupees("website")} a month, ${social.name} at ${rupees("social")} a month and ${ads.name} at ${rupees("ads")} a month; each plan can be bought on its own. ${MONITORING.name} is included with all three plans, or ${formatMoney(monitoringPrice("INR"), "INR")} a month with one or two.`,
+        `We build your website free of charge. You can take ${website.name} at ${rupees("website")} a month, ${social.name} at ${rupees("social")} a month and ${ads.name} at ${rupees("ads")} a month; each plan can be bought on its own. ${MONITORING.name} can be added to any plan at ${formatMoney(monitoringPrice("INR"), "INR")} a month.`,
         `The ${website.name} plan includes 2 edits a month of up to 15 minutes each. We quote any other work before we start it, at ${formatMoney(hour, "INR")} an hour, and do it only once you agree.`,
         `${ads.name} manages Facebook and Instagram ad budgets of up to ${formatMoney(adBudgetCap, "INR")} a month of your own money. Ad spend, domain fees and paid tools are not part of any plan; you pay them directly to the provider.`,
         "What each plan includes is shown on our Pricing page when you sign up. If we agree a written proposal with you, it governs that engagement where it differs from these terms.",

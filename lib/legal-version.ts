@@ -32,5 +32,9 @@
  *               agreed lower with the customer), no longer free; the ecommerce store has its own monthly price; and
  *               Dedicated Expert Monitoring is no longer included with all three plans. The refund rule for the build fee
  *               is not stated yet: owner and legal to decide.
+ * 2026-11-27.2  Terms and refund policy: a fee agreed with the customer is paid as an advance before work starts and a
+ *               balance, with the first plan payment, when the website is ready to go live; the advance is not
+ *               refundable. Sign-up without a payment link pays the whole fee with the first payment. Not yet
+ *               published: the wording waits for the owner's approval.
  */
-export const LEGAL_TEXT_VERSION = "2026-11-27.1";
+export const LEGAL_TEXT_VERSION = "2026-11-27.2";

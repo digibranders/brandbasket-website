@@ -28,3 +28,19 @@ describe("startHref", () => {
     expect(startHref(null)).toBe("https://app.brandbasket.in/login?plan=website");
   });
 });
+
+describe("signupHref and the kind of website", () => {
+  const pick = { website: true, social: true, ads: false };
+  it("adds nothing for a B2B website", () => {
+    expect(new URL(signupHref(pick, false, "b2b")).searchParams.has("site")).toBe(false);
+    expect(new URL(signupHref(pick, false)).searchParams.has("site")).toBe(false);
+  });
+  it("says ecommerce when the basket holds the website and the kind is ecommerce", () => {
+    const url = new URL(signupHref(pick, false, "ecommerce"));
+    expect(url.searchParams.get("plan")).toBe("website,social");
+    expect(url.searchParams.get("site")).toBe("ecommerce");
+  });
+  it("says nothing about a kind when there is no website to build", () => {
+    expect(new URL(signupHref({ website: false, social: true, ads: false }, false, "ecommerce")).searchParams.has("site")).toBe(false);
+  });
+});

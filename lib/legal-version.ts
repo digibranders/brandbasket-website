@@ -28,5 +28,9 @@
  *               included with all three plans or priced monthly with one or two. Not yet published.
  * 2026-11-11.1  Terms and plan-change wording: every plan costs the same, there are no package prices and no monthly ad
  *               credit, and the only offer is Dedicated Expert Monitoring included with all three plans.
+ * 2026-11-27.1 Terms and refund policy: building the website is a one-time fee (B2B website or ecommerce store, which may be
+ *               agreed lower with the customer), no longer free; the ecommerce store has its own monthly price; and
+ *               Dedicated Expert Monitoring is no longer included with all three plans. The refund rule for the build fee
+ *               is not stated yet: owner and legal to decide.
  */
-export const LEGAL_TEXT_VERSION = "2026-11-11.1";
+export const LEGAL_TEXT_VERSION = "2026-11-27.1";

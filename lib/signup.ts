@@ -1,4 +1,4 @@
-import { type BasketPick, PLAN_IDS } from "./pricing";
+import { type BasketPick, PLAN_IDS, type SiteKind } from "./pricing";
 import { siteConfig } from "./site-config";
 import { START_PARAM } from "./start-attribution";
 
@@ -10,13 +10,15 @@ export function loginHref(): string {
 /**
  * Where every "Start my plan" button goes: the app's sign-in, with the picked plans and, when it was added, Dedicated
  * Expert Monitoring. The list format and ids must match what brandbasket-platform reads from `?plan=`
- * (apps/customer/src/features/entry/rules/account-entry.ts); change it here only.
+ * (apps/customer/src/features/entry/rules/account-entry.ts); change it here only. An ecommerce store adds `site=ecommerce`, which
+ * the app's checkout reads (features/checkout/rules/membership.ts readWebsiteKind); a B2B website adds nothing.
  */
-export function signupHref(pick: BasketPick, monitoring: boolean): string {
+export function signupHref(pick: BasketPick, monitoring: boolean, kind: SiteKind = "b2b"): string {
   const url = new URL("/login", siteConfig.appUrl);
   const ids: string[] = PLAN_IDS.filter((id) => pick[id]);
   if (monitoring) ids.push(MONITORING_LINK_ID);
   url.searchParams.set("plan", ids.join(","));
+  if (pick.website && kind === "ecommerce") url.searchParams.set("site", "ecommerce");
   return url.toString();
 }
 

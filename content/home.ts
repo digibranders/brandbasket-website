@@ -323,12 +323,14 @@ export const STEPS: readonly Step[] = [
 export const HOME_FAQ_HEADING = "Questions, answered.";
 
 /** The owner's approved FAQ (replaces the mock's four questions). The cancel, payment and ownership answers come from content/legal/cancellation.ts. */
-export function homeFaqFor(currency: Currency): readonly FaqItem[] {
+export function homeFaqFor(currency: Currency, kind?: SiteKind): readonly FaqItem[] {
   const inr = currency === "INR";
+  const build = kind === undefined ? buildPricesLine(currency) : formatMoney(siteBuildPrice(kind, currency), currency);
+  const monthly = kind === undefined ? monthlyPricesLine(currency) : `${formatMoney(planPrice("website", currency, kind), currency)} a month`;
   return [
     {
-      q: "Is the website really free?",
-      a: `No. Building your website is a one-time price: ${buildPricesLine(currency)}. Then you pay the monthly plan, ${monthlyPricesLine(currency)}${inr ? ", GST included" : ""}, which keeps it hosted, secure and up to date.`,
+      q: kind === undefined ? "Is the website really free?" : "How much does a business website cost?",
+      a: `${kind === undefined ? "No. " : ""}Building your website is a one-time price: ${build}. Then you pay the monthly plan, ${monthly}${inr ? ", GST included" : ""}, which keeps it hosted, secure and up to date.`,
     },
     {
       q: "What do I pay for every month?",
@@ -336,7 +338,7 @@ export function homeFaqFor(currency: Currency): readonly FaqItem[] {
     },
     {
       q: "Is there anything to pay up front?",
-      a: inr ? `The one-time build price (${buildPricesLine(currency)}) and your first month. The prices already include ${GST_LABEL} GST. After that you pay monthly.` : `The one-time build price (${buildPricesLine(currency)}) and your first month. After that you pay monthly.`,
+      a: inr ? `The one-time build price (${build}) and your first month. The prices already include ${GST_LABEL} GST. After that you pay monthly.` : `The one-time build price (${build}) and your first month. After that you pay monthly.`,
     },
     {
       q: "How long does it take to build my website?",

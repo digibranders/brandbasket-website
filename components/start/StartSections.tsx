@@ -1,8 +1,8 @@
 // components/start/StartSections.tsx
-import { Phone, WhatsappLogo } from "@phosphor-icons/react/dist/ssr";
+import { Phone } from "@phosphor-icons/react/dist/ssr";
 import Image from "next/image";
 import Link from "next/link";
-import type { ReactElement } from "react";
+import { Suspense, type ReactElement } from "react";
 import { WebsiteOffer } from "@/components/home/WebsiteOffer";
 import { Reveal } from "@/components/motion/Reveal";
 import { Logo } from "@/components/shell/Logo";
@@ -16,6 +16,7 @@ import type { Currency } from "@/lib/currency";
 import { businessDetails } from "@/lib/site-config";
 import "@/components/shell/footer.css";
 import { START_ICONS } from "./icons";
+import { LandingWhatsApp, LandingWhatsAppLink } from "./LandingWhatsApp";
 import { StartForm } from "./StartForm";
 import { StartPrice } from "./StartPrice";
 
@@ -30,9 +31,7 @@ export function StartHeader(): ReactElement {
           <span className="max-[420px]:sr-only">{businessDetails.phone}</span>
           <span className="sr-only min-[421px]:hidden">{START.reach.call}</span>
         </a>
-        <a href={businessDetails.whatsappHref} target="_blank" rel="noopener" aria-label={START.reach.whatsapp} className="grid size-[42px] place-items-center rounded-full border border-line bg-surface text-[var(--whatsapp)]">
-          <WhatsappLogo aria-hidden="true" weight="fill" className="size-[22px]" />
-        </a>
+        <Suspense fallback={<LandingWhatsAppLink />}><LandingWhatsApp /></Suspense>
       </div>
     </header>
   );

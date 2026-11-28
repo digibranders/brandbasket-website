@@ -7,8 +7,9 @@ describe("showsClosing", () => {
     for (const path of ["/pricing", "/about", "/no-such-page"]) expect(showsClosing(path)).toBe(true);
   });
 
-  it("leaves it off the homepage, which ends with its own call to action", () => {
+  it("leaves it off pages with their own closing call to action", () => {
     expect(showsClosing("/")).toBe(false);
+    expect(showsClosing("/services/ecommerce-website")).toBe(false);
   });
 
   it("leaves it off the contact page, every legal page and the data notice", () => {

@@ -1,9 +1,10 @@
 // lib/seo/jsonld.ts
+import { ECOMMERCE_DESCRIPTION, ECOMMERCE_LABEL, ECOMMERCE_PATH } from "@/content/ecommerce";
 import type { ServicePageContent } from "@/content/services";
 import type { Currency } from "@/lib/currency";
 import type { FaqItem } from "@/content/types";
 import type { AuthorProfile, Post } from "@/lib/cms/schema";
-import { isPlanPaused, PLAN_IDS, type PlanId, planPrice, PLANS } from "@/lib/pricing";
+import { isPlanPaused, PLAN_IDS, type PlanId, planPrice, PLANS, type SiteKind } from "@/lib/pricing";
 import { businessDetails, siteConfig, socialLinks } from "@/lib/site-config";
 
 /** One node id for the organization, so other entities can point at it instead of repeating it. */
@@ -111,13 +112,13 @@ export interface ServiceLd {
   };
 }
 
-function monthlyOffer(id: PlanId, currency: Currency): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
+function monthlyOffer(id: PlanId, currency: Currency, kind?: SiteKind): ServiceLd["hasOfferCatalog"]["itemListElement"][number] {
   return {
     "@type": "Offer",
     name: PLANS[id].name,
     url: `${siteConfig.url}/pricing`,
     availability: isPlanPaused(id) ? "https://schema.org/OutOfStock" : "https://schema.org/InStock",
-    priceSpecification: { "@type": "UnitPriceSpecification", price: planPrice(id, currency), priceCurrency: currency, unitText: "MONTH", ...(currency === "INR" ? { valueAddedTaxIncluded: true as const } : {}) },
+    priceSpecification: { "@type": "UnitPriceSpecification", price: planPrice(id, currency, kind), priceCurrency: currency, unitText: "MONTH", ...(currency === "INR" ? { valueAddedTaxIncluded: true as const } : {}) },
   };
 }
 
@@ -162,6 +163,20 @@ export function serviceJsonLd(page: ServicePageContent, currency: Currency): Ser
     provider: { "@id": ORGANIZATION_ID },
     areaServed: { "@type": "Country", name: "India" },
     offers: { ...monthlyOffer(page.id, currency), url: `${siteConfig.url}${page.path}` },
+  };
+}
+
+export function ecommerceServiceJsonLd(currency: Currency): ServicePageLd {
+  const url = `${siteConfig.url}${ECOMMERCE_PATH}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "Service",
+    name: ECOMMERCE_LABEL,
+    description: ECOMMERCE_DESCRIPTION,
+    url,
+    provider: { "@id": ORGANIZATION_ID },
+    areaServed: { "@type": "Country", name: "India" },
+    offers: { ...monthlyOffer("website", currency, "ecommerce"), name: ECOMMERCE_LABEL, url },
   };
 }
 

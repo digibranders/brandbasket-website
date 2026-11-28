@@ -8,6 +8,7 @@
 @import "../components/basket/wall.css";
 @import "../components/shell/nav.css";
 @import "../components/contact/contact.css";
+@import "../components/services/ecommerce.css";
 
 :root {
   --bg: #f6f5f2; --surface: #ffffff; --sunken: #eeece7;

@@ -1,3 +1,4 @@
+import { ECOMMERCE_LABEL, ECOMMERCE_PATH } from "./ecommerce";
 import { DEFAULT_BASKET } from "@/lib/basket-store";
 import { TOOLS } from "@/lib/consent";
 import { type PlanId, PLANS } from "@/lib/pricing";
@@ -10,14 +11,15 @@ export interface NavLink {
 }
 
 export interface ServiceNavLink extends NavLink {
-  readonly id: PlanId;
+  readonly id: PlanId | "ecommerce";
 }
 
 export const SERVICES_LABEL = "Services";
 
-/** The Services menu: the three service pages, named as the plans are. Written out here so the menu does not ship the page copy to the browser; navigation.test.ts checks the addresses against content/services.ts. */
+/** The Services menu, including the dedicated Ecommerce Website page. Written out here so the menu does not ship the page copy to the browser; navigation.test.ts checks the addresses against content/services.ts. */
 export const SERVICES_NAV: readonly ServiceNavLink[] = [
   { id: "website", label: PLANS.website.name, href: "/services/managed-website" },
+  { id: "ecommerce", label: ECOMMERCE_LABEL, href: ECOMMERCE_PATH },
   { id: "social", label: PLANS.social.name, href: "/services/social-media-management" },
   { id: "ads", label: PLANS.ads.name, href: "/services/paid-ads-management" },
 ];

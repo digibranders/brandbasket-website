@@ -22,7 +22,7 @@ export function HomeFaq({ currency, more = [] }: { readonly currency: Currency; 
           </Reveal>
         </div>
         <Reveal className="min-w-0">
-          <Faq items={[...homeFaqFor(currency), ...more]} id="home-faq" />
+          <Faq items={[...homeFaqFor(currency, "b2b"), ...more]} id="home-faq" />
           <FaqAllLink currency={currency} />
         </Reveal>
       </div>

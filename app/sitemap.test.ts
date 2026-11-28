@@ -20,6 +20,7 @@ describe("sitemap", () => {
   it("lists About and no industry pages", async () => {
     const urls = (await sitemap()).map((entry) => entry.url);
     expect(urls).toContain("https://www.brandbasket.in/about");
+    expect(urls).toContain("https://www.brandbasket.in/services/ecommerce-website");
     expect(urls.some((url) => url.includes("/industries"))).toBe(false);
     expect(new Set(urls).size).toBe(urls.length);
   });

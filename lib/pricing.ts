@@ -80,6 +80,25 @@ export function siteBuildPrice(kind: SiteKind, currency: Currency): number {
   return SITE_BUILD_PRICES[currency][kind];
 }
 
+const ECOMMERCE_CAMPAIGN_DISCOUNT = 20_000;
+export const ECOMMERCE_TESTIMONIAL_DISCOUNT = 10_000;
+
+interface EcommerceCampaignPrice {
+  readonly list: number;
+  readonly campaignDiscount: number;
+  readonly testimonialDiscount: number;
+  readonly build: number;
+  readonly maintenance: number;
+}
+
+/** The India campaign discounts the one-time ecommerce build. The standard monthly plan is separate. */
+export function ecommerceCampaignPrice(currency: Currency, optedIn: boolean): EcommerceCampaignPrice {
+  const list = siteBuildPrice("ecommerce", currency);
+  const campaignDiscount = currency === "INR" ? ECOMMERCE_CAMPAIGN_DISCOUNT : 0;
+  const testimonialDiscount = currency === "INR" && optedIn ? ECOMMERCE_TESTIMONIAL_DISCOUNT : 0;
+  return { list, campaignDiscount, testimonialDiscount, build: list - campaignDiscount - testimonialDiscount, maintenance: planPrice("website", currency, "ecommerce") };
+}
+
 /** The ecommerce store's monthly price, with its struck-through "usually" price beside it (owner, 2026-11-27). */
 const ECOMMERCE_MONTHLY_PRICES: Readonly<Record<Currency, number>> = { INR: 3999, USD: 99 };
 const ECOMMERCE_USUAL_MONTHLY_PRICES: Readonly<Record<Currency, number>> = { INR: 5999, USD: 120 };

@@ -1,6 +1,7 @@
 // lib/seo/routes.ts
 // One place for every page's title, description and sitemap entry. Titles are complete (they are set as absolute
 // titles, so the layout's "%s | Brandbasket" template never runs). No title or description carries a price.
+import { ECOMMERCE_DESCRIPTION, ECOMMERCE_PATH, ECOMMERCE_TITLE } from "@/content/ecommerce";
 import { GLOSSARY, GUIDE_PAGES, type GuidePageContent } from "@/content/guides";
 import { dataNotice } from "@/content/legal/notice";
 import { privacyPolicy } from "@/content/legal/privacy";
@@ -49,6 +50,7 @@ export const PRICING_ROUTE: RouteMeta = {
 export const ROUTES = {
   home: HOME_ROUTE,
   pricing: PRICING_ROUTE,
+  ecommerce: { path: ECOMMERCE_PATH, title: ECOMMERCE_TITLE, description: ECOMMERCE_DESCRIPTION, updated: "2026-11-28", priority: 0.8 },
   contact: {
     path: "/contact",
     title: `Contact ${tradeName}: Talk to Our Team`,
@@ -133,7 +135,7 @@ export const ROUTES = {
 
 /** The registry entry of one service page (content/services.ts holds its title and description). */
 export function serviceRoute(page: ServicePageContent): RouteMeta {
-  return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: SERVICES_UPDATED, priority: 0.8 };
+  return { path: page.path, title: page.metaTitle, description: page.metaDescription, updated: page.id === "website" ? "2026-11-28" : SERVICES_UPDATED, priority: 0.8 };
 }
 
 /** The registry entry of one guide or comparison page (content/guides.ts holds its title and description). */

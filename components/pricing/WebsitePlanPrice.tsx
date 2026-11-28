@@ -1,6 +1,8 @@
 "use client";
 
 import type { ReactElement } from "react";
+import { ArrowLink } from "@/components/ui/ArrowLink";
+import { ECOMMERCE_PATH } from "@/content/ecommerce";
 import { SiteKindSwitch } from "@/components/basket/SiteKindSwitch";
 import { useSiteKind } from "@/components/basket/useSiteKind";
 import { BASKET_COPY } from "@/content/basket";
@@ -17,6 +19,7 @@ export function WebsitePlanPrice({ currency, priceNote }: { readonly currency: C
   return (
     <div className="col-span-full mt-3.5 grid justify-items-start gap-3">
       <SiteKindSwitch />
+      <ArrowLink href={ECOMMERCE_PATH}>Explore Ecommerce Website</ArrowLink>
       <p className="num font-display text-[clamp(40px,4vw,52px)] font-medium leading-none tracking-[-0.045em]">
         <span className="whitespace-nowrap">
           <s className="mr-2 text-[clamp(20px,2vw,24px)] tracking-[-0.02em] text-ink-2 decoration-rattan-text decoration-1"><span className="sr-only">{BASKET_COPY.was} </span>{formatMoney(planUsualPrice("website", currency, kind), currency)}</s>
